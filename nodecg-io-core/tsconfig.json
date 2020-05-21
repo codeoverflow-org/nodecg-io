@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		// Output related
+		"target": "es2017",
+		"importHelpers": true,
+
+		// Module resolution
+		"moduleResolution": "node",
+
+		// Type checking
+		"lib": ["es2017"],
+		"alwaysStrict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strictNullChecks": true,
+		"skipLibCheck": true,
+
+		"module": "es2015",
+		"types": [
+			"node"
+		],
+	},
+	"compileOnSave": false
+}

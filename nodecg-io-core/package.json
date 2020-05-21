@@ -1,0 +1,38 @@
+{
+  "name": "nodecg-io-core",
+  "version": "0.1.0",
+  "description": "",
+  "homepage": "http://codeoverflow.org",
+  "author": {
+    "name": "CodeOverflow team",
+    "url": "http://codeoverflow.org"
+  },
+  "files": [
+    "dashboard",
+    "graphics",
+    "extension.js",
+    "extension"
+  ],
+  "keywords": [
+    "",
+    "nodecg-bundle"
+  ],
+  "nodecg": {
+    "compatibleRange": "^1.1.1",
+    "dashboardPanels": [
+      {
+        "name": "nodecg-io",
+        "title": "nodecg-io",
+        "file": "panel.html",
+        "fullbleed": true,
+        "headerColor": "#525F78"
+      }
+    ]
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.13.5",
+    "nodecg": "^1.6.1",
+    "typescript": "^3.8.3"
+  }
+}

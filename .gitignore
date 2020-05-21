@@ -1,0 +1,5 @@
+# node dependencies
+node_modules/
+
+# compiled js files
+*.js
