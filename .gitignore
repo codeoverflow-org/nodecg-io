@@ -3,3 +3,7 @@ node_modules/
 
 # compiled js files
 *.js
+
+# Editor configuration
+.idea/
+.vscode/

@@ -15,15 +15,13 @@
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noImplicitThis": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
 		"strictNullChecks": true,
 		"skipLibCheck": true,
-
-		"module": "es2015",
+		
+		"module": "CommonJS",
 		"types": [
 			"node"
-		],
+		]
 	},
-	"compileOnSave": false
+	"compileOnSave": true
 }

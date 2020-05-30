@@ -1,8 +1,8 @@
 {
-  "name": "nodecg-io-core",
+  "name": "nodecg-io-twitch",
   "version": "0.1.0",
   "description": "",
-  "homepage": "http://codeoverflow.org",
+  "homepage": "",
   "author": {
     "name": "CodeOverflow team",
     "url": "http://codeoverflow.org"
@@ -19,20 +19,17 @@
   ],
   "nodecg": {
     "compatibleRange": "^1.1.1",
-    "dashboardPanels": [
-      {
-        "name": "nodecg-io",
-        "title": "nodecg-io",
-        "file": "panel.html",
-        "fullbleed": true,
-        "headerColor": "#525F78"
-      }
-    ]
+    "bundleDependencies": {
+      "nodecg-io-core": "0.1.0"
+    }
   },
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@types/node": "^13.13.5",
     "nodecg": "^1.6.1",
     "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "nodecg-io-core": "0.1.0"
   }
 }
