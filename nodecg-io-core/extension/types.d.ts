@@ -1,7 +1,17 @@
 // Holds generic types for the whole project
 
-import { ReplicantServer } from "nodecg/types/browser";
 import { Result } from "./utils/result";
+
+/**
+ * Models a map using a object, instead of a iterator like the javascript es6 map.
+ * Enhances the {@link Record} type of typescript by always considering the case that the value is undefined.
+ * This usually happens when the key doesn't exist.
+ * Modeling a map using a javascript object has the advantage that it can be easily serialized.
+ * This is used as this object can be stored in a NodeCG Replicant and this Replicant can then also be used by the gui.
+ * A normal es6 map would use a iterator which can't be serialized by the NodeCG Replicant and thus
+ * can't be used to give the gui access to the data in this map.
+ */
+export type ObjectMap<K, V> = Record<K, V | undefined>
 
 /**
  * Models a service that a bundle can depend upon and use to access e.g. a twitch chat or similar.
@@ -24,7 +34,7 @@ export interface Service<R, C> {
     /**
      * The default value for the config.
      */
-    readonly defaultConfig?: R // TODO: should we rather define defaults in the json schema
+    readonly defaultConfig?: R // TODO: should we rather define defaults in the json schema?
 
     /**
      * This function validates the passed config after it has been validated against the json schema (if applicable).
@@ -45,24 +55,24 @@ export interface Service<R, C> {
 }
 
 /**
- * Describes a single instance of a {@link Service} with its own config stored in a replicant.
+ * Describes a single instance of a {@link Service} with its own config.
  * Also holds the last produced client that's used by all bundles which use this service instance.
  */
 export interface ServiceInstance<R, C> {
     /**
-     * The underlying service of this instance
+     * The underlying name of the service that this instance represents.
      */
-    readonly service: Service<R, C>
+    readonly serviceType: string
 
     /**
      * The configuration for the service, provided by the user.
      */
-    readonly config: ReplicantServer<R | undefined>
+    config: R | undefined
 
     /**
      * The client that the service generated out of the current config.
      */
-    readonly client: ReplicantServer<C | undefined>
+    client: C | undefined
 }
 
 /**
@@ -93,11 +103,11 @@ export interface ServiceDependency<C> {
     readonly serviceType: string
 
     /**
-     * The service instance that currently satisfies the dependency.
+     * The name of the service instance that currently is set to this dependency.
      * Set by the user, as they may have multiple service instances with different configs.
      * Undefined if there is currently no instance set to the bundle.
      */
-    serviceInstance?: ServiceInstance<unknown, C>
+    serviceInstance?: string
 
     /**
      * Callback that will give the client of the service to the bundle.

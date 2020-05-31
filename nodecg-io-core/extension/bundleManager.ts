@@ -1,6 +1,6 @@
 import { ServiceManager } from "./serviceManager";
 import { NodeCG, ReplicantServer } from "nodecg/types/server";
-import { Service, ServiceDependency, ServiceProvider } from "./types";
+import { ObjectMap, Service, ServiceDependency, ServiceInstance, ServiceProvider } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 
 /**
@@ -8,12 +8,14 @@ import { emptySuccess, error, Result } from "./utils/result";
  */
 export class BundleManager {
 
-    private bundles: ReplicantServer<Map<string, ServiceDependency<unknown>[]>>;
+    private readonly bundles: ReplicantServer<ObjectMap<string, ServiceDependency<unknown>[]>>;
 
     constructor(private readonly nodecg: NodeCG, private readonly serviceManager: ServiceManager) {
         this.bundles = this.nodecg.Replicant("bundles", {
-            persistent: false, defaultValue: new Map()
+            persistent: false, defaultValue: {}
         });
+
+        serviceManager.setClientUpdateCallback((svc, name) => this.onInstanceClientUpdate(svc, name));
     }
 
     /**
@@ -38,13 +40,13 @@ export class BundleManager {
      * @param service the service that the bundle depends upon.
      * @param clientUpdate the callback that should be called if a client becomes available or gets updated.
      */
-    private registerServiceDependency<C>(bundleName: string, service: Service<unknown, C>, clientUpdate: (client?: C) => void) {
+    private registerServiceDependency<C>(bundleName: string, service: Service<unknown, C>, clientUpdate: (client?: C) => void): void {
         // Get current service dependencies or an empty array if none
-        const serviceDependencies = this.bundles.value.has(bundleName) ? this.bundles.value.get(bundleName)! : [];
+        const serviceDependencies = this.bundles.value[bundleName] || [];
 
         // Check if the same type of dependency is already registered
         if (serviceDependencies.find(sd => sd.serviceType === service.serviceType)) {
-            nodecg.log.info(`Bundle "${bundleName}" has registered a dependency to the service "${service.serviceType}" more than once!`);
+            this.nodecg.log.info(`Bundle "${bundleName}" has registered a dependency to the service "${service.serviceType}" more than once!`);
             return;
         }
 
@@ -54,6 +56,10 @@ export class BundleManager {
             serviceInstance: undefined, // User has to create a service instance and then set it in the gui
             clientUpdateCallback: clientUpdate
         });
+
+        // Save new dependencies.
+        this.bundles.value[bundleName] = serviceDependencies;
+        this.nodecg.log.info(`Bundle "${bundleName}" has registered a dependency on the service "${service.serviceType}"`);
     }
 
     /**
@@ -64,7 +70,7 @@ export class BundleManager {
      */
     private setServiceDependency(bundleName: string, instanceName: string): Result<void> {
         // Check that bundle exists and get service dependencies
-        const bundle = this.bundles.value.get(bundleName);
+        const bundle = this.bundles.value[bundleName];
         if (bundle === undefined) {
             return error(`Bundle "${bundleName}" couldn't be found.`);
         }
@@ -76,19 +82,17 @@ export class BundleManager {
         }
 
         // Check that the bundle actually depends on this type of service
-        const svcDependency = bundle.find(svcDep => svcDep.serviceType === serviceInstance.service.serviceType);
+        const svcDependency = bundle.find(svcDep => svcDep.serviceType === serviceInstance.serviceType);
         if (svcDependency === undefined) {
-            return error(`Bundle "${bundleName} doesn't depend on the "${serviceInstance.service.serviceType}" service.`);
+            return error(`Bundle "${bundleName} doesn't depend on the "${serviceInstance.serviceType}" service.`);
         }
 
         // Update service instance of service dependency, remove client update callback from old service instance (if applicable)
         // and add the callback to the new instance.
-        svcDependency.serviceInstance?.client.removeListener("change", svcDependency.clientUpdateCallback);
-        svcDependency.serviceInstance = serviceInstance;
-        svcDependency.serviceInstance.client.addListener("change", svcDependency.clientUpdateCallback);
+        svcDependency.serviceInstance = instanceName;
 
         // Let the bundle update his reference to the client
-        svcDependency.clientUpdateCallback(serviceInstance.client.value);
+        svcDependency.clientUpdateCallback(serviceInstance.client);
         return emptySuccess();
     }
 
@@ -101,18 +105,38 @@ export class BundleManager {
      */
     private unsetServiceDependency(bundleName: string, serviceType: string): boolean {
         // Get service dependency of given bundle
-        const bundle = this.bundles.value.get(bundleName);
+        const bundle = this.bundles.value[bundleName];
         const svcDependency = bundle?.find(svcDep => svcDep.serviceType === serviceType);
 
         if (svcDependency !== undefined) {
-            // Unset service instance including the update callback as the bundle would still have access to
-            // the service's clients otherwise
-            svcDependency.serviceInstance?.client.removeListener("change", svcDependency.clientUpdateCallback);
+            // Unset service instance and let the bundle know that it hasn't access to this service anymore.
             svcDependency.serviceInstance = undefined;
-            svcDependency.clientUpdateCallback(undefined); // Say the bundle that it now has no client anymore
+            svcDependency.clientUpdateCallback(undefined);
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Handles client updates of service instances and distributes them to all bundles that depend upon this service
+     * and have this service instance set.
+     * @param serviceInstance the service instance of which the client has been updated
+     * @param instName the name of the service instance
+     */
+    private onInstanceClientUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
+        // Iterate over all bundles
+        for (const bundle in this.bundles.value) {
+            if(!this.bundles.value.hasOwnProperty(bundle)) {
+                continue;
+            }
+            // Get their dependencies and if they have this instance set somewhere then update the bundle.
+            const dependencies = this.bundles.value[bundle];
+            dependencies?.forEach((dep) => {
+                if(dep.serviceInstance === instName) {
+                    dep.clientUpdateCallback(serviceInstance.client)
+                }
+            });
+        }
     }
 }
