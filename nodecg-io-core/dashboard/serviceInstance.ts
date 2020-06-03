@@ -60,12 +60,24 @@ export function onInstanceSelectChange(value: string) {
             setCreateInputs(false, false);
             break;
         default:
-            // TODO: add schema to monaco
             const inst = serviceInstances.value?.[value];
+            const service = services.value?.find(svc => svc.serviceType === inst?.serviceType);
+
             editor?.updateOptions({
                 readOnly: false
             });
-            editor?.setModel(monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json"));
+            // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
+            const modelUri = monaco.Uri.parse(`mem://nodecg-io/${inst?.serviceType}.json`);
+            monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+                validate: service?.schema !== undefined,
+                schemas: service?.schema !== undefined ? [{
+                    uri: modelUri.toString(),
+                    fileMatch: [modelUri.toString()],
+                    schema: JSON.parse(service.schema)
+                }] : [],
+            });
+            const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
+            editor?.setModel(model);
             setCreateInputs(false, true);
     }
 }
