@@ -30,14 +30,14 @@ export class MessageManager {
     // TODO: reduce code duplication
 
     static registerMessageHandlers(nodecg: NodeCG, io: NodeCGIOCore) {
-        nodecg.listenFor("updateInstanceConfig", (msg: UpdateInstanceConfigMessage, ack) => {
+        nodecg.listenFor("updateInstanceConfig", async (msg: UpdateInstanceConfigMessage, ack) => {
             const inst = io.instanceManager.getServiceInstance(msg.instanceName);
             if(inst === undefined) {
                 if (!ack?.handled) {
                     ack?.("Service instance doesn't exist.", undefined);
                 }
             } else {
-                const result = io.instanceManager.updateInstanceConfig(msg.instanceName, msg.config);
+                const result = await io.instanceManager.updateInstanceConfig(msg.instanceName, msg.config);
                 io.bundleManager.handleInstanceUpdate(inst, msg.instanceName);
 
                 if (!ack?.handled) {

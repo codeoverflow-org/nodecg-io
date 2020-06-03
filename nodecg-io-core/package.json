@@ -33,6 +33,7 @@
   "dependencies": {
     "@types/node": "^13.13.5",
     "nodecg": "^1.6.1",
+    "tslib": "^2.0.0",
     "typescript": "^3.8.3"
   }
 }

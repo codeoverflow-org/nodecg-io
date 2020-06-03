@@ -75,7 +75,7 @@ export class InstanceManager {
      * @param config the actual config that will be given to the service instance.
      * @return void if everything went fine and a string describing the issue if something went wrong.
      */
-    updateInstanceConfig(instanceName: string, config: unknown): Result<void> {
+    async updateInstanceConfig(instanceName: string, config: unknown): Promise<Result<void>> {
         // Check existence and get service instance.
         const inst = this.serviceInstances.value[instanceName];
         if (inst === undefined) {
@@ -90,7 +90,7 @@ export class InstanceManager {
         }
 
         // Validation by the service.
-        const validationRes = service.result.validateConfig(config);
+        const validationRes = await service.result.validateConfig(config);
         if (validationRes.failed) {
             return error("Config invalid: " + validationRes.errorMessage);
         }
@@ -99,7 +99,7 @@ export class InstanceManager {
         inst.config = config;
 
         // Update client of this instance using the new config.
-        this.updateInstanceClient(inst, instanceName);
+        await this.updateInstanceClient(inst, instanceName);
 
         return emptySuccess();
     }
@@ -110,7 +110,7 @@ export class InstanceManager {
      * @param inst the instance of which the client should be generated.
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
      */
-    private updateInstanceClient<R>(inst: ServiceInstance<R, unknown>, instanceName: string): void {
+    private async updateInstanceClient<R>(inst: ServiceInstance<R, unknown>, instanceName: string): Promise<void> {
         if (inst.config === undefined) {
             // No config has been set, therefore the service isn't ready and we can't create a client.
             inst.client = undefined;
@@ -123,7 +123,7 @@ export class InstanceManager {
                 return;
             }
 
-            const client = service.result.createClient(inst.config);
+            const client = await service.result.createClient(inst.config);
 
             // Check if a error happened while creating the client
             if (client.failed) {

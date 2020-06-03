@@ -7,8 +7,8 @@
         "watch:extension": "tsc -w",
         "watch:dashboard": "tsc -p nodecg-io-core/dashboard -w"
     },
-    "devDependencies": {
-        "@types/node": "^14.0.4",
+    "dependencies": {
+        "@types/node": "^14.0.9",
         "typescript": "^3.9.3"
     }
 }

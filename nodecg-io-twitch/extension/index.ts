@@ -24,12 +24,12 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitchClient> | undefined => 
 	const service: Service<TwitchConfig, TwitchClient> = {
 		schema: fs.readFileSync(path.resolve(__dirname, "../twitch-schema.json"), "utf8"),
 		serviceType: "twitch",
-		validateConfig: (config: TwitchConfig) => {
+		validateConfig: async (config: TwitchConfig) => {
 			nodecg.log.info("Validating twitch config:");
 			nodecg.log.info(JSON.stringify(config));
 			return emptySuccess();
 		},
-		createClient: (config: TwitchConfig) => {
+		createClient: async (config: TwitchConfig) => {
 			nodecg.log.info("Creating twitch client of this config:");
 			nodecg.log.info(JSON.stringify(config));
 			return success({

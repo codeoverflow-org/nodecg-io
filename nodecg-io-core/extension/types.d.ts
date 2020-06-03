@@ -42,7 +42,7 @@ export interface Service<R, C> {
      * @param config the config which should be validated.
      * @return void if the config passes validation and an error string describing the issue if not.
      */
-    readonly validateConfig(config: R): Result<void>
+    readonly validateConfig(config: R): Promise<Result<void>>
 
     /**
      * Creates a client to the service using the validated config.
@@ -51,7 +51,7 @@ export interface Service<R, C> {
      * @param config the user provided config for the service.
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
-    readonly createClient(config: R): Result<C>
+    readonly createClient(config: R): Promise<Result<C>>
 }
 
 /**
