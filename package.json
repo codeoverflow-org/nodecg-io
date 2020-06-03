@@ -2,9 +2,10 @@
     "name": "nodecg-io",
     "private": true,
     "scripts": {
-        "postinstall": "cd nodecg-io-core && npm link && cd ../nodecg-io-twitch && npm link nodecg-io-core && npm link && cd ../sample && npm link nodecg-io-twitch nodecg-io-core && npm i",
-        "build": "tsc",
-        "watch": "tsc -w"
+        "postinstall": "cd nodecg-io-core && npm link && cd dashboard && npm link nodecg-io-core && npm i && cd ../../nodecg-io-twitch && npm link nodecg-io-core && npm link && cd ../sample && npm link nodecg-io-twitch nodecg-io-core && npm i",
+        "build": "tsc && tsc -p nodecg-io-core/dashboard",
+        "watch:extension": "tsc -w",
+        "watch:dashboard": "tsc -p nodecg-io-core/dashboard -w"
     },
     "devDependencies": {
         "@types/node": "^14.0.4",

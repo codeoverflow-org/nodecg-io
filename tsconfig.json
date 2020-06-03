@@ -23,5 +23,8 @@
 			"node"
 		]
 	},
+	"exclude": [
+		"nodecg-io-core/dashboard"
+	],
 	"compileOnSave": true
 }

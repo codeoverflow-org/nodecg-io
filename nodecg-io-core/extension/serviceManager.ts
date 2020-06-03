@@ -39,14 +39,20 @@ export class ServiceManager {
 
     /**
      * Creates a service instance of the passed service.
-     * @param service the service of which a instance should be created
-     * @param instanceName how the instance should be naemd
+     * @param serviceType the type of the service of which a instance should be created
+     * @param instanceName how the instance should be named
      * @return void if everything went fine and a string describing the issue if not
      */
-    createServiceInstance<R, C>(service: Service<R, C>, instanceName: string): Result<void> {
+    createServiceInstance(serviceType: string, instanceName: string): Result<void> {
         // Check if a instance with the same name already exists.
         if (this.serviceInstances.value[instanceName] !== undefined) {
             return error("A service instance with the same name already exists.");
+        }
+
+        // Get service
+        const service = this.services.value.find(svc => svc.serviceType === serviceType);
+        if (service === undefined) {
+            return error("A service of this service type hasn't been registered.");
         }
 
         // Create actual instance and save it
@@ -69,18 +75,10 @@ export class ServiceManager {
      * @param instanceName the name of the service instance that should be deleted.
      * @return true if it has been found and deleted, false if it couldn't been found.
      */
-    private deleteServiceInstance(instanceName: string): boolean {
-        // Disables any currently running listeners
-        const inst = this.serviceInstances.value[instanceName];
-        if (inst === undefined) {
-            return false;
-        }
-
+    deleteServiceInstance(instanceName: string): boolean {
         // TODO: handle if a bundle is still connected to this instance, remove this instance from those bundle or don't allow deleting
-
         // Removing it from the list
-        this.serviceInstances.value[instanceName] = undefined;
-        return true;
+        return delete this.serviceInstances.value[instanceName];
     }
 
     /**
@@ -91,7 +89,7 @@ export class ServiceManager {
      * @param config the actual config that will be given to the service instance.
      * @return void if everything went fine and a string describing the issue if something went wrong.
      */
-    private updateInstanceConfig(instanceName: string, config: unknown): Result<void> {
+    updateInstanceConfig(instanceName: string, config: unknown): Result<void> {
         // Check existence and get service instance.
         const inst = this.serviceInstances.value[instanceName];
         if (inst === undefined) {

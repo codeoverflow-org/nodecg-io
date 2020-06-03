@@ -68,7 +68,7 @@ export class BundleManager {
      * @param instanceName the name of the service instance that should be used to satisfy the dependency of the bundle.
      * @return void if successful and a string explain what went wrong otherwise
      */
-    private setServiceDependency(bundleName: string, instanceName: string): Result<void> {
+    setServiceDependency(bundleName: string, instanceName: string): Result<void> {
         // Check that bundle exists and get service dependencies
         const bundle = this.bundles.value[bundleName];
         if (bundle === undefined) {
@@ -103,7 +103,7 @@ export class BundleManager {
      * @return a boolean indicating if the operation was successful of if the service instance of the service dependency
      *         was already unset.
      */
-    private unsetServiceDependency(bundleName: string, serviceType: string): boolean {
+    unsetServiceDependency(bundleName: string, serviceType: string): boolean {
         // Get service dependency of given bundle
         const bundle = this.bundles.value[bundleName];
         const svcDependency = bundle?.find(svcDep => svcDep.serviceType === serviceType);

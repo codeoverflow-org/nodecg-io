@@ -2,15 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-	<style>
-		.monospace {
-			font-family: monospace;
-		}
-	</style>
+	<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 	<p>Minzig!</p>
 
-	<script src="panel.js"></script>
+	<p>NOTE: If you don't see the json editor on the right side then right click and select "Reload frame" to reload
+		this iframe.</p>
+	<p>This happens when you open the dashboard with another NodeCG Workspace open which results in
+		this iframe being collapsed which results in the wrong size of the editor.</p>
+
+	<!-- Service instance manager and editor -->
+	<p>Manage Service Instances:</p>
+	<div class="flex">
+		<div id="instanceControlDiv" class="flex flex-column">
+			<div id="instanceSelector" class="margins flex">
+				<label for="selectInstance">Instance:</label>
+				<select id="selectInstance" class="flex-fill" onchange="onInstanceSelectChange(value);"></select>
+			</div>
+
+			<div id="instanceServiceSelector" class="margins flex hidden">
+				<label for="selectService">Service Type: </label>
+				<select id="selectService" class="flex-fill"></select>
+			</div>
+
+			<div id="instanceNameField" class="margins flex hidden">
+				<label for="inputInstanceName">Instance Name: </label>
+				<input id="inputInstanceName" class="flex-fill" type="text">
+			</div>
+
+			<div id="instanceCreateButton" class="margins hidden">
+				<button id="buttonCreate" onclick="createInstance();">Create</button>
+			</div>
+
+			<div id="instanceEditButtons" class="margins hidden">
+				<button id="buttonSave" onclick="saveInstanceConfig();">Save</button>
+				<button id="buttonDelete" onclick="deleteInstance();">Delete Instance</button>
+			</div>
+		</div>
+
+		<div id="instanceMonaco" class="flex-fill"></div>
+	</div>
+
+	<!-- Bundles -->
+	<p>Managing Bundles</p>
+	<div id="bundleControlDiv" class="margins">
+		<label for="selectBundle">Bundle: </label>
+		<select id="selectBundle" class="flex-fill" onchange="renderBundleDeps();">
+			<option>Nom!</option>
+		</select>
+
+		<label for="selectBundleDepType">Service: </label>
+		<select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
+
+		<label for="selectBundleInstance">Service Instance: </label>
+		<select id="selectBundleInstance" class="flex-fill" onchange="setServiceDependency();"></select>
+	</div>
+
+
+	<!-- Scripts -->
+	<script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+	<script type="module" src="utils/selectUtils.js"></script>
+	<script type="module" src="serviceInstance.js"></script>
+	<script type="module" src="bundles.js"></script>
+	<script type="module">
+		import {
+			onMonacoReady,
+			onInstanceSelectChange,
+			createInstance,
+			saveInstanceConfig,
+			deleteInstance
+		} from "./serviceInstance.js";
+		import { renderBundleDeps, renderInstanceSelector, setServiceDependency } from './bundles.js'
+
+		require.config({paths: {'vs': 'node_modules/monaco-editor/min/vs'}});
+		require(["vs/editor/editor.main"], onMonacoReady);
+
+		// Expose handlers from module to global window
+		window.onInstanceSelectChange = onInstanceSelectChange;
+		window.createInstance = createInstance;
+		window.saveInstanceConfig = saveInstanceConfig;
+		window.deleteInstance = deleteInstance;
+		window.renderBundleDeps = renderBundleDeps;
+		window.renderInstanceSelector = renderInstanceSelector;
+		window.setServiceDependency = setServiceDependency;
+	</script>
 </body>
 </html>

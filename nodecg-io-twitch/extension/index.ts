@@ -1,7 +1,9 @@
-import { NodeCG } from 'nodecg/types/server'
-import { NodeCGIOCore } from 'nodecg-io-core/extension'
-import { Service, ServiceProvider } from 'nodecg-io-core/extension/types'
-import {emptySuccess, success} from "nodecg-io-core/extension/utils/result";
+import { NodeCG } from "nodecg/types/server";
+import { NodeCGIOCore } from "nodecg-io-core/extension";
+import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { emptySuccess, success } from "nodecg-io-core/extension/utils/result";
+import * as fs from "fs";
+import * as path from "path";
 
 interface TwitchConfig {
 	oauthKey: string
@@ -20,7 +22,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitchClient> | undefined => 
 	}
 
 	const service: Service<TwitchConfig, TwitchClient> = {
-		// schemaPath: path.resolve(__dirname, "../twitch-schema.json"), // TODO: fix schemas
+		schema: fs.readFileSync(path.resolve(__dirname, "../twitch-schema.json"), "utf8"),
 		serviceType: "twitch",
 		validateConfig: (config: TwitchConfig) => {
 			nodecg.log.info("Validating twitch config:");
