@@ -66,6 +66,10 @@ export function onInstanceSelectChange(value: string) {
             editor?.updateOptions({
                 readOnly: false
             });
+
+            // Get rid of old models, as they have to be unique and we may add the same again
+            monaco.editor.getModels().forEach(m => m.dispose());
+
             // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
             const modelUri = monaco.Uri.parse(`mem://nodecg-io/${inst?.serviceType}.json`);
             monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
