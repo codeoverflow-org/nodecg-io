@@ -5,6 +5,7 @@ import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
 
 // TODO: allow bundles to depend on more than one instance of a service type. One solution could be to add a index to ServiceDependency
+// TODO: Clients need have a stop function to e.g. disconnect from remote servers
 
 /**
  * Main type of NodeCG extension that the core bundle exposes.
@@ -30,14 +31,6 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 	};
 
 	MessageManager.registerMessageHandlers(nodecg, ioCore);
-
-	// FIXME: just for testing, should be removed at some point
-	setTimeout(() => {
-		ioCore.instanceManager.createServiceInstance("twitch", "someTwitchInstance");
-		ioCore.instanceManager.updateInstanceConfig("someTwitchInstance", {
-			oauthKey: "Some test value"
-		});
-	}, 1000);
 
 	return ioCore
 };
