@@ -1,5 +1,5 @@
-#instanceControlDiv, #bundleControlDiv {
-    width: 20%;
+#leftSide {
+    width: 15%;
     min-width: 250px;
 }
 

@@ -12,52 +12,54 @@
 	<p>This happens when you open the dashboard with another NodeCG Workspace open which results in
 		this iframe being collapsed which results in the wrong size of the editor.</p>
 
-	<!-- Service instance manager and editor -->
-	<p>Manage Service Instances:</p>
+
 	<div class="flex">
-		<div id="instanceControlDiv" class="flex flex-column">
-			<div id="instanceSelector" class="margins flex">
-				<label for="selectInstance">Instance:</label>
-				<select id="selectInstance" class="flex-fill" onchange="onInstanceSelectChange(value);"></select>
+		<div id="leftSide" class="flex flex-column">
+			<p>Manage Service Instances:</p>
+			<div>
+				<div id="instanceSelector" class="margins flex">
+					<label for="selectInstance">Instance:</label>
+					<select id="selectInstance" class="flex-fill" onchange="onInstanceSelectChange(value);"></select>
+				</div>
+
+				<div id="instanceServiceSelector" class="margins flex hidden">
+					<label for="selectService">Service Type: </label>
+					<select id="selectService" class="flex-fill"></select>
+				</div>
+
+				<div id="instanceNameField" class="margins flex hidden">
+					<label for="inputInstanceName">Instance Name: </label>
+					<input id="inputInstanceName" class="flex-fill" type="text">
+				</div>
+
+				<div id="instanceCreateButton" class="margins hidden">
+					<button id="buttonCreate" onclick="createInstance();">Create</button>
+				</div>
+
+				<div id="instanceEditButtons" class="margins hidden">
+					<button id="buttonSave" onclick="saveInstanceConfig();">Save</button>
+					<button id="buttonDelete" onclick="deleteInstance();">Delete Instance</button>
+				</div>
 			</div>
 
-			<div id="instanceServiceSelector" class="margins flex hidden">
-				<label for="selectService">Service Type: </label>
-				<select id="selectService" class="flex-fill"></select>
+			<!-- Bundles -->
+			<p>Managing Bundles</p>
+			<div id="bundleControlDiv" class="margins">
+				<label for="selectBundle">Bundle: </label>
+				<select id="selectBundle" class="flex-fill" onchange="renderBundleDeps();"></select>
+
+				<label for="selectBundleDepType">Service: </label>
+				<select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
+
+				<label for="selectBundleInstance">Service Instance: </label>
+				<select id="selectBundleInstance" class="flex-fill" onchange="setServiceDependency();"></select>
 			</div>
 
-			<div id="instanceNameField" class="margins flex hidden">
-				<label for="inputInstanceName">Instance Name: </label>
-				<input id="inputInstanceName" class="flex-fill" type="text">
-			</div>
-
-			<div id="instanceCreateButton" class="margins hidden">
-				<button id="buttonCreate" onclick="createInstance();">Create</button>
-			</div>
-
-			<div id="instanceEditButtons" class="margins hidden">
-				<button id="buttonSave" onclick="saveInstanceConfig();">Save</button>
-				<button id="buttonDelete" onclick="deleteInstance();">Delete Instance</button>
-			</div>
 		</div>
 
 		<div id="instanceMonaco" class="flex-fill"></div>
 	</div>
 
-	<!-- Bundles -->
-	<p>Managing Bundles</p>
-	<div id="bundleControlDiv" class="margins">
-		<label for="selectBundle">Bundle: </label>
-		<select id="selectBundle" class="flex-fill" onchange="renderBundleDeps();">
-			<option>Nom!</option>
-		</select>
-
-		<label for="selectBundleDepType">Service: </label>
-		<select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
-
-		<label for="selectBundleInstance">Service Instance: </label>
-		<select id="selectBundleInstance" class="flex-fill" onchange="setServiceDependency();"></select>
-	</div>
 
 
 	<!-- Scripts -->
