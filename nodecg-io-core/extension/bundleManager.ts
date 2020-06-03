@@ -1,4 +1,3 @@
-import { ServiceManager } from "./serviceManager";
 import { NodeCG, ReplicantServer } from "nodecg/types/server";
 import { ObjectMap, Service, ServiceDependency, ServiceInstance, ServiceProvider } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
@@ -10,12 +9,10 @@ export class BundleManager {
 
     private readonly bundles: ReplicantServer<ObjectMap<string, ServiceDependency<unknown>[]>>;
 
-    constructor(private readonly nodecg: NodeCG, private readonly serviceManager: ServiceManager) {
+    constructor(private readonly nodecg: NodeCG) {
         this.bundles = this.nodecg.Replicant("bundles", {
             persistent: false, defaultValue: {}
         });
-
-        serviceManager.setClientUpdateCallback((svc, name) => this.onInstanceClientUpdate(svc, name));
     }
 
     /**
@@ -66,25 +63,20 @@ export class BundleManager {
      * Satisfies a service dependency by providing a service instance of the type and connects the bundle and service together.
      * @param bundleName the name of the bundle that has the dependency on the service.
      * @param instanceName the name of the service instance that should be used to satisfy the dependency of the bundle.
+     * @param instance the service instance object that should be used to satisfy the dependency of the bundle.
      * @return void if successful and a string explain what went wrong otherwise
      */
-    setServiceDependency(bundleName: string, instanceName: string): Result<void> {
+    setServiceDependency(bundleName: string, instanceName: string, instance: ServiceInstance<unknown, unknown>): Result<void> {
         // Check that bundle exists and get service dependencies
         const bundle = this.bundles.value[bundleName];
         if (bundle === undefined) {
             return error(`Bundle "${bundleName}" couldn't be found.`);
         }
 
-        // Check that the service instance exists and get it
-        const serviceInstance = this.serviceManager.getServiceInstance(instanceName);
-        if (serviceInstance === undefined) {
-            return error(`Service instance "${instanceName}" couldn't be found.`);
-        }
-
         // Check that the bundle actually depends on this type of service
-        const svcDependency = bundle.find(svcDep => svcDep.serviceType === serviceInstance.serviceType);
+        const svcDependency = bundle.find(svcDep => svcDep.serviceType === instance.serviceType);
         if (svcDependency === undefined) {
-            return error(`Bundle "${bundleName} doesn't depend on the "${serviceInstance.serviceType}" service.`);
+            return error(`Bundle "${bundleName} doesn't depend on the "${instance.serviceType}" service.`);
         }
 
         // Update service instance of service dependency, remove client update callback from old service instance (if applicable)
@@ -92,7 +84,7 @@ export class BundleManager {
         svcDependency.serviceInstance = instanceName;
 
         // Let the bundle update his reference to the client
-        svcDependency.clientUpdateCallback(serviceInstance.client);
+        svcDependency.clientUpdateCallback(instance.client);
         return emptySuccess();
     }
 
@@ -124,7 +116,7 @@ export class BundleManager {
      * @param serviceInstance the service instance of which the client has been updated
      * @param instName the name of the service instance
      */
-    private onInstanceClientUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
+    handleInstanceUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
         // Iterate over all bundles
         for (const bundle in this.bundles.value) {
             if(!this.bundles.value.hasOwnProperty(bundle)) {

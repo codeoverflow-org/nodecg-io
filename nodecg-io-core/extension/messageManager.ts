@@ -22,26 +22,40 @@ export interface SetServiceDependencyMessage {
     serviceType: string
 }
 
+/**
+ * Manages communication with the gui and handles NodeCG messages to control the framework.
+ * Also adds a small wrapper around the actual functions them to make some things easier.
+ */
 export class MessageManager {
     // TODO: reduce code duplication
 
     static registerMessageHandlers(nodecg: NodeCG, io: NodeCGIOCore) {
         nodecg.listenFor("updateInstanceConfig", (msg: UpdateInstanceConfigMessage, ack) => {
-            const result = io.serviceManager.updateInstanceConfig(msg.instanceName, msg.config);
-            if (!ack?.handled) {
-                ack?.(result.failed ? result.errorMessage : undefined, undefined);
+            const inst = io.instanceManager.getServiceInstance(msg.instanceName);
+            if(inst === undefined) {
+                if (!ack?.handled) {
+                    ack?.("Service instance doesn't exist.", undefined);
+                }
+            } else {
+                const result = io.instanceManager.updateInstanceConfig(msg.instanceName, msg.config);
+                io.bundleManager.handleInstanceUpdate(inst, msg.instanceName);
+
+                if (!ack?.handled) {
+                    ack?.(result.failed ? result.errorMessage : undefined, undefined);
+                }
             }
+
         });
 
         nodecg.listenFor("createServiceInstance", (msg: CreateServiceInstanceMessage, ack) => {
-            const result = io.serviceManager.createServiceInstance(msg.serviceType, msg.instanceName);
+            const result = io.instanceManager.createServiceInstance(msg.serviceType, msg.instanceName);
             if (!ack?.handled) {
                 ack?.(result.failed ? result.errorMessage : undefined, undefined);
             }
         });
 
         nodecg.listenFor("deleteServiceInstance", (msg: DeleteServiceInstanceMessage, ack) => {
-            const result = io.serviceManager.deleteServiceInstance(msg.instanceName);
+            const result = io.instanceManager.deleteServiceInstance(msg.instanceName);
             if (!ack?.handled) {
                 ack?.(undefined, result);
             }
@@ -57,7 +71,12 @@ export class MessageManager {
                     result = error("Service dependency couldn't be found.");
                 }
             } else {
-                result = io.bundleManager.setServiceDependency(msg.bundleName, msg.instanceName);
+                const instance = io.instanceManager.getServiceInstance(msg.instanceName);
+                if(instance === undefined) {
+                    result = error("Service instance couldn't be found.");
+                } else {
+                    result = io.bundleManager.setServiceDependency(msg.bundleName, msg.instanceName, instance);
+                }
             }
 
             if (!ack?.handled) {

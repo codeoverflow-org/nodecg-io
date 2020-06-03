@@ -2,6 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import { MessageManager } from "./messageManager";
+import { InstanceManager } from "./instanceManager";
 
 // TODO: allow bundles to depend on more than one instance of a service type. One solution could be to add a index to ServiceDependency
 
@@ -11,6 +12,7 @@ import { MessageManager } from "./messageManager";
  */
 export interface NodeCGIOCore {
 	serviceManager: ServiceManager
+	instanceManager: InstanceManager
 	bundleManager: BundleManager
 }
 
@@ -18,10 +20,12 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 	nodecg.log.info("Minzig!");
 
 	const serviceManager = new ServiceManager(nodecg);
-	const bundleManager = new BundleManager(nodecg, serviceManager);
+	const instanceManager = new InstanceManager(nodecg, serviceManager)
+	const bundleManager = new BundleManager(nodecg);
 
 	const ioCore: NodeCGIOCore = {
 		serviceManager: serviceManager,
+		instanceManager: instanceManager,
 		bundleManager: bundleManager
 	};
 
@@ -29,8 +33,8 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 
 	// FIXME: just for testing, should be removed at some point
 	setTimeout(() => {
-		ioCore.serviceManager.createServiceInstance("twitch", "someTwitchInstance");
-		ioCore.serviceManager.updateInstanceConfig("someTwitchInstance", {
+		ioCore.instanceManager.createServiceInstance("twitch", "someTwitchInstance");
+		ioCore.instanceManager.updateInstanceConfig("someTwitchInstance", {
 			oauthKey: "Some test value"
 		});
 	}, 1000);
