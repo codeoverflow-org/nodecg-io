@@ -80,7 +80,6 @@ export interface ServiceInstance<R, C> {
  * @typeParam C the client object that the underlying service will give to the bundle.
  */
 export interface ServiceProvider<C> {
-    // TODO: function name is kinda odd, might need renaming
     /**
      * Registers the bundle as a consumer of the service.
      *
@@ -90,7 +89,7 @@ export interface ServiceProvider<C> {
      *                     If the bundle already got an client and this is called again, all references to the old client should be dropped.
      *                     The passed client is undefined if there is currently no service instance allocated to this bundle.
      */
-    readonly registerBundle(bundleName: string, clientUpdate: (client?: C) => void): void
+    readonly requireService(bundleName: string, clientUpdate: (client?: C) => void): void
 }
 
 /**

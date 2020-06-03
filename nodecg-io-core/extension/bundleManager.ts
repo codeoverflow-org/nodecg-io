@@ -28,7 +28,7 @@ export class BundleManager {
      */
     createServiceProvider<C>(service: Service<unknown, C>): ServiceProvider<C> {
         return {
-            registerBundle: (bundleName: string, clientUpdate: (client?: C) => void) => {
+            requireService: (bundleName: string, clientUpdate: (client?: C) => void) => {
                 this.registerServiceDependency(bundleName, service, clientUpdate);
             }
         };

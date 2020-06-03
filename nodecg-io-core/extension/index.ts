@@ -3,6 +3,8 @@ import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import { MessageManager } from "./messageManager";
 
+// TODO: allow bundles to depend on more than one instance of a service type. One solution could be to add a index to ServiceDependency
+
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.

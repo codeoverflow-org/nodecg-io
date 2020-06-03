@@ -2,6 +2,8 @@ import { ObjectMap, Service, ServiceInstance } from "./types";
 import { NodeCG, ReplicantServer } from "nodecg/types/server";
 import { emptySuccess, error, Result } from "./utils/result";
 
+// TODO: ServiceManager breaks single-responsibility principle. It should be separated into a InstanceManager/ConfigManager
+
 /**
  * Manages services and service instances.
  */

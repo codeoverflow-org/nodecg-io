@@ -6,7 +6,7 @@ module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
     const twitch: ServiceProvider<TwitchClient> = nodecg.extensions["nodecg-io-twitch"] as any;
 
-    twitch.registerBundle("sample", (client) => {
+    twitch.requireService("sample", (client) => {
         if (client === undefined) {
 			nodecg.log.info("Twitch client has been unset.");
         } else {
