@@ -2,6 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { emptySuccess, error, Result } from "./utils/result";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
+import { PersistenceManager } from "./persistenceManager";
 
 export interface UpdateInstanceConfigMessage {
     instanceName: string,
@@ -23,6 +24,10 @@ export interface SetServiceDependencyMessage {
     serviceType: string
 }
 
+export interface LoadFrameworkMessage {
+    password: string
+}
+
 /**
  * Manages communication with the gui and handles NodeCG messages to control the framework.
  * Also adds a small wrapper around the actual functions them to make some things easier.
@@ -30,7 +35,7 @@ export interface SetServiceDependencyMessage {
 export class MessageManager {
     // TODO: reduce code duplication
 
-    static registerMessageHandlers(nodecg: NodeCG, instances: InstanceManager, bundles: BundleManager) {
+    static registerMessageHandlers(nodecg: NodeCG, instances: InstanceManager, bundles: BundleManager, persist: PersistenceManager) {
         nodecg.listenFor("updateInstanceConfig", async (msg: UpdateInstanceConfigMessage, ack) => {
             const inst = instances.getServiceInstance(msg.instanceName);
             if(inst === undefined) {
@@ -79,6 +84,19 @@ export class MessageManager {
                 }
             }
 
+            if (!ack?.handled) {
+                ack?.(result.failed ? result.errorMessage : undefined, undefined);
+            }
+        });
+
+        nodecg.listenFor("isLoaded", (_msg, ack) => {
+            if (!ack?.handled) {
+                ack?.(undefined, persist.isLoaded());
+            }
+        });
+
+        nodecg.listenFor("load", async (msg: LoadFrameworkMessage, ack) => {
+            const result = await persist.load(msg.password);
             if (!ack?.handled) {
                 ack?.(result.failed ? result.errorMessage : undefined, undefined);
             }

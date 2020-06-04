@@ -14,9 +14,8 @@ export function updateOptionsMap(node: HTMLSelectElement, options: ObjectMap<str
 }
 
 export function updateOptionsArr(node: HTMLSelectElement, options: string[]): void {
-    for (let i = node.options.length - 1; i >= 0; i--) {
-        node.options.remove(i);
-    }
+    // Remove all children.
+    node.innerHTML = "";
 
     options.forEach((optStr) => {
         const opt = document.createElement("option");

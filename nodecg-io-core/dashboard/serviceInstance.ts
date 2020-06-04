@@ -16,7 +16,8 @@ const services = nodecg.Replicant<Service<unknown, unknown>[]>("services");
 const serviceInstances = nodecg.Replicant<ObjectMap<string, ServiceInstance<unknown, unknown>>>("serviceInstances");
 document.addEventListener("DOMContentLoaded", () => {
     services.on("change", renderServices);
-})
+    serviceInstances.on("change", renderInstances);
+});
 
 // Inputs
 const selectInstance = document.getElementById("selectInstance") as HTMLSelectElement;
@@ -28,17 +29,24 @@ const instanceServiceSelector = document.getElementById("instanceServiceSelector
 const instanceNameField = document.getElementById("instanceNameField");
 const instanceEditButtons = document.getElementById("instanceEditButtons");
 const instanceCreateButton = document.getElementById("instanceCreateButton");
+const instanceMonaco = document.getElementById("instanceMonaco");
 let editor: monaco.editor.IStandaloneCodeEditor | undefined;
 
 // HTML Handlers
 
-// When monaco-editor module has been loaded
-export function onMonacoReady() {
-    editor = monaco.editor.create(document.getElementById("instanceMonaco")!, {
-        theme: "vs-dark"
-    });
-    // Render Instances calls selectServiceInstance, which needs monaco. Thats why it is registered after monaco has been loaded.
-    serviceInstances.on("change", renderInstances);
+export function createMonaco() {
+    if(typeof monaco !== "undefined" && instanceMonaco !== null) {
+        // Delete previous monaco instance, if applicable
+        instanceMonaco.innerHTML = "";
+
+        editor = monaco.editor.create(instanceMonaco, {
+            theme: "vs-dark"
+        });
+
+        // Virtually selects the same instance option again to show the json/text in the editor.
+        const selected = selectInstance.options[selectInstance.selectedIndex]?.value || "select";
+        selectServiceInstance(selected)
+    }
 }
 
 // Instance drop-down

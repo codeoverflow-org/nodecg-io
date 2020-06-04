@@ -27,6 +27,21 @@ export class InstanceManager {
     }
 
     /**
+     * Returns all existing service instances.
+     * @return {ObjectMap<string, ServiceInstance<unknown, unknown>>} a map of the instance name to the instance.
+     */
+    getServiceInstances(): ObjectMap<string, ServiceInstance<unknown, unknown>> {
+        return this.serviceInstances.value;
+    }
+
+    /**
+     * Registers a handler that will get called whenever something about a service instance has been changed.
+     */
+    onInstanceUpdates(callback: () => void): void {
+        this.serviceInstances.on("change", callback)
+    }
+
+    /**
      * Creates a service instance of the passed service.
      * @param serviceType the type of the service of which a instance should be created
      * @param instanceName how the instance should be named
@@ -73,26 +88,30 @@ export class InstanceManager {
      * the validate function of the service.
      * @param instanceName the name of the service instance of which the config should be set.
      * @param config the actual config that will be given to the service instance.
+     * @param validation whether the config should be validated, defaults to true.
+     *                   Should only be false if it has been validated at a previous point in time, e.g. loading after startup.
      * @return void if everything went fine and a string describing the issue if something went wrong.
      */
-    async updateInstanceConfig(instanceName: string, config: unknown): Promise<Result<void>> {
+    async updateInstanceConfig(instanceName: string, config: unknown, validation: boolean = true): Promise<Result<void>> {
         // Check existence and get service instance.
         const inst = this.serviceInstances.value[instanceName];
         if (inst === undefined) {
             return error("Service instance doesn't exist.");
         }
 
-        // TODO: Validate JSON Schema
+        if(validation) {
+            // TODO: Validate JSON Schema
 
-        const service = this.services.getService(inst.serviceType);
-        if(service.failed) {
-            return error("The service of this instance couldn't be found.");
-        }
+            const service = this.services.getService(inst.serviceType);
+            if(service.failed) {
+                return error("The service of this instance couldn't be found.");
+            }
 
-        // Validation by the service.
-        const validationRes = await service.result.validateConfig(config);
-        if (validationRes.failed) {
-            return error("Config invalid: " + validationRes.errorMessage);
+            // Validation by the service.
+            const validationRes = await service.result.validateConfig(config);
+            if (validationRes.failed) {
+                return error("Config invalid: " + validationRes.errorMessage);
+            }
         }
 
         // All checks passed. Set config.

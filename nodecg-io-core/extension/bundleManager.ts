@@ -32,6 +32,21 @@ export class BundleManager {
     }
 
     /**
+     * Gets all bundle dependencies
+     * @return {ObjectMap<string, ServiceDependency<unknown>[]>} all bundle dependencies
+     */
+    getBundleDependencies(): ObjectMap<string, ServiceDependency<unknown>[]> {
+        return this.bundles.value;
+    }
+
+    /**
+     * Registers a handler that will get called whenever something about a dependency dependency has been changed.
+     */
+    onBundleDependencyUpdates(callback: () => void): void {
+        this.bundles.on("change", callback)
+    }
+
+    /**
      * Registers that a bundle has a dependency on a specific service.
      * @param bundleName the name of the bundle that registers its dependency.
      * @param service the service that the bundle depends upon.

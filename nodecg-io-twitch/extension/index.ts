@@ -7,6 +7,9 @@ import * as path from "path";
 import TwitchClient from "twitch";
 import ChatClient from "twitch-chat-client";
 
+// FIXME: when using the client right after it's creation it can't join any channels, requiring a retry:
+//        Example log: "Error: Did not receive a reply to join #skate702 in time; assuming that the join failed."
+
 interface TwitchServiceConfig {
     oauthKey: string
 }
@@ -17,7 +20,7 @@ export interface TwitchServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
     nodecg.log.info("Twitch bundle started");
-    const core: NodeCGIOCore = nodecg.extensions["nodecg-io-core"] as any;
+    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Twitch bundle won't function without it.");
         return undefined;

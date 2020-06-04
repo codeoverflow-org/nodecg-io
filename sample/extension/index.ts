@@ -7,13 +7,13 @@ module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
     // This implicit cast determines the client type in the requireService call
-    const twitch: ServiceProvider<TwitchServiceClient> = nodecg.extensions["nodecg-io-twitch"] as any;
+    const twitch: ServiceProvider<TwitchServiceClient> | undefined = nodecg.extensions["nodecg-io-twitch"] as any;
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch.requireService("sample", (client) => {
+    twitch?.requireService("sample", (client) => {
         if (client === undefined) {
 			nodecg.log.info("Twitch client has been unset.");
         } else {
