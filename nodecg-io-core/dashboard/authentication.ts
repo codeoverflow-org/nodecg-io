@@ -3,10 +3,12 @@
 import { LoadFrameworkMessage } from "nodecg-io-core/extension/messageManager";
 import { createMonaco } from "./serviceInstance.js";
 
+// HTML elements
 const spanLoaded = document.getElementById("spanLoaded") as HTMLSpanElement;
 const inputPassword = document.getElementById("inputPassword") as HTMLInputElement;
 const divAuth = document.getElementById("divAuth");
 const divMain = document.getElementById("divMain");
+const spanPasswordNotice = document.getElementById("spanPasswordNotice");
 
 // A hacky way to have a callback whenever nodecg restarts.
 // On start the replicant will be declared, resulting in a call to the passed callback.
@@ -38,13 +40,19 @@ export function loadFramework(): void {
     const msg: LoadFrameworkMessage = {password};
 
     nodecg.sendMessage("load", msg, (error) => {
-       if(error) {
-           // TODO: show that the password was wrong
-       } else {
-           // Clear password input for security reasons.
-           inputPassword.value = "";
-           updateLoadedStatus();
-       }
+        if (spanPasswordNotice !== null) {
+            spanPasswordNotice.innerText = "";
+        }
+
+        if (error) {
+            if (spanPasswordNotice !== null) {
+                spanPasswordNotice.innerText = "The provided passwort isn't correct!";
+            }
+        } else {
+            // Clear password input for security reasons.
+            inputPassword.value = "";
+            updateLoadedStatus();
+        }
     });
 
 }
