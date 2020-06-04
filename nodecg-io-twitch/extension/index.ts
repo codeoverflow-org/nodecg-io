@@ -30,8 +30,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefi
         createClient: createClient(nodecg)
     };
 
-    core.serviceManager.registerService(service);
-    return core.bundleManager.createServiceProvider(service);
+    return core.registerService(service);
 };
 
 async function validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
