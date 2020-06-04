@@ -2,15 +2,16 @@ import { NodeCG, ReplicantServer } from "nodecg/types/server";
 import { ObjectMap, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
+import { BundleManager } from "./bundleManager";
 
 /**
  * Manages instances of services and their configs/clients.
  */
 export class InstanceManager {
     private serviceInstances: ReplicantServer<ObjectMap<string, ServiceInstance<unknown, unknown>>>;
-    private clientUpdateCallback: (inst: ServiceInstance<unknown, unknown>, instName: string) => void = () => {};
 
-    constructor(private readonly nodecg: NodeCG, private readonly services: ServiceManager) {
+    constructor(private readonly nodecg: NodeCG, private readonly services: ServiceManager,
+                private readonly bundles: BundleManager) {
         this.serviceInstances = this.nodecg.Replicant("serviceInstances", {
             persistent: false, defaultValue: {}
         });
@@ -53,10 +54,6 @@ export class InstanceManager {
 
         this.nodecg.log.info(`Service instance "${instanceName}" of service "${service.serviceType}" has been successfully created.`);
         return emptySuccess();
-    }
-
-    setClientUpdateCallback(callback: (inst: ServiceInstance<unknown, unknown>, instName: string) => void): void {
-        this.clientUpdateCallback = callback;
     }
 
     /**
@@ -103,6 +100,9 @@ export class InstanceManager {
 
         // Update client of this instance using the new config.
         await this.updateInstanceClient(inst, instanceName);
+
+        // Update client of bundles using this instance
+        this.bundles.handleInstanceUpdate(inst, instanceName);
 
         return emptySuccess();
     }

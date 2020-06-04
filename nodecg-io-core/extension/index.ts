@@ -21,8 +21,8 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 	nodecg.log.info("Minzig!");
 
 	const serviceManager = new ServiceManager(nodecg);
-	const instanceManager = new InstanceManager(nodecg, serviceManager)
 	const bundleManager = new BundleManager(nodecg);
+	const instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager)
 
 	const ioCore: NodeCGIOCore = {
 		serviceManager: serviceManager,

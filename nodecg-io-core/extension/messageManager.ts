@@ -38,7 +38,6 @@ export class MessageManager {
                 }
             } else {
                 const result = await io.instanceManager.updateInstanceConfig(msg.instanceName, msg.config);
-                io.bundleManager.handleInstanceUpdate(inst, msg.instanceName);
 
                 if (!ack?.handled) {
                     ack?.(result.failed ? result.errorMessage : undefined, undefined);
