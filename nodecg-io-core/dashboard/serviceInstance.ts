@@ -32,10 +32,12 @@ const instanceCreateButton = document.getElementById("instanceCreateButton");
 const instanceMonaco = document.getElementById("instanceMonaco");
 let editor: monaco.editor.IStandaloneCodeEditor | undefined;
 
+const spanInstanceNotice = document.getElementById("spanInstanceNotice");
+
 // HTML Handlers
 
 export function createMonaco() {
-    if(typeof monaco !== "undefined" && instanceMonaco !== null) {
+    if(typeof monaco !== "undefined" && editor === undefined && instanceMonaco !== null) {
         // Delete previous monaco instance, if applicable
         instanceMonaco.innerHTML = "";
 
@@ -51,6 +53,7 @@ export function createMonaco() {
 
 // Instance drop-down
 export function onInstanceSelectChange(value: string) {
+    showError(undefined);
     switch (value) {
         case "new":
             editor?.updateOptions({
@@ -99,6 +102,7 @@ export function saveInstanceConfig() {
     if (editor === undefined) {
         return;
     }
+    showError(undefined);
 
     try {
         const instName = selectInstance.options[selectInstance.selectedIndex].value;
@@ -111,11 +115,12 @@ export function saveInstanceConfig() {
         nodecg.sendMessage("updateInstanceConfig", msg, (err) => {
             if (err) {
                 console.log(err);
+                showError(err);
             }
         });
-    } catch (e) {
-        // TODO: show error in ui
-        console.log(e);
+    } catch (err) {
+        console.log(err);
+        showError(err);
     }
 }
 
@@ -222,3 +227,8 @@ function setCreateInputs(createMode: boolean, instanceSelected: boolean) {
 }
 
 
+export function showError(msg: string | undefined) {
+    if(spanInstanceNotice !== null) {
+        spanInstanceNotice.innerText = msg !== undefined ? msg : "";
+    }
+}

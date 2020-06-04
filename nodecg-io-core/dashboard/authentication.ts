@@ -39,6 +39,7 @@ export function loadFramework(): void {
     const password = inputPassword.value;
     const msg: LoadFrameworkMessage = {password};
 
+    // TODO: Password (and configs) shouldn't be sent over plaintext.
     nodecg.sendMessage("load", msg, (error) => {
         if (spanPasswordNotice !== null) {
             spanPasswordNotice.innerText = "";
