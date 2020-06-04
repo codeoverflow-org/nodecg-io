@@ -3,6 +3,9 @@ import { ObjectMap, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 
+/**
+ * Manages instances of services and their configs/clients.
+ */
 export class InstanceManager {
     private serviceInstances: ReplicantServer<ObjectMap<string, ServiceInstance<unknown, unknown>>>;
     private clientUpdateCallback: (inst: ServiceInstance<unknown, unknown>, instName: string) => void = () => {};

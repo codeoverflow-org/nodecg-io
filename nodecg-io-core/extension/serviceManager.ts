@@ -3,7 +3,7 @@ import { NodeCG, ReplicantServer } from "nodecg/types/server";
 import { error, Result, success } from "./utils/result";
 
 /**
- * Manages services and service instances.
+ * Manages services by allowing services to register them and allowing access of other components to the registered services.
  */
 export class ServiceManager {
     private services: ReplicantServer<Service<unknown, unknown>[]>;
