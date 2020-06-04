@@ -39,5 +39,9 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
             });
             tw.say(channel, "Hello, NodeCG-IO speaking here!");
         })
-        .catch((reason) => nodecg.log.error(reason));
+        .catch((reason) => {
+            nodecg.log.error(`Couldn't connect to twitch: ${reason}.`);
+            nodecg.log.info(`Retrying in 5 seconds.`);
+            setTimeout(() => addListeners(nodecg, client, channel), 5000);
+        });
 }
