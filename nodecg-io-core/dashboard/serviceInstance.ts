@@ -36,11 +36,17 @@ const spanInstanceNotice = document.getElementById("spanInstanceNotice");
 
 // HTML Handlers
 
-export function createMonaco() {
-    if(typeof monaco !== "undefined" && editor === undefined && instanceMonaco !== null) {
-        // Delete previous monaco instance, if applicable
-        instanceMonaco.innerHTML = "";
+window.addEventListener("resize", () => {
+    updateMonacoLayout();
+})
+export function updateMonacoLayout()  {
+    if (instanceMonaco !== null) {
+        editor?.layout();
+    }
+}
 
+export function onMonacoReady() {
+    if(instanceMonaco !== null) {
         editor = monaco.editor.create(instanceMonaco, {
             theme: "vs-dark"
         });

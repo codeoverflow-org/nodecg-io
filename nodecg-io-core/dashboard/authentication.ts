@@ -1,7 +1,7 @@
 /// <reference types="nodecg/types/browser" />
 
 import { LoadFrameworkMessage } from "nodecg-io-core/extension/messageManager";
-import { createMonaco } from "./serviceInstance.js";
+import { updateMonacoLayout } from "./serviceInstance.js";
 
 // HTML elements
 const spanLoaded = document.getElementById("spanLoaded") as HTMLSpanElement;
@@ -26,7 +26,7 @@ function updateLoadedStatus(): void {
             spanLoaded.innerText = "Loaded";
             divAuth?.classList.add("hidden")
             divMain?.classList.remove("hidden")
-            createMonaco();
+            updateMonacoLayout();
         } else {
             spanLoaded.innerText = "Not loaded";
             divAuth?.classList.remove("hidden")

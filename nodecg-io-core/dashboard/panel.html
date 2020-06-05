@@ -82,7 +82,7 @@
 	<script type="module">
 		import { loadFramework } from "./authentication.js";
 		import {
-			createMonaco,
+			onMonacoReady,
 			onInstanceSelectChange,
 			createInstance,
 			saveInstanceConfig,
@@ -91,7 +91,7 @@
 		import { renderBundleDeps, renderInstanceSelector, setServiceDependency } from './bundles.js'
 
 		require.config({paths: {'vs': 'node_modules/monaco-editor/min/vs'}});
-		require(["vs/editor/editor.main"], () => createMonaco());
+		require(["vs/editor/editor.main"], onMonacoReady);
 
 		// Expose handlers from module to global window
 		window.loadFramework = loadFramework;
