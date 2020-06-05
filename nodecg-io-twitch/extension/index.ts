@@ -7,9 +7,6 @@ import * as path from "path";
 import TwitchClient from "twitch";
 import ChatClient from "twitch-chat-client";
 
-// FIXME: when using the client right after it's creation it can't join any channels, requiring a retry:
-//        Example log: "Error: Did not receive a reply to join #skate702 in time; assuming that the join failed."
-
 interface TwitchServiceConfig {
     oauthKey: string
 }
@@ -58,7 +55,11 @@ function createClient(nodecg: NodeCG): (config: TwitchServiceConfig) => Promise<
             // Create the actual chat client and connect
             const chatClient = ChatClient.forTwitchClient(authClient);
             nodecg.log.info("Connecting to twitch chat...");
-            await chatClient.connect();
+            await chatClient.connect(); // Connects to twitch IRC
+            // This also waits till it has registered itself at the IRC server, which is needed to do anything.
+            await new Promise((resolve, _reject) => {
+                chatClient.onRegister(resolve);
+            })
             nodecg.log.info("Successfully connected to twitch.");
 
             return success({
