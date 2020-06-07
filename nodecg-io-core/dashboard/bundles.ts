@@ -1,8 +1,8 @@
 /// <reference types="nodecg/types/browser" />
 
-import { ObjectMap, ServiceDependency, ServiceInstance } from "../extension/types";
+import { ObjectMap, ServiceDependency, ServiceInstance } from "nodecg-io-core/extension/types";
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
-import { SetServiceDependencyMessage } from "../extension/messageManager";
+import { SetServiceDependencyMessage } from "nodecg-io-core/extension/messageManager";
 
 // Replicants
 const serviceInstances = nodecg.Replicant<ObjectMap<string, ServiceInstance<unknown, unknown>>>("serviceInstances");
