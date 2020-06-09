@@ -100,8 +100,6 @@ export class InstanceManager {
         }
 
         if(validation) {
-            // TODO: Validate JSON Schema
-
             const service = this.services.getService(inst.serviceType);
             if(service.failed) {
                 return error("The service of this instance couldn't be found.");

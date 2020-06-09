@@ -33,8 +33,6 @@ export interface LoadFrameworkMessage {
  * Also adds a small wrapper around the actual functions them to make some things easier.
  */
 export class MessageManager {
-    // TODO: reduce code duplication
-
     static registerMessageHandlers(nodecg: NodeCG, instances: InstanceManager, bundles: BundleManager, persist: PersistenceManager) {
         nodecg.listenFor("updateInstanceConfig", async (msg: UpdateInstanceConfigMessage, ack) => {
             const inst = instances.getServiceInstance(msg.instanceName);

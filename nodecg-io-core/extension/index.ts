@@ -6,9 +6,6 @@ import { InstanceManager } from "./instanceManager";
 import { Service, ServiceProvider } from "./types";
 import { PersistenceManager } from "./persistenceManager";
 
-// TODO: allow bundles to depend on more than one instance of a service type. One solution could be to add a index to ServiceDependency
-// TODO: Clients need have a stop function to e.g. disconnect from remote servers and disable all handlers
-
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.

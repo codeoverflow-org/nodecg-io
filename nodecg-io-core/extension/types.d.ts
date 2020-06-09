@@ -34,7 +34,7 @@ export interface Service<R, C> {
     /**
      * The default value for the config.
      */
-    readonly defaultConfig?: R // TODO: should we rather define defaults in the json schema?
+    readonly defaultConfig?: R
 
     /**
      * This function validates the passed config after it has been validated against the json schema (if applicable).

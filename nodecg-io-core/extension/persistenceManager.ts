@@ -29,7 +29,6 @@ interface EncryptedData {
     cipherText?: string
 }
 
-// TODO: name not good, might need rename
 /**
  * Manages encrypted persistence of data that is held by the instance and bundle managers.
  */
