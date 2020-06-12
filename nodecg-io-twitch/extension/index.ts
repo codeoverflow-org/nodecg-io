@@ -27,7 +27,8 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefi
         schema: fs.readFileSync(path.resolve(__dirname, "../twitch-schema.json"), "utf8"),
         serviceType: "twitch",
         validateConfig: validateConfig,
-        createClient: createClient(nodecg)
+        createClient: createClient(nodecg),
+        stopClient: stopClient
     };
 
     return core.registerService(service);
@@ -71,4 +72,14 @@ function createClient(nodecg: NodeCG): (config: TwitchServiceConfig) => Promise<
             return error(err.toString());
         }
     };
+}
+
+function stopClient(client: TwitchServiceClient): void {
+    // quit currently doesn't work, so we settle for removeListener for now til the fix for that bug is in a stable version.
+    // See https://github.com/d-fischer/twitch/issues/128,
+    // https://github.com/d-fischer/twitch/commit/3d01210ff4592220f00f9e060f4cb47783808e7b
+    // and https://github.com/d-fischer/connection/commit/667634415efdbdbfbd095a160c125a81edd8ec6a
+    client.getRawClient().removeListener();
+    // client.getRawClient().quit()
+    //     .then(r => console.log("Stopped twitch client successfully."))
 }

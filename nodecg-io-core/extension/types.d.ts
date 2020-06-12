@@ -52,6 +52,14 @@ export interface Service<R, C> {
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
     readonly createClient(config: R): Promise<Result<C>>
+
+    /**
+     * Stops a client of this service that is not needed anymore.
+     * Services should close any connections that might exist here.
+     *
+     * @param client the client that needs to be stopped.
+     */
+    readonly stopClient(client: C): void
 }
 
 /**

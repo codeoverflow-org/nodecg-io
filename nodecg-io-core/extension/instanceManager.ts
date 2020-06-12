@@ -1,5 +1,5 @@
 import { NodeCG, ReplicantServer } from "nodecg/types/server";
-import { ObjectMap, ServiceInstance } from "./types";
+import { ObjectMap, Service, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
@@ -99,12 +99,12 @@ export class InstanceManager {
             return error("Service instance doesn't exist.");
         }
 
-        if(validation) {
-            const service = this.services.getService(inst.serviceType);
-            if(service.failed) {
-                return error("The service of this instance couldn't be found.");
-            }
+        const service = this.services.getService(inst.serviceType);
+        if(service.failed) {
+            return error("The service of this instance couldn't be found.");
+        }
 
+        if(validation) {
             // Validation by the service.
             const validationRes = await service.result.validateConfig(config);
             if (validationRes.failed) {
@@ -116,10 +116,7 @@ export class InstanceManager {
         inst.config = config;
 
         // Update client of this instance using the new config.
-        await this.updateInstanceClient(inst, instanceName);
-
-        // Update client of bundles using this instance
-        this.bundles.handleInstanceUpdate(inst, instanceName);
+        await this.updateInstanceClient(inst, instanceName, service.result);
 
         return emptySuccess();
     }
@@ -129,12 +126,14 @@ export class InstanceManager {
      * using the new config and also let all bundle depending on it update their client.
      * @param inst the instance of which the client should be generated.
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
+     * @param service the service of the service instance, needed to stop old client
      */
-    private async updateInstanceClient<R>(inst: ServiceInstance<R, unknown>, instanceName: string): Promise<void> {
+    private async updateInstanceClient<R>(inst: ServiceInstance<R, unknown>, instanceName: string, service: Service<R, unknown>): Promise<void> {
+        const oldClient = inst.client;
+
         if (inst.config === undefined) {
             // No config has been set, therefore the service isn't ready and we can't create a client.
             inst.client = undefined;
-            return;
         } else {
             // Create a client using the new config
             const service = this.services.getService(inst.serviceType);
@@ -148,10 +147,19 @@ export class InstanceManager {
             // Check if a error happened while creating the client
             if (client.failed) {
                 this.nodecg.log.error(`The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`);
+                inst.client = undefined;
             } else {
                 // Update service instance object
                 inst.client = client.result;
             }
+        }
+
+        // Update client of bundles using this instance
+        this.bundles.handleInstanceUpdate(inst, instanceName);
+
+        // Stop old client, as it isn't used by any bundle anymore.
+        if(oldClient !== undefined) {
+            service.stopClient(oldClient);
         }
     }
 }
