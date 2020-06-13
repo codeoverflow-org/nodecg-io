@@ -25,8 +25,14 @@ export class BundleManager {
      */
     createServiceProvider<C>(service: Service<unknown, C>): ServiceProvider<C> {
         return {
-            requireService: (bundleName: string, clientUpdate: (client?: C) => void) => {
-                this.registerServiceDependency(bundleName, service, clientUpdate);
+            requireService: (bundleName: string, clientAvailable: (client: C) => void, clientUnavailable: () => void) => {
+                this.registerServiceDependency(bundleName, service, (client) => {
+                    if (client === undefined) {
+                        clientUnavailable();
+                    } else {
+                        clientAvailable(client);
+                    }
+                });
             }
         };
     }
@@ -134,13 +140,13 @@ export class BundleManager {
     handleInstanceUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
         // Iterate over all bundles
         for (const bundle in this.bundles.value) {
-            if(!this.bundles.value.hasOwnProperty(bundle)) {
+            if (!this.bundles.value.hasOwnProperty(bundle)) {
                 continue;
             }
             // Get their dependencies and if they have this instance set somewhere then update the bundle.
             const dependencies = this.bundles.value[bundle];
             dependencies?.forEach((dep) => {
-                if(dep.serviceInstance === instName) {
+                if (dep.serviceInstance === instName) {
                     dep.clientUpdateCallback(serviceInstance.client)
                 }
             });

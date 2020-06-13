@@ -92,12 +92,13 @@ export interface ServiceProvider<C> {
      * Registers the bundle as a consumer of the service.
      *
      * @param bundleName the name of the bundle that wants to get access to this service.
-     * @param clientUpdate the callback that is called once a service client is available or updated.
-     *                     The bundle should register handlers to the client here and hold a reference to the client if needed.
-     *                     If the bundle already got an client and this is called again, all references to the old client should be dropped.
-     *                     The passed client is undefined if there is currently no service instance allocated to this bundle.
+     * @param clientAvailable the callback that is called once a service client is available or updated.
+     *                        The bundle should register handlers to the client here and hold a reference to the client if needed.
+     *                        If the bundle already got an client and this is called again, all references to the old client should be dropped.
+     * @param clientUnavailable the callback that is called when the bundle doesn't have a assigned service instance or it failed to create
+     *                          a service client.
      */
-    readonly requireService(bundleName: string, clientUpdate: (client?: C) => void): void
+    readonly requireService(bundleName: string, clientAvailable: (client: C) => void, clientUnavailable: () => void): void
 }
 
 /**

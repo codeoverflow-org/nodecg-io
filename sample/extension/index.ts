@@ -14,16 +14,12 @@ module.exports = function (nodecg: NodeCG) {
     const twitchChannels = ["#skate702", "#daniel0611"];
 
     twitch?.requireService("sample", (client) => {
-        if (client === undefined) {
-			nodecg.log.info("Twitch client has been unset.");
-        } else {
-			nodecg.log.info(`Twitch client has been updated, adding handlers for messages.`);
+        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
-			twitchChannels.forEach((channel) => {
-                addListeners(nodecg, client, channel);
-            })
-        }
-    });
+        twitchChannels.forEach((channel) => {
+            addListeners(nodecg, client, channel);
+        });
+    }, () => nodecg.log.info("Twitch client has been unset."));
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
