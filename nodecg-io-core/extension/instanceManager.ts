@@ -3,12 +3,14 @@ import { ObjectMap, Service, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
+import * as Ajv from "ajv";
 
 /**
  * Manages instances of services and their configs/clients.
  */
 export class InstanceManager {
     private serviceInstances: ReplicantServer<ObjectMap<string, ServiceInstance<unknown, unknown>>>;
+    private ajv = new Ajv();
 
     constructor(private readonly nodecg: NodeCG, private readonly services: ServiceManager,
                 private readonly bundles: BundleManager) {
@@ -105,6 +107,11 @@ export class InstanceManager {
         }
 
         if(validation) {
+            const schemaValid = this.ajv.validate(service.result.schema, config);
+            if(!schemaValid) {
+                return error("Config invalid: " + this.ajv.errorsText());
+            }
+
             // Validation by the service.
             const validationRes = await service.result.validateConfig(config);
             if (validationRes.failed) {
