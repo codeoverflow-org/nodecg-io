@@ -7,6 +7,7 @@ import {
     UpdateInstanceConfigMessage
 } from "nodecg-io-core/extension/messageManager";
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
+import { objectDeepCopy } from "./utils/deepCopy.js"
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
@@ -94,7 +95,7 @@ export function onInstanceSelectChange(value: string) {
                 schemas: service?.schema !== undefined ? [{
                     uri: modelUri.toString(),
                     fileMatch: [modelUri.toString()],
-                    schema: JSON.parse(JSON.stringify(service?.schema)) // TODO: better deep copy, json stringify+parse is error prone and slow
+                    schema: objectDeepCopy(service?.schema)
                 }] : [],
             });
             const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
