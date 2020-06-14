@@ -5,6 +5,8 @@ import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
 import { Service, ServiceProvider } from "./types";
 import { PersistenceManager } from "./persistenceManager";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Main type of NodeCG extension that the core bundle exposes.
@@ -12,6 +14,7 @@ import { PersistenceManager } from "./persistenceManager";
  */
 export interface NodeCGIOCore {
 	registerService<R, C>(service: Service<R, C>): ServiceProvider<C>
+	readSchema(...path: string[]): any | undefined
 }
 
 module.exports = (nodecg: NodeCG): NodeCGIOCore => {
@@ -30,6 +33,16 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 		registerService<R, C>(service: Service<R, C>): ServiceProvider<C> {
 			serviceManager.registerService(service);
 			return bundleManager.createServiceProvider(service);
+		},
+		readSchema(...pathSegments: string[]) {
+			const joinedPath = path.resolve(...pathSegments);
+			try {
+				const fileContent = fs.readFileSync(joinedPath, "utf8");
+				return JSON.parse(fileContent)
+			} catch (err) {
+				nodecg.log.error("Couldn't read and parse service schema at " + joinedPath.toString())
+				return undefined;
+			}
 		}
 	};
 };

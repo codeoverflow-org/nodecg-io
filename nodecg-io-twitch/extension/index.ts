@@ -2,8 +2,6 @@ import { NodeCG } from "nodecg/types/server";
 import { NodeCGIOCore } from "nodecg-io-core/extension";
 import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
-import * as fs from "fs";
-import * as path from "path";
 import TwitchClient from "twitch";
 import ChatClient from "twitch-chat-client";
 
@@ -24,7 +22,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefi
     }
 
     const service: Service<TwitchServiceConfig, TwitchServiceClient> = {
-        schema: fs.readFileSync(path.resolve(__dirname, "../twitch-schema.json"), "utf8"),
+        schema: core.readSchema(__dirname, "../twitch-schema.json"),
         serviceType: "twitch",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),

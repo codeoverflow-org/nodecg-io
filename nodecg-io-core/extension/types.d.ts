@@ -26,10 +26,10 @@ export interface Service<R, C> {
     readonly serviceType: string
 
     /**
-     * A json schema of the config. Config will then be validated against this json schema.
+     * A json schema object of the config. The config will then be validated against this json schema.
      * Ensures that the types of the config are correct and therefore is compatible with the provided config type.
      */
-    readonly schema?: string
+    readonly schema?: any
 
     /**
      * The default value for the config.

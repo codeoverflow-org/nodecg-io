@@ -94,7 +94,7 @@ export function onInstanceSelectChange(value: string) {
                 schemas: service?.schema !== undefined ? [{
                     uri: modelUri.toString(),
                     fileMatch: [modelUri.toString()],
-                    schema: JSON.parse(service.schema)
+                    schema: JSON.parse(JSON.stringify(service?.schema)) // TODO: better deep copy, json stringify+parse is error prone and slow
                 }] : [],
             });
             const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
