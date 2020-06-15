@@ -3,7 +3,6 @@ import { NodeCGIOCore } from "nodecg-io-core/extension";
 import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
 import { Rcon } from "rcon-client";
-import { config } from 'process';
 
 interface RconServiceConfig {
     host: string,
