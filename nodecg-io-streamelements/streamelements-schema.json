@@ -1,16 +1,19 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-      "jwtToken": {
-        "type": "string",
-        "description": "Your JWT token for streamelments."
-      },
-      "accountId": {
-          "type":"string",
-          "description": "Your Streamelements account id for streamelements"
-      }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "jwtToken": {
+      "type": "string",
+      "description": "Your JWT token for streamelments."
     },
-    "required": ["jwtToken","accountId"]
-  }
+    "accountid": {
+      "type": "string",
+      "description": "Your Streamelements account id for streamelements"
+    }
+  },
+  "required": [
+    "jwtToken",
+    "accountid"
+  ]
+}

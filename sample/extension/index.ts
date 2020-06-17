@@ -11,7 +11,7 @@ module.exports = function (nodecg: NodeCG) {
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
-    const twitchChannels = ["#skate702", "#daniel0611"];
+    const twitchChannels = ["#extremtechniker"];
 
     twitch?.requireService("sample", (client) => {
         nodecg.log.info("Twitch client has been updated, adding handlers for messages.");

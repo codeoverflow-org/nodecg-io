@@ -104,5 +104,20 @@
 		window.renderInstanceSelector = renderInstanceSelector;
 		window.setServiceDependency = setServiceDependency;
 	</script>
+	<script type="text/javascript">
+		// Get the input field
+		const input = document.getElementById("inputPassword");
+
+		// Execute a function when the user releases a key on the keyboard
+		input.addEventListener("keyup", function(event) {
+		// Number 13 is the "Enter" key on the keyboard
+		if (event.keyCode === 13) {
+			// Cancel the default action, if needed
+			event.preventDefault();
+			// Trigger the loadFramework function!
+			loadFramework();
+		}
+		});
+	</script>
 </body>
 </html>

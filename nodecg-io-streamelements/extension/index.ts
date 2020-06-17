@@ -25,9 +25,8 @@ module.exports = (nodecg: NodeCG): ServiceProvider<StreamElementsServiceClient> 
         nodecg.log.error("nodecg-io-core isn't loaded! StreamElements bundle won't function without it.");
         return undefined;
     }
-
     const service: Service<StreamElementsServiceConfig, StreamElementsServiceClient> = {
-        schema: fs.readFileSync(path.resolve(__dirname, "../streamelements-schema.json"), "utf8"),
+        schema: core.readSchema(__dirname, "../streamelements-schema.json"),
         serviceType: "streamelements",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
