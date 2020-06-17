@@ -2,7 +2,10 @@
   "name": "nodecg-io-dashboard",
   "version": "0.1.0",
   "description": "",
-  "main": "serviceInstance.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
   "dependencies": {
     "monaco-editor": "^0.20.0",
     "nodecg": "^1.6.1",

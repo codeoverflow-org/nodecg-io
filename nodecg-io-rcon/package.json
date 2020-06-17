@@ -7,12 +7,10 @@
     "name": "derNiklaas",
     "url": "https://github.com/derNiklaas"
   },
-  "files": [
-    "dashboard",
-    "graphics",
-    "extension.js",
-    "extension"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
   "keywords": [
     "",
     "nodecg-bundle"

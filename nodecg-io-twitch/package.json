@@ -7,12 +7,10 @@
     "name": "CodeOverflow team",
     "url": "http://codeoverflow.org"
   },
-  "files": [
-    "dashboard",
-    "graphics",
-    "extension.js",
-    "extension"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
   "keywords": [
     "",
     "nodecg-bundle"
