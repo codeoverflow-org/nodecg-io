@@ -32,4 +32,4 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
 7. Check the nodecg logs
 
-   You should see an error or a success message and all twitch messages that are written in the twitch channel that is hardcoded in `sample/extension/index.ts`.
+   You should see an error or a success message and all twitch messages that are written in the twitch channel that is hardcoded in `samples/twitch-chat/extension/index.ts`.

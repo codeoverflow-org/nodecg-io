@@ -8,16 +8,16 @@
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
 >Development status: framework mostly implemented   
->Services implemented: twitch chat, RCON
+>Services implemented: Twitch chat, RCON, Discord
 
 ## About nodecg-io
 
-NodeCG-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org/chatoverflow). The aim of this bundle is to simplify the code and expand the number of integrated services. However, the main goal is still to carry out the API integration for you and thus to save you development time.
+nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org/chatoverflow). The aim of this bundle is to simplify the code and expand the number of integrated services. However, the main goal is still to carry out the API integration for you and thus to save you development time.
 
 ## Implemented Services and Interfaces
 
 - [ ] AHK
-- [ ] Discord  
+- [x] Discord  
 - [ ] IRC (Internet Relay Chat)
 - [ ] MIDI
 - [x] RCON  
@@ -43,7 +43,7 @@ If thats no problem you can had over to the [Installationguide](https://github.c
 
 > <img src="https://avatars.githubusercontent.com/joblo2213"    height="50px" title="Jonas"/>          | [`@joblo2213`](https://github.com/joblo2213)
 
- ><img src="https://avatars.githubusercontent.com/sebinside"    height="50px" title="Sebastian"/>      | [`@sebinside`](https://github.com/sebinside)
+> <img src="https://avatars.githubusercontent.com/sebinside"    height="50px" title="Sebastian"/>      | [`@sebinside`](https://github.com/sebinside)
 
 P.S.: If you have some spare time to help out around here, we would be delighted to add your name to this list!
 
@@ -52,7 +52,7 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 
 ```
 nodecg-io/
-+--docs/                   Documentaion
++--docs/                   Documentation
 +--nodecg-io-core/         Core Lib
    +--dashbord/            GUI
 +--nodecg-io-twitch/       Twitch integration

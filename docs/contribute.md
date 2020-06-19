@@ -1,6 +1,6 @@
 # How to contribute
 
-There are many ways to contribute to NodeCG-io: logging bugs, submitting pull requests, reporting issues, and creating suggestions.
+There are many ways to contribute to nodecg-io: logging bugs, submitting pull requests, reporting issues, and creating suggestions.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ In order to download necessary tools, clone the repository, and install dependen
 You'll need the following tools:
 
 - [Git](https://git-scm.com)
-- [Node.JS](https://nodejs.org/en/)
+- [Node.JS](https://nodejs.org/en/) v12.0.0 or newer
 - [Npm](https://www.npmjs.com/get-npm)
 - [NodeCG](https://nodecg.com/)
 
@@ -80,7 +80,7 @@ cd path/to/nodecg-io
 git checkout master
 git pull https://github.com/codeoverflow-org/nodecg-io master
 ```
-Manage any merge conflicts, commit them, and then push them to your fork.
+Manage any merge conflicts, commit them, and then push them to your fork. Now you can make a pull request from your folk.
 
 ### Where to Contribute
 

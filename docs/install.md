@@ -7,7 +7,7 @@ In order to download necessary tools, clone the repository, and install dependen
 You'll need the following tools:
 
 - [Git](https://git-scm.com)
-- [Node.JS](https://nodejs.org/en/)
+- [Node.JS](https://nodejs.org/en/) v12.0.0 or newer
 - [Npm](https://www.npmjs.com/get-npm)
 - [NodeCG](https://nodecg.com/)
 
@@ -37,9 +37,8 @@ npm run build
 ## Add nodecg-io directory to the nodecg config:
 
 Modify the nodecg configuration in `path/to/nodecg/cfg/nodecg.json`, here is an example config:
-```
-json
-    {
+```json
+{
     "bundles": {
         "paths": ["path/to/nodecg-io"]
     }
