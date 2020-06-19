@@ -2,7 +2,6 @@ import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { TwitchServiceClient } from "nodecg-io-twitch/extension";
 
-
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
@@ -13,13 +12,17 @@ module.exports = function (nodecg: NodeCG) {
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch?.requireService("sample", (client) => {
-        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
+    twitch?.requireService(
+        "sample",
+        (client) => {
+            nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
-        twitchChannels.forEach((channel) => {
-            addListeners(nodecg, client, channel);
-        });
-    }, () => nodecg.log.info("Twitch client has been unset."));
+            twitchChannels.forEach((channel) => {
+                addListeners(nodecg, client, channel);
+            });
+        },
+        () => nodecg.log.info("Twitch client has been unset."),
+    );
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
@@ -27,9 +30,9 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
 
     tw.join(channel)
         .then(() => {
-            nodecg.log.info(`Connected to twitch channel "${channel}"`)
+            nodecg.log.info(`Connected to twitch channel "${channel}"`);
             tw.onPrivmsg((chan, user, message, msg) => {
-                if(chan === channel.toLowerCase()) {
+                if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }
             });

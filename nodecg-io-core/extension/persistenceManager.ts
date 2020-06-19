@@ -12,11 +12,11 @@ interface PersistentData {
     /**
      * All instance data that is held by the {@link InstanceManager}.
      */
-    instances: ObjectMap<string, ServiceInstance<unknown, unknown>>
+    instances: ObjectMap<string, ServiceInstance<unknown, unknown>>;
     /**
      * All bundle dependency data that is held by the {@link BundleManager}.
      */
-    bundleDependencies: ObjectMap<string, ServiceDependency<any>[]>
+    bundleDependencies: ObjectMap<string, ServiceDependency<any>[]>;
 }
 
 /**
@@ -26,7 +26,7 @@ interface EncryptedData {
     /**
      * The encrypted format of the data that needs to be stored.
      */
-    cipherText?: string
+    cipherText?: string;
 }
 
 /**
@@ -38,10 +38,14 @@ export class PersistenceManager {
     // and the bundle config is readonly. It is only in encrypted form so it is ok to be accessible in the browser.
     private encryptedData: ReplicantServer<EncryptedData>;
 
-    constructor(private readonly nodecg: NodeCG, private readonly instances: InstanceManager, private readonly bundles: BundleManager) {
+    constructor(
+        private readonly nodecg: NodeCG,
+        private readonly instances: InstanceManager,
+        private readonly bundles: BundleManager,
+    ) {
         this.encryptedData = nodecg.Replicant("encryptedConfig", {
             persistent: true, // Is ok since it is encrypted, all other replicants don't store data for this reason.
-            defaultValue: {}
+            defaultValue: {},
         });
     }
 
@@ -57,7 +61,7 @@ export class PersistenceManager {
         // Organise all data that will be encrypted into a single object.
         const data: PersistentData = {
             instances: this.instances.getServiceInstances(),
-            bundleDependencies: this.bundles.getBundleDependencies()
+            bundleDependencies: this.bundles.getBundleDependencies(),
         };
 
         // Encrypt and save data to persistent replicant.
@@ -97,7 +101,7 @@ export class PersistenceManager {
 
                 // Load config into the respecting manager
                 // Instances first as the bundle dependency depend upon the existing instances.
-                this.loadServiceInstances(data.instances)
+                this.loadServiceInstances(data.instances);
                 this.loadBundleDependencies(data.bundleDependencies);
             } catch {
                 return error("Password isn't correct.");
@@ -132,7 +136,9 @@ export class PersistenceManager {
             // Re-create service instance.
             const result = this.instances.createServiceInstance(inst.serviceType, instanceName);
             if (result.failed) {
-                this.nodecg.log.info(`Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`);
+                this.nodecg.log.info(
+                    `Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`,
+                );
                 continue;
             }
 
@@ -140,14 +146,19 @@ export class PersistenceManager {
             // We can skip the validation here because the config was already validated when it was initially set,
             // before getting saved to disk.
             // This results in faster loading when the validation takes time, e.g. makes HTTP requests.
-            this.instances.updateInstanceConfig(instanceName, inst.config, false)
-                .then(result => {
+            this.instances
+                .updateInstanceConfig(instanceName, inst.config, false)
+                .then((result) => {
                     if (result.failed) {
-                        this.nodecg.log.info(`Couldn't load config of instance "${instanceName}" from saved configuration: ${result.errorMessage}.`);
+                        this.nodecg.log.info(
+                            `Couldn't load config of instance "${instanceName}" from saved configuration: ${result.errorMessage}.`,
+                        );
                     }
                 })
-                .catch(reason => {
-                    this.nodecg.log.info(`Couldn't load config of instance "${instanceName}" from saved configuration: ${reason}.`);
+                .catch((reason) => {
+                    this.nodecg.log.info(
+                        `Couldn't load config of instance "${instanceName}" from saved configuration: ${reason}.`,
+                    );
                 });
         }
     }
@@ -163,7 +174,7 @@ export class PersistenceManager {
             }
 
             const deps = bundles[bundleName];
-            deps?.forEach(svcDep => {
+            deps?.forEach((svcDep) => {
                 // Re-setting bundle service dependencies.
                 // We can ignore the case of undefined, because the default is that the bundle doesn't get any service
                 // which is modeled by undefined. We are assuming that there was nobody setting it to something different.

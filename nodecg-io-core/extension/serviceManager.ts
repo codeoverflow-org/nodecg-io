@@ -10,7 +10,8 @@ export class ServiceManager {
 
     constructor(private readonly nodecg: NodeCG) {
         this.services = this.nodecg.Replicant("services", {
-            persistent: false, defaultValue: []
+            persistent: false,
+            defaultValue: [],
         });
     }
 
@@ -36,7 +37,7 @@ export class ServiceManager {
      * @return the service or undefined if no service with this name has been registered.
      */
     getService(serviceName: string): Result<Service<unknown, unknown>> {
-        const svc = this.services.value.find(svc => svc.serviceType === serviceName);
+        const svc = this.services.value.find((svc) => svc.serviceType === serviceName);
         if (svc === undefined) {
             return error("Service hasn't been registered.");
         } else {

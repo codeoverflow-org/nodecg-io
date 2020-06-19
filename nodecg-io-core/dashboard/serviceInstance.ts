@@ -4,10 +4,10 @@ import { ObjectMap, Service, ServiceInstance } from "nodecg-io-core/extension/ty
 import {
     CreateServiceInstanceMessage,
     DeleteServiceInstanceMessage,
-    UpdateInstanceConfigMessage
+    UpdateInstanceConfigMessage,
 } from "nodecg-io-core/extension/messageManager";
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
-import { objectDeepCopy } from "./utils/deepCopy.js"
+import { objectDeepCopy } from "./utils/deepCopy.js";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
@@ -39,22 +39,22 @@ const spanInstanceNotice = document.getElementById("spanInstanceNotice");
 
 window.addEventListener("resize", () => {
     updateMonacoLayout();
-})
-export function updateMonacoLayout()  {
+});
+export function updateMonacoLayout() {
     if (instanceMonaco !== null) {
         editor?.layout();
     }
 }
 
 export function onMonacoReady() {
-    if(instanceMonaco !== null) {
+    if (instanceMonaco !== null) {
         editor = monaco.editor.create(instanceMonaco, {
-            theme: "vs-dark"
+            theme: "vs-dark",
         });
 
         // Virtually selects the same instance option again to show the json/text in the editor.
         const selected = selectInstance.options[selectInstance.selectedIndex]?.value || "select";
-        selectServiceInstance(selected)
+        selectServiceInstance(selected);
     }
 }
 
@@ -64,7 +64,7 @@ export function onInstanceSelectChange(value: string) {
     switch (value) {
         case "new":
             editor?.updateOptions({
-                readOnly: true
+                readOnly: true,
             });
             editor?.setModel(monaco.editor.createModel(editorCreateText, "text"));
             setCreateInputs(true, false);
@@ -72,31 +72,36 @@ export function onInstanceSelectChange(value: string) {
             break;
         case "select":
             editor?.updateOptions({
-                readOnly: true
+                readOnly: true,
             });
             editor?.setModel(monaco.editor.createModel(editorDefaultText, "text"));
             setCreateInputs(false, false);
             break;
         default:
             const inst = serviceInstances.value?.[value];
-            const service = services.value?.find(svc => svc.serviceType === inst?.serviceType);
+            const service = services.value?.find((svc) => svc.serviceType === inst?.serviceType);
 
             editor?.updateOptions({
-                readOnly: false
+                readOnly: false,
             });
 
             // Get rid of old models, as they have to be unique and we may add the same again
-            monaco.editor.getModels().forEach(m => m.dispose());
+            monaco.editor.getModels().forEach((m) => m.dispose());
 
             // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
             const modelUri = monaco.Uri.parse(`mem://nodecg-io/${inst?.serviceType}.json`);
             monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
                 validate: service?.schema !== undefined,
-                schemas: service?.schema !== undefined ? [{
-                    uri: modelUri.toString(),
-                    fileMatch: [modelUri.toString()],
-                    schema: objectDeepCopy(service?.schema)
-                }] : [],
+                schemas:
+                    service?.schema !== undefined
+                        ? [
+                              {
+                                  uri: modelUri.toString(),
+                                  fileMatch: [modelUri.toString()],
+                                  schema: objectDeepCopy(service?.schema),
+                              },
+                          ]
+                        : [],
             });
             const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
             editor?.setModel(model);
@@ -116,7 +121,7 @@ export function saveInstanceConfig() {
         const config = JSON.parse(editor.getValue());
         const msg: UpdateInstanceConfigMessage = {
             config: config,
-            instanceName: instName
+            instanceName: instName,
         };
         // noinspection JSIgnoredPromiseFromCall this actually doesn't always result in a Promise
         nodecg.sendMessage("updateInstanceConfig", msg, (err) => {
@@ -134,17 +139,18 @@ export function saveInstanceConfig() {
 // Delete button
 export function deleteInstance() {
     const msg: DeleteServiceInstanceMessage = {
-        instanceName: selectInstance.options[selectInstance.selectedIndex].value
+        instanceName: selectInstance.options[selectInstance.selectedIndex].value,
     };
 
-    nodecg.sendMessage("deleteServiceInstance", msg)
-        .then(r => {
-            if (r) {
-                selectServiceInstance("select");
-            } else {
-                console.log(`Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`);
-            }
-        });
+    nodecg.sendMessage("deleteServiceInstance", msg).then((r) => {
+        if (r) {
+            selectServiceInstance("select");
+        } else {
+            console.log(
+                `Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`,
+            );
+        }
+    });
 }
 
 // Create button
@@ -154,7 +160,7 @@ export function createInstance() {
 
     const msg: CreateServiceInstanceMessage = {
         serviceType: service,
-        instanceName: name
+        instanceName: name,
     };
 
     // noinspection JSIgnoredPromiseFromCall this actually doesn't always result in a Promise
@@ -173,21 +179,24 @@ export function createInstance() {
 // Render functions of Replicants
 
 function renderServices() {
-    if(services.value === undefined) {
+    if (services.value === undefined) {
         return;
     }
-    updateOptionsArr(selectService, services.value.map(svc => svc.serviceType));
+    updateOptionsArr(
+        selectService,
+        services.value.map((svc) => svc.serviceType),
+    );
 }
 
 function renderInstances() {
-    if(serviceInstances.value === undefined) {
+    if (serviceInstances.value === undefined) {
         return;
     }
 
     const previousSelected = selectInstance.options[selectInstance.selectedIndex]?.value || "select";
 
     // Render instances
-    updateOptionsMap(selectInstance, serviceInstances.value)
+    updateOptionsMap(selectInstance, serviceInstances.value);
 
     // Add new and select options
     const selectOption = document.createElement("option");
@@ -233,9 +242,8 @@ function setCreateInputs(createMode: boolean, instanceSelected: boolean) {
     setVisible(instanceServiceSelector, createMode);
 }
 
-
 export function showError(msg: string | undefined) {
-    if(spanInstanceNotice !== null) {
+    if (spanInstanceNotice !== null) {
         spanInstanceNotice.innerText = msg !== undefined ? msg : "";
     }
 }

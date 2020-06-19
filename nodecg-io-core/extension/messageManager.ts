@@ -5,27 +5,27 @@ import { BundleManager } from "./bundleManager";
 import { PersistenceManager } from "./persistenceManager";
 
 export interface UpdateInstanceConfigMessage {
-    instanceName: string,
-    config: unknown
+    instanceName: string;
+    config: unknown;
 }
 
 export interface CreateServiceInstanceMessage {
-    serviceType: string,
-    instanceName: string
+    serviceType: string;
+    instanceName: string;
 }
 
 export interface DeleteServiceInstanceMessage {
-    instanceName: string
+    instanceName: string;
 }
 
 export interface SetServiceDependencyMessage {
-    bundleName: string
-    instanceName: string | undefined
-    serviceType: string
+    bundleName: string;
+    instanceName: string | undefined;
+    serviceType: string;
 }
 
 export interface LoadFrameworkMessage {
-    password: string
+    password: string;
 }
 
 /**
@@ -33,10 +33,15 @@ export interface LoadFrameworkMessage {
  * Also adds a small wrapper around the actual functions them to make some things easier.
  */
 export class MessageManager {
-    static registerMessageHandlers(nodecg: NodeCG, instances: InstanceManager, bundles: BundleManager, persist: PersistenceManager) {
+    static registerMessageHandlers(
+        nodecg: NodeCG,
+        instances: InstanceManager,
+        bundles: BundleManager,
+        persist: PersistenceManager,
+    ) {
         nodecg.listenFor("updateInstanceConfig", async (msg: UpdateInstanceConfigMessage, ack) => {
             const inst = instances.getServiceInstance(msg.instanceName);
-            if(inst === undefined) {
+            if (inst === undefined) {
                 if (!ack?.handled) {
                     ack?.("Service instance doesn't exist.", undefined);
                 }
@@ -47,7 +52,6 @@ export class MessageManager {
                     ack?.(result.failed ? result.errorMessage : undefined, undefined);
                 }
             }
-
         });
 
         nodecg.listenFor("createServiceInstance", (msg: CreateServiceInstanceMessage, ack) => {
@@ -75,7 +79,7 @@ export class MessageManager {
                 }
             } else {
                 const instance = instances.getServiceInstance(msg.instanceName);
-                if(instance === undefined) {
+                if (instance === undefined) {
                     result = error("Service instance couldn't be found.");
                 } else {
                     result = bundles.setServiceDependency(msg.bundleName, msg.instanceName, instance);
@@ -101,5 +105,3 @@ export class MessageManager {
         });
     }
 }
-
-

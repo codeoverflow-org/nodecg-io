@@ -39,13 +39,16 @@ export function renderBundleDeps() {
         return;
     }
 
-    updateOptionsArr(selectBundleDepTypes, bundleDependencies.map(dep => dep.serviceType));
+    updateOptionsArr(
+        selectBundleDepTypes,
+        bundleDependencies.map((dep) => dep.serviceType),
+    );
 
     renderInstanceSelector();
 }
 
 export function renderInstanceSelector() {
-    if(bundles.value === undefined) {
+    if (bundles.value === undefined) {
         return;
     }
 
@@ -53,12 +56,12 @@ export function renderInstanceSelector() {
     const serviceType = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex].value;
     const instances = ["none"];
 
-    for(const instName in serviceInstances.value) {
-        if(!serviceInstances.value.hasOwnProperty(instName)) {
+    for (const instName in serviceInstances.value) {
+        if (!serviceInstances.value.hasOwnProperty(instName)) {
             continue;
         }
 
-        if(serviceInstances.value[instName]?.serviceType === serviceType) {
+        if (serviceInstances.value[instName]?.serviceType === serviceType) {
             instances.push(instName);
         }
     }
@@ -66,10 +69,10 @@ export function renderInstanceSelector() {
 
     // Selecting option of current set instance
     const bundle = selectBundle.options[selectBundle.selectedIndex].value;
-    const currentInstance = bundles.value[bundle]?.find(dep => dep.serviceType === serviceType)?.serviceInstance;
+    const currentInstance = bundles.value[bundle]?.find((dep) => dep.serviceType === serviceType)?.serviceInstance;
     let index = 0;
-    for(let i = 0; i < selectBundleInstance.options.length; i++) {
-        if(selectBundleInstance.options.item(i)?.value === currentInstance) {
+    for (let i = 0; i < selectBundleInstance.options.length; i++) {
+        if (selectBundleInstance.options.item(i)?.value === currentInstance) {
             index = i;
             break;
         }
@@ -85,14 +88,13 @@ export function setServiceDependency() {
     const msg: SetServiceDependencyMessage = {
         bundleName: bundle,
         instanceName: instance === "none" ? undefined : instance,
-        serviceType: type
-    }
+        serviceType: type,
+    };
 
     // noinspection JSIgnoredPromiseFromCall only returnes undefined
     nodecg.sendMessage("setServiceDependency", msg, (err) => {
-        if(err) {
+        if (err) {
             console.log(err);
         }
-    })
+    });
 }
-
