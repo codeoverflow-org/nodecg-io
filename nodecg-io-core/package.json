@@ -28,6 +28,11 @@
     ]
   },
   "license": "MIT",
+  "devDependencies": {
+    "@types/crypto-js": "^3.1.47",
+    "@types/node": "^13.13.5",
+    "nodecg": "^1.6.1"
+  },
   "dependencies": {
     "ajv": "^6.12.2",
     "crypto-js": "^4.0.0",

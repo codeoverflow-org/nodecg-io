@@ -22,8 +22,13 @@
     }
   },
   "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.13.12",
+    "nodecg": "^1.6.1",
+    "typescript": "^3.9.5"
+  },
   "dependencies": {
-    "nodecg-io-core": "file:../nodecg-io-core",
+    "nodecg-io-core": "0.1.0",
     "rcon-client": "^4.2.0"
   }
 }

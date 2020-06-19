@@ -2,7 +2,7 @@
   "packages": [
     "nodecg-io-*",
     "nodecg-io-core/dashboard",
-    "samples/*"
+    "sample"
   ],
   "version": "0.1.0"
 }

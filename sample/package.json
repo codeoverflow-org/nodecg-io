@@ -1,5 +1,5 @@
 {
-  "name": "twitch-chat",
+  "name": "sample",
   "version": "0.1.0",
   "nodecg": {
     "compatibleRange": "^1.1.1",
@@ -13,10 +13,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "nodecg-io-twitch": "0.1.0",
+    "nodecg-io-core": "0.1.0",
     "@types/node": "^13.13.5",
     "nodecg": "^1.6.1",
-    "nodecg-io-core": "file:../../nodecg-io-core",
-    "nodecg-io-twitch": "file:../../nodecg-io-twitch",
     "typescript": "^3.8.3"
   }
 }
