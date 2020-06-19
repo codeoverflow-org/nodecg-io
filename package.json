@@ -4,9 +4,22 @@
     "scripts": {
         "postinstall": "lerna bootstrap",
         "build": "lerna run build --parallel",
-        "watch": "lerna run --parallel watch"
+        "watch": "tsc-watch -w --onSuccess \"npm run restartCG\"",
+        "restartCG": "cd ../nodecg/ && npm restart",
+        "link": "lerna link convert"
     },
     "devDependencies": {
-        "lerna": "^3.22.1"
+        "@types/crypto-js": "^3.1.47",
+        "@types/node": "^13.13.5",
+        "lerna": "^3.22.1",
+        "nodecg": "^1.6.1",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {
+        "nodecg-io-core": "file:nodecg-io-core",
+        "nodecg-io-dashboard": "file:nodecg-io-core/dashboard",
+        "nodecg-io-rcon": "file:nodecg-io-rcon",
+        "nodecg-io-twitch": "file:nodecg-io-twitch",
+        "twitch-chat": "file:samples/twitch-chat"
     }
 }

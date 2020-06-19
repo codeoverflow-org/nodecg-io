@@ -22,13 +22,8 @@
     }
   },
   "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^13.13.5",
-    "nodecg": "^1.6.1",
-    "typescript": "^3.8.3"
-  },
   "dependencies": {
-    "nodecg-io-core": "0.1.0",
+    "nodecg-io-core": "file:../nodecg-io-core",
     "twitch": "^4.0.10",
     "twitch-chat-client": "^4.0.10"
   }
