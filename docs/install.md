@@ -37,15 +37,14 @@ npm run build
 ## Add nodecg-io directory to the nodecg config:
 
 Modify the nodecg configuration in `path/to/nodecg/cfg/nodecg.json`, here is an example config:
-
-    ```json
-        {
-        "bundles": {
-            "paths": ["path/to/nodecg-io"]
-        }
+```
+json
+    {
+    "bundles": {
+        "paths": ["path/to/nodecg-io"]
     }
-    ```
-
+}  
+```
 *Note 1:* This path should point to the root of this repository, not to a bundle inside this repo.
    
 *Note 2:* If nodecg doesn't load nodecg-io for some reason you might want to use an absolute path here.
