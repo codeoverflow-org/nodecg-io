@@ -1,6 +1,6 @@
 ## Using the Twitch sample bundle
 
-The simple Twitch example bundle in `samples/twitch-chat` demonstrates the ability to get access to a twitch chat and printing all messages of it. Here is a guide to how to get it working:
+The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability to get access to a twitch chat and printing all messages of it. Here is a guide to how to get it working:
 
 1. Start nodecg with nodecg-io installed. The bundle is currently part of it so it should also be loaded.
 
