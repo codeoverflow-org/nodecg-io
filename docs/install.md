@@ -50,5 +50,5 @@ json
 *Note 2:* If nodecg doesn't load nodecg-io for some reason you might want to use an absolute path here.
 
 ## Start nodecg
-Now you can use nodecg-io in your own bundle. You can finde example code in `./samples/`.
+Now you can use nodecg-io in your own bundle. You can finde example code in [./samples/](https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/).
 
