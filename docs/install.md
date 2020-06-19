@@ -40,14 +40,16 @@ Modify the nodecg configuration in `path/to/nodecg/cfg/nodecg.json`, here is an 
 ```json
 {
     "bundles": {
-        "paths": ["path/to/nodecg-io"]
+        "paths": ["path/to/nodecg-io", "path/to/nodecg-io/samples"]
     }
 }  
 ```
 *Note 1:* This path should point to the root of this repository, not to a bundle inside this repo.
+
+*Note 2:* The second path to the samples is only required if you want to use a sample plugin.
    
-*Note 2:* If nodecg doesn't load nodecg-io for some reason you might want to use an absolute path here.
+*Note 3:* If nodecg doesn't load nodecg-io for some reason you might want to use an absolute path here.
 
 ## Start nodecg
-Now you can use nodecg-io in your own bundle. You can finde example code in [./samples/](https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/).
+Now you can use nodecg-io in your own bundle. You can find example code in [./samples/](https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/).
 
