@@ -1,6 +1,3 @@
 {
-	"exclude": [
-		"dashboard"
-	],
 	"extends": "../tsconfig.common.json"
 }
