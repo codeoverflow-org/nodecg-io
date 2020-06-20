@@ -36,9 +36,14 @@ module.exports = (nodecg: NodeCG): ServiceProvider<RconServiceClient> | undefine
 
 async function validateConfig(config: RconServiceConfig): Promise<Result<void>> {
     try{
-        const rcon = await Rcon.connect({
+        const rcon = new Rcon({
             host: config.host, port: config.port, password: config.password
-        }); // This will throw an error if it can't connect to a server
+        });
+        
+        // We need one error handler or node will exit the process on an error. 
+        rcon.on("error", err => {});
+
+        await rcon.connect(); // This will throw an exception if there is an error.
         rcon.end();
         return emptySuccess();
     }catch (err) {
@@ -53,9 +58,14 @@ function sendMessage(client: Rcon, message: string): Promise<string> {
 function createClient(nodecg: NodeCG): (config: RconServiceConfig) => Promise<Result<RconServiceClient>> {
     return async (config) => {
         try{
-            const rcon = await Rcon.connect({
+            const rcon = new Rcon({
                 host: config.host, port: config.port, password: config.password
             });
+
+            // We need one error handler or node will exit the process on an error. 
+            rcon.on("error", err => {});
+
+            await rcon.connect(); // This will throw an exception if there is an error.
             nodecg.log.info("Successfully connected to the rcon server.")
 
             return success({
