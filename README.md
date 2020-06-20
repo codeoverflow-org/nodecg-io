@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
-[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=2&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=3&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 ![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
@@ -27,6 +27,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - [ ] TipeeeStream  
 - [x] Twitch Chat  
 - [ ] Twitter
+- [ ] Websocket
 - [ ] Youtube
 
 ## How to use nodecg-io
@@ -55,8 +56,9 @@ nodecg-io/
 +--docs/                   Documentation
 +--nodecg-io-core/         Core Lib
    +--dashbord/            GUI
-+--nodecg-io-twitch/       Twitch integration
++--nodecg-io-discord/      Discord integration
 +--nodecg-io-rcon/         Rcon integration
++--nodecg-io-twitch/       Twitch integration
 +--samples/                Samplecode
    +--twitch-chat/         Twitch Samplecode
 ```
