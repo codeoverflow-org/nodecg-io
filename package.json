@@ -8,5 +8,8 @@
     },
     "devDependencies": {
         "lerna": "^3.22.1"
+    },
+    "dependencies": {
+        "@types/node-fetch": "^2.5.7"
     }
 }
