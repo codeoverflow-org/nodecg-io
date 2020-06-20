@@ -2,9 +2,10 @@
 
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
-[![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
-[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=2&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
-![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)
+[![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
+<!-- Do not set the 'Services implemented' value manually. It's inserted automatically. -->
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=3&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
+[![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 
 **nodecg-io is a [NodeCG](https://github.com/nodecg/nodecg)-bundle which that implements Social Media API's in the NodeCG framework**
 
@@ -15,7 +16,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 ## How to use nodecg-io
 
 If you want to use nodecg-io, you should note that it is only a framework for your bundle, so you need at least a basic knowledge of the programming language Javascript or any other language that compiles to Javascript like Typescript. 
-If thats no problem you can had over to the [Installation Guide](install.md) and then look at the [sample bundles](https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/) for your selected service.
+If that's no problem you can had over to the [Installation Guide](install.md) and then look at the [sample bundles](https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/) for your selected service.
 
 ## Implemented Services and Interfaces
 
@@ -34,17 +35,3 @@ If thats no problem you can had over to the [Installation Guide](install.md) and
 
 ## How to contribute
  If you want to contribute to this bundle you can implement one of this services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing had over to the [How to contribute](contribute.md) - Guide.
-
-
-# Repository structure
-
-```
-nodecg-io/
-+--docs/                   Documentation
-+--nodecg-io-core/         Core Lib
-   +--dashbord/            GUI
-+--nodecg-io-twitch/       Twitch integration
-+--nodecg-io-rcon/         Rcon integration
-+--samples/                Samplecode
-   +--twitch-chat/         Twitch Samplecode
-```

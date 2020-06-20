@@ -1,0 +1,23 @@
+# To build the documentation use `build.py`
+
+site_name: nodecg-io Documentation
+theme: windmill
+docs_dir: docs
+site_dir: build
+
+extra:
+  version: "Successor of ChatOverflow"
+
+markdown_extensions:
+    - plantuml_markdown
+    - markdown_checklist.extension
+
+nav:
+  - Home: index.md
+  - Install: install.md
+  - How to Contribute: contribute.md
+  - Available services: services.md
+  - Dependency Graph: dependencies.md
+  - Sample Implementations:
+    - Twitch: samples/twitch.md
+  - Contributors: contributors.md

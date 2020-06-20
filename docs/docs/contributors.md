@@ -26,7 +26,7 @@
     })
 </script>
 
-# A huge thank you to every contributor who helped to improve nodecg-io
+## All nodecg-io contributors
 
 <div id="contributorview" style="display: grid">
 
