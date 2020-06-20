@@ -46,12 +46,6 @@ object  types_node {
 object  nodecg {
 [[https://www.npmjs.com/package/nodecg nodecg]]
 }
-object  node_fetch {
-[[https://www.npmjs.com/package/node-fetch node-fetch]]
-}
-object  types_node_fetch {
-[[https://www.npmjs.com/package/@types/node-fetch @types/node-fetch]]
-}
 nodecg_io_core ...> ajv
 nodecg_io_core ...> crypto_js
 nodecg_io_core ...> tslib
@@ -68,6 +62,4 @@ samples_twitch_chat --> nodecg_io_core
 samples_twitch_chat ...> types_node
 samples_twitch_chat ...> nodecg
 samples_twitch_chat ...> typescript
-samples_twitch_chat ...> node_fetch
-samples_twitch_chat ...> types_node_fetch
 ::end-uml::

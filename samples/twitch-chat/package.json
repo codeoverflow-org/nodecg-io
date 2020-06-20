@@ -17,8 +17,6 @@
     "nodecg-io-core": "0.1.0",
     "@types/node": "^13.13.5",
     "nodecg": "^1.6.1",
-    "typescript": "^3.8.3",
-    "node-fetch": "2.6.0",
-    "@types/node-fetch": "2.6.0"
+    "typescript": "^3.8.3"
   }
 }
