@@ -26,7 +26,7 @@
     })
 </script>
 
-## All nodecg-io contributors
+## Top 30 nodecg-io contributors
 
 <div id="contributorview" style="display: grid">
 
