@@ -1,0 +1,25 @@
+{
+  "name": "discord-guild-chat",
+  "version": "0.1.0",
+  "description": "",
+  "nodecg": {
+    "compatibleRange": "^1.1.1",
+    "bundleDependencies": {
+      "nodecg-io-discord": "0.1.0"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim-Tech-Dev",
+  "license": "MIT",
+  "dependencies": {
+    "nodecg-io-discord": "0.1.0",
+    "nodecg-io-core": "0.1.0",
+    "@types/node": "^13.13.5",
+    "nodecg": "^1.6.1",
+    "typescript": "^3.8.3"
+  }
+}
