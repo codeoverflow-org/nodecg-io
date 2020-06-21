@@ -7,7 +7,7 @@ The Twitch-Chat example bundle in `samples/discord-guid-chat` demonstrates the a
 * Working NodeCG & nodcg-oi installation
 * a Discord Bot token
 
-*Note:* If you don't have such a token yet you can register a new bot here generate it on the [Discord Developer Portal](https://discord.com/developers). Log into your Discord account, Create a new Application (the button in the upper right corner), reveal the client secret and then copy the token.
+*Note:* If you don't have such a token yet you can register a new bot here generate it on the [Discord Developer Portal](https://discord.com/developers). Log into your Discord account, Create a new Application (the button in the upper right corner), make it into a bot (left list) reveal the token and then copy the token.
 
 ### Configure the Discord sample bundle
 1. Start nodecg with nodecg-io installed. The bundle is currently part of it so it should also be loaded.
