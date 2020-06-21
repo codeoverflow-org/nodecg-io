@@ -7,7 +7,7 @@ The Twitch-Chat example bundle in `samples/discord-guid-chat` demonstrates the a
 * Working NodeCG & nodcg-oi installation
 * a Discord Bot token
 
-*Note:* If you don't have such a token yet you can register a new bot here generate it on the [Discord Developer Portal](https://discord.com/developers). Log into your Discord account, Create a new Application (the button in the upper right corner), make it into a bot (left list) reveal the token and then copy the token.
+*Note:* If you don't have such a token yet you can follow [this](https://discordjs.guide/preparations/setting-up-a-bot-application.html) guide.
 
 ### Configure the Discord sample bundle
 1. Start nodecg with nodecg-io installed. The bundle is currently part of it so it should also be loaded.
@@ -34,7 +34,7 @@ The Twitch-Chat example bundle in `samples/discord-guid-chat` demonstrates the a
 
 6. Set the created discord service instance to the service dependency of the discord-sample bundle.
 
-   Select the discord-sample bundle and the Discord service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created discord instance).
+   Select the discord sample bundle and the Discord service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created discord instance).
 
 7. Check the nodecg logs
 

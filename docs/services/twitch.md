@@ -34,7 +34,7 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
 6. Set the created twitch service instance to the service dependency of the twitch-sample bundle.
 
-   Select the sample bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created twitch instance).
+   Select the twitch sample bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created twitch instance).
 
 7. Check the nodecg logs
 
