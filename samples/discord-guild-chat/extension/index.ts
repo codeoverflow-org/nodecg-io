@@ -12,27 +12,20 @@ module.exports = function (nodecg: NodeCG) {
 
     discord?.requireService("discord-sample", (client) => {
         nodecg.log.info("Discord client has been updated, adding handlers for messages.");
-
-    }, () => nodecg.log.info("Twitch client has been unset."));
+        addListeners(nodecg, client);
+    }, () => nodecg.log.info("Discord client has been unset."));
 };
-/*
-function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
-    const tw = client.getRawClient();
 
-    tw.join(channel)
-        .then(() => {
-            nodecg.log.info(`Connected to twitch channel "${channel}"`)
-            tw.onPrivmsg((chan, user, message, msg) => {
-                if(chan === channel.toLowerCase()) {
-                    nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
-                }
-            });
-            tw.say(channel, "Hello, nodecg-io speaking here!");
-        })
-        .catch((reason) => {
-            nodecg.log.error(`Couldn't connect to twitch: ${reason}.`);
-            nodecg.log.info(`Retrying in 5 seconds.`);
-            setTimeout(() => addListeners(nodecg, client, channel), 5000);
-        });
+function addListeners(nodecg: NodeCG, client: DiscordServiceClient) {
+    const dc = client.getRawClient();
+
+    dc.on('ready', () => {
+        console.log(`Logged in!`);
+    });
+
+    dc.on('message', msg => {
+        if (msg.content === 'ping' || msg.content === '!ping') {
+            msg.reply('pong');
+        }
+    });
 }
-*/
