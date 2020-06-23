@@ -1,3 +1,4 @@
+<!-- This file is auto-generated. Do not change anything here -->
 # Dependency Graph
 
 ::uml:: format="svg_inline" classes="uml" alt="PlantUML dependency graph" title="PlantUML dependency graph"
@@ -37,15 +38,6 @@ object  twitch {
 object  twitch_chat_client {
 [[https://www.npmjs.com/package/twitch-chat-client twitch-chat-client]]
 }
-object  samples_twitch_chat {
-[[https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/twitch-chat twitch-chat]]
-}
-object  types_node {
-[[https://www.npmjs.com/package/@types/node @types/node]]
-}
-object  nodecg {
-[[https://www.npmjs.com/package/nodecg nodecg]]
-}
 nodecg_io_core ...> ajv
 nodecg_io_core ...> crypto_js
 nodecg_io_core ...> tslib
@@ -57,9 +49,4 @@ nodecg_io_rcon ...> rcon_client
 nodecg_io_twitch --> nodecg_io_core
 nodecg_io_twitch ...> twitch
 nodecg_io_twitch ...> twitch_chat_client
-samples_twitch_chat --> nodecg_io_twitch
-samples_twitch_chat --> nodecg_io_core
-samples_twitch_chat ...> types_node
-samples_twitch_chat ...> nodecg
-samples_twitch_chat ...> typescript
 ::end-uml::

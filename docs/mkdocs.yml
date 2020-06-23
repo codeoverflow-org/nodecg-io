@@ -1,12 +1,14 @@
 # To build the documentation use `build.py`
 
 site_name: nodecg-io Documentation
-theme: windmill
+theme:
+  name: material
+  favicon: https://avatars.githubusercontent.com/codeoverflow-org
 docs_dir: docs
 site_dir: build
 
-extra:
-  version: "Successor of ChatOverflow"
+repo_name: codeoverflow-org/nodecg-io
+repo_url: https://github.com/codeoverflow-org/nodecg-io
 
 markdown_extensions:
     - plantuml_markdown
