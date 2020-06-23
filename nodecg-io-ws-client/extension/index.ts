@@ -5,8 +5,7 @@ import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/u
 import * as WebSocket from "ws";
 
 interface WSClientServiceConfig {
-    host: string,
-    port: number
+    address: string
 }
 
 export interface WSClientServiceClient {
@@ -34,17 +33,16 @@ module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | unde
 
 async function validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
     try{
-        const client = new WebSocket(`ws://${config.host}:${config.port}`); // Will crash nodecg if the websocket couldn't connect to a server.
-        let open = false;
-        client.on('open', () => {
-            open = true;
+        const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+        await new Promise((resolve, reject) => {
+            client.once("error", reject);
+            client.on("open", () => {
+                client.off("error", reject);
+                resolve();
+            });
         });
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Ugly, but I don't really know a better way
-        if(open) {
-            client.close();
-            return emptySuccess();
-        }
-        return error("Could not open Connection.");
+        client.close();
+        return emptySuccess();
     } catch (err) {
         return error(err.toString());
     }
@@ -53,7 +51,14 @@ async function validateConfig(config: WSClientServiceConfig): Promise<Result<voi
 function createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promise<Result<WSClientServiceClient>> {
     return async (config) => {
         try{
-            const client = new WebSocket(`ws://${config.host}:${config.port}`);
+            const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+            await new Promise((resolve, reject) => {
+                client.once("error", reject);
+                client.on("open", () => {
+                    client.off("error", reject);
+                    resolve();
+                });
+            });
             return success({
                 getRawClient() {
                     return client;

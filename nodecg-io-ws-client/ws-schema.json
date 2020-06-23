@@ -3,14 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "host": {
+      "address": {
         "type": "string",
-        "description": "An IP address to the websocket"
-      },
-      "port": {
-        "type": "number",
-        "description": "The port of the websocket"
+        "description": "An address to a websocket server"
       }
     },
-    "required": ["host", "port"]
+    "required": ["address"]
   }
