@@ -47,7 +47,7 @@ export function renderBundleDeps(): void {
     renderInstanceSelector();
 }
 
-export function renderInstanceSelector() {
+export function renderInstanceSelector(): void {
     if (bundles.value === undefined) {
         return;
     }
