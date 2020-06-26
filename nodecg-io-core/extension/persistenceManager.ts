@@ -16,7 +16,7 @@ interface PersistentData {
     /**
      * All bundle dependency data that is held by the {@link BundleManager}.
      */
-    bundleDependencies: ObjectMap<string, ServiceDependency<any>[]>;
+    bundleDependencies: ObjectMap<string, ServiceDependency<unknown>[]>;
 }
 
 /**
@@ -81,7 +81,7 @@ export class PersistenceManager {
      * @param password the password of the encrypted config.
      * @return success if the password was correct and loading has been successful and an error if the password is wrong.
      */
-    async load(password: string): Promise<Result<any>> {
+    async load(password: string): Promise<Result<void>> {
         if (this.isLoaded()) {
             return error("Config has already been decrypted and loaded.");
         }
@@ -125,7 +125,7 @@ export class PersistenceManager {
      */
     private loadServiceInstances(instances: ObjectMap<string, ServiceInstance<unknown, unknown>>) {
         for (const instanceName in instances) {
-            if (!instances.hasOwnProperty(instanceName)) {
+            if (!instances.prototype?.hasOwnProperty(instanceName)) {
                 continue;
             }
             const inst = instances[instanceName];
@@ -167,9 +167,9 @@ export class PersistenceManager {
      * Loads all passed bundle dependencies into the framework by setting them in the bundle manager.
      * @param bundles the bundle dependencies that should be set.
      */
-    private loadBundleDependencies(bundles: ObjectMap<string, ServiceDependency<any>[]>): void {
+    private loadBundleDependencies(bundles: ObjectMap<string, ServiceDependency<unknown>[]>): void {
         for (const bundleName in bundles) {
-            if (!bundles.hasOwnProperty(bundleName)) {
+            if (!bundles.prototype?.hasOwnProperty(bundleName)) {
                 continue;
             }
 

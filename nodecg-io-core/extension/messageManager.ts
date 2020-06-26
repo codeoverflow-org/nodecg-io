@@ -38,7 +38,7 @@ export class MessageManager {
         instances: InstanceManager,
         bundles: BundleManager,
         persist: PersistenceManager,
-    ) {
+    ): void {
         nodecg.listenFor("updateInstanceConfig", async (msg: UpdateInstanceConfigMessage, ack) => {
             const inst = instances.getServiceInstance(msg.instanceName);
             if (inst === undefined) {

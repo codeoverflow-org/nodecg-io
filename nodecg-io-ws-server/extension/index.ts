@@ -14,7 +14,7 @@ export interface WSServerServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSServerServiceClient> | undefined => {
     nodecg.log.info("Websocket server bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Websocket server bundle won't function without it.");
         return undefined;

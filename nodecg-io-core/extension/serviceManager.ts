@@ -19,7 +19,7 @@ export class ServiceManager {
      * Registers the passed service which show it in the GUI and allows it to be instanced using {@link createServiceInstance}.
      * @param service the service you want to register.
      */
-    registerService<R, C>(service: Service<R, C>) {
+    registerService<R, C>(service: Service<R, C>): void {
         this.services.value.push(service);
         this.nodecg.log.info(`Service ${service.serviceType} has been registered.`);
     }

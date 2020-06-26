@@ -100,11 +100,7 @@ export class InstanceManager {
      *                   Should only be false if it has been validated at a previous point in time, e.g. loading after startup.
      * @return void if everything went fine and a string describing the issue if something went wrong.
      */
-    async updateInstanceConfig(
-        instanceName: string,
-        config: unknown,
-        validation: boolean = true,
-    ): Promise<Result<void>> {
+    async updateInstanceConfig(instanceName: string, config: unknown, validation = true): Promise<Result<void>> {
         // Check existence and get service instance.
         const inst = this.serviceInstances.value[instanceName];
         if (inst === undefined) {

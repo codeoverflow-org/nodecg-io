@@ -14,7 +14,7 @@ import * as path from "path";
  */
 export interface NodeCGIOCore {
     registerService<R, C>(service: Service<R, C>): ServiceProvider<C>;
-    readSchema(...path: string[]): any | undefined;
+    readSchema(...path: string[]): Record<string, unknown> | undefined;
 }
 
 module.exports = (nodecg: NodeCG): NodeCGIOCore => {

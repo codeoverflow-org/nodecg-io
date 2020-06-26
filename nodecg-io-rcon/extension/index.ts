@@ -17,7 +17,7 @@ export interface RconServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<RconServiceClient> | undefined => {
     nodecg.log.info("Rcon bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Rcon bundle won't function without it.");
         return undefined;
@@ -43,7 +43,7 @@ async function validateConfig(config: RconServiceConfig): Promise<Result<void>> 
         });
 
         // We need one error handler or node will exit the process on an error.
-        rcon.on("error", (err) => {});
+        rcon.on("error", (_err) => {});
 
         await rcon.connect(); // This will throw an exception if there is an error.
         rcon.end();
@@ -67,7 +67,7 @@ function createClient(nodecg: NodeCG): (config: RconServiceConfig) => Promise<Re
             });
 
             // We need one error handler or node will exit the process on an error.
-            rcon.on("error", (err) => {});
+            rcon.on("error", (_err) => {});
 
             await rcon.connect(); // This will throw an exception if there is an error.
             nodecg.log.info("Successfully connected to the rcon server.");
@@ -90,7 +90,7 @@ function stopClient(client: RconServiceClient): void {
     client
         .getRawClient()
         .end()
-        .then((r) => {
+        .then(() => {
             console.log("Stopped rcon client successfully.");
         });
 }

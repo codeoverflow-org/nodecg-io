@@ -16,11 +16,11 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
     Here is a sample config for you to orient:
 
-   ```
-   {
-       "oauthKey": "oauth:abcdef...."
-   }
-   ```
+    ```
+    {
+        "oauthKey": "oauth:abcdef...."
+    }
+    ```
 
     After entering it, click save.
 

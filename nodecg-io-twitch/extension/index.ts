@@ -15,7 +15,7 @@ export interface TwitchServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
     nodecg.log.info("Twitch bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Twitch bundle won't function without it.");
         return undefined;

@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updateLoadedStatus(): void {
-    nodecg.sendMessage("isLoaded", (err, result) => {
+    nodecg.sendMessage("isLoaded", (_err, result) => {
         if (result) {
             spanLoaded.innerText = "Loaded";
             divAuth?.classList.add("hidden");

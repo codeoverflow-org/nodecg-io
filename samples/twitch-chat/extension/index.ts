@@ -5,8 +5,10 @@ import { TwitchServiceClient } from "nodecg-io-twitch/extension";
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
-    // This implicit cast determines the client type in the requireService call
-    const twitch: ServiceProvider<TwitchServiceClient> | undefined = nodecg.extensions["nodecg-io-twitch"] as any;
+    // This explicit cast determines the client type in the requireService call
+    const twitch = (nodecg.extensions["nodecg-io-twitch"] as unknown) as
+        | ServiceProvider<TwitchServiceClient>
+        | undefined;
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
@@ -31,7 +33,7 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
     tw.join(channel)
         .then(() => {
             nodecg.log.info(`Connected to twitch channel "${channel}"`);
-            tw.onPrivmsg((chan, user, message, msg) => {
+            tw.onPrivmsg((chan, user, message, _msg) => {
                 if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }

@@ -40,13 +40,13 @@ const spanInstanceNotice = document.getElementById("spanInstanceNotice");
 window.addEventListener("resize", () => {
     updateMonacoLayout();
 });
-export function updateMonacoLayout() {
+export function updateMonacoLayout(): void {
     if (instanceMonaco !== null) {
         editor?.layout();
     }
 }
 
-export function onMonacoReady() {
+export function onMonacoReady(): void {
     if (instanceMonaco !== null) {
         editor = monaco.editor.create(instanceMonaco, {
             theme: "vs-dark",
@@ -59,7 +59,7 @@ export function onMonacoReady() {
 }
 
 // Instance drop-down
-export function onInstanceSelectChange(value: string) {
+export function onInstanceSelectChange(value: string): void {
     showError(undefined);
     switch (value) {
         case "new":
@@ -78,39 +78,43 @@ export function onInstanceSelectChange(value: string) {
             setCreateInputs(false, false);
             break;
         default:
-            const inst = serviceInstances.value?.[value];
-            const service = services.value?.find((svc) => svc.serviceType === inst?.serviceType);
-
-            editor?.updateOptions({
-                readOnly: false,
-            });
-
-            // Get rid of old models, as they have to be unique and we may add the same again
-            monaco.editor.getModels().forEach((m) => m.dispose());
-
-            // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
-            const modelUri = monaco.Uri.parse(`mem://nodecg-io/${inst?.serviceType}.json`);
-            monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-                validate: service?.schema !== undefined,
-                schemas:
-                    service?.schema !== undefined
-                        ? [
-                              {
-                                  uri: modelUri.toString(),
-                                  fileMatch: [modelUri.toString()],
-                                  schema: objectDeepCopy(service?.schema),
-                              },
-                          ]
-                        : [],
-            });
-            const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
-            editor?.setModel(model);
-            setCreateInputs(false, true);
+            showConfig(value);
     }
 }
 
+function showConfig(value: string) {
+    const inst = serviceInstances.value?.[value];
+    const service = services.value?.find((svc) => svc.serviceType === inst?.serviceType);
+
+    editor?.updateOptions({
+        readOnly: false,
+    });
+
+    // Get rid of old models, as they have to be unique and we may add the same again
+    monaco.editor.getModels().forEach((m) => m.dispose());
+
+    // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
+    const modelUri = monaco.Uri.parse(`mem://nodecg-io/${inst?.serviceType}.json`);
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: service?.schema !== undefined,
+        schemas:
+            service?.schema !== undefined
+                ? [
+                      {
+                          uri: modelUri.toString(),
+                          fileMatch: [modelUri.toString()],
+                          schema: objectDeepCopy(service?.schema),
+                      },
+                  ]
+                : [],
+    });
+    const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
+    editor?.setModel(model);
+    setCreateInputs(false, true);
+}
+
 // Save button
-export function saveInstanceConfig() {
+export function saveInstanceConfig(): void {
     if (editor === undefined) {
         return;
     }
@@ -137,7 +141,7 @@ export function saveInstanceConfig() {
 }
 
 // Delete button
-export function deleteInstance() {
+export function deleteInstance(): void {
     const msg: DeleteServiceInstanceMessage = {
         instanceName: selectInstance.options[selectInstance.selectedIndex].value,
     };
@@ -154,7 +158,7 @@ export function deleteInstance() {
 }
 
 // Create button
-export function createInstance() {
+export function createInstance(): void {
     const service = selectService.options[selectService.options.selectedIndex].value;
     const name = inputInstanceName.value;
 
@@ -242,7 +246,7 @@ function setCreateInputs(createMode: boolean, instanceSelected: boolean) {
     setVisible(instanceServiceSelector, createMode);
 }
 
-export function showError(msg: string | undefined) {
+export function showError(msg: string | undefined): void {
     if (spanInstanceNotice !== null) {
         spanInstanceNotice.innerText = msg !== undefined ? msg : "";
     }

@@ -1,3 +1,6 @@
+// There is no way we can get this function to pass the linter due to dynamic typing.
+/* eslint-disable */
+
 /**
  * Creates a deep copy of a object.
  * @param obj the copy of which a deep copy should be created.

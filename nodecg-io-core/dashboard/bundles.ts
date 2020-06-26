@@ -28,7 +28,7 @@ function renderBundles() {
     renderBundleDeps();
 }
 
-export function renderBundleDeps() {
+export function renderBundleDeps(): void {
     if (bundles.value === undefined) {
         return;
     }
@@ -57,7 +57,7 @@ export function renderInstanceSelector() {
     const instances = ["none"];
 
     for (const instName in serviceInstances.value) {
-        if (!serviceInstances.value.hasOwnProperty(instName)) {
+        if (!serviceInstances.value.prototype?.hasOwnProperty(instName)) {
             continue;
         }
 
@@ -80,7 +80,7 @@ export function renderInstanceSelector() {
     selectBundleInstance.selectedIndex = index;
 }
 
-export function setServiceDependency() {
+export function setServiceDependency(): void {
     const bundle = selectBundle.options[selectBundle.selectedIndex].value;
     const instance = selectBundleInstance.options[selectBundleInstance.selectedIndex].value;
     const type = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex].value;

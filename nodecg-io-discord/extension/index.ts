@@ -14,7 +14,7 @@ export interface DiscordServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undefined => {
     nodecg.log.info("Discord bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Discord bundle won't function without it.");
         return undefined;
@@ -46,7 +46,7 @@ async function validateConfig(config: DiscordServiceConfig): Promise<Result<void
 function createClient(nodecg: NodeCG): (config: DiscordServiceConfig) => Promise<Result<DiscordServiceClient>> {
     return async (config) => {
         const client = new Client();
-        return client.login(config.botToken).then((s) => {
+        return client.login(config.botToken).then(() => {
             nodecg.log.info("Successfully connected to discord.");
             return success({
                 getRawClient() {

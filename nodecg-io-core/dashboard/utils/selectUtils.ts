@@ -4,6 +4,7 @@ export function updateOptionsMap(node: HTMLSelectElement, options: ObjectMap<str
     const keys = [];
 
     for (const key in options) {
+        // eslint-disable-next-line no-prototype-builtins
         if (!options.hasOwnProperty(key)) {
             continue;
         }

@@ -17,19 +17,19 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
-- [ ] AHK
-- [x] Discord  
-- [ ] IRC (Internet Relay Chat)
-- [ ] MIDI
-- [x] RCON  
-- [ ] Serial Port (Arduino)  
-- [ ] Spotify
-- [ ] StreamElements  
-- [ ] TipeeeStream  
-- [x] Twitch Chat  
-- [ ] Twitter
-- [X] WebSocket Client & Server
-- [ ] Youtube
+-   [ ] AHK
+-   [x] Discord
+-   [ ] IRC (Internet Relay Chat)
+-   [ ] MIDI
+-   [x] RCON
+-   [ ] Serial Port (Arduino)
+-   [ ] Spotify
+-   [ ] StreamElements
+-   [ ] TipeeeStream
+-   [x] Twitch Chat
+-   [ ] Twitter
+-   [x] WebSocket Client & Server
+-   [ ] Youtube
 
 ## How to use nodecg-io
 
