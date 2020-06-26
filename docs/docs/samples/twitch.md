@@ -16,7 +16,7 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
    Here is a sample config for you to orient:
 
-   ```json
+   ```
    {
        "oauthKey": "oauth:abcdef...."
    }

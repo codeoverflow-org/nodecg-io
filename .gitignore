@@ -10,3 +10,6 @@ node_modules/
 
 # Lerna temporary files
 package.json.lerna_backup
+
+# Output path of the documentation
+docs/build
