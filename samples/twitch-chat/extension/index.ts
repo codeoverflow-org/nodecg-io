@@ -1,13 +1,14 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { TwitchServiceClient } from "nodecg-io-twitch/extension";
-
+import { SpotifyServiceClient } from "nodecg-io-spotify/extension";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
     // This implicit cast determines the client type in the requireService call
     const twitch: ServiceProvider<TwitchServiceClient> | undefined = nodecg.extensions["nodecg-io-twitch"] as any;
+    const spotify: ServiceProvider<SpotifyServiceClient> | undefined = nodecg.extensions["nodecg-io-spotify"] as any;
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
@@ -20,6 +21,22 @@ module.exports = function (nodecg: NodeCG) {
             addListeners(nodecg, client, channel);
         });
     }, () => nodecg.log.info("Twitch client has been unset."));
+
+    spotify?.requireService("sample", (client) => {
+        nodecg.log.info("Spotify client has been found. Wow!");
+
+        client.getRawClient().getMyCurrentPlaybackState({})
+        .then(data => {
+            try {
+                nodecg.log.info(`artist: ${data?.body?.item?.artists[0].name}, name: ${data?.body?.item?.name}`);
+            } catch {
+                nodecg.log.info("Error parsing song information.");
+            }
+        }, error => {
+            console.log("Error while requesting current song.", error);
+
+        });
+    }, () => nodecg.log.info("Spotify client has been unset."));
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
