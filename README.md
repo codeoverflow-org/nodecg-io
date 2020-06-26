@@ -3,12 +3,12 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=3&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/tree/master/docs/services)
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=5&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
 >Development status: framework mostly implemented   
->Services implemented: Twitch chat, RCON, Discord
+>Services implemented: Twitch chat, RCON, Discord, WebSocket Client & Server
 
 ## About nodecg-io
 
@@ -33,10 +33,10 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 ## How to use nodecg-io
 
 If you want to use nodecg-io, you should note that it is only a framework for your bundle, so you need at least a basic knowledge of the programming language Javascript or any other language that compiles to Javascript like Typescript. 
-If thats no problem you can had over to the [Installationguide](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/install.md) and then look at the [sample bundle](https://github.com/codeoverflow-org/nodecg-io/tree/master/samples/) for your selected service.
+If thats no problem you can had over to the [Installationguide](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/install.md) and then have a look at the [Available nodecg-io services](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md).
 
 ## How to contribute
- If you wat to contribute to this bundle you can implement one of this services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing had over to the [How to contribute](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/contribute.md) - Guide.
+ If you wat to contribute to this bundle you can implement one of this services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing had over to the [How to contribute](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/contribute.md) - Guide.
 
 ## Code Overflow Team
 
@@ -59,6 +59,8 @@ nodecg-io/
 +--nodecg-io-discord/      Discord integration
 +--nodecg-io-rcon/         Rcon integration
 +--nodecg-io-twitch/       Twitch integration
++--nodecg-io-ws-client/    WebSocket client integration
++--nodecg-io-ws-server/    WebSocket server integration
 +--samples/                Samplecode
    +--discord-guild-chat/  Discord Samplecode
    +--twitch-chat/         Twitch Samplecode
