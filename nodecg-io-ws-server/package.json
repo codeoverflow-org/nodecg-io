@@ -24,13 +24,12 @@
     "license": "MIT",
     "devDependencies": {
       "@types/node": "^13.13.12",
-      "@types/ws": "^7.2.5",
       "nodecg": "^1.6.1",
       "typescript": "^3.9.5"
     },
     "dependencies": {
       "nodecg-io-core": "0.1.0",
-	  "@types/ws": "^7.2.5",
+      "@types/ws": "^7.2.5",
       "ws": "^7.3.0"
     }
   }
