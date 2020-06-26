@@ -31,23 +31,48 @@ module.exports = (nodecg: NodeCG): ServiceProvider<WSServerServiceClient> | unde
     return core.registerService(service);
 };
 
+async function getServer(config: WSServerServiceConfig): Promise<Result<WebSocket.Server>> {
+    const client = new WebSocket.Server({ port: config.port });
+
+    // The constructor doesn't block, so we either wait till the server has been started or a
+    // error has been produced.
+    return await new Promise<Result<WebSocket.Server>>(resolve => {
+        client.once("listening", () => { // Will be called if everything went fine
+            resolve(success(client));
+        });
+        client.once("error", err => { // Will be called if there is an error
+            resolve(error(err.message));
+        });
+    });
+}
+
 async function validateConfig(config: WSServerServiceConfig): Promise<Result<void>> {
-    try{
-        const client = new WebSocket.Server({port: config.port}); // Will crash nodecg if port is already in use
-        client.close();
-        return emptySuccess();
+    try {
+        const client = await getServer(config);
+        if (!client.failed) {
+            client.result.close(); // Close the server after testing that it can be opened
+            return emptySuccess();
+        } else {
+            return client; // Return produced error
+        }
     } catch (err) {
+        console.log("catch executed")
         return error(err.toString());
     }
 }
 
 function createClient(nodecg: NodeCG): (config: WSServerServiceConfig) => Promise<Result<WSServerServiceClient>> {
     return async (config) => {
-        try{
-            const client = new WebSocket.Server({port: config.port});
+        try {
+            const client = await getServer(config);
+            if(client.failed) {
+                return client; // Pass the error to the framework
+            }
+
+            nodecg.log.info("Successfully started WebSocket server.")
             return success({
                 getRawClient() {
-                    return client;
+                    return client.result;
                 }
             });
         } catch (err) {

@@ -59,6 +59,7 @@ function createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promis
                     resolve();
                 });
             });
+            nodecg.log.info("Successfully connected to the WebSocket server.");
             return success({
                 getRawClient() {
                     return client;
