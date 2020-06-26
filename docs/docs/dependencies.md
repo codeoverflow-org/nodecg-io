@@ -38,6 +38,18 @@ object  twitch {
 object  twitch_chat_client {
 [[https://www.npmjs.com/package/twitch-chat-client twitch-chat-client]]
 }
+object  nodecg_io_ws_client {
+[[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-ws-client nodecg-io-ws-client]]
+}
+object  types_ws {
+[[https://www.npmjs.com/package/@types/ws @types/ws]]
+}
+object  ws {
+[[https://www.npmjs.com/package/ws ws]]
+}
+object  nodecg_io_ws_server {
+[[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-ws-server nodecg-io-ws-server]]
+}
 nodecg_io_core ...> ajv
 nodecg_io_core ...> crypto_js
 nodecg_io_core ...> tslib
@@ -49,4 +61,10 @@ nodecg_io_rcon ...> rcon_client
 nodecg_io_twitch --> nodecg_io_core
 nodecg_io_twitch ...> twitch
 nodecg_io_twitch ...> twitch_chat_client
+nodecg_io_ws_client --> nodecg_io_core
+nodecg_io_ws_client ...> types_ws
+nodecg_io_ws_client ...> ws
+nodecg_io_ws_server --> nodecg_io_core
+nodecg_io_ws_server ...> types_ws
+nodecg_io_ws_server ...> ws
 ::end-uml::
