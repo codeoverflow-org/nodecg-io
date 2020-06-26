@@ -13,7 +13,7 @@ module.exports = function (nodecg: NodeCG) {
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch?.requireService("Twitch-chat", (client) => {
+    twitch?.requireService("twitch-chat", (client) => {
         nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
         twitchChannels.forEach((channel) => {

@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG) {
     const discord: ServiceProvider<DiscordServiceClient> | undefined = nodecg.extensions["nodecg-io-discord"] as any;
 
 
-    discord?.requireService("Discord-guild-chat", (client) => {
+    discord?.requireService("discord-guild-chat", (client) => {
         nodecg.log.info("Discord client has been updated, adding handlers for messages.");
         addListeners(nodecg, client);
     }, () => nodecg.log.info("Discord client has been unset."));
