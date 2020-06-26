@@ -8,6 +8,9 @@ node_modules/
 .idea/
 .vscode/
 
+# Launch configurations
+!/.vscode/launch.json
+
 # Lerna temporary files
 package.json.lerna_backup
 
