@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "oauthConsumerKey": {
+        "type": "string",
+        "description": "The oauth consumer key of your twitter app: https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a"
+	  },
+	  "oauthConsumerSecret": {
+		"type": "string",
+        "description": "The oauth consumer secret of your twitter app: https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a"
+	  },
+	  "oauthToken": {
+		"type": "string",
+        "description": "The oauth token of your twitter app: https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a"
+	  },
+	  "oauthTokenSecret": {
+		"type": "string",
+        "description": "The oauth token secret of your twitter app: https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a"
+	  }
+    },
+    "required": ["oauthConsumerKey", "oauthConsumerSecret", "oauthToken", "oauthTokenSecret"]
+}
