@@ -1,7 +1,7 @@
 {
   "name": "nodecg-io-core",
   "version": "0.1.0",
-  "description": "",
+  "description": "The core of nodecg-io. Connects everything up.",
   "homepage": "http://codeoverflow.org",
   "author": {
     "name": "CodeOverflow team",
