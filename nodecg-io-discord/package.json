@@ -1,11 +1,11 @@
 {
-  "name": "nodecg-io-twitch",
+  "name": "nodecg-io-discord",
   "version": "0.1.0",
-  "description": "Allows to connect to twitch with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
+  "description": "Allows to connect to discord via a discord-bot.",
   "homepage": "",
   "author": {
-    "name": "CodeOverflow team",
-    "url": "http://codeoverflow.org"
+    "name": "noeppi_noeppi",
+    "url": "https://github.com/noeppi-noeppi"
   },
   "scripts": {
     "build": "tsc",
@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "nodecg-io-core": "0.1.0",
-    "twitch": "^4.0.10",
-    "twitch-chat-client": "^4.0.10"
+    "discord.js": "12.2.0"
   }
 }

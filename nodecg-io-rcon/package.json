@@ -1,11 +1,11 @@
 {
-  "name": "nodecg-io-twitch",
+  "name": "nodecg-io-rcon",
   "version": "0.1.0",
-  "description": "Allows to connect to twitch with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
+  "description": "Allows you to send commands to a minecraft server via RCON.",
   "homepage": "",
   "author": {
-    "name": "CodeOverflow team",
-    "url": "http://codeoverflow.org"
+    "name": "derNiklaas",
+    "url": "https://github.com/derNiklaas"
   },
   "scripts": {
     "build": "tsc",
@@ -23,13 +23,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^13.13.5",
+    "@types/node": "^13.13.12",
     "nodecg": "^1.6.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.5"
   },
   "dependencies": {
     "nodecg-io-core": "0.1.0",
-    "twitch": "^4.0.10",
-    "twitch-chat-client": "^4.0.10"
+    "rcon-client": "^4.2.0"
   }
 }

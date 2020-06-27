@@ -5,6 +5,5 @@
 		"lib": ["ES2015", "dom"],
 		"module": "ES2015"
 	},
-	"extends": "../../tsconfig.json",
-	"exclude": [] // Removes excluding of dashboard of the tsconfig in the repo root
+	"extends": "../../tsconfig.common.json"
 }

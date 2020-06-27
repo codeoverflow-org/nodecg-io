@@ -1,70 +1,67 @@
 # nodecg-io
 
-**Development status: framework mostly implemented, no services other than a simple twitch chat**
+[![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
+[![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
+[![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=5&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md)
+[![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 
-## Installation
+**A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
+>Development status: framework mostly implemented   
+>Services implemented: Twitch chat, RCON, Discord, WebSocket Client & Server
 
-Requirements: [git](https://git-scm.com/), [node](https://nodejs.org), [npm](https://www.npmjs.com/get-npm) and a working [nodecg](https://nodecg.com) installation.
+## About nodecg-io
 
-1. Clone this repository: `git clone https://github.com/codeoverflow-org/nodecg-io.git`
+nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org/chatoverflow). The aim of this bundle is to simplify the code and expand the number of integrated services. However, the main goal is still to carry out the API integration for you and thus to save you development time.
 
-   *Note:* you should clone nodecg-io to somewhere outside of your nodecg `bundles/` directory as this repo contains many bundles in subdirectories and nodecg doesn't support nesting of the bundles in other directories. You can clone it to any other path that you wish.
+## Implemented Services and Interfaces
 
-2. Install dependencies: `cd path/to/nodecg-io && npm install`
+- [ ] AHK
+- [x] Discord  
+- [ ] IRC (Internet Relay Chat)
+- [ ] MIDI
+- [x] RCON  
+- [ ] Serial Port (Arduino)  
+- [ ] Spotify
+- [ ] StreamElements  
+- [ ] TipeeeStream  
+- [x] Twitch Chat  
+- [ ] Twitter
+- [X] WebSocket Client & Server
+- [ ] Youtube
 
-3. Build nodecg-io: `cd path/to/nodecg-io && npm run build`
+## How to use nodecg-io
 
-4. Add nodecg-io directory to the nodecg config:
+If you want to use nodecg-io, you should note that it is only a framework for your bundle, so you need at least a basic knowledge of the programming language Javascript or any other language that compiles to Javascript like Typescript. 
+If thats no problem you can had over to the [Installationguide](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/install.md) and then have a look at the [Available nodecg-io services](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md).
 
-   Modify the nodecg configuration in `path/to/nodecg/cfg/nodecg.json`, here is an example config:
+## How to contribute
+ If you wat to contribute to this bundle you can implement one of this services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing had over to the [How to contribute](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/contribute.md) - Guide.
 
-   ```json
-   {
-       "bundles": {
-           "paths": ["path/to/nodecg-io"]
-       }
-   }
-   ```
+## Code Overflow Team
 
-   *Note 1:* This path should point to the root of this repository, not to a bundle inside this repo.
-   
-   *Note 2:* If nodecg doesn't load nodecg-io for some reason you might want to use an absolute path here.
+> <img src="https://avatars.githubusercontent.com/daniel0611"   height="50px" title="Daniel Huber"/>   | [`@daniel0611`](https://github.com/daniel0611)
 
-5. Start nodecg.
+> <img src="https://avatars.githubusercontent.com/joblo2213"    height="50px" title="Jonas"/>          | [`@joblo2213`](https://github.com/joblo2213)
 
-## Using the sample bundle
+> <img src="https://avatars.githubusercontent.com/sebinside"    height="50px" title="Sebastian"/>      | [`@sebinside`](https://github.com/sebinside)
 
-There is a simple example bundle in `sample/` that demonstrates the ability to get access to a twitch chat and printing all messages of it. Here is a guide to how to get it working:
+P.S.: If you have some spare time to help out around here, we would be delighted to add your name to this list!
 
-1. Start nodecg with nodecg-io installed. The bundle is currently part of it so it should also be loaded.
 
-2. Go to the `nodecg-io` tab in the nodecg dashboard.
+# Repository structure
 
-3. Login using your password. If this is your first run, then enter the password with which you want to encrypt your configurations and credentials.
-
-4. Create a new twitch service instance using the left upper menu.
-
-5. Enter credentials for twitch.
-
-   The created instance should be automatically selected, if not select it in the upper left menu.
-
-   Here is a sample config for you to orient:
-
-   ```json
-   {
-       "oauthKey": "oauth:abcdef...."
-   }
-   ```
-
-   After entering it, click save.
-
-   *Note:* If you don't see monaco on the right, try reloading the page.
-
-6. Set the created twitch service instance to the service dependency of the sample bundle.
-
-   Select the sample bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created twitch instance).
-
-7. Check the nodecg logs
-
-   You should see an error or a success message and all twitch messages that are written in the twitch channel that is hardcoded in `sample/extension/index.ts`.
-
+```
+nodecg-io/
++--docs/                   Documentation
++--nodecg-io-core/         Core Lib
+   +--dashbord/            GUI
++--nodecg-io-discord/      Discord integration
++--nodecg-io-rcon/         Rcon integration
++--nodecg-io-twitch/       Twitch integration
++--nodecg-io-ws-client/    WebSocket client integration
++--nodecg-io-ws-server/    WebSocket server integration
++--samples/                Samplecode
+   +--discord-guild-chat/  Discord Samplecode
+   +--twitch-chat/         Twitch Samplecode
+```

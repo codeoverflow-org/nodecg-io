@@ -7,3 +7,9 @@ node_modules/
 # Editor configuration
 .idea/
 .vscode/
+
+# Lerna temporary files
+package.json.lerna_backup
+
+# Output path of the documentation
+docs/build
