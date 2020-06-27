@@ -13,13 +13,13 @@ module.exports = function (nodecg: NodeCG) {
         "discord-guild-chat",
         (client) => {
             nodecg.log.info("Discord client has been updated, adding handlers for messages.");
-            addListeners(nodecg, client);
+            addListeners(client);
         },
         () => nodecg.log.info("Discord client has been unset."),
     );
 };
 
-function addListeners(nodecg: NodeCG, client: DiscordServiceClient) {
+function addListeners(client: DiscordServiceClient) {
     const dc = client.getRawClient();
 
     dc.on("ready", () => {
