@@ -2,24 +2,29 @@ import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { TwitchServiceClient } from "nodecg-io-twitch/extension";
 
-
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
-    // This implicit cast determines the client type in the requireService call
-    const twitch: ServiceProvider<TwitchServiceClient> | undefined = nodecg.extensions["nodecg-io-twitch"] as any;
+    // This explicit cast determines the client type in the requireService call
+    const twitch = (nodecg.extensions["nodecg-io-twitch"] as unknown) as
+        | ServiceProvider<TwitchServiceClient>
+        | undefined;
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch?.requireService("twitch-chat", (client) => {
-        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
+    twitch?.requireService(
+        "sample",
+        (client) => {
+            nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
-        twitchChannels.forEach((channel) => {
-            addListeners(nodecg, client, channel);
-        });
-    }, () => nodecg.log.info("Twitch client has been unset."));
+            twitchChannels.forEach((channel) => {
+                addListeners(nodecg, client, channel);
+            });
+        },
+        () => nodecg.log.info("Twitch client has been unset."),
+    );
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
@@ -27,8 +32,8 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
 
     tw.join(channel)
         .then(() => {
-            nodecg.log.info(`Connected to twitch channel "${channel}"`)
-            tw.onPrivmsg((chan, user, message, msg) => {
+            nodecg.log.info(`Connected to twitch channel "${channel}"`);
+            tw.onPrivmsg((chan, user, message, _msg) => {
                 if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }

@@ -6,16 +6,16 @@ import TwitchClient from "twitch";
 import ChatClient from "twitch-chat-client";
 
 interface TwitchServiceConfig {
-    oauthKey: string
+    oauthKey: string;
 }
 
 export interface TwitchServiceClient {
-    getRawClient(): ChatClient
+    getRawClient(): ChatClient;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
     nodecg.log.info("Twitch bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Twitch bundle won't function without it.");
         return undefined;
@@ -26,7 +26,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefi
         serviceType: "twitch",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
-        stopClient: stopClient
+        stopClient: stopClient,
     };
 
     return core.registerService(service);
@@ -58,13 +58,13 @@ function createClient(nodecg: NodeCG): (config: TwitchServiceConfig) => Promise<
             // This also waits till it has registered itself at the IRC server, which is needed to do anything.
             await new Promise((resolve, _reject) => {
                 chatClient.onRegister(resolve);
-            })
+            });
             nodecg.log.info("Successfully connected to twitch.");
 
             return success({
                 getRawClient() {
                     return chatClient;
-                }
+                },
             });
         } catch (err) {
             return error(err.toString());

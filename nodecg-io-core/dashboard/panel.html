@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-	<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-	<p>Minzig!</p>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <p>Minzig!</p>
 
-	<p>Current status: <span id="spanLoaded">Unknown</span></p>
+        <p>Current status: <span id="spanLoaded">Unknown</span></p>
 
-	<div id="divAuth">
-		<p>Login:</p>
-		<div class="margins">
-			<label for="inputPassword">Password: </label>
-			<input type="password" id="inputPassword">
-			<button onclick="loadFramework()">Login</button>
-			<span id="spanPasswordNotice"></span>
-		</div>
-		<br>
-	</div>
+        <div id="divAuth">
+            <p>Login:</p>
+            <div class="margins">
+                <label for="inputPassword">Password: </label>
+                <input type="password" id="inputPassword" />
+                <button onclick="loadFramework()">Login</button>
+                <span id="spanPasswordNotice"></span>
+            </div>
+            <br />
+        </div>
 
-	<div id="divMain" class="flex">
-		<div id="leftSide" class="flex flex-column">
-			<p>Manage Service Instances:</p>
-			<div>
-				<div id="instanceSelector" class="margins flex">
-					<label for="selectInstance">Instance:</label>
-					<select id="selectInstance" class="flex-fill" onchange="onInstanceSelectChange(value);"></select>
-				</div>
+        <div id="divMain" class="flex">
+            <div id="leftSide" class="flex flex-column">
+                <p>Manage Service Instances:</p>
+                <div>
+                    <div id="instanceSelector" class="margins flex">
+                        <label for="selectInstance">Instance:</label>
+                        <select
+                            id="selectInstance"
+                            class="flex-fill"
+                            onchange="onInstanceSelectChange(value);"
+                        ></select>
+                    </div>
 
-				<div id="instanceServiceSelector" class="margins flex hidden">
-					<label for="selectService">Service Type: </label>
-					<select id="selectService" class="flex-fill"></select>
-				</div>
+                    <div id="instanceServiceSelector" class="margins flex hidden">
+                        <label for="selectService">Service Type: </label>
+                        <select id="selectService" class="flex-fill"></select>
+                    </div>
 
-				<div id="instanceNameField" class="margins flex hidden">
-					<label for="inputInstanceName">Instance Name: </label>
-					<input id="inputInstanceName" class="flex-fill" type="text">
-				</div>
+                    <div id="instanceNameField" class="margins flex hidden">
+                        <label for="inputInstanceName">Instance Name: </label>
+                        <input id="inputInstanceName" class="flex-fill" type="text" />
+                    </div>
 
-				<div id="instanceCreateButton" class="margins hidden">
-					<button id="buttonCreate" onclick="createInstance();">Create</button>
-				</div>
+                    <div id="instanceCreateButton" class="margins hidden">
+                        <button id="buttonCreate" onclick="createInstance();">Create</button>
+                    </div>
 
-				<div id="instanceEditButtons" class="margins hidden">
-					<button id="buttonSave" onclick="saveInstanceConfig();">Save</button>
-					<button id="buttonDelete" onclick="deleteInstance();">Delete Instance</button>
-				</div>
+                    <div id="instanceEditButtons" class="margins hidden">
+                        <button id="buttonSave" onclick="saveInstanceConfig();">Save</button>
+                        <button id="buttonDelete" onclick="deleteInstance();">Delete Instance</button>
+                    </div>
 
-				<div>
-					<span id="spanInstanceNotice"></span>
-				</div>
+                    <div>
+                        <span id="spanInstanceNotice"></span>
+                    </div>
+                </div>
 
-			</div>
+                <!-- Bundles -->
+                <p>Managing Bundles</p>
+                <div id="bundleControlDiv" class="margins">
+                    <label for="selectBundle">Bundle: </label>
+                    <select id="selectBundle" class="flex-fill" onchange="renderBundleDeps();"></select>
 
-			<!-- Bundles -->
-			<p>Managing Bundles</p>
-			<div id="bundleControlDiv" class="margins">
-				<label for="selectBundle">Bundle: </label>
-				<select id="selectBundle" class="flex-fill" onchange="renderBundleDeps();"></select>
+                    <label for="selectBundleDepType">Service: </label>
+                    <select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
 
-				<label for="selectBundleDepType">Service: </label>
-				<select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
+                    <label for="selectBundleInstance">Service Instance: </label>
+                    <select id="selectBundleInstance" class="flex-fill" onchange="setServiceDependency();"></select>
+                </div>
+            </div>
 
-				<label for="selectBundleInstance">Service Instance: </label>
-				<select id="selectBundleInstance" class="flex-fill" onchange="setServiceDependency();"></select>
-			</div>
+            <div id="instanceMonaco" class="flex-fill"></div>
+        </div>
 
-		</div>
+        <!-- Scripts -->
+        <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+        <script type="module" src="utils/selectUtils.js"></script>
+        <script type="module" src="utils/deepCopy.js"></script>
+        <script type="module" src="serviceInstance.js"></script>
+        <script type="module" src="bundles.js"></script>
+        <script type="module">
+            import { loadFramework } from "./authentication.js";
+            import {
+                onMonacoReady,
+                onInstanceSelectChange,
+                createInstance,
+                saveInstanceConfig,
+                deleteInstance,
+            } from "./serviceInstance.js";
+            import { renderBundleDeps, renderInstanceSelector, setServiceDependency } from "./bundles.js";
 
-		<div id="instanceMonaco" class="flex-fill"></div>
-	</div>
+            require.config({ paths: { vs: "node_modules/monaco-editor/min/vs" } });
+            require(["vs/editor/editor.main"], onMonacoReady);
 
-
-
-	<!-- Scripts -->
-	<script src="node_modules/monaco-editor/min/vs/loader.js"></script>
-	<script type="module" src="utils/selectUtils.js"></script>
-	<script type="module" src="utils/deepCopy.js"></script>
-	<script type="module" src="serviceInstance.js"></script>
-	<script type="module" src="bundles.js"></script>
-	<script type="module">
-		import { loadFramework } from "./authentication.js";
-		import {
-			onMonacoReady,
-			onInstanceSelectChange,
-			createInstance,
-			saveInstanceConfig,
-			deleteInstance
-		} from "./serviceInstance.js";
-		import { renderBundleDeps, renderInstanceSelector, setServiceDependency } from './bundles.js'
-
-		require.config({paths: {'vs': 'node_modules/monaco-editor/min/vs'}});
-		require(["vs/editor/editor.main"], onMonacoReady);
-
-		// Expose handlers from module to global window
-		window.loadFramework = loadFramework;
-		window.onInstanceSelectChange = onInstanceSelectChange;
-		window.createInstance = createInstance;
-		window.saveInstanceConfig = saveInstanceConfig;
-		window.deleteInstance = deleteInstance;
-		window.renderBundleDeps = renderBundleDeps;
-		window.renderInstanceSelector = renderInstanceSelector;
-		window.setServiceDependency = setServiceDependency;
-	</script>
-</body>
+            // Expose handlers from module to global window
+            window.loadFramework = loadFramework;
+            window.onInstanceSelectChange = onInstanceSelectChange;
+            window.createInstance = createInstance;
+            window.saveInstanceConfig = saveInstanceConfig;
+            window.deleteInstance = deleteInstance;
+            window.renderBundleDeps = renderBundleDeps;
+            window.renderInstanceSelector = renderInstanceSelector;
+            window.setServiceDependency = setServiceDependency;
+        </script>
+    </body>
 </html>

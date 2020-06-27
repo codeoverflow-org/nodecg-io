@@ -7,7 +7,7 @@ The Twitch-chat example bundle in `samples/twitch-chat` demonstrates the ability
 * Working NodeCG & nodcg-io installation
 * a Twitch oAuth-Key
 
-*Note:* If you don't have such a key yet you can generate it on https://twitchapps.com/tmi/. Just log into your Twitch account and copy the token.  
+_Note:_ If you don't have such a key yet you can generate it on https://twitchapps.com/tmi/. Just log into your Twitch account and copy the token.  
 
 ### Configure the Twitch sample bundle
 
@@ -31,7 +31,7 @@ The Twitch-chat example bundle in `samples/twitch-chat` demonstrates the ability
 
    After entering it, click save.
 
-   *Note:* If you don't see monaco on the right, try reloading the page.
+   _Note:_ If you don't see monaco on the right, try reloading the page.
 
 6. Set the created twitch service instance to the service dependency of the Twitch-chat bundle.
 
