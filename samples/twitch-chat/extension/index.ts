@@ -17,7 +17,7 @@ module.exports = function (nodecg: NodeCG) {
     twitch?.requireService(
         "twitch-chat",
         (client) => {
-        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
+            nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
             twitchChannels.forEach((channel) => {
                 addListeners(nodecg, client, channel);
