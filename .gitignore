@@ -14,5 +14,9 @@ node_modules/
 # Lerna temporary files
 package.json.lerna_backup
 
+# Configuration of prettier and ESLint
+!.eslintrc.js
+!.prettierrc.js
+
 # Output path of the documentation
 docs/build

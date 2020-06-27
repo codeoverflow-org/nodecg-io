@@ -1,42 +1,30 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { TwitchServiceClient } from "nodecg-io-twitch/extension";
-import { SpotifyServiceClient } from "nodecg-io-spotify/extension";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
-    // This implicit cast determines the client type in the requireService call
-    const twitch: ServiceProvider<TwitchServiceClient> | undefined = nodecg.extensions["nodecg-io-twitch"] as any;
-    const spotify: ServiceProvider<SpotifyServiceClient> | undefined = nodecg.extensions["nodecg-io-spotify"] as any;
+    // This explicit cast determines the client type in the requireService call
+    const twitch = (nodecg.extensions["nodecg-io-twitch"] as unknown) as
+        | ServiceProvider<TwitchServiceClient>
+        | undefined;
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch?.requireService("sample", (client) => {
-        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
+    twitch?.requireService(
+        "twitch-chat",
+        (client) => {
+            nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
-        twitchChannels.forEach((channel) => {
-            addListeners(nodecg, client, channel);
-        });
-    }, () => nodecg.log.info("Twitch client has been unset."));
-
-    spotify?.requireService("sample", (client) => {
-        nodecg.log.info("Spotify client has been found. Wow!");
-
-        client.getRawClient().getMyCurrentPlaybackState({})
-        .then(data => {
-            try {
-                nodecg.log.info(`artist: ${data?.body?.item?.artists[0].name}, name: ${data?.body?.item?.name}`);
-            } catch {
-                nodecg.log.info("Error parsing song information.");
-            }
-        }, error => {
-            console.log("Error while requesting current song.", error);
-
-        });
-    }, () => nodecg.log.info("Spotify client has been unset."));
+            twitchChannels.forEach((channel) => {
+                addListeners(nodecg, client, channel);
+            });
+        },
+        () => nodecg.log.info("Twitch client has been unset."),
+    );
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
@@ -44,9 +32,9 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
 
     tw.join(channel)
         .then(() => {
-            nodecg.log.info(`Connected to twitch channel "${channel}"`)
-            tw.onPrivmsg((chan, user, message, msg) => {
-                if(chan === channel.toLowerCase()) {
+            nodecg.log.info(`Connected to twitch channel "${channel}"`);
+            tw.onPrivmsg((chan, user, message, _msg) => {
+                if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }
             });
