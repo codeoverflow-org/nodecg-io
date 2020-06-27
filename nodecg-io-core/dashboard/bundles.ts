@@ -57,7 +57,7 @@ export function renderInstanceSelector(): void {
     const instances = ["none"];
 
     for (const instName in serviceInstances.value) {
-        if (!serviceInstances.value.prototype?.hasOwnProperty(instName)) {
+        if (!serviceInstances.value.hasOwnProperty(instName)) {
             continue;
         }
 
