@@ -3,7 +3,7 @@ import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { StreamdeckServiceClient } from "nodecg-io-streamdeck/extension";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for twitch started");
+    nodecg.log.info("Sample bundle for streamdeck started");
 
     // This explicit cast determines the client type in the requireService call
     const streamdeck = (nodecg.extensions["nodecg-io-streamdeck"] as unknown) as

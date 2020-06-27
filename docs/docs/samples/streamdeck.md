@@ -1,10 +1,10 @@
-## Using the Twitch sample bundle
+## Using the Streamdeck rainbow sample bundle
 
 The streamdeck-rainbow bundle paints your streamdeck with different colors.
 
 Sadly you can't access the streamdeck while another application accesses it. So you need to stop your Streamdeck Software before.
 
-### Configure the Streamdeck-Rainbow bundle
+### Configure the Streamdeck Rainbow bundle
 
 1, If you're on linux follow the instructions listed under Manual Installation [here](https://github.com/timothycrosley/streamdeck-ui/blob/master/README.md). Everything after the `sudo udevadm` command can be omitted.
 
