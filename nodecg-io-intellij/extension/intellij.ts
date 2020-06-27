@@ -74,7 +74,7 @@ export class IntelliJ {
      * @param place The place from where the event is simulated.
      * @param sync If this is set to true the methods blocks while the action is executing.
      */
-    async action(action: String, place: String, sync: boolean): Promise<void> {
+    async action(action: string, place: string, sync: boolean): Promise<void> {
         await this.rawRequest("run_action", {
             action: action,
             place: place,
@@ -86,6 +86,7 @@ export class IntelliJ {
     /**
      * Makes a raw request to IntelliJ
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     async rawRequest(method: string, data: any): Promise<any> {
         const response = await fetch(this.address, {
             method: "POST",
@@ -165,7 +166,7 @@ export class Project {
      * @param place The place from where the event is simulated.
      * @param sync If this is set to true the methods blocks while the action is executing.
      */
-    async action(action: String, place: String, sync: boolean): Promise<void> {
+    async action(action: string, place: string, sync: boolean): Promise<void> {
         await this.intellij.rawRequest("run_action", {
             action: action,
             place: place,
@@ -569,7 +570,7 @@ export class TaskManager {
     /**
      * Adds a task with the given name to the project.
      */
-    async addTask(name: String): Promise<Task> {
+    async addTask(name: string): Promise<Task> {
         const result = await this.intellij.rawRequest("tasks_add", {
             project: this.project.name,
             summary: name,
@@ -717,7 +718,7 @@ export class Plugin {
     /**
      * Gets the name of this plugin
      */
-    async getName(): Promise<String> {
+    async getName(): Promise<string> {
         return await this.intellij.rawRequest("plugin_name", { plugin_id: this.id });
     }
 
@@ -857,7 +858,7 @@ export class LocalHistory {
      * @param name The name of the new label
      * @param color The color of the new label. Set it to -1 or don't specify it for the default.
      */
-    async addLabel(project: Project, name: string, color: number = -1): Promise<HistoryLabel> {
+    async addLabel(project: Project, name: string, color = -1): Promise<HistoryLabel> {
         const result = await this.intellij.rawRequest("lh_add_label", {
             project: project.name,
             label: name,
@@ -887,7 +888,10 @@ export class HistoryChange {
      * is as well la change) does not affect any file.
      */
     async affects(file: VirtualFile): Promise<boolean> {
-        return await this.intellij.rawRequest("lh_change_affects", { change_id: this.id });
+        return await this.intellij.rawRequest("lh_change_affects", {
+            change_id: this.id,
+            vfs_file: file.url,
+        });
     }
 
     /**

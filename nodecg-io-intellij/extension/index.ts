@@ -14,7 +14,7 @@ export interface IntelliJServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<IntelliJServiceClient> | undefined => {
     nodecg.log.info("IntelliJ bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! IntelliJ bundle won't function without it.");
         return undefined;
@@ -25,7 +25,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<IntelliJServiceClient> | unde
         serviceType: "intellij",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
-        stopClient: stopClient,
+        stopClient: (_) => {},
     };
 
     return core.registerService(service);
@@ -59,5 +59,3 @@ function createClient(nodecg: NodeCG): (config: IntelliJServiceConfig) => Promis
         });
     };
 }
-
-function stopClient(client: IntelliJServiceClient): void {}
