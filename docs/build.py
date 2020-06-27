@@ -72,7 +72,11 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
             if not is_core:
                 sampleName = data['name'][10:] # Clip off the 'nodecg-io-' part
                 if os.path.exists(baseDocDir + os.path.sep + 'samples' + os.path.sep + sampleName + '.md'):
-                    out.write(f'See the [sample implementation](samples/{sampleName}.md)\n')
+                    with open(baseDocDir + os.path.sep + 'samples' + os.path.sep + sampleName + '.md') as infile:
+                        if infile.readline().strip() == '<!-- Marker for build.py that there\'s no sample bundle. Remove this if you created one -->':
+                            out.write(f'There\'s no sample implementation for this service yet.\n')
+                        else:
+                            out.write(f'See the [sample implementation](samples/{sampleName}.md)\n')
                 else:
                     out.write(f'There\'s no sample implementation for this service yet.\n')
                 out.write('\n')

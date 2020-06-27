@@ -23,6 +23,12 @@ object  nodecg_io_discord {
 object  discord_js {
 [[https://www.npmjs.com/package/discord.js discord.js]]
 }
+object  nodecg_io_intellij {
+[[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-intellij nodecg-io-intellij]]
+}
+object  node_fetch {
+[[https://www.npmjs.com/package/node-fetch node-fetch]]
+}
 object  nodecg_io_rcon {
 [[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-rcon nodecg-io-rcon]]
 }
@@ -56,6 +62,8 @@ nodecg_io_core ...> tslib
 nodecg_io_core ...> typescript
 nodecg_io_discord --> nodecg_io_core
 nodecg_io_discord ...> discord_js
+nodecg_io_intellij --> nodecg_io_core
+nodecg_io_intellij ...> node_fetch
 nodecg_io_rcon --> nodecg_io_core
 nodecg_io_rcon ...> rcon_client
 nodecg_io_twitch --> nodecg_io_core
