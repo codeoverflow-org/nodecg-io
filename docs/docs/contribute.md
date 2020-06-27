@@ -59,10 +59,27 @@ cd path/to/nodecg-io
 npm run watch
 ```
 
+## Add nodecg-io directory to the nodecg config:
+
+Modify the nodecg configuration in `path/to/nodecg/cfg/nodecg.json`, here is an example config:
+```json
+{
+    "bundles": {
+        "paths": ["path/to/nodecg-io", "path/to/nodecg-io/samples"]
+    }
+}  
+```
+_Note 1:_ This path should point to the root of this repository, not to a bundle inside this repo.
+
+_Note 2:_ The second path to the samples is only required if you want to use a sample plugin.
+   
+_Note 3:_ If nodecg doesn't load nodecg-io for some reason you might want to use an absolute path here.
+
+
+
 ## Run
 
-To test the changes you simply need to restart nodecg.  
-_Note:_ An automatic restart after a code change is possible and may come soon.
+To test the changes you simply need to start/restart nodecg.  
 
 ### Automated Testing
 
