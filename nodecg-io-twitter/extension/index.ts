@@ -43,7 +43,6 @@ async function validateConfig(config: TwitterServiceConfig): Promise<Result<void
             access_token_key: config.oauthToken, // eslint-disable-line camelcase
             access_token_secret: config.oauthTokenSecret, // eslint-disable-line camelcase
         });
-        console.log(Twitter);
         // Validate credentials
         await client.get("account/verify_credentials", {});
         return emptySuccess();
@@ -52,7 +51,7 @@ async function validateConfig(config: TwitterServiceConfig): Promise<Result<void
             return error(err[0].message);
         }
 
-        return error(error);
+        return error(error.toString());
     }
 }
 
