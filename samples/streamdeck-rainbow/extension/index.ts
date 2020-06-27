@@ -1,7 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { StreamdeckServiceClient } from "nodecg-io-streamdeck/extension";
-import * as color_convert from "color-convert";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
