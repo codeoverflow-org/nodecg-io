@@ -125,7 +125,7 @@ export class PersistenceManager {
      */
     private loadServiceInstances(instances: ObjectMap<string, ServiceInstance<unknown, unknown>>) {
         for (const instanceName in instances) {
-            if (!instances.hasOwnProperty(instanceName)) {
+            if (!Object.prototype.hasOwnProperty.call(instances, instanceName)) {
                 continue;
             }
             const inst = instances[instanceName];
@@ -169,7 +169,7 @@ export class PersistenceManager {
      */
     private loadBundleDependencies(bundles: ObjectMap<string, ServiceDependency<unknown>[]>): void {
         for (const bundleName in bundles) {
-            if (!bundles.hasOwnProperty(bundleName)) {
+            if (!Object.prototype.hasOwnProperty.call(bundles, bundleName)) {
                 continue;
             }
 

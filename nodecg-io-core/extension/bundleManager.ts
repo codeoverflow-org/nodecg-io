@@ -156,7 +156,7 @@ export class BundleManager {
     handleInstanceUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
         // Iterate over all bundles
         for (const bundle in this.bundles.value) {
-            if (!this.bundles.value.hasOwnProperty(bundle)) {
+            if (!Object.prototype.hasOwnProperty.call(this.bundles.value, bundle)) {
                 continue;
             }
             // Get their dependencies and if they have this instance set somewhere then update the bundle.
