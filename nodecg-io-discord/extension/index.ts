@@ -2,19 +2,19 @@ import { NodeCG } from "nodecg/types/server";
 import { NodeCGIOCore } from "nodecg-io-core/extension";
 import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
-import { Client } from "discord.js"
+import { Client } from "discord.js";
 
 interface DiscordServiceConfig {
-    botToken: string
+    botToken: string;
 }
 
 export interface DiscordServiceClient {
-    getRawClient(): Client
+    getRawClient(): Client;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undefined => {
     nodecg.log.info("Discord bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Discord bundle won't function without it.");
         return undefined;
@@ -25,7 +25,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undef
         serviceType: "discord",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
-        stopClient: stopClient
+        stopClient: stopClient,
     };
 
     return core.registerService(service);
@@ -45,16 +45,16 @@ async function validateConfig(config: DiscordServiceConfig): Promise<Result<void
 
 function createClient(nodecg: NodeCG): (config: DiscordServiceConfig) => Promise<Result<DiscordServiceClient>> {
     return async (config) => {
-        const client = new Client()
-        return client.login(config.botToken).then(s => {
-            nodecg.log.info("Successfully connected to discord."); 
+        const client = new Client();
+        return client.login(config.botToken).then(() => {
+            nodecg.log.info("Successfully connected to discord.");
             return success({
                 getRawClient() {
                     return client;
-                }
+                },
             });
         });
-    }
+    };
 }
 
 function stopClient(client: DiscordServiceClient): void {

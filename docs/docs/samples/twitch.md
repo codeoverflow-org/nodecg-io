@@ -1,8 +1,17 @@
 ## Using the Twitch sample bundle
 
-The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability to get access to a twitch chat and printing all messages of it. Here is a guide to how to get it working:
+The Twitch-chat example bundle in `samples/twitch-chat` demonstrates the ability to get access to a twitch chat and printing all messages of it. Here is a guide to how to get it working.
 
-1. Start nodecg with nodecg-io installed. The bundle is currently part of it so it should also be loaded.
+### Prerequisites
+
+* Working NodeCG & nodcg-io installation
+* a Twitch oAuth-Key
+
+*Note:* If you don't have such a key yet you can generate it on https://twitchapps.com/tmi/. Just log into your Twitch account and copy the token.  
+
+### Configure the Twitch sample bundle
+
+1. Start nodecg with nodecg-io installed. The Twitch-chat bundle is currently part of it so it should also be loaded.
 
 2. Go to the `nodecg-io` tab in the nodecg dashboard.
 
@@ -12,11 +21,9 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
 5. Enter credentials for twitch.
 
-   The created instance should be automatically selected, if not select it in the upper left menu.
+   The created instance should be automatically selected, if not select it in the upper left menu. Enter your Twitch oauth Key in monaco (the texteditor on the right) in this format:
 
-   Here is a sample config for you to orient:
-
-   ```
+   ```json
    {
        "oauthKey": "oauth:abcdef...."
    }
@@ -26,9 +33,9 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
    *Note:* If you don't see monaco on the right, try reloading the page.
 
-6. Set the created twitch service instance to the service dependency of the sample bundle.
+6. Set the created twitch service instance to the service dependency of the Twitch-chat bundle.
 
-   Select the sample bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created twitch instance).
+   Select the Twitch-chat bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the Twitch-chat bundle (in this case the name of the previously created twitch instance).
 
 7. Check the nodecg logs
 

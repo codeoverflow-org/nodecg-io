@@ -5,16 +5,16 @@ import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/u
 import * as WebSocket from "ws";
 
 interface WSClientServiceConfig {
-    address: string
+    address: string;
 }
 
 export interface WSClientServiceClient {
-    getRawClient(): WebSocket
+    getRawClient(): WebSocket;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
     nodecg.log.info("Websocket client bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Websocket client bundle won't function without it.");
         return undefined;
@@ -25,14 +25,14 @@ module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | unde
         serviceType: "websocket-client",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
-        stopClient: stopClient
+        stopClient: stopClient,
     };
 
     return core.registerService(service);
 };
 
 async function validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
-    try{
+    try {
         const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
         await new Promise((resolve, reject) => {
             client.once("error", reject);
@@ -50,7 +50,7 @@ async function validateConfig(config: WSClientServiceConfig): Promise<Result<voi
 
 function createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promise<Result<WSClientServiceClient>> {
     return async (config) => {
-        try{
+        try {
             const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
             await new Promise((resolve, reject) => {
                 client.once("error", reject);
@@ -63,12 +63,12 @@ function createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promis
             return success({
                 getRawClient() {
                     return client;
-                }
+                },
             });
         } catch (err) {
             return error(err.toString());
         }
-    }
+    };
 }
 
 function stopClient(client: WSClientServiceClient): void {

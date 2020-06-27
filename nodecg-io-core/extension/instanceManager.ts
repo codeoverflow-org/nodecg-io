@@ -12,10 +12,14 @@ export class InstanceManager {
     private serviceInstances: ReplicantServer<ObjectMap<string, ServiceInstance<unknown, unknown>>>;
     private ajv = new Ajv();
 
-    constructor(private readonly nodecg: NodeCG, private readonly services: ServiceManager,
-                private readonly bundles: BundleManager) {
+    constructor(
+        private readonly nodecg: NodeCG,
+        private readonly services: ServiceManager,
+        private readonly bundles: BundleManager,
+    ) {
         this.serviceInstances = this.nodecg.Replicant("serviceInstances", {
-            persistent: false, defaultValue: {}
+            persistent: false,
+            defaultValue: {},
         });
     }
 
@@ -40,7 +44,7 @@ export class InstanceManager {
      * Registers a handler that will get called whenever something about a service instance has been changed.
      */
     onInstanceUpdates(callback: () => void): void {
-        this.serviceInstances.on("change", callback)
+        this.serviceInstances.on("change", callback);
     }
 
     /**
@@ -66,10 +70,12 @@ export class InstanceManager {
         this.serviceInstances.value[instanceName] = {
             serviceType: service.serviceType,
             config: service.defaultConfig,
-            client: undefined
+            client: undefined,
         };
 
-        this.nodecg.log.info(`Service instance "${instanceName}" of service "${service.serviceType}" has been successfully created.`);
+        this.nodecg.log.info(
+            `Service instance "${instanceName}" of service "${service.serviceType}" has been successfully created.`,
+        );
         return emptySuccess();
     }
 
@@ -94,7 +100,7 @@ export class InstanceManager {
      *                   Should only be false if it has been validated at a previous point in time, e.g. loading after startup.
      * @return void if everything went fine and a string describing the issue if something went wrong.
      */
-    async updateInstanceConfig(instanceName: string, config: unknown, validation: boolean = true): Promise<Result<void>> {
+    async updateInstanceConfig(instanceName: string, config: unknown, validation = true): Promise<Result<void>> {
         // Check existence and get service instance.
         const inst = this.serviceInstances.value[instanceName];
         if (inst === undefined) {
@@ -102,13 +108,13 @@ export class InstanceManager {
         }
 
         const service = this.services.getService(inst.serviceType);
-        if(service.failed) {
+        if (service.failed) {
             return error("The service of this instance couldn't be found.");
         }
 
-        if(validation) {
+        if (validation) {
             const schemaValid = this.ajv.validate(service.result.schema, config);
-            if(!schemaValid) {
+            if (!schemaValid) {
                 return error("Config invalid: " + this.ajv.errorsText());
             }
 
@@ -135,7 +141,11 @@ export class InstanceManager {
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
      * @param service the service of the service instance, needed to stop old client
      */
-    private async updateInstanceClient<R>(inst: ServiceInstance<R, unknown>, instanceName: string, service: Service<R, unknown>): Promise<void> {
+    private async updateInstanceClient<R>(
+        inst: ServiceInstance<R, unknown>,
+        instanceName: string,
+        service: Service<R, unknown>,
+    ): Promise<void> {
         const oldClient = inst.client;
 
         if (inst.config === undefined) {
@@ -144,7 +154,7 @@ export class InstanceManager {
         } else {
             // Create a client using the new config
             const service = this.services.getService(inst.serviceType);
-            if(service.failed) {
+            if (service.failed) {
                 inst.client = undefined;
                 return;
             }
@@ -153,7 +163,9 @@ export class InstanceManager {
 
             // Check if a error happened while creating the client
             if (client.failed) {
-                this.nodecg.log.error(`The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`);
+                this.nodecg.log.error(
+                    `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
+                );
                 inst.client = undefined;
             } else {
                 // Update service instance object
@@ -165,7 +177,7 @@ export class InstanceManager {
         this.bundles.handleInstanceUpdate(inst, instanceName);
 
         // Stop old client, as it isn't used by any bundle anymore.
-        if(oldClient !== undefined) {
+        if (oldClient !== undefined) {
             service.stopClient(oldClient);
         }
     }
