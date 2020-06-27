@@ -24,7 +24,7 @@ const refreshInterval = 1800000;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<SpotifyServiceClient> | undefined => {
     nodecg.log.info("Spotify bundle started.");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Spotify bundle won't function without it.");
         return undefined;
@@ -54,7 +54,7 @@ async function validateConfig(config: SpotifyServiceConfig): Promise<Result<void
 function createClient(nodecg: NodeCG): (config: SpotifyServiceConfig) => Promise<Result<SpotifyServiceClient>> {
     return async (config) => {
         try {
-            console.log("Spotify service connecting...");
+            nodecg.log.info("Spotify service connecting...");
 
             const spotifyApi = new SpotifyWebApi({
                 clientId: config.clientId,
@@ -84,7 +84,7 @@ function createClient(nodecg: NodeCG): (config: SpotifyServiceConfig) => Promise
 }
 
 function mountCallBackURL(nodecg: NodeCG, spotifyApi: SpotifyWebApi) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const router: Router = express.Router();
 
         router.get(callbackEndpoint, (req, res) => {
@@ -129,6 +129,6 @@ function startTokenRefreshing(nodecg: NodeCG, spotifyApi: SpotifyWebApi) {
     }, refreshInterval);
 }
 
-function stopClient(client: SpotifyServiceClient): void {
+function stopClient(_client: SpotifyServiceClient): void {
     // Not supported from the client
 }

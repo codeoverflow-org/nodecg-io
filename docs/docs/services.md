@@ -14,7 +14,7 @@ Depends on [typescript](https://www.npmjs.com/package/typescript) @ ^3.8.3 <br>
 
 **Allows to connect to discord via a discord-bot.**
 
-There's no sample implementation for this service yet.
+See the [sample implementation](samples/discord.md)
 
 Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
 Depends on [discord.js](https://www.npmjs.com/package/discord.js) @ 12.2.0 <br>
@@ -23,10 +23,20 @@ Depends on [discord.js](https://www.npmjs.com/package/discord.js) @ 12.2.0 <br>
 
 **Allows you to send commands to a minecraft server via RCON.**
 
-There's no sample implementation for this service yet.
+See the [sample implementation](samples/rcon.md)
 
 Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
 Depends on [rcon-client](https://www.npmjs.com/package/rcon-client) @ ^4.2.0 <br>
+
+## [nodecg-io-spotify](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-spotify)
+
+**Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. **
+
+There's no sample implementation for this service yet.
+
+Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
+Depends on [open](https://www.npmjs.com/package/open) @ ^7.0.3 <br>
+Depends on [spotify-web-api-node](https://www.npmjs.com/package/spotify-web-api-node) @ ^4.0.0 <br>
 
 ## [nodecg-io-twitch](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-twitch)
 
@@ -42,7 +52,7 @@ Depends on [twitch-chat-client](https://www.npmjs.com/package/twitch-chat-client
 
 **Allows to connect to a external WebSocket server.**
 
-There's no sample implementation for this service yet.
+See the [sample implementation](samples/ws-client.md)
 
 Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
 Depends on [@types/ws](https://www.npmjs.com/package/@types/ws) @ ^7.2.5 <br>
@@ -52,7 +62,7 @@ Depends on [ws](https://www.npmjs.com/package/ws) @ ^7.3.0 <br>
 
 **Allows to create a custom WebSocket server.**
 
-There's no sample implementation for this service yet.
+See the [sample implementation](samples/ws-server.md)
 
 Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
 Depends on [@types/ws](https://www.npmjs.com/package/@types/ws) @ ^7.2.5 <br>

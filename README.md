@@ -22,7 +22,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - [ ] MIDI
 - [x] RCON  
 - [ ] Serial Port (Arduino)  
-- [ ] Spotify
+- [X] Spotify
 - [ ] StreamElements  
 - [ ] TipeeeStream  
 - [x] Twitch Chat  
@@ -58,6 +58,7 @@ nodecg-io/
    +--dashbord/            GUI
 +--nodecg-io-discord/      Discord integration
 +--nodecg-io-rcon/         Rcon integration
++--nodecg-io-spotify/      Spotify integration
 +--nodecg-io-twitch/       Twitch integration
 +--nodecg-io-ws-client/    WebSocket client integration
 +--nodecg-io-ws-server/    WebSocket server integration
