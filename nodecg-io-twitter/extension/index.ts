@@ -13,7 +13,7 @@ interface TwitterServiceConfig {
 }
 
 export interface TwitterServiceClient {
-    //getRawClient(): ChatClient
+    getRawClient(): typeof Twitter
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undefined => {
@@ -44,11 +44,11 @@ async function validateConfig(config: TwitterServiceConfig): Promise<Result<void
 			access_token_key: config.oauthToken,
 			access_token_secret: config.oauthTokenSecret,
 		});
-		// Validate credentials - not sure if this works tho
-		const resp = await client.get('account/verify_credentials');  // Check for errors in JSON response
+		// Validate credentials
+		const resp = await client.get('account/verify_credentials', {});
 		return emptySuccess();
 	} catch (err) {
-		return error(error.toString());
+		return error(err[0].message);
 	}
 }
 
@@ -63,9 +63,6 @@ function createClient(nodecg: NodeCG): (config: TwitterServiceConfig) => Promise
 				access_token_secret: config.oauthTokenSecret,
 			});
 			nodecg.log.info("Successfully connected to twitter!")
-			// Validate credentials - not sure if this works tho
-			const resp = await client.get('account/verify_credentials');  // Check for errors in JSON response
-			nodecg.log.info(resp);
 
             return success({
                 getRawClient() {
