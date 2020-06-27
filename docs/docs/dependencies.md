@@ -29,6 +29,15 @@ object  nodecg_io_rcon {
 object  rcon_client {
 [[https://www.npmjs.com/package/rcon-client rcon-client]]
 }
+object  nodecg_io_spotify {
+[[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-spotify nodecg-io-spotify]]
+}
+object  open {
+[[https://www.npmjs.com/package/open open]]
+}
+object  spotify_web_api_node {
+[[https://www.npmjs.com/package/spotify-web-api-node spotify-web-api-node]]
+}
 object  nodecg_io_twitch {
 [[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-twitch nodecg-io-twitch]]
 }
@@ -58,6 +67,9 @@ nodecg_io_discord --> nodecg_io_core
 nodecg_io_discord ...> discord_js
 nodecg_io_rcon --> nodecg_io_core
 nodecg_io_rcon ...> rcon_client
+nodecg_io_spotify --> nodecg_io_core
+nodecg_io_spotify ...> open
+nodecg_io_spotify ...> spotify_web_api_node
 nodecg_io_twitch --> nodecg_io_core
 nodecg_io_twitch ...> twitch
 nodecg_io_twitch ...> twitch_chat_client
