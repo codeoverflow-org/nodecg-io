@@ -19,5 +19,7 @@ module.exports = {
 
         // We simply have empty functions at some places, so we ignore this rule.
         "@typescript-eslint/no-empty-function": ["warn", { allow: ["arrowFunctions"] }],
+
+        "no-prototype-builtins": "off"
     },
 };
