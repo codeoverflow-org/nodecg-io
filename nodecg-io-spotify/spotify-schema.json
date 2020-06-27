@@ -13,6 +13,9 @@
       },
       "scopes": {
         "type": "array",
+        "items": {
+          "type": "string"
+        },
         "description": "A list of scopes. More information: https://developer.spotify.com/documentation/general/guides/scopes/"
       }
     },
