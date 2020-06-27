@@ -15,7 +15,7 @@ module.exports = function (nodecg: NodeCG) {
     const twitchChannels = ["#skate702", "#daniel0611"];
 
     twitch?.requireService(
-        "sample",
+        "twitch-chat",
         (client) => {
             nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
