@@ -15,8 +15,13 @@ module.exports = function (nodecg: NodeCG) {
         (client) => {
             nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
             const twitterClient = client.getRawClient();
+            const params = {
+                screen_name: "skate702", // eslint-disable-line camelcase
+                exclude_replies: true, // eslint-disable-line camelcase
+                count: 50,
+            };
             twitterClient
-                .get("statuses/user_timeline", { screen_name: "skate702", exclude_replies: true, count: 50 }) // eslint-disable-line camelcase
+                .get("statuses/user_timeline", params)
                 .then((tweets: any[]) => tweets.forEach((tweet: any) => nodecg.log.info(`Got tweet: ${tweet.text}`)))
                 .catch((err: any) => nodecg.log.error(err));
         },
