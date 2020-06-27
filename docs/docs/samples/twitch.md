@@ -12,24 +12,24 @@ The Twitch-Chat example bundle in `samples/twitch-chat` demonstrates the ability
 
 5. Enter credentials for twitch.
 
-   The created instance should be automatically selected, if not select it in the upper left menu.
+    The created instance should be automatically selected, if not select it in the upper left menu.
 
-   Here is a sample config for you to orient:
+    Here is a sample config for you to orient:
 
-   ```
-   {
-       "oauthKey": "oauth:abcdef...."
-   }
-   ```
+    ```
+    {
+        "oauthKey": "oauth:abcdef...."
+    }
+    ```
 
-   After entering it, click save.
+    After entering it, click save.
 
-   *Note:* If you don't see monaco on the right, try reloading the page.
+    _Note:_ If you don't see monaco on the right, try reloading the page.
 
 6. Set the created twitch service instance to the service dependency of the sample bundle.
 
-   Select the sample bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created twitch instance).
+    Select the sample bundle and the twitch service in the left bottom menu and then select the service instance that should be used by the sample bundle (in this case the name of the previously created twitch instance).
 
 7. Check the nodecg logs
 
-   You should see an error or a success message and all twitch messages that are written in the twitch channel that is hardcoded in `samples/twitch-chat/extension/index.ts`.
+    You should see an error or a success message and all twitch messages that are written in the twitch channel that is hardcoded in `samples/twitch-chat/extension/index.ts`.

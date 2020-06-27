@@ -7,25 +7,25 @@
  *
  * @typeParam T the return type of the function on success.
  */
-export type Result<T> = Failure | Success<T>
+export type Result<T> = Failure | Success<T>;
 
 /**
  * Function has failed and has returned a string describing the error.
  * Should be created by calling {@link error}.
  */
 export type Failure = {
-    failed: true,
-    errorMessage: string
-}
+    failed: true;
+    errorMessage: string;
+};
 
 /**
  * Function has succeeded and has returned its result.
  * Should be created by calling {@link success} or {@link emptySuccess}.
  */
 export type Success<T> = {
-    failed: false,
-    result: T
-}
+    failed: false;
+    result: T;
+};
 
 /**
  * Indicates that the function has failed and has produced some error.
@@ -35,7 +35,7 @@ export type Success<T> = {
 export function error(errorMessage: string): Failure {
     return {
         failed: true,
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
     };
 }
 
@@ -47,7 +47,7 @@ export function error(errorMessage: string): Failure {
 export function success<T>(result: T): Success<T> {
     return {
         failed: false,
-        result: result
+        result: result,
     };
 }
 
