@@ -1,3 +1,4 @@
+<!-- Marker for build.py that there's no sample bundle. Remove this if you created one -->
 ## Using the WebSocket-client sample bundle
 
 No sample bundle for service `ws-client`.  

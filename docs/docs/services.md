@@ -19,6 +19,15 @@ See the [sample implementation](samples/discord.md)
 Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
 Depends on [discord.js](https://www.npmjs.com/package/discord.js) @ 12.2.0 <br>
 
+## [nodecg-io-intellij](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-intellij)
+
+**Allows to control JetBrains IDEs via nodecg-io**
+
+See the [sample implementation](samples/intellij.md)
+
+Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
+Depends on [node-fetch](https://www.npmjs.com/package/node-fetch) @ ^2.5.7 <br>
+
 ## [nodecg-io-rcon](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-rcon)
 
 **Allows you to send commands to a minecraft server via RCON.**
