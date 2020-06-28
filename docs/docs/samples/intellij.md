@@ -4,7 +4,7 @@ The IntelliJ example bundle in `samples/intellij` Shows how to connect to a JetB
 
 1. clone [this](https://github.com/noeppi-noeppi/nodecg-io-intellij) Git Repository
 
-2. Make shure you've Java 11 or newer installed.
+2. Make sure you've Java 11 or newer installed.
 
 3. Run `gradlew build` (on windows) or `./gradlew build` (on linux) inside the cloned repository.
 
