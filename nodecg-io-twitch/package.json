@@ -1,18 +1,16 @@
 {
   "name": "nodecg-io-twitch",
   "version": "0.1.0",
-  "description": "",
+  "description": "Allows to connect to twitch with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
   "homepage": "",
   "author": {
     "name": "CodeOverflow team",
     "url": "http://codeoverflow.org"
   },
-  "files": [
-    "dashboard",
-    "graphics",
-    "extension.js",
-    "extension"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
   "keywords": [
     "",
     "nodecg-bundle"

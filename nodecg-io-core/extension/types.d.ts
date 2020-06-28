@@ -11,7 +11,7 @@ import { Result } from "./utils/result";
  * A normal es6 map would use a iterator which can't be serialized by the NodeCG Replicant and thus
  * can't be used to give the gui access to the data in this map.
  */
-export type ObjectMap<K, V> = Record<K, V | undefined>
+export type ObjectMap<K, V> = Record<K, V | undefined>;
 
 /**
  * Models a service that a bundle can depend upon and use to access e.g. a twitch chat or similar.
@@ -23,18 +23,18 @@ export interface Service<R, C> {
     /**
      * User friendly name of the service that should explain the type of service, e.g. "twitch".
      */
-    readonly serviceType: string
+    readonly serviceType: string;
 
     /**
      * A json schema object of the config. The config will then be validated against this json schema.
      * Ensures that the types of the config are correct and therefore is compatible with the provided config type.
      */
-    readonly schema?: any
+    readonly schema?: ObjectMap<unknown>;
 
     /**
      * The default value for the config.
      */
-    readonly defaultConfig?: R
+    readonly defaultConfig?: R;
 
     /**
      * This function validates the passed config after it has been validated against the json schema (if applicable).
@@ -42,7 +42,7 @@ export interface Service<R, C> {
      * @param config the config which should be validated.
      * @return void if the config passes validation and an error string describing the issue if not.
      */
-    readonly validateConfig(config: R): Promise<Result<void>>
+    readonly validateConfig(config: R): Promise<Result<void>>;
 
     /**
      * Creates a client to the service using the validated config.
@@ -51,7 +51,7 @@ export interface Service<R, C> {
      * @param config the user provided config for the service.
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
-    readonly createClient(config: R): Promise<Result<C>>
+    readonly createClient(config: R): Promise<Result<C>>;
 
     /**
      * Stops a client of this service that is not needed anymore.
@@ -59,7 +59,7 @@ export interface Service<R, C> {
      *
      * @param client the client that needs to be stopped.
      */
-    readonly stopClient(client: C): void
+    readonly stopClient(client: C): void;
 }
 
 /**
@@ -70,17 +70,17 @@ export interface ServiceInstance<R, C> {
     /**
      * The underlying name of the service that this instance represents.
      */
-    readonly serviceType: string
+    readonly serviceType: string;
 
     /**
      * The configuration for the service, provided by the user.
      */
-    config: R | undefined
+    config: R | undefined;
 
     /**
      * The client that the service generated out of the current config.
      */
-    client: C | undefined
+    client: C | undefined;
 }
 
 /**
@@ -98,7 +98,11 @@ export interface ServiceProvider<C> {
      * @param clientUnavailable the callback that is called when the bundle doesn't have a assigned service instance or it failed to create
      *                          a service client.
      */
-    readonly requireService(bundleName: string, clientAvailable: (client: C) => void, clientUnavailable: () => void): void
+    readonly requireService(
+        bundleName: string,
+        clientAvailable: (client: C) => void,
+        clientUnavailable: () => void,
+    ): void;
 }
 
 /**
@@ -108,14 +112,14 @@ export interface ServiceDependency<C> {
     /**
      * The type of the required service. Has to be the same name as the {@link Service.serviceType} of the wanted service.
      */
-    readonly serviceType: string
+    readonly serviceType: string;
 
     /**
      * The name of the service instance that currently is set to this dependency.
      * Set by the user, as they may have multiple service instances with different configs.
      * Undefined if there is currently no instance set to the bundle.
      */
-    serviceInstance?: string
+    serviceInstance?: string;
 
     /**
      * Callback that will give the client of the service to the bundle.
@@ -123,5 +127,5 @@ export interface ServiceDependency<C> {
      *
      * @param client the client of the service or undefined if there is currently no service instance set.
      */
-    readonly clientUpdateCallback(client?: C): void
+    readonly clientUpdateCallback(client?: C): void;
 }
