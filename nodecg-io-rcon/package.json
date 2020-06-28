@@ -1,18 +1,16 @@
 {
   "name": "nodecg-io-rcon",
   "version": "0.1.0",
-  "description": "",
+  "description": "Allows you to send commands to a minecraft server via RCON.",
   "homepage": "",
   "author": {
     "name": "derNiklaas",
     "url": "https://github.com/derNiklaas"
   },
-  "files": [
-    "dashboard",
-    "graphics",
-    "extension.js",
-    "extension"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
   "keywords": [
     "",
     "nodecg-bundle"

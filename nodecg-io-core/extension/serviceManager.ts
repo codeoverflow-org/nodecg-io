@@ -10,7 +10,8 @@ export class ServiceManager {
 
     constructor(private readonly nodecg: NodeCG) {
         this.services = this.nodecg.Replicant("services", {
-            persistent: false, defaultValue: []
+            persistent: false,
+            defaultValue: [],
         });
     }
 
@@ -18,7 +19,7 @@ export class ServiceManager {
      * Registers the passed service which show it in the GUI and allows it to be instanced using {@link createServiceInstance}.
      * @param service the service you want to register.
      */
-    registerService<R, C>(service: Service<R, C>) {
+    registerService<R, C>(service: Service<R, C>): void {
         this.services.value.push(service);
         this.nodecg.log.info(`Service ${service.serviceType} has been registered.`);
     }
@@ -36,7 +37,7 @@ export class ServiceManager {
      * @return the service or undefined if no service with this name has been registered.
      */
     getService(serviceName: string): Result<Service<unknown, unknown>> {
-        const svc = this.services.value.find(svc => svc.serviceType === serviceName);
+        const svc = this.services.value.find((svc) => svc.serviceType === serviceName);
         if (svc === undefined) {
             return error("Service hasn't been registered.");
         } else {

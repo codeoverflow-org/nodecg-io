@@ -1,0 +1,32 @@
+# To build the documentation use `build.py`
+
+site_name: nodecg-io Documentation
+theme:
+  name: material
+  favicon: https://avatars.githubusercontent.com/codeoverflow-org
+docs_dir: docs
+site_dir: build
+
+repo_name: codeoverflow-org/nodecg-io
+repo_url: https://github.com/codeoverflow-org/nodecg-io
+
+markdown_extensions:
+    - plantuml_markdown
+    - markdown_checklist.extension
+
+nav:
+  - Home: index.md
+  - Install: install.md
+  - How to Contribute: contribute.md
+  - Available services: services.md
+  - Dependency Graph: dependencies.md
+  - Sample Implementations:
+    - Discord: samples/discord.md
+    - IntelliJ: samples/intellij.md
+    - Rcon: samples/rcon.md
+    - Twitch: samples/twitch.md
+    - WebSocket:
+      - Client: samples/ws-client.md
+      - Server: samples/ws-server.md
+
+  - Contributors: contributors.md
