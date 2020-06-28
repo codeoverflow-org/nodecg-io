@@ -26,7 +26,7 @@ module.exports = function (nodecg: NodeCG) {
                             .then((name) => {
                                 nodecg.log.info(`Plugin ${name}`);
                             })
-                            .catch((err) => {
+                            .catch((_) => {
                                 nodecg.log.info(`Plugin ${plugin.id}`);
                             });
                     });

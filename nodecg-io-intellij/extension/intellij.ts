@@ -59,13 +59,13 @@ export class IntelliJ {
     }
 
     /**
-     * Runs the action with the given id. An ation is for example an button in the
+     * Runs the action with the given id. An action is for example an button in the
      * menu toolbar. A non-exhaustive list of actions can be found at
      * https://centic9.github.io/IntelliJ-Action-IDs/
      * An action place is a string that specifies from where the action call should
      * be simulated. Available action places can be found at
      * https://github.com/JetBrains/intellij-community/blob/master/platform/platform-api/src/com/intellij/openapi/actionSystem/ActionPlaces.java
-     * This also allows you to call action that are not enabled (grey and unclickable) at
+     * This also allows you to call action that are not enabled (grey and not clickable) at
      * the moment. This could lead to unexpected behaviour. Use with caution
      * Please note that this method executes an action from outside of a project. That
      * means no project is available for the action. You might be looking for
@@ -86,8 +86,8 @@ export class IntelliJ {
     /**
      * Makes a raw request to IntelliJ
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    async rawRequest(method: string, data: any): Promise<any> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async rawRequest(method: string, data: Record<string, unknown>): Promise<any> {
         const response = await fetch(this.address, {
             method: "POST",
             body: JSON.stringify({
@@ -111,7 +111,7 @@ export class IntelliJ {
 }
 
 export class Project {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly name: string;
     readonly runManager: RunManager;
     readonly taskManager: TaskManager;
@@ -137,14 +137,14 @@ export class Project {
     }
 
     /**
-     * Checks whether the project is still valid. A project isno longer  valid if it was closed.
+     * Checks whether the project is still valid. A project is no longer  valid if it was closed.
      */
     async isValid(): Promise<boolean> {
         return await this.intellij.rawRequest("is_project_valid", { project: this.name });
     }
 
     /**
-     * Same as `isValid()` but the promise is rejected if the project is not alid any longer.
+     * Same as `isValid()` but the promise is rejected if the project is not valid any longer.
      */
     async ensureValid(): Promise<void> {
         const result = await this.intellij.rawRequest("is_project_valid", { project: this.name });
@@ -154,13 +154,13 @@ export class Project {
     }
 
     /**
-     * Runs the action with the given id. An ation is for example an button in the
+     * Runs the action with the given id. An action is for example an button in the
      * menu toolbar. A non-exhaustive list of actions can be found at
      * https://centic9.github.io/IntelliJ-Action-IDs/
      * An action place is a string that specifies from where the action call should
      * be simulated. Available action places can be found at
      * https://github.com/JetBrains/intellij-community/blob/master/platform/platform-api/src/com/intellij/openapi/actionSystem/ActionPlaces.java
-     * This also allows you to call action that are not enabled (grey and unclickable) at
+     * This also allows you to call action that are not enabled (grey and not clickable) at
      * the moment. This could lead to unexpected behaviour. Use with caution
      * @param action The action id
      * @param place The place from where the event is simulated.
@@ -181,7 +181,7 @@ export class Project {
 }
 
 export class VirtualFile {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly url: string;
 
     constructor(intellij: IntelliJ, vfs_file: string) {
@@ -212,7 +212,7 @@ export class VirtualFile {
     }
 
     /**
-     * Checks whther the file is writable
+     * Checks whether the file is writable
      */
     async isWritable(): Promise<boolean> {
         return await this.intellij.rawRequest("vfs_writable", { vfs_file: this.url });
@@ -226,7 +226,7 @@ export class VirtualFile {
     }
 
     /**
-     * Checks whether this IntelliJFile represents a directoy
+     * Checks whether this IntelliJFile represents a directory
      */
     async isDirectory(): Promise<boolean> {
         return await this.intellij.rawRequest("vfs_directory", { vfs_file: this.url });
@@ -287,7 +287,7 @@ export class VirtualFile {
 
     /**
      * Gets the binary-content of the file.
-     * @returns The content of thefile encoded with base64
+     * @returns The content of the file encoded with base64
      */
     async getBinaryContent(): Promise<string> {
         return await this.intellij.rawRequest("vfs_get_content_bytes", { vfs_file: this.url });
@@ -299,7 +299,7 @@ export class VirtualFile {
 }
 
 export class RunManager {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly project: Project;
 
     constructor(intellij: IntelliJ, project: Project) {
@@ -406,7 +406,7 @@ export class RunManager {
 }
 
 export class RunConfiguration {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly manager: RunManager;
     readonly uid: string;
 
@@ -438,7 +438,7 @@ export class RunConfiguration {
     }
 
     /**
-     * Sets this configuration as the selected one in the dropdown menu
+     * Sets this configuration as the selected one in the drop-down menu
      */
     async select(): Promise<void> {
         await this.intellij.rawRequest("run_select_configuration", {
@@ -483,7 +483,7 @@ export class RunConfiguration {
 }
 
 export class RunType {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly manager: RunManager;
     readonly name: string;
 
@@ -519,7 +519,7 @@ export class RunType {
 }
 
 export class TaskManager {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly project: Project;
 
     constructor(intellij: IntelliJ, project: Project) {
@@ -584,7 +584,7 @@ export class TaskManager {
 }
 
 export class Task {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly manager: TaskManager;
     readonly id: string;
 
@@ -647,8 +647,8 @@ export class Task {
 
     /**
      * Activates the task.
-     * @param clearContext Whether to clear the current conetxt and show the
-     * last conetxt used with this task. (Helpful on large projects so you don't
+     * @param clearContext Whether to clear the current context and show the
+     * last context used with this task. (Helpful on large projects so you don't
      * need to open all those files again.)
      */
     async activate(clearContext: boolean): Promise<void> {
@@ -665,7 +665,7 @@ export class Task {
 }
 
 export class PluginManager {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
 
     constructor(intellij: IntelliJ) {
         this.intellij = intellij;
@@ -705,7 +705,7 @@ export class PluginManager {
 }
 
 export class Plugin {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly manager: PluginManager;
     readonly id: string;
 
@@ -806,7 +806,7 @@ export class Plugin {
 }
 
 export class LocalHistory {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
 
     constructor(intellij: IntelliJ) {
         this.intellij = intellij;
@@ -873,7 +873,7 @@ export class LocalHistory {
 }
 
 export class HistoryChange {
-    readonly intellij: IntelliJ;
+    protected readonly intellij: IntelliJ;
     readonly history: LocalHistory;
     readonly id: number;
 
