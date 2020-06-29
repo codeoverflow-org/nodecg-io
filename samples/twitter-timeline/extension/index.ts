@@ -23,8 +23,8 @@ module.exports = function (nodecg: NodeCG) {
             twitterClient
                 .get("statuses/user_timeline", params)
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((tweets: any[]) => tweets.forEach((tweet: any) => nodecg.log.info(`Got tweet: ${tweet.text}`)))
-                .catch((err: any) => nodecg.log.error(err));
+                .then((tweets: any[]) => tweets.forEach((tweet) => nodecg.log.info(`Got tweet: ${tweet.text}`)))
+                .catch((err) => nodecg.log.error(err));
         },
         () => nodecg.log.info("Twitter client has been unset!"),
     );
