@@ -17,7 +17,7 @@ export interface TwitterServiceClient {
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undefined => {
     nodecg.log.info("Twitter bundle started");
-    const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
+    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error("nodecg-io-core isn't loaded! Twitter bundle won't function without it.");
         return undefined;
@@ -78,6 +78,6 @@ function createClient(nodecg: NodeCG): (config: TwitterServiceConfig) => Promise
     };
 }
 
-function stopClient(client: TwitterServiceClient): void {
+function stopClient(_client: TwitterServiceClient): void {
     // You are not really able to stop the client ...
 }
