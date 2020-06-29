@@ -45,9 +45,10 @@ async function validateConfig(config: AHKServiceConfig): Promise<Result<void>> {
 function createClient(): (config: AHKServiceConfig) => Promise<Result<AHKServiceClient>> {
     return async (config) => {
         try {
+            const ahk = new AHK(config.host, config.port);
             return success({
                 getRawClient() {
-                    return new AHK(config.host, config.port);
+                    return ahk;
                 },
             });
         } catch (err) {
