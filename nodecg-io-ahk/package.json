@@ -1,0 +1,36 @@
+{
+    "name": "nodecg-io-ahk",
+    "version": "0.1.0",
+    "description": "Allows you to send commands to AutoHotkey.",
+    "homepage": "",
+    "author": {
+      "name": "derNiklaas",
+      "url": "https://github.com/derNiklaas"
+    },
+    "scripts": {
+      "build": "tsc",
+      "watch": "tsc -w"
+    },
+    "keywords": [
+      "",
+      "nodecg-bundle"
+    ],
+    "nodecg": {
+      "compatibleRange": "^1.1.1",
+      "bundleDependencies": {
+        "nodecg-io-core": "0.1.0"
+      }
+    },
+    "license": "MIT",
+    "devDependencies": {
+      "@types/node": "^13.13.12",
+      "@types/node-fetch": "^2.5.7",
+      "nodecg": "^1.6.1",
+      "typescript": "^3.9.5"
+    },
+    "dependencies": {
+      "nodecg-io-core": "0.1.0",
+      "node-fetch": "^2.5.7"
+    }
+  }
+  
