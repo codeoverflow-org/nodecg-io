@@ -2,32 +2,28 @@ import { NodeCG } from "nodecg/types/server";
 import { NodeCGIOCore } from "nodecg-io-core/extension";
 import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import TwitchClient from "twitch";
+import ChatClient from "twitch-chat-client";
 
-import * as fs from "fs";
-import * as path from "path";
-
-import { StreamElements } from './StreamElements';
-
-
-interface StreamElementsServiceConfig {
-    jwtToken: string,
-    accountId: string
+interface TwitchServiceConfig {
+    oauthKey: string
 }
 
-export interface StreamElementsServiceClient {
-    getRawClient(): StreamElements
+export interface TwitchServiceClient {
+    getRawClient(): ChatClient
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<StreamElementsServiceClient> | undefined => {
-    nodecg.log.info("StreamElements bundle started");
+module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
+    nodecg.log.info("Twitch bundle started");
     const core: NodeCGIOCore | undefined = nodecg.extensions["nodecg-io-core"] as any;
     if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! StreamElements bundle won't function without it.");
+        nodecg.log.error("nodecg-io-core isn't loaded! Twitch bundle won't function without it.");
         return undefined;
     }
-    const service: Service<StreamElementsServiceConfig, StreamElementsServiceClient> = {
-        schema: core.readSchema(__dirname, "../streamelements-schema.json"),
-        serviceType: "streamelements",
+
+    const service: Service<TwitchServiceConfig, TwitchServiceClient> = {
+        schema: core.readSchema(__dirname, "../twitch-schema.json"),
+        serviceType: "twitch",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: stopClient
@@ -36,31 +32,38 @@ module.exports = (nodecg: NodeCG): ServiceProvider<StreamElementsServiceClient> 
     return core.registerService(service);
 };
 
-async function validateConfig(config: StreamElementsServiceConfig): Promise<Result<void>> {
-    return StreamElements.test(config);
+async function validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
+    try {
+        const authKey = config.oauthKey.replace("oauth:", "");
+        await TwitchClient.getTokenInfo(authKey); // This will throw a error if the token is invalid
+        return emptySuccess();
+    } catch (err) {
+        return error(err.toString());
+    }
 }
 
-function createClient(nodecg: NodeCG): (config: StreamElementsServiceConfig) => Promise<Result<StreamElementsServiceClient>> {
+function createClient(nodecg: NodeCG): (config: TwitchServiceConfig) => Promise<Result<TwitchServiceClient>> {
     return async (config) => {
         try {
-            //Tokens
-            const jwtToken = config.jwtToken;
-            const accountId = config.accountId;
-            
-            // Create the actual client and connect
-            //const chatClient = ChatClient.forTwitchClient(authClient);
-            const client = new StreamElements({jwtToken, accountId});
-            nodecg.log.info("Connecting to StreamElements socket server...");
-            await client.connect(); // Connects to StreamElements socket server
-            // This also waits till it has registered itself at the StreamElements socket server, which is needed to do anything.
+            // This twitch client needs the token without the "oauth:" before the actual token, strip it away
+            const authKey = config.oauthKey.replace("oauth:", "");
+            // Create a twitch authentication client
+            const tokenInfo = await TwitchClient.getTokenInfo(authKey);
+            const authClient = TwitchClient.withCredentials(tokenInfo.clientId, authKey, tokenInfo.scopes);
+
+            // Create the actual chat client and connect
+            const chatClient = ChatClient.forTwitchClient(authClient);
+            nodecg.log.info("Connecting to twitch chat...");
+            await chatClient.connect(); // Connects to twitch IRC
+            // This also waits till it has registered itself at the IRC server, which is needed to do anything.
             await new Promise((resolve, _reject) => {
-                client.onRegister(resolve);
+                chatClient.onRegister(resolve);
             })
-            nodecg.log.info("Successfully connected to StreamElements socket server.");
+            nodecg.log.info("Successfully connected to twitch.");
 
             return success({
                 getRawClient() {
-                    return client;
+                    return chatClient;
                 }
             });
         } catch (err) {
@@ -69,6 +72,12 @@ function createClient(nodecg: NodeCG): (config: StreamElementsServiceConfig) => 
     };
 }
 
-function stopClient(client: StreamElementsServiceClient): void {
-    client.getRawClient().close();
+function stopClient(client: TwitchServiceClient): void {
+    // quit currently doesn't work, so we settle for removeListener for now til the fix for that bug is in a stable version.
+    // See https://github.com/d-fischer/twitch/issues/128,
+    // https://github.com/d-fischer/twitch/commit/3d01210ff4592220f00f9e060f4cb47783808e7b
+    // and https://github.com/d-fischer/connection/commit/667634415efdbdbfbd095a160c125a81edd8ec6a
+    client.getRawClient().removeListener();
+    // client.getRawClient().quit()
+    //     .then(r => console.log("Stopped twitch client successfully."))
 }
