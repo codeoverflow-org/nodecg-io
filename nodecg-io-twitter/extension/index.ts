@@ -2,7 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { NodeCGIOCore } from "nodecg-io-core/extension";
 import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
-const Twitter = require("twitter"); // eslint-disable-line @typescript-eslint/no-var-requires
+import Twitter = require("twitter");
 
 interface TwitterServiceConfig {
     oauthConsumerKey: string;
@@ -12,7 +12,7 @@ interface TwitterServiceConfig {
 }
 
 export interface TwitterServiceClient {
-    getRawClient(): typeof Twitter;
+    getRawClient(): Twitter;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undefined => {
