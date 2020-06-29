@@ -16,9 +16,10 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
-- [ ] AHK
+- [X] AHK
 - [x] Discord  
 - [ ] IRC (Internet Relay Chat)
+- [ ] IntelliJ IDEs
 - [ ] MIDI
 - [x] RCON  
 - [ ] Serial Port (Arduino)  
@@ -26,7 +27,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - [ ] StreamElements  
 - [ ] TipeeeStream  
 - [x] Twitch Chat  
-- [ ] Twitter
+- [X] Twitter
 - [X] WebSocket Client & Server
 - [ ] Youtube
 
@@ -54,15 +55,20 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 ```
 nodecg-io/
 +--docs/                   Documentation
++--nodecg-io-core/         AHK integration
 +--nodecg-io-core/         Core Lib
-   +--dashbord/            GUI
+   +--dashboard/           GUI
 +--nodecg-io-discord/      Discord integration
++--nodecg-io-intellij/     IntelliJ integration
 +--nodecg-io-rcon/         Rcon integration
 +--nodecg-io-spotify/      Spotify integration
 +--nodecg-io-twitch/       Twitch integration
++--nodecg-io-twitter/      Twitter integration
 +--nodecg-io-ws-client/    WebSocket client integration
 +--nodecg-io-ws-server/    WebSocket server integration
 +--samples/                Samplecode
    +--discord-guild-chat/  Discord Samplecode
+   +--intellij/            IntelliJ Samplecode
    +--twitch-chat/         Twitch Samplecode
+   +--twitter-timeline/    Twitter Samplecode
 ```

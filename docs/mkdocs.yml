@@ -21,10 +21,12 @@ nav:
   - Available services: services.md
   - Dependency Graph: dependencies.md
   - Sample Implementations:
+    - AHK: samples/ahk.md
     - Discord: samples/discord.md
     - IntelliJ: samples/intellij.md
     - Rcon: samples/rcon.md
     - Twitch: samples/twitch.md
+    - Twitter: samples/twitter.md
     - WebSocket:
       - Client: samples/ws-client.md
       - Server: samples/ws-server.md

@@ -17,6 +17,12 @@ object  tslib {
 object  typescript {
 [[https://www.npmjs.com/package/typescript typescript]]
 }
+object  nodecg_io_ahk {
+[[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-ahk nodecg-io-ahk]]
+}
+object  node_fetch {
+[[https://www.npmjs.com/package/node-fetch node-fetch]]
+}
 object  nodecg_io_discord {
 [[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-discord nodecg-io-discord]]
 }
@@ -25,9 +31,6 @@ object  discord_js {
 }
 object  nodecg_io_intellij {
 [[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-intellij nodecg-io-intellij]]
-}
-object  node_fetch {
-[[https://www.npmjs.com/package/node-fetch node-fetch]]
 }
 object  nodecg_io_rcon {
 [[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-rcon nodecg-io-rcon]]
@@ -53,6 +56,15 @@ object  twitch {
 object  twitch_chat_client {
 [[https://www.npmjs.com/package/twitch-chat-client twitch-chat-client]]
 }
+object  nodecg_io_twitter {
+[[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-twitter nodecg-io-twitter]]
+}
+object  types_twitter {
+[[https://www.npmjs.com/package/@types/twitter @types/twitter]]
+}
+object  twitter {
+[[https://www.npmjs.com/package/twitter twitter]]
+}
 object  nodecg_io_ws_client {
 [[https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-ws-client nodecg-io-ws-client]]
 }
@@ -69,6 +81,8 @@ nodecg_io_core ...> ajv
 nodecg_io_core ...> crypto_js
 nodecg_io_core ...> tslib
 nodecg_io_core ...> typescript
+nodecg_io_ahk --> nodecg_io_core
+nodecg_io_ahk ...> node_fetch
 nodecg_io_discord --> nodecg_io_core
 nodecg_io_discord ...> discord_js
 nodecg_io_intellij --> nodecg_io_core
@@ -81,6 +95,9 @@ nodecg_io_spotify ...> spotify_web_api_node
 nodecg_io_twitch --> nodecg_io_core
 nodecg_io_twitch ...> twitch
 nodecg_io_twitch ...> twitch_chat_client
+nodecg_io_twitter ...> types_twitter
+nodecg_io_twitter --> nodecg_io_core
+nodecg_io_twitter ...> twitter
 nodecg_io_ws_client --> nodecg_io_core
 nodecg_io_ws_client ...> types_ws
 nodecg_io_ws_client ...> ws

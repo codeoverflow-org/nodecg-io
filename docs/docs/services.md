@@ -10,6 +10,15 @@ Depends on [crypto-js](https://www.npmjs.com/package/crypto-js) @ ^4.0.0 <br>
 Depends on [tslib](https://www.npmjs.com/package/tslib) @ ^2.0.0 <br>
 Depends on [typescript](https://www.npmjs.com/package/typescript) @ ^3.8.3 <br>
 
+## [nodecg-io-ahk](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-ahk)
+
+**Allows you to send commands to AutoHotkey.**
+
+There's no sample implementation for this service yet.
+
+Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
+Depends on [node-fetch](https://www.npmjs.com/package/node-fetch) @ ^2.5.7 <br>
+
 ## [nodecg-io-discord](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-discord)
 
 **Allows to connect to discord via a discord-bot.**
@@ -56,6 +65,16 @@ See the [sample implementation](samples/twitch.md)
 Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
 Depends on [twitch](https://www.npmjs.com/package/twitch) @ ^4.0.10 <br>
 Depends on [twitch-chat-client](https://www.npmjs.com/package/twitch-chat-client) @ ^4.0.10 <br>
+
+## [nodecg-io-twitter](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-twitter)
+
+**Allows to connect to twitter, send, retweet or like messages.**
+
+See the [sample implementation](samples/twitter.md)
+
+Depends on [@types/twitter](https://www.npmjs.com/package/@types/twitter) @ ^1.7.0 <br>
+Depends on [nodecg-io-core](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-core) @ 0.1.0 <br>
+Depends on [twitter](https://www.npmjs.com/package/twitter) @ ^1.7.1 <br>
 
 ## [nodecg-io-ws-client](https://github.com/codeoverflow-org/nodecg-io/tree/master/nodecg-io-ws-client)
 
