@@ -1,14 +1,14 @@
-let socket: SocketIOClient.Socket, _config: {jwtToken: string, accountId: string};
+let socket: SocketIOClient.Socket, _config: {token: string, accountId: string};
 
-import io from 'socket.io-client';
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import * as io from 'socket.io-client';
+import { exception } from 'console';
 
 export class StreamElements {
-    constructor(config: {jwtToken: string, accountId: string}) {
+    constructor(config: {token: string, accountId: string}) {
         _config = config;
     }
     connect() {
-        socket = io('https://realtime.streamelements.com', {transports: ['websocket']})
+        socket = io.connect('https://realtime.streamelements.com', {transports: ['websocket']})
     }
     onRegister(handler: () => void) {
         socket.on('connect',handler);
@@ -23,19 +23,20 @@ export class StreamElements {
         socket.close();
     }
 
-    static async test(config: {jwtToken: string, accountId: string}): Promise<Result<void>>  {
+    static async test(config: {token: string, accountId: string}){
         const testSocket = io('https://realtime.streamelements.com', {transports: ['websocket']});
         testSocket.on("connect",() => {
             testSocket.emit('authenticate', {
                 method: 'jwt',
-                token: config.jwtToken
+                token: config.token
             });
         })
         testSocket.on('authenticated',() => {
-            return emptySuccess();
+            testSocket.disconnect();
+            return;
         })
-        testSocket.on('connect_error', (error) => {
-            return error(error.toString());
+        testSocket.on('connect_error', () => {
+            throw exception();
         });
     }
 
