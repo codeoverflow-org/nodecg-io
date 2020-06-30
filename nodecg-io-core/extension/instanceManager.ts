@@ -125,7 +125,9 @@ export class InstanceManager {
                     return error("Config invalid: " + validationRes.errorMessage);
                 }
             } catch (err) {
-                return error(inst.serviceType + "Validation function invalid!: " + err);
+                this.nodecg.log.error(
+                    `The "${inst.serviceType}" service function produced an error while config verefication: ${err}`,
+                );
             }
         }
 
