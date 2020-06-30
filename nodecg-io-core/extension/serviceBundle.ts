@@ -13,6 +13,11 @@ export class serviceBundle {
         this.service = service;
         nodecg.log.info(service.serviceType + " bundle started");
         this.core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
+        if (this.core === undefined) {
+            nodecg.log.error(
+                "nodecg-io-core isn't loaded! " + service.serviceType + " bundle won't function without it.",
+            );
+        }
     }
 
     public register() {
