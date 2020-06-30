@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
 import * as WebSocket from "ws";
 
 interface WSClientServiceConfig {
@@ -13,22 +13,15 @@ export interface WSClientServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
-    nodecg.log.info("Websocket client bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Websocket client bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<WSClientServiceConfig, WSClientServiceClient> = {
-        schema: core.readSchema(__dirname, "../ws-schema.json"),
+    const wsClient = new serviceBundle(nodecg, {
+        schema: readSchema(nodecg, __dirname, "../ws-schema.json"),
         serviceType: "websocket-client",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: stopClient,
-    };
+    });
 
-    return core.registerService(service);
+    return wsClient.register();
 };
 
 async function validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {

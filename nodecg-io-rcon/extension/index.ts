@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
 import { Rcon } from "rcon-client";
 
 interface RconServiceConfig {
@@ -16,22 +16,15 @@ export interface RconServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<RconServiceClient> | undefined => {
-    nodecg.log.info("Rcon bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Rcon bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<RconServiceConfig, RconServiceClient> = {
-        schema: core.readSchema(__dirname, "../rcon-schema.json"),
+    const rcon = new serviceBundle(nodecg, {
+        schema: readSchema(nodecg, __dirname, "../rcon-schema.json"),
         serviceType: "rcon",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: stopClient,
-    };
+    });
 
-    return core.registerService(service);
+    return rcon.register();
 };
 
 async function validateConfig(config: RconServiceConfig): Promise<Result<void>> {
