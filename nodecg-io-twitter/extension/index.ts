@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
 import Twitter = require("twitter");
 
 interface TwitterServiceConfig {
@@ -16,22 +16,15 @@ export interface TwitterServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undefined => {
-    nodecg.log.info("Twitter bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Twitter bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<TwitterServiceConfig, TwitterServiceClient> = {
-        schema: core.readSchema(__dirname, "../twitter-schema.json"),
+    const twitter = new serviceBundle(nodecg, {
+        schema: readSchema(nodecg, __dirname, "../twitter-schema.json"),
         serviceType: "twitter",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: stopClient,
-    };
+    });
 
-    return core.registerService(service);
+    return twitter.register();
 };
 
 async function validateConfig(config: TwitterServiceConfig): Promise<Result<void>> {

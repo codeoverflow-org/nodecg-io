@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
 import SpotifyWebApi = require("spotify-web-api-node");
 import open = require("open");
 import { Router } from "express";
@@ -23,24 +23,17 @@ const defaultState = "defaultState";
 const refreshInterval = 1800000;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<SpotifyServiceClient> | undefined => {
-    nodecg.log.info("Spotify bundle started.");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Spotify bundle won't function without it.");
-        return undefined;
-    }
-
     callbackUrl = `http://${nodecg.config.baseURL}${callbackEndpoint}`;
 
-    const service: Service<SpotifyServiceConfig, SpotifyServiceClient> = {
-        schema: core.readSchema(__dirname, "../spotify-schema.json"),
+    const spotify = new serviceBundle(nodecg, {
+        schema: readSchema(nodecg, __dirname, "../spotify-schema.json"),
         serviceType: "spotify",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: stopClient,
-    };
+    });
 
-    return core.registerService(service);
+    return spotify.register();
 };
 
 async function validateConfig(config: SpotifyServiceConfig): Promise<Result<void>> {

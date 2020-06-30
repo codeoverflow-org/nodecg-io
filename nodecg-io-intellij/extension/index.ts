@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
 import { IntelliJ } from "./intellij";
 
 interface IntelliJServiceConfig {
@@ -13,22 +13,15 @@ export interface IntelliJServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<IntelliJServiceClient> | undefined => {
-    nodecg.log.info("IntelliJ bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! IntelliJ bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<IntelliJServiceConfig, IntelliJServiceClient> = {
-        schema: core.readSchema(__dirname, "../intellij-schema.json"),
+    const intellij = new serviceBundle(nodecg, {
+        schema: readSchema(nodecg, __dirname, "../intellij-schema.json"),
         serviceType: "intellij",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: (_) => {},
-    };
+    });
 
-    return core.registerService(service);
+    return intellij.register();
 };
 
 async function validateConfig(config: IntelliJServiceConfig): Promise<Result<void>> {

@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
 import TwitchClient from "twitch";
 import ChatClient from "twitch-chat-client";
 
@@ -14,22 +14,15 @@ export interface TwitchServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
-    nodecg.log.info("Twitch bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Twitch bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<TwitchServiceConfig, TwitchServiceClient> = {
-        schema: core.readSchema(__dirname, "../twitch-schema.json"),
+    const twitch = new serviceBundle(nodecg, {
+        schema: readSchema(nodecg, __dirname, "../twitch-schema.json"),
         serviceType: "twitch",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
         stopClient: stopClient,
-    };
+    });
 
-    return core.registerService(service);
+    return twitch.register();
 };
 
 async function validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
