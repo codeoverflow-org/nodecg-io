@@ -7,9 +7,9 @@ import * as path from "path";
 
 export class serviceBundle {
     private core: NodeCGIOCore | undefined;
-    private service: Service<any, any>;
+    private service: Service<unknown, unknown>;
 
-    constructor(nodecg: NodeCG, service: Service<any, any>) {
+    constructor(nodecg: NodeCG, service: Service<unknown, unknown>) {
         this.service = service;
         nodecg.log.info(service.serviceType + " bundle started");
         this.core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
