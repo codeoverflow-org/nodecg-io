@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Update docs
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8.3
+    
+    - uses: actions/checkout@v2
+    
+    - name: Checkout docs
+      uses: actions/checkout@v2
+      with:
+        repository:  codeoverflow-org/nodecg-io-docs
+        path: ../nodecg-io-docs
+        token: ${{ github.token }} ###MUST BE CHANGED TO PAT
+
+    - name: Build docs
+      run: python .scripts/build-docs.py
+
+    - name: GitHub Push
+      uses: ad-m/github-push-action@v0.6.0
+      with: 
+        repository:  codeoverflow-org/nodecg-io-docs
+        directory: ../nodecg-io-docs
+        github_token: ${{ github.token }} ###MUST BE CHANGED TO PAT
