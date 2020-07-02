@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "discover": {
+            "type": "boolean",
+            "description": "If the extension should try to discover the Philips Hue Bridge. **IMPORTANT** ignores the specified IP address and errors if it could not find a bridge"
+        },
+        "ipAddr": {
+            "type": "string",
+            "description": "The IP address of the bridge that you want to connect to, will not be used if you specify discover as true"
+        }
+    },
+    "required": ["discover", "ipAddr"]
+}
