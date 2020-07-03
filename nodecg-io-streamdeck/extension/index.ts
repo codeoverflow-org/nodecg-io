@@ -35,7 +35,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<StreamdeckServiceClient> | un
 async function validateConfig(config: StreamdeckServiceConfig): Promise<Result<void>> {
     try {
         let device: string | undefined = config.device;
-        if (device == "default") {
+        if (device === "default") {
             device = undefined;
         }
         streamdeck.openStreamDeck(device).close(); // Throws an error if the streamdeck is not found
@@ -49,7 +49,7 @@ function createClient(nodecg: NodeCG): (config: StreamdeckServiceConfig) => Prom
     return async (config) => {
         try {
             let device: string | undefined = config.device;
-            if (device == "default") {
+            if (device === "default") {
                 device = undefined;
             }
 
