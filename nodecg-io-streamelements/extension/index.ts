@@ -6,16 +6,15 @@ import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/u
 import * as fs from "fs";
 import * as path from "path";
 
-import { StreamElements } from './StreamElements';
-
+import { StreamElements } from "./StreamElements";
 
 interface StreamElementsServiceConfig {
-    jwtToken: string,
-    accountId: string
+    jwtToken: string;
+    accountId: string;
 }
 
 export interface StreamElementsServiceClient {
-    getRawClient(): StreamElements
+    getRawClient(): StreamElements;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<StreamElementsServiceClient> | undefined => {
@@ -27,11 +26,11 @@ module.exports = (nodecg: NodeCG): ServiceProvider<StreamElementsServiceClient> 
     }
 
     const service: Service<StreamElementsServiceConfig, StreamElementsServiceClient> = {
-        schema: fs.readFileSync(path.resolve(__dirname, "../streamelements-schema.json"), "utf8"),
+        schema: core.readSchema(__dirname, "../streamelements-schema.json"),
         serviceType: "streamelements",
         validateConfig: validateConfig,
         createClient: createClient(nodecg),
-        stopClient: stopClient
+        stopClient: stopClient,
     };
 
     return core.registerService(service);
@@ -41,28 +40,30 @@ async function validateConfig(config: StreamElementsServiceConfig): Promise<Resu
     return StreamElements.test(config);
 }
 
-function createClient(nodecg: NodeCG): (config: StreamElementsServiceConfig) => Promise<Result<StreamElementsServiceClient>> {
+function createClient(
+    nodecg: NodeCG,
+): (config: StreamElementsServiceConfig) => Promise<Result<StreamElementsServiceClient>> {
     return async (config) => {
         try {
             //Tokens
             const jwtToken = config.jwtToken;
             const accountId = config.accountId;
-            
+
             // Create the actual client and connect
             //const chatClient = ChatClient.forTwitchClient(authClient);
-            const client = new StreamElements({jwtToken, accountId});
+            const client = new StreamElements({ jwtToken, accountId });
             nodecg.log.info("Connecting to StreamElements socket server...");
             await client.connect(); // Connects to StreamElements socket server
             // This also waits till it has registered itself at the StreamElements socket server, which is needed to do anything.
             await new Promise((resolve, _reject) => {
                 client.onRegister(resolve);
-            })
+            });
             nodecg.log.info("Successfully connected to StreamElements socket server.");
 
             return success({
                 getRawClient() {
                     return client;
-                }
+                },
             });
         } catch (err) {
             return error(err.toString());
