@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "address": {
+        "type": "string",
+        "description": "The address where the nodecg-io-intellij server runs. This defaults to 127.0.0.1:19524"
+      }
+    },
+    "required": [ "address" ]
+  }

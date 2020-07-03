@@ -1,3 +1,5 @@
+// There is no way we can get this function to pass the linter due to dynamic typing.
+/* eslint-disable */
 
 /**
  * Creates a deep copy of a object.
@@ -13,5 +15,4 @@ export function objectDeepCopy<T extends Object>(obj: T | any): T {
     } else {
         return obj;
     }
-    
 }
