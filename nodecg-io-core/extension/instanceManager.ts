@@ -125,9 +125,7 @@ export class InstanceManager {
                     return error("Config invalid: " + validationRes.errorMessage);
                 }
             } catch (err) {
-                this.nodecg.log.error(
-                    `The "${inst.serviceType}" service function produced an error while config verefication: ${err}`,
-                );
+                return error("Config invalid: " + err);
             }
         }
 
@@ -174,6 +172,7 @@ export class InstanceManager {
                         `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
                     );
                     inst.client = undefined;
+                    return;
                 } else {
                     // Update service instance object
                     inst.client = client.result;
@@ -182,6 +181,8 @@ export class InstanceManager {
                 this.nodecg.log.error(
                     `The "${inst.serviceType}" service function produced an error while creating a client: ${err}`,
                 );
+                inst.client = undefined;
+                return;
             }
         }
 
