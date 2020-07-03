@@ -12,7 +12,7 @@ import { MouseButton, ScrollDirection } from "./AHK";
 /*
 Entries are of type:
 'Key to use in intermediate functions': ['AHK mapping', 'xdotool mapping']
-Everything thatis not in here is not mapped and it may not work everywhere.
+Everything that is not in here is not mapped and it may not work everywhere.
 If you find a key that should be mapped and is not listed PLEASE create a PR.
 All keys in this object must be lowercase but not the mappings. Feel free to
 add multiple mappings if needed so it's easier for everyone to find a key.
@@ -26,7 +26,7 @@ replaced with nothing before to support both ways of expressing some keys. Excep
 the single underscore. It matches to the underscore key.
 */
 export const KEY_MAPPING: Record<string, [string, string]> = {
-    // a-z not mapped. The indetifiers are equal.
+    // a-z not mapped. The identifiers are equal.
 
     plus: ["+", "plus"],
     comma: [",", "comma"],

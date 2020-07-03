@@ -17,7 +17,7 @@
       },
       "port": {
         "type": "number",
-        "description": "The port of the HotkeylessAHK server. Set this to -1 and host to localhost to use a locally installed xdotool."
+        "description": "The port of the HotkeylessAHK / xdotool server. Set this to -1 and host to localhost to use a locally installed xdotool."
       }
     },
     "required": ["mode", "host", "port"]

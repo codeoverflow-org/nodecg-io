@@ -7,6 +7,12 @@
       "name": "derNiklaas",
       "url": "https://github.com/derNiklaas"
     },
+    "contributors": [
+      {
+        "name": "noeppi_noeppi",
+        "url": "https://github.com/noeppi-noeppi"
+      }
+    ],
     "scripts": {
       "build": "tsc",
       "watch": "tsc -w"

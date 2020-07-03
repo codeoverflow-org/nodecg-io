@@ -66,7 +66,7 @@ export interface AHK {
      * Simulated the given key combination to be pressed. The string
      * is case insensitive. So when you wan't a capital 'A' you must
      * use 'Shift+A'. To see what string matches what key, see the
-     * interface descrption.
+     * interface description.
      *
      * A key combination is a comma separated list of key actions.
      * A key action is a plus separated list of keys.
@@ -85,13 +85,13 @@ export interface AHK {
 
     /**
      * Simulates that the given key got pressed. To see what string
-     * matches what key, see the interface descrption.
+     * matches what key, see the interface description.
      */
     keydown(keyCode: string): Promise<void>;
 
     /**
      * Simulates that the given key got released. To see what string
-     * matches what key, see the interface descrption.
+     * matches what key, see the interface description.
      */
     keyup(keyCode: string): Promise<void>;
 
@@ -131,7 +131,7 @@ function parseKey(key: string, down: (_: string) => void, up: (_: string) => voi
 }
 
 function resolveAHKKey(mapping: Record<string, [string, string]> | null, key: string, mode?: "up" | "down"): string {
-    let modeStr: string = "";
+    let modeStr = "";
     if (mode != undefined) {
         modeStr = ` ${mode}`;
     }
@@ -190,7 +190,7 @@ class HotkeylessAHK {
         return this.sendAHK(ahk);
     }
 
-    sendXD(command: string): Promise<void> {
+    sendXD(_: string): Promise<void> {
         return Promise.reject("You attempted to send a xdotool command to AutoHotkey");
     }
 
@@ -322,7 +322,7 @@ class XdoTool implements AHK {
         return this.sendXD(xdotool);
     }
 
-    sendAHK(command: string): Promise<void> {
+    sendAHK(_: string): Promise<void> {
         return Promise.reject("You attempted to send an AutoHotkey command to xdotool");
     }
 
