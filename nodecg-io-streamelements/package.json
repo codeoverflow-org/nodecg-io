@@ -7,6 +7,10 @@
     "name": "Extremtechniker",
     "url": "https://github.com/extremtechniker"
   },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
   "files": [
     "dashboard",
     "graphics",

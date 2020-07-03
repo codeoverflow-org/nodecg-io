@@ -1,6 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { TwitchServiceClient } from "nodecg-io-twitch/extension";
+import { StreamElementsServiceClient } from "nodecg-io-streamelements/extension";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
@@ -10,20 +11,23 @@ module.exports = function (nodecg: NodeCG) {
         | ServiceProvider<TwitchServiceClient>
         | undefined;
 
+    const se = (nodecg.extensions["nodecg-io-streamelements"] as unknown) as
+        | ServiceProvider<StreamElementsServiceClient>
+        | undefined;
+
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch?.requireService(
+    se?.requireService(
         "twitch-chat",
         (client) => {
-            nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
-
-            twitchChannels.forEach((channel) => {
-                addListeners(nodecg, client, channel);
+            nodecg.log.info("SE has been set.");
+            client.getRawClient().onSubscriber((data: any) => {
+                nodecg.log.info(`Neuer sub: ${data.data.displayName}`);
             });
         },
-        () => nodecg.log.info("Twitch client has been unset."),
+        () => nodecg.log.info("Unset."),
     );
 };
 
