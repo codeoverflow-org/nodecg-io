@@ -10,6 +10,10 @@ module.exports = {
         "prettier/@typescript-eslint",
         "plugin:prettier/recommended",
     ],
+    // Don't traverse fs up to root.
+    // This caused problems when nodecg-io was cloned into a NodeCG installation as it then
+    // tried to lint nodecg-io with that config.
+    root: true, 
     rules: {
         // Use experimental version of unused vars, because the stable one
         // even warns about unused vars with an underscore before them, which is the typescript notation

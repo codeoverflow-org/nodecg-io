@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 # What this file does:
-#  + It downloads required packages via pip
 #  + It creates the files 'dependencies.md' and 'services.md' based on the 'package.json' files
 #  + It adjusts the number for the 'services implemented' field in 'index.md'
-#
-# What you need to build the documentation:
+# 
+# Requirements:
 #  + python3 in your PATH
-#  + PlantUML in your PATH
-#  + pip
+#  + executed from root of nodecg-io repo
+#  + docs repo located at ../nodecg-io-docs and up to date
 
 import json
 import re
@@ -72,16 +71,21 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
             if not is_core:
                 sampleName = data['name'][10:] # Clip off the 'nodecg-io-' part
                 if os.path.exists(baseDocDir + os.path.sep + 'samples' + os.path.sep + sampleName + '.md'):
-                    out.write(f'See the [sample implementation](samples/{sampleName}.md)\n')
+                    with open(baseDocDir + os.path.sep + 'samples' + os.path.sep + sampleName + '.md') as infile:
+                        if infile.readline().strip() == '<!-- Marker for build.py that there\'s no sample bundle. Remove this if you created one -->':
+                            out.write(f'There\'s no sample implementation for this service yet.\n')
+                        else:
+                            out.write(f'See the [sample implementation](samples/{sampleName}.md)\n')
                 else:
                     out.write(f'There\'s no sample implementation for this service yet.\n')
                 out.write('\n')
 
             if 'dependencies' in data:
                 if not data['name'] in depList:
-                    outGraph.write(f'object  {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} {{\n')
-                    outGraph.write(f'[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir} {data["name"]}]]\n')
-                outGraph.write('}\n')
+                    if data['name'] == 'nodecg-io-core':
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                    else:
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
                 depList.append(data['name'])
 
                 for dependency in data['dependencies']:
@@ -93,9 +97,7 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
                         lineStyle = '...>'
 
                     if not dependency in depList:
-                        outGraph.write(f'object  {dependency.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} {{\n')
-                        outGraph.write(f'[[{depurl} {dependency}]]\n')
-                        outGraph.write('}\n')
+                        outGraph.write(f'[<u>{dependency}] as {dependency.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<lib>> [[{depurl}]]\n')
                         depList.append(dependency)
                     relationList.append(reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "") + ' ' + lineStyle + ' ' + dependency.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "") + '\n')
 
@@ -108,19 +110,24 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
 
 
 if __name__ == '__main__':
-    print(f'Running pip')
-    if subprocess.call(['python3', '-m', 'pip', 'install', '-r', 'requirements.txt']) != 0:
-        print(f'Could not install required modules.')
-        exit(1)
 
     print('Generating Markdown Files')
-    with open('docs/dependencies.md', mode='w') as outGraph:
+    with open('../nodecg-io-docs/docs/dependencies.md', mode='w') as outGraph:
         outGraph.write('<!-- This file is auto-generated. Do not change anything here -->\n')
         outGraph.write('# Dependency Graph\n')
         outGraph.write('\n')
         outGraph.write('::uml:: format="svg_inline" classes="uml" alt="PlantUML dependency graph" title="PlantUML dependency graph"\n')
-        genServicesMd('docs/services.md', '..', 'docs', outGraph)
+        outGraph.write('left to right direction\n')
+        outGraph.write('skinparam HyperlinkColor White\n')
+        outGraph.write('skinparam component {\n')
+        outGraph.write('ArrowColor LightSteelBlue\n')
+        outGraph.write('BackgroundColor<<core>> SteelBlue\n')
+        outGraph.write('BackgroundColor<<service>> Teal\n')
+        outGraph.write('BackgroundColor<<lib>> SeaGreen\n')
+        outGraph.write('BorderColor DarkSlateGray\n')
+        outGraph.write('FontColor White\n')
+        outGraph.write('FontStyle Underline\n')
+        outGraph.write('}\n')
+        genServicesMd('../nodecg-io-docs/docs/services.md', '.', '../nodecg-io-docs/docs', outGraph)
         outGraph.write('::end-uml::\n')
-
-    print('Calling MkDocs')
-    exit (subprocess.call(['python3', '-m', 'mkdocs', 'build']))
+        print('Completed Task! Files were generated successfully')
