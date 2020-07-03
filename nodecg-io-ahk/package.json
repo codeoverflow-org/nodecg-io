@@ -30,7 +30,8 @@
     },
     "dependencies": {
       "nodecg-io-core": "0.1.0",
-      "node-fetch": "^2.5.7"
+      "node-fetch": "^2.5.7",
+      "@rauschma/stringio": "^1.4.0"
     }
   }
   
