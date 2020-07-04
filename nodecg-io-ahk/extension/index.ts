@@ -2,10 +2,9 @@ import { NodeCG } from "nodecg/types/server";
 import { NodeCGIOCore } from "nodecg-io-core/extension";
 import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
-import { getAHK, AHK } from "./AHK";
+import { AHK } from "./AHK";
 
 interface AHKServiceConfig {
-    mode: "ahk" | "xdotool";
     host: string;
     port: number;
 }
@@ -35,7 +34,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<AHKServiceClient> | undefined
 
 async function validateConfig(config: AHKServiceConfig): Promise<Result<void>> {
     try {
-        const ahk = getAHK(config.mode, config.host, config.port);
+        const ahk = new AHK(config.host, config.port);
         await ahk.testConnection(); // Will throw an error if server doesn't exist.
         return emptySuccess();
     } catch (err) {
@@ -46,10 +45,9 @@ async function validateConfig(config: AHKServiceConfig): Promise<Result<void>> {
 function createClient(): (config: AHKServiceConfig) => Promise<Result<AHKServiceClient>> {
     return async (config) => {
         try {
-            const ahk = getAHK(config.mode, config.host, config.port);
             return success({
                 getRawClient() {
-                    return ahk;
+                    return new AHK(config.host, config.port);
                 },
             });
         } catch (err) {
