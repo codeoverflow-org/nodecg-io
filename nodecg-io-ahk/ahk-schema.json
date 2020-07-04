@@ -3,22 +3,14 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "mode": {
-        "type": "string",
-        "enum": [
-          "ahk",
-          "xdotool"
-        ],
-        "description": "Which system should be used as internally. HotkeylessAHK or xdotool."
-      },
       "host": {
         "type": "string",
-        "description": "An IP address to the HotkeylessAHK / xdotool server. Set this to localhost and port to -1 to use a locally installed xdotool."
+        "description": "An IP address to the HotkeylessAHK server"
       },
       "port": {
         "type": "number",
-        "description": "The port of the HotkeylessAHK / xdotool server. Set this to -1 and host to localhost to use a locally installed xdotool."
+        "description": "The port of the HotkeylessAHK server"
       }
     },
-    "required": ["mode", "host", "port"]
+    "required": ["host", "port"]
   }
