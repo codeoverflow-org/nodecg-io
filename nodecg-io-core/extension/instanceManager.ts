@@ -172,7 +172,6 @@ export class InstanceManager {
                         `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
                     );
                     inst.client = undefined;
-                    return;
                 } else {
                     // Update service instance object
                     inst.client = client.result;
@@ -182,7 +181,6 @@ export class InstanceManager {
                     `The "${inst.serviceType}" service function produced an error while creating a client: ${err}`,
                 );
                 inst.client = undefined;
-                return;
             }
         }
 
