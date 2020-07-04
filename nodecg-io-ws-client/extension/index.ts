@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
-import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
+import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import * as WebSocket from "ws";
 
 interface WSClientServiceConfig {
@@ -13,19 +13,12 @@ export interface WSClientServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
-    const wsClient = new serviceBundle(nodecg, {
-        schema: readSchema(nodecg, __dirname, "../ws-schema.json"),
-        serviceType: "websocket-client",
-        validateConfig: validateConfig,
-        createClient: createClient(nodecg),
-        stopClient: stopClient,
-    });
-
-    return wsClient.register();
+    const wsClientService = new WSClientService(nodecg, __dirname, "websocket-client", "../ws-schema.json");
+    return wsClientService.register();
 };
 
-async function validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
-    try {
+class WSClientService extends ServiceBundle {
+    async validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
         const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
         await new Promise((resolve, reject) => {
             client.once("error", reject);
@@ -36,14 +29,10 @@ async function validateConfig(config: WSClientServiceConfig): Promise<Result<voi
         });
         client.close();
         return emptySuccess();
-    } catch (err) {
-        return error(err.toString());
     }
-}
 
-function createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promise<Result<WSClientServiceClient>> {
-    return async (config) => {
-        try {
+    createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promise<Result<WSClientServiceClient>> {
+        return async (config) => {
             const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
             await new Promise((resolve, reject) => {
                 client.once("error", reject);
@@ -58,12 +47,10 @@ function createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promis
                     return client;
                 },
             });
-        } catch (err) {
-            return error(err.toString());
-        }
-    };
-}
+        };
+    }
 
-function stopClient(client: WSClientServiceClient): void {
-    client.getRawClient().close();
+    stopClient(client: WSClientServiceClient): void {
+        client.getRawClient().close();
+    }
 }

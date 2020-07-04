@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
-import { serviceBundle, readSchema } from "nodecg-io-core/extension/serviceBundle";
+import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Rcon } from "rcon-client";
 
 interface RconServiceConfig {
@@ -16,19 +16,12 @@ export interface RconServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<RconServiceClient> | undefined => {
-    const rcon = new serviceBundle(nodecg, {
-        schema: readSchema(nodecg, __dirname, "../rcon-schema.json"),
-        serviceType: "rcon",
-        validateConfig: validateConfig,
-        createClient: createClient(nodecg),
-        stopClient: stopClient,
-    });
-
-    return rcon.register();
+    const rconService = new RconService(nodecg, "rcon", __dirname, "../rcon-schema.json");
+    return rconService.register();
 };
 
-async function validateConfig(config: RconServiceConfig): Promise<Result<void>> {
-    try {
+class RconService extends ServiceBundle {
+    async validateConfig(config: RconServiceConfig): Promise<Result<void>> {
         const rcon = new Rcon({
             host: config.host,
             port: config.port,
@@ -41,18 +34,10 @@ async function validateConfig(config: RconServiceConfig): Promise<Result<void>> 
         await rcon.connect(); // This will throw an exception if there is an error.
         rcon.end();
         return emptySuccess();
-    } catch (err) {
-        return error(err.toString());
     }
-}
 
-function sendMessage(client: Rcon, message: string): Promise<string> {
-    return client.send(message);
-}
-
-function createClient(nodecg: NodeCG): (config: RconServiceConfig) => Promise<Result<RconServiceClient>> {
-    return async (config) => {
-        try {
+    createClient(nodecg: NodeCG): (config: RconServiceConfig) => Promise<Result<RconServiceClient>> {
+        return async (config) => {
             const rcon = new Rcon({
                 host: config.host,
                 port: config.port,
@@ -73,17 +58,19 @@ function createClient(nodecg: NodeCG): (config: RconServiceConfig) => Promise<Re
                     return sendMessage(rcon, message);
                 },
             });
-        } catch (err) {
-            return error(err.toString());
-        }
-    };
+        };
+    }
+
+    stopClient(client: RconServiceClient): void {
+        client
+            .getRawClient()
+            .end()
+            .then(() => {
+                console.log("Stopped rcon client successfully.");
+            });
+    }
 }
 
-function stopClient(client: RconServiceClient): void {
-    client
-        .getRawClient()
-        .end()
-        .then(() => {
-            console.log("Stopped rcon client successfully.");
-        });
+function sendMessage(client: Rcon, message: string): Promise<string> {
+    return client.send(message);
 }
