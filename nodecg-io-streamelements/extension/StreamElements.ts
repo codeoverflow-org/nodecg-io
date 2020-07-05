@@ -1,7 +1,8 @@
 let socket: SocketIOClient.Socket, _config: { jwtToken: string; accountId: string };
 
 import io = require("socket.io-client");
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, error, Result } from "nodecg-io-core/extension/utils/result";
+import { StreamElementsEvent } from "./types";
 
 export class StreamElements {
     constructor(config: { jwtToken: string; accountId: string }) {
@@ -31,12 +32,12 @@ export class StreamElements {
     close() {
         socket.close();
     }
-    onEvent(handler: () => void) {
+    onEvent(handler: (data: StreamElementsEvent) => void) {
         socket.on("event", handler);
     }
-    onSubscriber(handler: (data: any) => void) {
-        socket.on("event", (data: any) => {
-            if (data !== null && data.type == "subscriber") {
+    onSubscriber(handler: (data: StreamElementsEvent) => void) {
+        socket.on("event", (data: StreamElementsEvent) => {
+            if (data !== null && data.type === "subscriber") {
                 handler(data);
             }
         });
