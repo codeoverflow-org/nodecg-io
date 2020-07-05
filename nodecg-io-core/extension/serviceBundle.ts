@@ -18,7 +18,12 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
     public core: NodeCGIOCore | undefined;
     public nodecg: NodeCG;
     public serviceType: string;
-    public schema: any;
+    public schema: unknown;
+
+    /**
+     * The default value for the config.
+     */
+    public defaultConfig?: R;
 
     /**
      * This constructor creates the service and gets the nodecg-io-core
@@ -31,7 +36,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
         this.serviceType = serviceName;
         this.schema = this.readSchema(pathSegments);
 
-        this.nodecg.log.info(this.serviceType + " bundle started");
+        this.nodecg.log.info(this.serviceType + " bundle started.");
         this.core = (this.nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
         if (this.core === undefined) {
             this.nodecg.log.error(
@@ -40,16 +45,16 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
         }
     }
 
+    /**
+     * Registers this service bundle at the core bundle, makes it appear in the GUI and makes it usable.
+     * @return a service provider for this service, can be used by bundles to depend on this service.
+     */
     public register(): ServiceProvider<C> | undefined {
-        if (this.core === undefined) {
-            return undefined;
-        } else {
-            // Hide nodecg variable from serialization.
-            // The service is saved in a Replicant and nodecg tries to serialize everything in there, including
-            // nodecg instances, which throw errors when serialized.
-            Object.defineProperty(this, "nodecg", { enumerable: false });
-            return this.core.registerService(this);
-        }
+        // Hide nodecg variable from serialization.
+        // The service is saved in a Replicant and nodecg tries to serialize everything in there, including
+        // nodecg instances, which throw errors when serialized.
+        Object.defineProperty(this, "nodecg", { enumerable: false });
+        return this.core?.registerService(this);
     }
 
     /**
@@ -77,7 +82,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
      */
     abstract stopClient(client: C): void;
 
-    private readSchema(pathSegments: string[]) {
+    private readSchema(pathSegments: string[]): unknown {
         const joinedPath = path.resolve(...pathSegments);
         try {
             const fileContent = fs.readFileSync(joinedPath, "utf8");
