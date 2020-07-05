@@ -105,12 +105,12 @@
             window.setServiceDependency = setServiceDependency;
 
             // Add key listener to password input
-            document.getElementById("inputPassword").addEventListener("keyup", function(event) {
+            document.getElementById("inputPassword").addEventListener("keyup", function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
-                    window.loadFramework()
+                    window.loadFramework();
                 }
-            })
+            });
         </script>
     </body>
 </html>

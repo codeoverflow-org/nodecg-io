@@ -44,6 +44,10 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
         if (this.core === undefined) {
             return undefined;
         } else {
+            // Hide nodecg variable from serialization.
+            // The service is saved in a Replicant and nodecg tries to serialize everything in there, including
+            // nodecg instances, which throw errors when serialized.
+            Object.defineProperty(this, "nodecg", { enumerable: false });
             return this.core.registerService(this);
         }
     }
