@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { StreamDeck } from "elgato-stream-deck";
 import * as streamdeck from "elgato-stream-deck";
 
@@ -14,48 +14,34 @@ export interface StreamdeckServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<StreamdeckServiceClient> | undefined => {
-    nodecg.log.info("Streamdeck bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Streamdeck bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<StreamdeckServiceConfig, StreamdeckServiceClient> = {
-        schema: core.readSchema(__dirname, "../streamdeck-schema.json"),
-        serviceType: "streamdeck",
-        validateConfig: validateConfig,
-        createClient: createClient(nodecg),
-        stopClient: stopClient,
-    };
-
-    return core.registerService(service);
+    const service = new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "streamdeck-schema.json");
+    return service.register();
 };
 
-async function validateConfig(config: StreamdeckServiceConfig): Promise<Result<void>> {
-    try {
-        let device: string | undefined = config.device;
-        if (device === "default") {
-            device = undefined;
+class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, StreamdeckServiceClient> {
+    async validateConfig(config: StreamdeckServiceConfig): Promise<Result<void>> {
+        try {
+            let device: string | undefined = config.device;
+            if (device === "default") {
+                device = undefined;
+            }
+            streamdeck.openStreamDeck(device).close(); // Throws an error if the streamdeck is not found
+            return emptySuccess();
+        } catch (err) {
+            return error(err.toString());
         }
-        streamdeck.openStreamDeck(device).close(); // Throws an error if the streamdeck is not found
-        return emptySuccess();
-    } catch (err) {
-        return error(err.toString());
     }
-}
 
-function createClient(nodecg: NodeCG): (config: StreamdeckServiceConfig) => Promise<Result<StreamdeckServiceClient>> {
-    return async (config) => {
+    async createClient(config: StreamdeckServiceConfig): Promise<Result<StreamdeckServiceClient>> {
         try {
             let device: string | undefined = config.device;
             if (device === "default") {
                 device = undefined;
             }
 
-            nodecg.log.info(`Connecting to the streamdeck ${config.device}.`);
+            this.nodecg.log.info(`Connecting to the streamdeck ${config.device}.`);
             const deck = streamdeck.openStreamDeck(device);
-            nodecg.log.info(`Successfully connected to the streamdeck ${config.device}.`);
+            this.nodecg.log.info(`Successfully connected to the streamdeck ${config.device}.`);
 
             return success({
                 getRawClient() {
@@ -65,9 +51,9 @@ function createClient(nodecg: NodeCG): (config: StreamdeckServiceConfig) => Prom
         } catch (err) {
             return error(err.toString());
         }
-    };
-}
+    }
 
-function stopClient(client: StreamdeckServiceClient): void {
-    client.getRawClient().close();
+    stopClient(client: StreamdeckServiceClient): void {
+        client.getRawClient().close();
+    }
 }
