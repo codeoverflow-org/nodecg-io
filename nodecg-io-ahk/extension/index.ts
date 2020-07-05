@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { AHK } from "./AHK";
 
 interface AHKServiceConfig {
@@ -14,45 +14,26 @@ export interface AHKServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<AHKServiceClient> | undefined => {
-    nodecg.log.info("AHK bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! AHK bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<AHKServiceConfig, AHKServiceClient> = {
-        schema: core.readSchema(__dirname, "../ahk-schema.json"),
-        serviceType: "AHK",
-        validateConfig: validateConfig,
-        createClient: createClient(),
-        stopClient: () => {},
-    };
-
-    return core.registerService(service);
+    const ahkService = new AhkService(nodecg, "ahk", __dirname, "../ahk-schema.json");
+    return ahkService.register();
 };
-
-async function validateConfig(config: AHKServiceConfig): Promise<Result<void>> {
-    try {
+class AhkService extends ServiceBundle<AHKServiceConfig, AHKServiceClient> {
+    async validateConfig(config: AHKServiceConfig): Promise<Result<void>> {
         const ahk = new AHK(config.host, config.port);
         await ahk.testConnection(); // Will throw an error if server doesn't exist.
         return emptySuccess();
-    } catch (err) {
-        return error(err.toString());
     }
-}
 
-function createClient(): (config: AHKServiceConfig) => Promise<Result<AHKServiceClient>> {
-    return async (config) => {
-        try {
-            const ahk = new AHK(config.host, config.port);
-            return success({
-                getRawClient() {
-                    return ahk;
-                },
-            });
-        } catch (err) {
-            return error(err.toString());
-        }
-    };
+    async createClient(config: AHKServiceConfig): Promise<Result<AHKServiceClient>> {
+        const ahk = new AHK(config.host, config.port);
+        return success({
+            getRawClient() {
+                return ahk;
+            },
+        });
+    }
+
+    stopClient() {
+        // Not needed or possible
+    }
 }
