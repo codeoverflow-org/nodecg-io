@@ -13,11 +13,11 @@ export interface WSClientServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
-    const wsClientService = new WSClientService(nodecg, __dirname, "websocket-client", "../ws-schema.json");
+    const wsClientService = new WSClientService(nodecg, "websocket-client", __dirname, "../ws-schema.json");
     return wsClientService.register();
 };
 
-class WSClientService extends ServiceBundle {
+class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServiceClient> {
     async validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
         const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
         await new Promise((resolve, reject) => {
@@ -31,23 +31,21 @@ class WSClientService extends ServiceBundle {
         return emptySuccess();
     }
 
-    createClient(nodecg: NodeCG): (config: WSClientServiceConfig) => Promise<Result<WSClientServiceClient>> {
-        return async (config) => {
-            const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
-            await new Promise((resolve, reject) => {
-                client.once("error", reject);
-                client.on("open", () => {
-                    client.off("error", reject);
-                    resolve();
-                });
+    async createClient(config: WSClientServiceConfig): Promise<Result<WSClientServiceClient>> {
+        const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+        await new Promise((resolve, reject) => {
+            client.once("error", reject);
+            client.on("open", () => {
+                client.off("error", reject);
+                resolve();
             });
-            nodecg.log.info("Successfully connected to the WebSocket server.");
-            return success({
-                getRawClient() {
-                    return client;
-                },
-            });
-        };
+        });
+        this.nodecg.log.info("Successfully connected to the WebSocket server.");
+        return success({
+            getRawClient() {
+                return client;
+            },
+        });
     }
 
     stopClient(client: WSClientServiceClient): void {

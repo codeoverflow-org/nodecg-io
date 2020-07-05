@@ -17,7 +17,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undef
     return discordService.register();
 };
 
-class DiscordService extends ServiceBundle {
+class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceClient> {
     async validateConfig(config: DiscordServiceConfig): Promise<Result<void>> {
         const botToken = config.botToken;
         const client = new Client();
@@ -26,17 +26,15 @@ class DiscordService extends ServiceBundle {
         return emptySuccess();
     }
 
-    createClient(nodecg: NodeCG): (config: DiscordServiceConfig) => Promise<Result<DiscordServiceClient>> {
-        return async (config) => {
-            const client = new Client();
-            await client.login(config.botToken);
-            nodecg.log.info("Successfully connected to discord.");
-            return success({
-                getRawClient() {
-                    return client;
-                },
-            });
-        };
+    async createClient(config: DiscordServiceConfig): Promise<Result<DiscordServiceClient>> {
+        const client = new Client();
+        await client.login(config.botToken);
+        this.nodecg.log.info("Successfully connected to discord.");
+        return success({
+            getRawClient() {
+                return client;
+            },
+        });
     }
 
     stopClient(client: DiscordServiceClient): void {

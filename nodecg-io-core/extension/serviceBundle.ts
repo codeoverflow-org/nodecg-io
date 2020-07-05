@@ -1,68 +1,79 @@
 import { NodeCGIOCore } from ".";
 import { NodeCG } from "nodecg/types/server";
 import { Service, ServiceProvider } from "./types";
-import { emptySuccess, Result } from "./utils/result";
+import { Result } from "./utils/result";
 
 import * as fs from "fs";
 import * as path from "path";
 
 /**
  * Class helping to create a nodecg-io service
+ *
+ * Models a service that a bundle can depend upon and use to access e.g. a twitch chat or similar.
+ * @typeParam R a interface type that describes the user provided config for the service.
+ *              Intended to hold configurations and authentication information that the service needs to provide a client.
+ * @typeParam C the type of a client that the service will provide to bundles using {@link createClient}.
  */
-export class ServiceBundle {
-    private core: NodeCGIOCore | undefined;
-    private service: Service<unknown, unknown>;
-    private nodecg: NodeCG;
+export abstract class ServiceBundle<R, C> implements Service<R, C> {
+    public core: NodeCGIOCore | undefined;
+    public nodecg: NodeCG;
+    public serviceType: string;
+    public schema: any;
 
+    /**
+     * This constructor creates the service and gets the nodecg-io-core
+     * @param nodecg the current NodeCG instance
+     * @param serviceName the name of the service in all-lowercase-and-with-hyphen
+     * @param pathSegments the path to the schema.json most likely __dirname, "../serviceName-schema.json"
+     */
     constructor(nodecg: NodeCG, serviceName: string, ...pathSegments: string[]) {
         this.nodecg = nodecg;
-        this.service = {
-            schema: this.readSchema(...pathSegments),
-            serviceType: serviceName,
-            validateConfig: this.validateConfig,
-            createClient: this.createClient(nodecg),
-            stopClient: this.stopClient,
-        };
-        nodecg.log.info(this.service.serviceType + " bundle started");
-        this.core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
+        this.serviceType = serviceName;
+        this.schema = this.readSchema(pathSegments);
+
+        this.nodecg.log.info(this.serviceType + " bundle started");
+        this.core = (this.nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
         if (this.core === undefined) {
             this.nodecg.log.error(
-                "nodecg-io-core isn't loaded! " + this.service.serviceType + " bundle won't function without it.",
+                "nodecg-io-core isn't loaded! " + this.serviceType + " bundle won't function without it.",
             );
         }
     }
 
-    public register(): ServiceProvider<any> | undefined {
+    public register(): ServiceProvider<C> | undefined {
         if (this.core === undefined) {
             return undefined;
         } else {
-            return this.core.registerService(this.service);
+            return this.core.registerService(this);
         }
     }
 
-    async validateConfig(config: unknown): Promise<Result<void>> {
-        this.nodecg.log.error(
-            this.service.serviceType +
-                " has not provided a validateConfig method! The service won't function without it.",
-        );
-        return emptySuccess();
-    }
+    /**
+     * This function validates the passed config after it has been validated against the json schema (if applicable).
+     * Should make deeper checks like checking validity of auth tokens.
+     * @param config the config which should be validated.
+     * @return void if the config passes validation and an error string describing the issue if not.
+     */
+    abstract async validateConfig(config: R): Promise<Result<void>>;
 
-    createClient(nodecg: NodeCG): (config: unknown) => Promise<Result<unknown>> {
-        this.nodecg.log.error(
-            this.service.serviceType +
-                " has not provided a createClient method! The service won't function without it.",
-        );
-        return async () => {
-            return emptySuccess();
-        };
-    }
+    /**
+     * Creates a client to the service using the validated config.
+     * The returned result will be passed to bundles and they should be able to use the service with this returned client.
+     *
+     * @param config the user provided config for the service.
+     * @return the client if everything went well and an error string describing the issue if a error occured.
+     */
+    abstract async createClient(config: R): Promise<Result<C>>;
 
-    stopClient(config: unknown): void {
-        this.nodecg.log.error(this.service.serviceType + " has not provided a stopClient method!");
-    }
+    /**
+     * Stops a client of this service that is not needed anymore.
+     * Services should close any connections that might exist here.
+     *
+     * @param client the client that needs to be stopped.
+     */
+    abstract stopClient(client: C): void;
 
-    private readSchema(...pathSegments: string[]) {
+    private readSchema(pathSegments: string[]) {
         const joinedPath = path.resolve(...pathSegments);
         try {
             const fileContent = fs.readFileSync(joinedPath, "utf8");

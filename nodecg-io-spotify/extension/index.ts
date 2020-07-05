@@ -29,7 +29,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<SpotifyServiceClient> | undef
     return spotifyService.register();
 };
 
-class SpotifyService extends ServiceBundle {
+class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceClient> {
     async validateConfig(config: SpotifyServiceConfig): Promise<Result<void>> {
         if (config.scopes === undefined || config.scopes.length === 0) {
             return error("Scopes are empty. Please specify at least one scope.");
@@ -38,35 +38,33 @@ class SpotifyService extends ServiceBundle {
         }
     }
 
-    createClient(nodecg: NodeCG): (config: SpotifyServiceConfig) => Promise<Result<SpotifyServiceClient>> {
-        return async (config) => {
-            nodecg.log.info("Spotify service connecting...");
+    async createClient(config: SpotifyServiceConfig): Promise<Result<SpotifyServiceClient>> {
+        this.nodecg.log.info("Spotify service connecting...");
 
-            const spotifyApi = new SpotifyWebApi({
-                clientId: config.clientId,
-                clientSecret: config.clientSecret,
-                redirectUri: callbackUrl,
-            });
+        const spotifyApi = new SpotifyWebApi({
+            clientId: config.clientId,
+            clientSecret: config.clientSecret,
+            redirectUri: callbackUrl,
+        });
 
-            // Creates a callback entry point using express. The promise resolves when this url is called.
-            const promise = this.mountCallBackURL(nodecg, spotifyApi);
+        // Creates a callback entry point using express. The promise resolves when this url is called.
+        const promise = this.mountCallBackURL(spotifyApi);
 
-            // Create and call authorization URL
-            const authorizeURL = spotifyApi.createAuthorizeURL(config.scopes, defaultState);
-            open(authorizeURL).then();
+        // Create and call authorization URL
+        const authorizeURL = spotifyApi.createAuthorizeURL(config.scopes, defaultState);
+        open(authorizeURL).then();
 
-            await promise;
-            nodecg.log.info("Successfully connected to Spotify!");
+        await promise;
+        this.nodecg.log.info("Successfully connected to Spotify!");
 
-            return success({
-                getRawClient() {
-                    return spotifyApi;
-                },
-            });
-        };
+        return success({
+            getRawClient() {
+                return spotifyApi;
+            },
+        });
     }
 
-    mountCallBackURL(nodecg: NodeCG, spotifyApi: SpotifyWebApi) {
+    mountCallBackURL(spotifyApi: SpotifyWebApi) {
         return new Promise((resolve) => {
             const router: Router = express.Router();
 
@@ -79,11 +77,11 @@ class SpotifyService extends ServiceBundle {
                         spotifyApi.setAccessToken(data.body["access_token"]);
                         spotifyApi.setRefreshToken(data.body["refresh_token"]);
 
-                        this.startTokenRefreshing(nodecg, spotifyApi);
+                        this.startTokenRefreshing(spotifyApi);
 
                         resolve();
                     },
-                    (err) => nodecg.log.error("Spotify login error.", err),
+                    (err) => this.nodecg.log.error("Spotify login error.", err),
                 );
 
                 // This little snippet closes the oauth window after the connection was successful
@@ -92,21 +90,21 @@ class SpotifyService extends ServiceBundle {
                 res.send(callbackWebsite);
             });
 
-            nodecg.mount(router);
+            this.nodecg.mount(router);
         });
     }
 
-    startTokenRefreshing(nodecg: NodeCG, spotifyApi: SpotifyWebApi) {
+    startTokenRefreshing(spotifyApi: SpotifyWebApi) {
         setInterval(() => {
             spotifyApi.refreshAccessToken().then(
                 (data) => {
-                    nodecg.log.info("The spotify access token has been refreshed!");
+                    this.nodecg.log.info("The spotify access token has been refreshed!");
 
                     // Save the access token so that it's used in future calls
                     spotifyApi.setAccessToken(data.body["access_token"]);
                 },
                 (error) => {
-                    nodecg.log.warn("Could not spotify refresh access token", error);
+                    this.nodecg.log.warn("Could not spotify refresh access token", error);
                 },
             );
         }, refreshInterval);

@@ -17,7 +17,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<WSServerServiceClient> | unde
     return wsServerService.register();
 };
 
-class WSServerService extends ServiceBundle {
+class WSServerService extends ServiceBundle<WSServerServiceConfig, WSServerServiceClient> {
     async getServer(config: WSServerServiceConfig): Promise<Result<WebSocket.Server>> {
         const client = new WebSocket.Server({ port: config.port });
 
@@ -45,19 +45,17 @@ class WSServerService extends ServiceBundle {
         }
     }
 
-    createClient(nodecg: NodeCG): (config: WSServerServiceConfig) => Promise<Result<WSServerServiceClient>> {
-        return async (config) => {
-            const client = await this.getServer(config);
-            if (client.failed) {
-                return client; // Pass the error to the framework
-            }
-            nodecg.log.info("Successfully started WebSocket server.");
-            return success({
-                getRawClient() {
-                    return client.result;
-                },
-            });
-        };
+    async createClient(config: WSServerServiceConfig): Promise<Result<WSServerServiceClient>> {
+        const client = await this.getServer(config);
+        if (client.failed) {
+            return client; // Pass the error to the framework
+        }
+        this.nodecg.log.info("Successfully started WebSocket server.");
+        return success({
+            getRawClient() {
+                return client.result;
+            },
+        });
     }
 
     stopClient(client: WSServerServiceClient): void {

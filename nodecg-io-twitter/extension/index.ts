@@ -20,7 +20,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undef
     return twitterService.register();
 };
 
-class TwitterService extends ServiceBundle {
+class TwitterService extends ServiceBundle<TwitterServiceConfig, TwitterServiceClient> {
     async validateConfig(config: TwitterServiceConfig): Promise<Result<void>> {
         // Connect to twitter
         const client = new Twitter({
@@ -34,23 +34,21 @@ class TwitterService extends ServiceBundle {
         return emptySuccess();
     }
 
-    createClient(nodecg: NodeCG): (config: TwitterServiceConfig) => Promise<Result<TwitterServiceClient>> {
-        return async (config) => {
-            nodecg.log.info("Connecting to twitter ...");
-            const client = new Twitter({
-                consumer_key: config.oauthConsumerKey, // eslint-disable-line camelcase
-                consumer_secret: config.oauthConsumerSecret, // eslint-disable-line camelcase
-                access_token_key: config.oauthToken, // eslint-disable-line camelcase
-                access_token_secret: config.oauthTokenSecret, // eslint-disable-line camelcase
-            });
-            nodecg.log.info("Successfully connected to twitter!");
+    async createClient(config: TwitterServiceConfig): Promise<Result<TwitterServiceClient>> {
+        this.nodecg.log.info("Connecting to twitter ...");
+        const client = new Twitter({
+            consumer_key: config.oauthConsumerKey, // eslint-disable-line camelcase
+            consumer_secret: config.oauthConsumerSecret, // eslint-disable-line camelcase
+            access_token_key: config.oauthToken, // eslint-disable-line camelcase
+            access_token_secret: config.oauthTokenSecret, // eslint-disable-line camelcase
+        });
+        this.nodecg.log.info("Successfully connected to twitter!");
 
-            return success({
-                getRawClient() {
-                    return client;
-                },
-            });
-        };
+        return success({
+            getRawClient() {
+                return client;
+            },
+        });
     }
 
     stopClient(_client: TwitterServiceClient): void {

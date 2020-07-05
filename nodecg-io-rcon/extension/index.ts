@@ -20,7 +20,7 @@ module.exports = (nodecg: NodeCG): ServiceProvider<RconServiceClient> | undefine
     return rconService.register();
 };
 
-class RconService extends ServiceBundle {
+class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
     async validateConfig(config: RconServiceConfig): Promise<Result<void>> {
         const rcon = new Rcon({
             host: config.host,
@@ -36,29 +36,27 @@ class RconService extends ServiceBundle {
         return emptySuccess();
     }
 
-    createClient(nodecg: NodeCG): (config: RconServiceConfig) => Promise<Result<RconServiceClient>> {
-        return async (config) => {
-            const rcon = new Rcon({
-                host: config.host,
-                port: config.port,
-                password: config.password,
-            });
+    async createClient(config: RconServiceConfig): Promise<Result<RconServiceClient>> {
+        const rcon = new Rcon({
+            host: config.host,
+            port: config.port,
+            password: config.password,
+        });
 
-            // We need one error handler or node will exit the process on an error.
-            rcon.on("error", (_err) => {});
+        // We need one error handler or node will exit the process on an error.
+        rcon.on("error", (_err) => {});
 
-            await rcon.connect(); // This will throw an exception if there is an error.
-            nodecg.log.info("Successfully connected to the rcon server.");
+        await rcon.connect(); // This will throw an exception if there is an error.
+        this.nodecg.log.info("Successfully connected to the rcon server.");
 
-            return success({
-                getRawClient() {
-                    return rcon;
-                },
-                sendMessage(message: string) {
-                    return sendMessage(rcon, message);
-                },
-            });
-        };
+        return success({
+            getRawClient() {
+                return rcon;
+            },
+            sendMessage(message: string) {
+                return sendMessage(rcon, message);
+            },
+        });
     }
 
     stopClient(client: RconServiceClient): void {
