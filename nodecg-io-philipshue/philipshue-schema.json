@@ -9,8 +9,12 @@
         },
         "ipAddr": {
             "type": "string",
-            "description": "The IP address of the bridge that you want to connect to, will not be used if you specify discover as true"
+            "description": "The IP address of the bridge that you want to connect to, not required/used if you specify discover as true"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port that you want to use for connecting to your Hue bridge, not required/used if you specify discover as true"
         }
     },
-    "required": ["discover", "ipAddr"]
+    "required": ["discover"]
 }

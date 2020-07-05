@@ -61,6 +61,7 @@ nodecg-io/
    +--dashboard/           GUI
 +--nodecg-io-discord/      Discord integration
 +--nodecg-io-intellij/     IntelliJ integration
++--nodecg-io-philipshue/   Philips Hue integration
 +--nodecg-io-rcon/         Rcon integration
 +--nodecg-io-spotify/      Spotify integration
 +--nodecg-io-twitch/       Twitch integration
