@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { emptySuccess, success, Result, error } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Xdotool } from "./xdotool";
 
 interface XdotoolServiceConfig {
@@ -14,36 +14,22 @@ export interface XdotoolServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<XdotoolServiceClient> | undefined => {
-    nodecg.log.info("Xdotool bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Xdotool bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<XdotoolServiceConfig, XdotoolServiceClient> = {
-        schema: core.readSchema(__dirname, "../xdotool-schema.json"),
-        serviceType: "xdotool",
-        validateConfig: validateConfig,
-        createClient: createClient(),
-        stopClient: () => {},
-    };
-
-    return core.registerService(service);
+    const service = new XdotoolServiceBundle(nodecg, "xdotool", __dirname, "xdotool-schema.json");
+    return service.register();
 };
 
-async function validateConfig(config: XdotoolServiceConfig): Promise<Result<void>> {
-    try {
-        const xd = new Xdotool(config.host, config.port);
-        await xd.testConnection();
-        return emptySuccess();
-    } catch (err) {
-        return error(err.toString());
+class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolServiceClient> {
+    async validateConfig(config: XdotoolServiceConfig): Promise<Result<void>> {
+        try {
+            const xd = new Xdotool(config.host, config.port);
+            await xd.testConnection();
+            return emptySuccess();
+        } catch (err) {
+            return error(err.toString());
+        }
     }
-}
 
-function createClient(): (config: XdotoolServiceConfig) => Promise<Result<XdotoolServiceClient>> {
-    return async (config) => {
+    async createClient(config: XdotoolServiceConfig): Promise<Result<XdotoolServiceClient>> {
         try {
             const xd = new Xdotool(config.host, config.port);
             return success({
@@ -54,5 +40,9 @@ function createClient(): (config: XdotoolServiceConfig) => Promise<Result<Xdotoo
         } catch (err) {
             return error(err.toString());
         }
-    };
+    }
+
+    stopClient(_: XdotoolServiceClient): void {
+        // Nothing to do
+    }
 }
