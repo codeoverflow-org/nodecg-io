@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Client } from "discord.js";
 
 interface DiscordServiceConfig {
@@ -13,51 +13,32 @@ export interface DiscordServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undefined => {
-    nodecg.log.info("Discord bundle started");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
-    if (core === undefined) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Discord bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<DiscordServiceConfig, DiscordServiceClient> = {
-        schema: core.readSchema(__dirname, "../discord-schema.json"),
-        serviceType: "discord",
-        validateConfig: validateConfig,
-        createClient: createClient(nodecg),
-        stopClient: stopClient,
-    };
-
-    return core.registerService(service);
+    const discordService = new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json");
+    return discordService.register();
 };
 
-async function validateConfig(config: DiscordServiceConfig): Promise<Result<void>> {
-    try {
+class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceClient> {
+    async validateConfig(config: DiscordServiceConfig): Promise<Result<void>> {
         const botToken = config.botToken;
         const client = new Client();
         await client.login(botToken);
         client.destroy();
         return emptySuccess();
-    } catch (err) {
-        return error(err.toString());
     }
-}
 
-function createClient(nodecg: NodeCG): (config: DiscordServiceConfig) => Promise<Result<DiscordServiceClient>> {
-    return async (config) => {
+    async createClient(config: DiscordServiceConfig): Promise<Result<DiscordServiceClient>> {
         const client = new Client();
-        return client.login(config.botToken).then(() => {
-            nodecg.log.info("Successfully connected to discord.");
-            return success({
-                getRawClient() {
-                    return client;
-                },
-            });
+        await client.login(config.botToken);
+        this.nodecg.log.info("Successfully connected to discord.");
+        return success({
+            getRawClient() {
+                return client;
+            },
         });
-    };
-}
+    }
 
-function stopClient(client: DiscordServiceClient): void {
-    const rawClient = client.getRawClient();
-    rawClient.destroy();
+    stopClient(client: DiscordServiceClient): void {
+        const rawClient = client.getRawClient();
+        rawClient.destroy();
+    }
 }
