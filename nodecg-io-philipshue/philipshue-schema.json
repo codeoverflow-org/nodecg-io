@@ -14,6 +14,10 @@
         "port": {
             "type": "number",
             "description": "The port that you want to use for connecting to your Hue bridge, not required/used if you specify discover as true"
+        },
+        "appname": {
+            "type": "string",
+            "description": "the appname you want to use for the client, could be an actual name, MD5 hash or whatever you want"
         }
     },
     "required": ["discover"]

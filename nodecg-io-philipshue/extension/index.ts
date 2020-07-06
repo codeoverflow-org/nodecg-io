@@ -7,11 +7,11 @@ import { v3 } from "node-hue-api";
 import Api = require("node-hue-api/lib/api/Api");
 const { api, discovery } = v3;
 
-const appName = "nodecg-io";
-const deviceName = "nodecg-io-philipshue";
+const deviceName = "nodecg";
 
 interface PhilipsHueServiceConfig {
     discover: boolean;
+    appName?: string;
     ipAddr?: string;
     port?: number;
 }
@@ -20,7 +20,7 @@ export interface PhilipsHueServiceClient {
     getRawClient(): Api;
 }
 
-export function PhilipsHue(nodecg: NodeCG): ServiceProvider<PhilipsHueServiceClient> | undefined {
+module.exports = function (nodecg: NodeCG): ServiceProvider<PhilipsHueServiceClient> | undefined {
     nodecg.log.info("Philips Hue bundle started.");
     const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore;
     if (!core) {
@@ -37,7 +37,7 @@ export function PhilipsHue(nodecg: NodeCG): ServiceProvider<PhilipsHueServiceCli
     };
 
     return core.registerService(service);
-}
+};
 
 async function validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
     if (!config) {
@@ -49,10 +49,11 @@ async function validateConfig(config: PhilipsHueServiceConfig): Promise<Result<v
 
 function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Promise<Result<PhilipsHueServiceClient>> {
     return async (config) => {
-        const { discover, ipAddr, port } = config;
+        const { discover, ipAddr, port, appName } = config;
         let ip: string;
         if (discover) {
             const discIP = await discoverBridge();
+            nodecg.log.info(discIP);
             if (discIP) {
                 ip = discIP;
             } else {
@@ -69,12 +70,21 @@ function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Prom
             );
         }
 
+        // check port number
+        if (port && 0 <= port && port <= 65535) {
+            ip += ":" + port;
+        } else if (port) {
+            return error("Your port is not between 0 and 65535!");
+        }
+
+        const name = appName || "nodecg-io-philipshue";
+
         // Create an unauthenticated instance of the Hue API so that we can create a new user
         const unauthenticatedApi = await api.createLocal(ip).connect();
 
         let createdUser;
         try {
-            createdUser = await unauthenticatedApi.users.createUser(appName, deviceName);
+            createdUser = await unauthenticatedApi.users.createUser(name, deviceName);
             // debug output
             // nodecg.log.info("*******************************************************************************\n");
             // nodecg.log.info(
@@ -82,11 +92,12 @@ function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Prom
             //         "authenticate with the Bridge and provide full local access to the Hue Bridge.\n" +
             //         "YOU SHOULD TREAT THIS LIKE A PASSWORD\n",
             // );
-            // nodecg.log.info(`Hue Bridge User: ${createdUser.username}`);
-            // nodecg.log.info(`Hue Bridge User Client Key: ${createdUser.clientkey}`);
+            nodecg.log.info(`Hue Bridge User: ${createdUser.username}`);
+            nodecg.log.info(`Hue Bridge User Client Key: ${createdUser.clientkey}`);
             // nodecg.log.info("*******************************************************************************\n");
 
             // Create a new API instance that is authenticated with the new user we created
+
             const client = await api.createLocal(ip, port).connect(createdUser.username);
 
             return success({
