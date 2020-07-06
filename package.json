@@ -2,7 +2,7 @@
     "name": "nodecg-io",
     "private": true,
     "scripts": {
-        "postinstall": "lerna bootstrap",
+        "postinstall": "lerna bootstrap --hoist",
         "build": "lerna run build --parallel",
         "watch": "lerna run --parallel watch",
         "lint": "eslint . --ext ts",
