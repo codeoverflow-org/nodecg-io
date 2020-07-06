@@ -24,6 +24,51 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 
     MessageManager.registerMessageHandlers(nodecg, instanceManager, bundleManager, persistenceManager);
 
+    function onExit(): void {
+        // Unset all service instances in all bundles
+        const bundles = bundleManager.getBundleDependencies();
+        for (const bundleName in bundles) {
+            if (bundles[bundleName] !== undefined) {
+                bundles[bundleName]?.forEach((bundleDependency) => {
+                    // Only unset a service instance if it was set previously
+                    if (bundleDependency.serviceInstance !== undefined) {
+                        bundleManager.unsetServiceDependency(bundleName, bundleDependency.serviceType);
+                    }
+                });
+            }
+        }
+
+        // Call `stopClient` for all service instances
+        const instances = instanceManager.getServiceInstances();
+        for (const key in instances) {
+            if (instances[key] !== undefined) {
+                const client = instances[key]?.client;
+                const service = serviceManager.getService(instances[key]?.serviceType as string);
+                if (!service.failed) {
+                    nodecg.log.info(`Stopping service ${service.result.serviceType}.`);
+                    try {
+                        service.result.stopClient(client);
+                    } catch (err) {
+                        nodecg.log.info(`Could not stop service ${service.result.serviceType}: ${String(err)}`);
+                    }
+                }
+            }
+        }
+    }
+
+    // Normal exit
+    process.on("exit", onExit);
+    // Ctrl + C
+    process.on("SIGINT", onExit);
+    // kill
+    process.on("SIGTERM", onExit);
+    // nodemon
+    process.on("SIGUSR1", onExit);
+    process.on("SIGUSR2", onExit);
+    // Uncaught exception
+    process.on("uncaughtException", onExit);
+    process.on("unhandledRejection", onExit);
+
     // We use a extra object instead of returning a object containing all the managers and so on, because
     // any loaded bundle would be able to call any (public or private) of the managers which is not intended.
     return {
