@@ -5,15 +5,18 @@ import { Result, emptySuccess, error, success } from "nodecg-io-core/extension/u
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
 import Api = require("node-hue-api/lib/api/Api");
+import { UpdateInstanceConfigMessage } from "nodecg-io-core/extension/messageManager";
 const { api, discovery } = v3;
 
-const deviceName = "nodecg";
+const deviceName = "nodecg-io";
+const name = "philipshue";
 
 interface PhilipsHueServiceConfig {
     discover: boolean;
-    appName?: string;
     ipAddr?: string;
     port?: number;
+    username?: string;
+    apiKey?: string;
 }
 
 export interface PhilipsHueServiceClient {
@@ -42,18 +45,18 @@ module.exports = function (nodecg: NodeCG): ServiceProvider<PhilipsHueServiceCli
 async function validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
     if (!config) {
         return error("No config found!");
-    } else {
-        return emptySuccess();
+    } else if (!config.discover && !config.ipAddr) {
+        return error("discover isn't true there is no IP address!");
     }
+    return emptySuccess();
 }
 
 function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Promise<Result<PhilipsHueServiceClient>> {
     return async (config) => {
-        const { discover, ipAddr, port, appName } = config;
+        const { discover, ipAddr, port, username, apiKey } = config;
         let ip: string;
         if (discover) {
             const discIP = await discoverBridge();
-            nodecg.log.info(discIP);
             if (discIP) {
                 ip = discIP;
             } else {
@@ -77,43 +80,39 @@ function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Prom
             return error("Your port is not between 0 and 65535!");
         }
 
-        const name = appName || "nodecg-io-philipshue";
+        if (!username || apiKey) {
+            // Create an unauthenticated instance of the Hue API so that we can create a new user
+            const unauthenticatedApi = await api.createLocal(ip).connect();
 
-        // Create an unauthenticated instance of the Hue API so that we can create a new user
-        const unauthenticatedApi = await api.createLocal(ip).connect();
+            let createdUser;
+            try {
+                createdUser = await unauthenticatedApi.users.createUser(name, deviceName);
+                // debug output
+                // nodecg.log.info(`Hue Bridge User: ${createdUser.username}`);
+                // nodecg.log.info(`Hue Bridge User Client Key: ${createdUser.clientkey}`);
 
-        let createdUser;
-        try {
-            createdUser = await unauthenticatedApi.users.createUser(name, deviceName);
-            // debug output
-            // nodecg.log.info("*******************************************************************************\n");
-            // nodecg.log.info(
-            //     "User has been created on the Hue Bridge. The following username can be used to\n" +
-            //         "authenticate with the Bridge and provide full local access to the Hue Bridge.\n" +
-            //         "YOU SHOULD TREAT THIS LIKE A PASSWORD\n",
-            // );
-            nodecg.log.info(`Hue Bridge User: ${createdUser.username}`);
-            nodecg.log.info(`Hue Bridge User Client Key: ${createdUser.clientkey}`);
-            // nodecg.log.info("*******************************************************************************\n");
-
-            // Create a new API instance that is authenticated with the new user we created
-
-            const client = await api.createLocal(ip, port).connect(createdUser.username);
-
-            return success({
-                getRawClient() {
-                    return client;
-                },
-            });
-        } catch (err) {
-            if (err.getHueErrorType() === 101) {
-                return error(
-                    "The Link button on the bridge was not pressed. Please press the Link button and try again.",
-                );
-            } else {
-                return error(`Unexpected Error: ${err.message}`);
+                config.username = createdUser.username;
+                config.apiKey = createdUser.clientkey;
+            } catch (err) {
+                if (err.getHueErrorType() === 101) {
+                    return error(
+                        "The Link button on the bridge was not pressed. Please press the Link button and try again.\n" +
+                            "for the one who is seeing this in the console, you need to press the big button on the bridge for creating an bundle/instance",
+                    );
+                } else {
+                    return error(`Unexpected Error: ${err.message}`);
+                }
             }
         }
+
+        // Create a new API instance that is authenticated with the new user we created
+        const client = await api.createLocal(ip, port).connect(config.username, config.apiKey);
+
+        return success({
+            getRawClient() {
+                return client;
+            },
+        });
     };
 }
 

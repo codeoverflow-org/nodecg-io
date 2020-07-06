@@ -5,7 +5,7 @@
     "properties": {
         "discover": {
             "type": "boolean",
-            "description": "If the extension should try to discover the Philips Hue Bridge. **IMPORTANT** ignores the specified IP address and errors if it could not find a bridge"
+            "description": "If the extension should try to discover the Philips Hue Bridge. **IMPORTANT** ignores the specified IP address and errors if it could not find a bridge, will only be used on first run"
         },
         "ipAddr": {
             "type": "string",
@@ -15,9 +15,13 @@
             "type": "number",
             "description": "The port that you want to use for connecting to your Hue bridge, not required/used if you specify discover as true"
         },
-        "appname": {
+        "apiKey": {
             "type": "string",
-            "description": "the appname you want to use for the client, could be an actual name, MD5 hash or whatever you want"
+            "description": "The api key you want to use for the client/that will be generated on first startup"
+        },
+        "username": {
+            "type": "string",
+            "description": "The username that you want to use/that will be generated on first startup"
         }
     },
     "required": ["discover"]
