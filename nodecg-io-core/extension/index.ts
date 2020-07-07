@@ -32,7 +32,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
                 bundles[bundleName]?.forEach((bundleDependency) => {
                     // Only unset a service instance if it was set previously
                     if (bundleDependency.serviceInstance !== undefined) {
-                        bundleManager.unsetServiceDependency(bundleName, bundleDependency.serviceType);
+                        bundleDependency.clientUpdateCallback(undefined);
                     }
                 });
             }
@@ -45,11 +45,13 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
                 const client = instances[key]?.client;
                 const service = serviceManager.getService(instances[key]?.serviceType as string);
                 if (!service.failed) {
-                    nodecg.log.info(`Stopping service ${service.result.serviceType}.`);
+                    nodecg.log.info(`Stopping service ${key} of type ${service.result.serviceType}.`);
                     try {
                         service.result.stopClient(client);
                     } catch (err) {
-                        nodecg.log.info(`Could not stop service ${service.result.serviceType}: ${String(err)}`);
+                        nodecg.log.info(
+                            `Could not stop service ${key} of type ${service.result.serviceType}: ${String(err)}`,
+                        );
                     }
                 }
             }
@@ -63,8 +65,14 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     // kill
     process.on("SIGTERM", onExit);
     // nodemon
-    process.on("SIGUSR1", onExit);
-    process.on("SIGUSR2", onExit);
+    process.once("SIGUSR1", () => {
+        onExit();
+        process.kill(process.pid, "SIGUSR1");
+    });
+    process.once("SIGUSR2", () => {
+        onExit();
+        process.kill(process.pid, "SIGUSR2");
+    });
     // Uncaught exception
     process.on("uncaughtException", onExit);
     process.on("unhandledRejection", onExit);
