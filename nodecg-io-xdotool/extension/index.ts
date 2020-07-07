@@ -14,7 +14,7 @@ export interface XdotoolServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<XdotoolServiceClient> | undefined => {
-    const service = new XdotoolServiceBundle(nodecg, "xdotool", __dirname, "xdotool-schema.json");
+    const service = new XdotoolServiceBundle(nodecg, "xdotool", __dirname, "../xdotool-schema.json");
     return service.register();
 };
 
