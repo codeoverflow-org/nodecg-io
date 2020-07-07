@@ -4,6 +4,7 @@ import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
 import { Result, emptySuccess, error, success } from "nodecg-io-core/extension/utils/result";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
 import Api = require("node-hue-api/lib/api/Api");
 import { UpdateInstanceConfigMessage } from "nodecg-io-core/extension/messageManager";
 const { api, discovery } = v3;
