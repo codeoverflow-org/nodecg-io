@@ -1,12 +1,11 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { Result, emptySuccess, error, success } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
 import Api = require("node-hue-api/lib/api/Api");
-import { UpdateInstanceConfigMessage } from "nodecg-io-core/extension/messageManager";
 const { api, discovery } = v3;
 
 const deviceName = "nodecg-io";
@@ -14,8 +13,8 @@ const name = "philipshue";
 
 interface PhilipsHueServiceConfig {
     discover: boolean;
-    ipAddr?: string;
-    port?: number;
+    ipAddr: string;
+    port: number;
     username?: string;
     apiKey?: string;
 }
@@ -25,65 +24,51 @@ export interface PhilipsHueServiceClient {
 }
 
 module.exports = function (nodecg: NodeCG): ServiceProvider<PhilipsHueServiceClient> | undefined {
-    nodecg.log.info("Philips Hue bundle started.");
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore;
-    if (!core) {
-        nodecg.log.error("nodecg-io-core isn't loaded! Philips Hue bundle won't function without it.");
-        return undefined;
-    }
-
-    const service: Service<PhilipsHueServiceConfig, PhilipsHueServiceClient> = {
-        schema: core.readSchema(__dirname, "../philipshue-schema.json"),
-        serviceType: "philipshue",
-        validateConfig,
-        createClient: createClient(nodecg),
-        stopClient,
-    };
-
-    return core.registerService(service);
+    const philipshue = new PhilipsHueService(nodecg, "philips-hue", __dirname, "../philipshue-schema.json");
+    return philipshue.register();
 };
 
-async function validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
-    if (!config) {
-        return error("No config found!");
-    } else if (!config.discover && !config.ipAddr) {
-        return error("discover isn't true there is no IP address!");
-    }
-    return emptySuccess();
-}
+class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHueServiceClient> {
+    async validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
+        const { discover, port, ipAddr } = config;
 
-function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Promise<Result<PhilipsHueServiceClient>> {
-    return async (config) => {
-        const { discover, ipAddr, port, username, apiKey } = config;
-        let ip: string;
-        if (discover) {
-            const discIP = await discoverBridge();
-            if (discIP) {
-                ip = discIP;
-            } else {
-                return error("could not discover your Hue Bridge, maybe try specifying a specific IP!");
+        if (!config) {
+            // config could not be found
+            return error("No config found!");
+        } else if (!discover) {
+            // check the ip address if its there
+            if (ipAddr && !ipv4(ipAddr)) {
+                return error("Invalid IP address, can handle only IPv4 at the moment");
             }
-        } else if (ipAddr && ipv4(ipAddr)) {
-            // check if the IP address is there and is good
-            ip = ipAddr;
-        } else {
-            // discover wasn't set to true and there is no IP address specified
-            return error(
-                "you did not set discover to true and there is no IP address specified!\n" +
-                    "either try setting discover to true or specify a IP address",
-            );
-        }
 
-        // check port number
-        if (port && 0 <= port && port <= 65535) {
-            ip += ":" + port;
-        } else if (port) {
+            // discover is not set but there is no ip address
+            return error("discover isn't true there is no IP address!");
+        } else if (port && !(0 <= port && port <= 65535)) {
+            // the port is there but the port is wrong
             return error("Your port is not between 0 and 65535!");
         }
 
-        if (!username || apiKey) {
+        // YAY! the config is good
+        return emptySuccess();
+    }
+
+    async createClient(config: PhilipsHueServiceConfig): Promise<Result<PhilipsHueServiceClient>> {
+        if (config.discover) {
+            const discIP = await this.discoverBridge();
+            if (discIP) {
+                config.ipAddr = discIP;
+                config.discover = false;
+            } else {
+                return error("could not discover your Hue Bridge, maybe try specifying a specific IP!");
+            }
+        }
+
+        const { port, username, apiKey, ipAddr } = config;
+
+        // check if there is one thing missing
+        if (!username || !apiKey) {
             // Create an unauthenticated instance of the Hue API so that we can create a new user
-            const unauthenticatedApi = await api.createLocal(ip).connect();
+            const unauthenticatedApi = await api.createLocal(ipAddr, port).connect();
 
             let createdUser;
             try {
@@ -107,28 +92,28 @@ function createClient(nodecg: NodeCG): (config: PhilipsHueServiceConfig) => Prom
         }
 
         // Create a new API instance that is authenticated with the new user we created
-        const client = await api.createLocal(ip, port).connect(config.username, config.apiKey);
+        const client = await api.createLocal(ipAddr, port).connect(config.username, config.apiKey);
 
         return success({
             getRawClient() {
                 return client;
             },
         });
-    };
-}
+    }
 
-function stopClient(_client: PhilipsHueServiceClient) {
-    // Not supported from the client
-}
+    stopClient(_client: PhilipsHueServiceClient) {
+        // Not supported from the client
+    }
 
-async function discoverBridge() {
-    const discoveryResults = await discovery.nupnpSearch();
+    private async discoverBridge() {
+        const discoveryResults = await discovery.nupnpSearch();
 
-    if (discoveryResults.length === 0) {
-        console.error("Failed to resolve any Hue Bridges");
-        return null;
-    } else {
-        // Ignoring that you could have more than one Hue Bridge on a network as this is unlikely in 99.9% of users situations
-        return discoveryResults[0].ipaddress as string;
+        if (discoveryResults.length === 0) {
+            console.error("Failed to resolve any Hue Bridges");
+            return null;
+        } else {
+            // Ignoring that you could have more than one Hue Bridge on a network as this is unlikely in 99.9% of users situations
+            return discoveryResults[0].ipaddress as string;
+        }
     }
 }
