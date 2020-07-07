@@ -45,14 +45,12 @@ function onExit(
     // Unset all service instances in all bundles
     const bundles = bundleManager.getBundleDependencies();
     for (const bundleName in bundles) {
-        if (bundles[bundleName] !== undefined) {
-            bundles[bundleName]?.forEach((bundleDependency) => {
-                // Only unset a service instance if it was set previously
-                if (bundleDependency.serviceInstance !== undefined) {
-                    bundleDependency.clientUpdateCallback(undefined);
-                }
-            });
-        }
+        bundles[bundleName]?.forEach((bundleDependency) => {
+            // Only unset a service instance if it was set previously
+            if (bundleDependency.serviceInstance !== undefined) {
+                bundleDependency.clientUpdateCallback(undefined);
+            }
+        });
     }
 
     // Call `stopClient` for all service instances
