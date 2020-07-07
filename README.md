@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=5&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md)
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=9&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
@@ -16,9 +16,9 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
-- [X] AHK
+- [x] AHK
 - [x] Discord  
-- [ ] IRC (Internet Relay Chat)
+- [X] IRC (Internet Relay Chat)
 - [ ] IntelliJ IDEs
 - [ ] MIDI
 - [ ] Philips Hue
@@ -61,6 +61,7 @@ nodecg-io/
    +--dashboard/           GUI
 +--nodecg-io-discord/      Discord integration
 +--nodecg-io-intellij/     IntelliJ integration
++--nodecg-io-irc/          IRC integration
 +--nodecg-io-philipshue/   Philips Hue integration
 +--nodecg-io-rcon/         Rcon integration
 +--nodecg-io-spotify/      Spotify integration
@@ -71,6 +72,7 @@ nodecg-io/
 +--samples/                Samplecode
    +--discord-guild-chat/  Discord Samplecode
    +--intellij/            IntelliJ Samplecode
+   +--philips-hue/         Philips Hue Samplecode
    +--twitch-chat/         Twitch Samplecode
    +--twitter-timeline/    Twitter Samplecode
 ```
