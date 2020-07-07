@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=9&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/docs/docs/services.md)
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=10&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io-docs/blob/master/docs/services.md)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
@@ -18,18 +18,19 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 - [x] AHK
 - [x] Discord  
-- [X] IRC (Internet Relay Chat)
+- [x] IRC (Internet Relay Chat)
 - [ ] IntelliJ IDEs
 - [ ] MIDI
 - [ ] Philips Hue
 - [x] RCON  
 - [ ] Serial Port (Arduino)  
-- [X] Spotify
+- [x] Spotify
 - [ ] StreamElements  
 - [ ] TipeeeStream  
 - [x] Twitch Chat  
-- [X] Twitter
-- [X] WebSocket Client & Server
+- [x] Twitter
+- [x] WebSocket Client & Server
+- [x] Xdotool
 - [ ] YouTube
 
 ## How to use nodecg-io
@@ -56,7 +57,7 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 ```
 nodecg-io/
 +--docs/                   Documentation
-+--nodecg-io-core/         AHK integration
++--nodecg-io-ahk/         AHK integration
 +--nodecg-io-core/         Core Lib
    +--dashboard/           GUI
 +--nodecg-io-discord/      Discord integration
@@ -69,10 +70,12 @@ nodecg-io/
 +--nodecg-io-twitter/      Twitter integration
 +--nodecg-io-ws-client/    WebSocket client integration
 +--nodecg-io-ws-server/    WebSocket server integration
++--nodecg-io-xdotool/      Xdotool integration
 +--samples/                Samplecode
    +--discord-guild-chat/  Discord Samplecode
    +--intellij/            IntelliJ Samplecode
    +--philips-hue/         Philips Hue Samplecode
+   +--streamdeck-rainbow/  Streamdeck Samplecode
    +--twitch-chat/         Twitch Samplecode
    +--twitter-timeline/    Twitter Samplecode
 ```
