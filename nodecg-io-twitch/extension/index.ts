@@ -2,60 +2,69 @@ import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import TwitchClient from "twitch";
-import ChatClient from "twitch-chat-client";
+import * as WebSocket from "ws";
 
-interface TwitchServiceConfig {
-    oauthKey: string;
+interface WSClientServiceConfig {
+    address: string;
 }
 
-export interface TwitchServiceClient {
-    getRawClient(): ChatClient;
+export interface WSClientServiceClient {
+    getRawClient(): WebSocket;
+    send(message: string): void;
+    onMessage(func: (message: WebSocket.Data) => void): void;
+    onClose(func: () => void): void;
+    onError(func: () => Error): void;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
-    const twitchService = new TwitchService(nodecg, "twitch", __dirname, "../twitch-schema.json");
-    return twitchService.register();
+module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
+    const wsClientService = new WSClientService(nodecg, "websocket-client", __dirname, "../ws-schema.json");
+    return wsClientService.register();
 };
 
-class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClient> {
-    async validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
-        const authKey = config.oauthKey.replace("oauth:", "");
-        await TwitchClient.getTokenInfo(authKey); // This will throw a error if the token is invalid
+class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServiceClient> {
+    async validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
+        const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+        await new Promise((resolve, reject) => {
+            client.once("error", reject);
+            client.on("open", () => {
+                client.off("error", reject);
+                resolve();
+            });
+        });
+        client.close();
         return emptySuccess();
     }
 
-    async createClient(config: TwitchServiceConfig): Promise<Result<TwitchServiceClient>> {
-        // This twitch client needs the token without the "oauth:" before the actual token, strip it away
-        const authKey = config.oauthKey.replace("oauth:", "");
-        // Create a twitch authentication client
-        const tokenInfo = await TwitchClient.getTokenInfo(authKey);
-        const authClient = TwitchClient.withCredentials(tokenInfo.clientId, authKey, tokenInfo.scopes);
-
-        // Create the actual chat client and connect
-        const chatClient = ChatClient.forTwitchClient(authClient);
-        this.nodecg.log.info("Connecting to twitch chat...");
-        await chatClient.connect(); // Connects to twitch IRC
-        // This also waits till it has registered itself at the IRC server, which is needed to do anything.
-        await new Promise((resolve, _reject) => {
-            chatClient.onRegister(resolve);
+    async createClient(config: WSClientServiceConfig): Promise<Result<WSClientServiceClient>> {
+        const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+        await new Promise((resolve, reject) => {
+            client.once("error", reject);
+            client.on("open", () => {
+                client.off("error", reject);
+                resolve();
+            });
         });
-        this.nodecg.log.info("Successfully connected to twitch.");
-
+        this.nodecg.log.info("Successfully connected to the WebSocket server.");
         return success({
             getRawClient() {
-                return chatClient;
+                return client;
             },
+            send(message: string) {
+                client.send(message);
+            },
+            onClose(func: () => void) {
+                client.on('close', func);
+            },
+            onMessage(func: (message: WebSocket.Data) => void) {
+                client.on('message', message => func(message));
+            },
+            onError(func: (error: Error) => void) {
+                client.on('error', error => func(error))
+            }
         });
     }
 
-    stopClient(client: TwitchServiceClient): void {
-        // quit currently doesn't work, so we settle for removeListener for now til the fix for that bug is in a stable version.
-        // See https://github.com/d-fischer/twitch/issues/128,
-        // https://github.com/d-fischer/twitch/commit/3d01210ff4592220f00f9e060f4cb47783808e7b
-        // and https://github.com/d-fischer/connection/commit/667634415efdbdbfbd095a160c125a81edd8ec6a
-        client.getRawClient().removeListener();
-        // client.getRawClient().quit()
-        //     .then(r => console.log("Stopped twitch client successfully."))
+    stopClient(client: WSClientServiceClient): void {
+        client.getRawClient().close();
     }
 }

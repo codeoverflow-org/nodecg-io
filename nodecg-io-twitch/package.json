@@ -1,6 +1,6 @@
 {
   "name": "nodecg-io-twitch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Allows to connect to twitch with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
   "homepage": "",
   "author": {
