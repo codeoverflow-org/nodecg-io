@@ -10,6 +10,10 @@ interface WSClientServiceConfig {
 
 export interface WSClientServiceClient {
     getRawClient(): WebSocket;
+    send(message: string): void;
+    onMessage(func: (message: WebSocket.Data) => void): void;
+    onClose(func: () => void): void;
+    onError(func: () => Error): void;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
@@ -45,6 +49,18 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
             getRawClient() {
                 return client;
             },
+            send(message: string) {
+                client.send(message);
+            },
+            onClose(func: () => void) {
+                client.on('close', func);
+            },
+            onMessage(func: (message: WebSocket.Data) => void) {
+                client.on('message', message => func(message));
+            },
+            onError(func: (error: Error) => void) {
+                client.on('error', error => func(error))
+            }
         });
     }
 
