@@ -1,0 +1,13 @@
+{
+    "name": "@types/easymidi",
+    "version": "1.1.2",
+    "homepage": "",
+    "author": {
+        "name": "noeppi_noeppi",
+        "url": "https://github.com/noeppi-noeppi"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "easymidi": "1.1.2"
+    }
+}
