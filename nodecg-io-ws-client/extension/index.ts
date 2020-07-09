@@ -13,7 +13,7 @@ export interface WSClientServiceClient {
     send(message: string): void;
     onMessage(func: (message: WebSocket.Data) => void): void;
     onClose(func: () => void): void;
-    onError(func: () => Error): void;
+    onError(func: (error: Error) => void): void;
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
@@ -56,10 +56,10 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
                 client.on('close', func);
             },
             onMessage(func: (message: WebSocket.Data) => void) {
-                client.on('message', message => func(message));
+                client.on('message', func);
             },
             onError(func: (error: Error) => void) {
-                client.on('error', error => func(error))
+                client.on('error', func);
             }
         });
     }
