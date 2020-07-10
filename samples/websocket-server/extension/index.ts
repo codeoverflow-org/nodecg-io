@@ -3,7 +3,7 @@ import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { WSServerServiceClient } from "nodecg-io-ws-server/extension";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for twitter started");
+    nodecg.log.info("Sample bundle for WebSocket Server started");
 
     // This explicit cast determines the client type in the requireService call
     const webSocketServer = (nodecg.extensions["nodecg-io-ws-server"] as unknown) as
