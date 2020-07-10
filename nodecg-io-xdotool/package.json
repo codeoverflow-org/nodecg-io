@@ -1,0 +1,37 @@
+{
+  "name": "nodecg-io-xdotool",
+  "version": "0.1.0",
+  "description": "Allows you to send commands to xdotool.",
+  "homepage": "",
+  "author": {
+    "name": "noeppi_noeppi",
+    "url": "https://github.com/noeppi-noeppi"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": [
+    "",
+    "nodecg-bundle"
+  ],
+  "nodecg": {
+    "compatibleRange": "^1.1.1",
+    "bundleDependencies": {
+      "nodecg-io-core": "0.1.0"
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.13.12",
+    "@types/node-fetch": "^2.5.7",
+    "nodecg": "^1.6.1",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "nodecg-io-core": "0.1.0",
+    "node-fetch": "^2.5.7",
+    "@rauschma/stringio": "^1.4.0"
+  }
+}
+  

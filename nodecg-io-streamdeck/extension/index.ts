@@ -14,7 +14,7 @@ export interface StreamdeckServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<StreamdeckServiceClient> | undefined => {
-    const service = new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "streamdeck-schema.json");
+    const service = new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "../streamdeck-schema.json");
     return service.register();
 };
 
