@@ -20,22 +20,13 @@ module.exports = (nodecg: NodeCG) => {
 
 class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, StreamElementsServiceClient> {
     async validateConfig(config: StreamElementsServiceConfig) {
-        return StreamElements.test(config);
+        return new StreamElements(config.jwtToken, config.accountId).testConnection();
     }
 
     async createClient(config: StreamElementsServiceConfig) {
-        // Tokens
-        const jwtToken = config.jwtToken;
-        const accountId = config.accountId;
-
-        // Create the actual client and connect
-        const client = new StreamElements({ jwtToken, accountId });
         this.nodecg.log.info("Connecting to StreamElements socket server...");
-        await client.connect(); // Connects to StreamElements socket server
-        // This also waits till it has registered itself at the StreamElements socket server, which is needed to do anything.
-        await new Promise((resolve, _reject) => {
-            client.onRegister(resolve);
-        });
+        const client = new StreamElements(config.jwtToken, config.accountId);
+        await client.connect();
         this.nodecg.log.info("Successfully connected to StreamElements socket server.");
 
         return success({

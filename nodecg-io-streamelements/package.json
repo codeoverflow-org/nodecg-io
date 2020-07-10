@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "homepage": "",
-  "author": {
-    "name": "Extremtechniker",
-    "url": "https://github.com/extremtechniker"
-  },
+  "contributors": ["sebinside", "Extremtechniker"],
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"
