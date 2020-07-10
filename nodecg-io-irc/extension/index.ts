@@ -9,7 +9,7 @@ interface IRCServiceConfig {
     host: string;
     port?: number;
     password?: string;
-    reconnectTrys?: number;
+    reconnectTries?: number;
 }
 
 export interface IRCServiceClient {
@@ -18,8 +18,8 @@ export interface IRCServiceClient {
 }
 
 module.exports = (nodecg: NodeCG): ServiceProvider<IRCServiceClient> | undefined => {
-    const rconService = new IRCService(nodecg, "irc", __dirname, "../irc-schema.json");
-    return rconService.register();
+    const ircService = new IRCService(nodecg, "irc", __dirname, "../irc-schema.json");
+    return ircService.register();
 };
 
 class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
@@ -30,7 +30,7 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
         IRC.on("error", (_err) => {});
 
         await new Promise((res) => {
-            IRC.connect(config.reconnectTrys || 5, res);
+            IRC.connect(config.reconnectTries || 5, res);
         });
         await new Promise((res) => {
             IRC.disconnect("", res);
@@ -45,7 +45,7 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
         IRC.on("error", (_err) => {});
 
         await new Promise((res) => {
-            IRC.connect(config.reconnectTrys || 5, res);
+            IRC.connect(config.reconnectTries || 5, res);
         });
         this.nodecg.log.info("Successfully connected to the IRC server.");
 
@@ -53,15 +53,15 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
             getRawClient() {
                 return IRC;
             },
-            sendMessage(traget: string, message: string) {
-                return sendMessage(IRC, traget, message);
+            sendMessage(target: string, message: string) {
+                return sendMessage(IRC, target, message);
             },
         });
     }
 
     stopClient(client: IRCServiceClient): void {
         client.getRawClient().disconnect("", () => {
-            console.log("Stopped IRC client successfully.");
+            this.nodecg.log.info("Stopped IRC client successfully.");
         });
     }
 }
