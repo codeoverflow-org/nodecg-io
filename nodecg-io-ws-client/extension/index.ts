@@ -53,14 +53,14 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
                 client.send(message);
             },
             onClose(func: () => void) {
-                client.on('close', func);
+                client.on("close", func);
             },
             onMessage(func: (message: WebSocket.Data) => void) {
-                client.on('message', func);
+                client.on("message", func);
             },
             onError(func: (error: Error) => void) {
-                client.on('error', func);
-            }
+                client.on("error", func);
+            },
         });
     }
 
