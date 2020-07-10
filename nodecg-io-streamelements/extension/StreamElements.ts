@@ -38,7 +38,11 @@ export class StreamElements {
         });
     }
 
-    // TODO: Use replicants
+    close() {
+        this.socket.close();
+    }
+
+    // TODO: Add replicants
 
     private onConnect(handler: () => void) {
         this.socket.on("connect", handler);
@@ -49,9 +53,6 @@ export class StreamElements {
     private onAuthenticated(handler: () => void) {
         this.socket.on("authenticated", handler);
     }
-    close() {
-        this.socket.close();
-    }
     private onConnectionError(handler: (err: string) => void) {
         this.socket.on("connect_error", handler);
     }
@@ -59,41 +60,38 @@ export class StreamElements {
     onEvent(handler: (data: StreamElementsEvent) => void) {
         this.socket.on("event", handler);
     }
+
     onSubscriber(handler: (data: StreamElementsEvent) => void) {
-        this.socket.on("event", (data: StreamElementsEvent) => {
+        this.onEvent((data: StreamElementsEvent) => {
             if (data !== null && data.type === "subscriber") {
-                handler(data);
+                handler(data); // use "displayName" to get the name
             }
         });
     }
-}
 
-/*
-switch (data.type) {
-                case "subscriber":
-
-                    // Handle sub bombs
-                    if(data.data.gifted == true) {
-                        if(this.lastGift === data.data.sender) {
-                            this._lastBomb = data.data.sender;
-                            console.log(`Retrieved sub bomb: ${this.lastBomb}`);
-                        }
-                        this.lastGift = data.data.sender;
-                    } else {
-                        this.lastGift = "";
-                    }
-
-                    this._lastSubscriber = data.data.displayName;
-                    console.log(`Retrieved subscriber: ${this.lastSubscriber}`);
-                    break;
-                case "tip":
-                    this._lastTip = data.data.username;
-                    console.log(`Retrieved tip: ${this.lastTip}`);
-                    break;
-                case "cheer":
-                    this._lastCheer = data.data.displayName;
-                    console.log(`Retrieved cheer: ${this.lastCheer}`);
-                    break;
+    onTip(handler: (data: StreamElementsEvent) => void) {
+        this.onEvent((data: StreamElementsEvent) => {
+            if (data !== null && data.type === "tip") {
+                handler(data); // use "username" to get the name
             }
-        }
-        */
+        });
+    }
+
+    onCheer(handler: (data: StreamElementsEvent) => void) {
+        this.onEvent((data: StreamElementsEvent) => {
+            if (data !== null && data.type === "cheer") {
+                handler(data); // use "displayName" to get the name
+            }
+        });
+    }
+
+    onGift(handler: (data: StreamElementsEvent) => void) {
+        this.onEvent((data: StreamElementsEvent) => {
+            if (data !== null && data.type === "subscriber" && data.gifted) {
+                handler(data); // use "sender" to get the name
+            }
+        });
+    }
+
+    // TODO: Add support for sub bombs (e.g. by caching the last subs sender)
+}

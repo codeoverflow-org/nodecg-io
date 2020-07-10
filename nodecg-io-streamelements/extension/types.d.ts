@@ -51,6 +51,14 @@ export interface StreamElementsEvent {
          */
         tier?: "1000" | "2000" | "3000" | "prime";
         /**
+         * true if the sub was a gift (subs only)
+         */
+        gifted: boolean;
+        /**
+         * The sender of a gifted sub (subs only)
+         */
+        sender?: string;
+        /**
          * Currency symbol (tips)
          */
         currency?: string;
