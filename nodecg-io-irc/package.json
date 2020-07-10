@@ -1,0 +1,35 @@
+{
+  "name": "nodecg-io-irc",
+  "version": "0.1.0",
+  "description": "Allow to connect to IRC Servers.",
+  "homepage": "",
+  "author": {
+    "name": "ExtremTechniker",
+    "url": "https://github.com/ExtremTechniker"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": [
+    "",
+    "nodecg-bundle"
+  ],
+  "nodecg": {
+    "compatibleRange": "^1.1.1",
+    "bundleDependencies": {
+      "nodecg-io-core": "0.1.0"
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.13.12",
+    "@types/irc": "0.3.33",
+    "nodecg": "^1.6.1",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "nodecg-io-core": "0.1.0",
+    "irc": "0.5.2"
+  }
+}
