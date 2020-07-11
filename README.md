@@ -5,6 +5,7 @@
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
 [![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=10&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io-docs/blob/master/docs/services.md)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
+[![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/sX2Gjbs/)
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**  
 >Development status: framework mostly implemented   
@@ -19,14 +20,15 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - [x] AHK
 - [x] Discord  
 - [x] IRC (Internet Relay Chat)
-- [ ] IntelliJ IDEs
+- [X] IntelliJ IDEs
 - [ ] MIDI
-- [ ] Philips Hue
+- [X] Philips Hue
 - [x] RCON  
 - [ ] Serial Port (Arduino)  
 - [x] Spotify
 - [ ] StreamElements  
 - [ ] TipeeeStream  
+- [X] Elgato Stream Deck 
 - [x] Twitch Chat  
 - [x] Twitter
 - [x] WebSocket Client & Server
@@ -56,8 +58,8 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 
 ```
 nodecg-io/
-+--docs/                   Documentation
-+--nodecg-io-ahk/         AHK integration
++--docs/                   Documentation Repo (clone separately)
++--nodecg-io-ahk/          AHK integration
 +--nodecg-io-core/         Core Lib
    +--dashboard/           GUI
 +--nodecg-io-discord/      Discord integration
@@ -66,16 +68,20 @@ nodecg-io/
 +--nodecg-io-philipshue/   Philips Hue integration
 +--nodecg-io-rcon/         Rcon integration
 +--nodecg-io-spotify/      Spotify integration
++--nodecg-io-streamdeck/   Elgato Stream Deck integration
 +--nodecg-io-twitch/       Twitch integration
 +--nodecg-io-twitter/      Twitter integration
 +--nodecg-io-ws-client/    WebSocket client integration
 +--nodecg-io-ws-server/    WebSocket server integration
 +--nodecg-io-xdotool/      Xdotool integration
 +--samples/                Samplecode
+   +--ahk/                 AutoHotKey Samplecode
    +--discord-guild-chat/  Discord Samplecode
    +--intellij/            IntelliJ Samplecode
    +--philips-hue/         Philips Hue Samplecode
    +--streamdeck-rainbow/  Streamdeck Samplecode
    +--twitch-chat/         Twitch Samplecode
    +--twitter-timeline/    Twitter Samplecode
+   +--websocket-server/    Webosocket Server Samplecode
+   +--xdotool/             xdotool Samplecode
 ```
