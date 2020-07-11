@@ -83,9 +83,9 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
             if 'dependencies' in data:
                 if not data['name'] in depList:
                     if data['name'] == 'nodecg-io-core':
-                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
                     else:
-                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
                 depList.append(data['name'])
 
                 for dependency in data['dependencies']:
