@@ -34,5 +34,5 @@ jobs:
         git config --global user.email "<>"
         git config --global user.name "codeoverflow-org"
         git add .
-        git commit --message "Update generated documentation ( codeoverflow-org/nodecg-io@${{ github.sha }})"
+        git diff-index --quiet HEAD || git commit --message "Update generated documentation ( codeoverflow-org/nodecg-io@${{ github.sha }})"
         git push origin master
