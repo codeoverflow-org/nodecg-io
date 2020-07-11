@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: startsWith(github.repository, 'codeoverflow-org') # don't run this in forks
     steps:
     
     - name: Setup Python
@@ -22,7 +23,7 @@ jobs:
       with:
         repository:  codeoverflow-org/nodecg-io-docs
         path: ../nodecg-io-docs
-        ssh-key: ${{ secret.DOCS_SSH_KEY }}
+        ssh-key: ${{ secrets.DOCS_SSH_KEY }}
 
     - name: Build docs
       run: python .scripts/build-docs.py
