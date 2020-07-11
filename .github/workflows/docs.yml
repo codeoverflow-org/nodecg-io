@@ -1,0 +1,38 @@
+
+name: Update docs
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.repository, 'codeoverflow-org') # don't run this in forks
+    steps:
+    
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8.3
+    
+    - uses: actions/checkout@v2
+    
+    - name: Checkout docs
+      uses: actions/checkout@v2
+      with:
+        repository:  codeoverflow-org/nodecg-io-docs
+        path: ../nodecg-io-docs
+        ssh-key: ${{ secrets.DOCS_SSH_KEY }}
+
+    - name: Build docs
+      run: python .scripts/build-docs.py
+
+    - name: GitHub Push
+      run: |
+        cd ../nodecg-io-docs
+        git config --global user.email "<>"
+        git config --global user.name "codeoverflow-org"
+        git add .
+        git commit --message "Update generated documentation ( codeoverflow-org/nodecg-io@${{ github.sha }})"
+        git push --force origin master
