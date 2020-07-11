@@ -7,7 +7,7 @@
 # Requirements:
 #  + python3 in your PATH
 #  + executed from root of nodecg-io repo
-#  + docs repo located at ../nodecg-io-docs and up to date
+#  + docs repo located at ./docs and up to date
 
 import json
 import re
@@ -112,7 +112,7 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
 if __name__ == '__main__':
 
     print('Generating Markdown Files')
-    with open('../nodecg-io-docs/docs/dependencies.md', mode='w') as outGraph:
+    with open('./docs/docs/dependencies.md', mode='w') as outGraph:
         outGraph.write('<!-- This file is auto-generated. Do not change anything here -->\n')
         outGraph.write('# Dependency Graph\n')
         outGraph.write('\n')
@@ -128,6 +128,6 @@ if __name__ == '__main__':
         outGraph.write('FontColor White\n')
         outGraph.write('FontStyle Underline\n')
         outGraph.write('}\n')
-        genServicesMd('../nodecg-io-docs/docs/services.md', '.', '../nodecg-io-docs/docs', outGraph)
+        genServicesMd('./docs/docs/services.md', '.', './docs/docs', outGraph)
         outGraph.write('::end-uml::\n')
         print('Completed Task! Files were generated successfully')

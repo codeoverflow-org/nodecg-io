@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository:  codeoverflow-org/nodecg-io-docs
-        path: ../nodecg-io-docs
+        path: docs
         ssh-key: ${{ secrets.DOCS_SSH_KEY }}
 
     - name: Build docs
@@ -30,7 +30,7 @@ jobs:
 
     - name: GitHub Push
       run: |
-        cd ../nodecg-io-docs
+        cd docs
         git config --global user.email "<>"
         git config --global user.name "codeoverflow-org"
         git add .
