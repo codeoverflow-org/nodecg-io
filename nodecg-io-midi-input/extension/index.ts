@@ -19,12 +19,8 @@ module.exports = (nodecg: NodeCG): ServiceProvider<MidiInputServiceClient> | und
 
 class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputServiceClient> {
     async validateConfig(config: MidiInputServiceConfig): Promise<Result<void>> {
-        try {
-            new easymidi.Input(config.device).close();
-            return emptySuccess();
-        } catch (err) {
-            return error(String(err));
-        }
+        new easymidi.Input(config.device).close();
+        return emptySuccess();
     }
 
     async createClient(config: MidiInputServiceConfig): Promise<Result<MidiInputServiceClient>> {
