@@ -7,7 +7,7 @@
 # Requirements:
 #  + python3 in your PATH
 #  + executed from root of nodecg-io repo
-#  + docs repo located at ../nodecg-io-docs and up to date
+#  + docs repo located at ./docs and up to date
 
 import json
 import re
@@ -83,9 +83,9 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
             if 'dependencies' in data:
                 if not data['name'] in depList:
                     if data['name'] == 'nodecg-io-core':
-                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
                     else:
-                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
                 depList.append(data['name'])
 
                 for dependency in data['dependencies']:
@@ -112,7 +112,7 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
 if __name__ == '__main__':
 
     print('Generating Markdown Files')
-    with open('../nodecg-io-docs/docs/dependencies.md', mode='w') as outGraph:
+    with open('./docs/docs/dependencies.md', mode='w') as outGraph:
         outGraph.write('<!-- This file is auto-generated. Do not change anything here -->\n')
         outGraph.write('# Dependency Graph\n')
         outGraph.write('\n')
@@ -120,14 +120,14 @@ if __name__ == '__main__':
         outGraph.write('left to right direction\n')
         outGraph.write('skinparam HyperlinkColor White\n')
         outGraph.write('skinparam component {\n')
-        outGraph.write('ArrowColor LightSteelBlue\n')
-        outGraph.write('BackgroundColor<<core>> SteelBlue\n')
-        outGraph.write('BackgroundColor<<service>> Teal\n')
-        outGraph.write('BackgroundColor<<lib>> SeaGreen\n')
-        outGraph.write('BorderColor DarkSlateGray\n')
+        outGraph.write('ArrowColor Gainsboro\n')
+        outGraph.write('BackgroundColor<<core>> Crimson\n')
+        outGraph.write('BackgroundColor<<service>> Darkorange\n')
+        outGraph.write('BackgroundColor<<lib>> GoldenRod\n')
+        outGraph.write('BorderColor Black\n')
         outGraph.write('FontColor White\n')
         outGraph.write('FontStyle Underline\n')
         outGraph.write('}\n')
-        genServicesMd('../nodecg-io-docs/docs/services.md', '.', '../nodecg-io-docs/docs', outGraph)
+        genServicesMd('./docs/docs/services.md', '.', './docs/docs', outGraph)
         outGraph.write('::end-uml::\n')
         print('Completed Task! Files were generated successfully')
