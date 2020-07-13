@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import * as easymidi from "easymidi";
 
