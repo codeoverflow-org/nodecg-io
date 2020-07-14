@@ -17,19 +17,19 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
-- [x] AHK
-- [x] Discord  
+- [x] AutoHotkey
+- [x] Discord
 - [X] IntelliJ IDEs
 - [x] IRC (Internet Relay Chat)
 - [x] MIDI
 - [X] Philips Hue
-- [x] RCON  
-- [ ] Serial Port (Arduino)  
+- [x] RCON
+- [ ] Serial Port (Arduino)
 - [x] Spotify
 - [X] Elgato Stream Deck 
-- [ ] StreamElements  
-- [ ] TipeeeStream  
-- [x] Twitch Chat  
+- [ ] StreamElements
+- [ ] TipeeeStream
+- [x] Twitch Chat
 - [x] Twitter
 - [x] WebSocket Client
 - [x] WebSocket Server
@@ -39,7 +39,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 ## How to use nodecg-io
 
 If you want to use nodecg-io, you should note that it is only a framework for your bundle, so you need at least a basic knowledge of the programming language JavaScript or any other language that compiles to JavaScript like TypeScript. 
-If thats no problem you can had over to the [installation guide](https://nodecg.io/getting_started/install/) and then have a look at the [available nodecg-io services](https://nodecg.io/services/). 
+If that's no problem you can head over to the [installation guide](https://nodecg.io/getting_started/install/) and take a look at the [available nodecg-io services](https://nodecg.io/services/). 
 
 ## How to contribute
 If you want to contribute to this bundle you can implement one of those services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing head over to the [How to contribute](https://nodecg.io/contribute/) - Guide.
@@ -62,7 +62,7 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 ```
 nodecg-io/
 +--docs/                   Documentation Repo (clone separately)
-+--nodecg-io-ahk/          AHK integration
++--nodecg-io-ahk/          AutoHotkey integration
 +--nodecg-io-core/         Core Lib
    +--dashboard/           GUI
 +--nodecg-io-discord/      Discord integration
