@@ -69,7 +69,7 @@ nodecg-io/
 +--nodecg-io-intellij/     IntelliJ integration
 +--nodecg-io-irc/          IRC integration
 +--nodecg-io-midi-input/   MIDI input integration
-+--nodecg-io-midi-output/   MIDI output integration
++--nodecg-io-midi-output/  MIDI output integration
 +--nodecg-io-philipshue/   Philips Hue integration
 +--nodecg-io-rcon/         Rcon integration
 +--nodecg-io-spotify/      Spotify integration
