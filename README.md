@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=14&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io-docs/blob/master/docs/services.md)
+[![Sevices](https://img.shields.io/static/v1?label=Services%20implemented&message=15&color=blue&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io-docs/blob/master/docs/services.md)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/sX2Gjbs/)
 
@@ -21,7 +21,8 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - [x] Discord
 - [X] IntelliJ IDEs
 - [x] IRC (Internet Relay Chat)
-- [x] MIDI
+- [x] MIDI Input
+- [x] MIDI Output
 - [X] Philips Hue
 - [x] RCON
 - [ ] Serial Port (Arduino)
