@@ -26,7 +26,7 @@
     "@types/node": "^13.13.12",
     "@types/node-fetch": "^2.5.7",
     "nodecg": "^1.6.1",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.6"
   },
   "dependencies": {
     "nodecg-io-core": "0.1.0",
