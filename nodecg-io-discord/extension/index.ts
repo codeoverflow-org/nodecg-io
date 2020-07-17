@@ -8,7 +8,7 @@ interface DiscordServiceConfig {
     botToken: string;
 }
 
-export interface DiscordServiceClient extends ServiceClient<DiscordClient> {}
+export type DiscordServiceClient = ServiceClient<DiscordClient>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undefined => {
     const discordService = new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json");

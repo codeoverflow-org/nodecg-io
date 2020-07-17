@@ -8,7 +8,7 @@ interface WSServerServiceConfig {
     port: number;
 }
 
-export interface WSServerServiceClient extends ServiceClient<WebSocket.Server> {}
+export type WSServerServiceClient = ServiceClient<WebSocket.Server>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<WSServerServiceClient> | undefined => {
     const wsServerService = new WSServerService(nodecg, "websocket-server", __dirname, "../ws-schema.json");

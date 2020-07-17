@@ -11,7 +11,7 @@ interface TwitterServiceConfig {
     oauthTokenSecret: string;
 }
 
-export interface TwitterServiceClient extends ServiceClient<Twitter> {}
+export type TwitterServiceClient = ServiceClient<Twitter>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undefined => {
     const twitterService = new TwitterService(nodecg, "twitter", __dirname, "../twitter-schema.json");

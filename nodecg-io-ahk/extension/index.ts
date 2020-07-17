@@ -9,7 +9,7 @@ interface AHKServiceConfig {
     port: number;
 }
 
-export interface AHKServiceClient extends ServiceClient<AHK> {}
+export type AHKServiceClient = ServiceClient<AHK>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<AHKServiceClient> | undefined => {
     const ahkService = new AhkService(nodecg, "ahk", __dirname, "../ahk-schema.json");

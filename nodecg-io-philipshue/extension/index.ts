@@ -19,7 +19,7 @@ interface PhilipsHueServiceConfig {
     apiKey?: string;
 }
 
-export interface PhilipsHueServiceClient extends ServiceClient<HueApi> {}
+export type PhilipsHueServiceClient = ServiceClient<HueApi>;
 
 module.exports = function (nodecg: NodeCG): ServiceProvider<PhilipsHueServiceClient> | undefined {
     const philipshue = new PhilipsHueService(nodecg, "philips-hue", __dirname, "../philipshue-schema.json");

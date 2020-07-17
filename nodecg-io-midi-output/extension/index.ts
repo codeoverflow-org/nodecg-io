@@ -8,7 +8,7 @@ interface MidiOutputServiceConfig {
     device: string;
 }
 
-export interface MidiOutputServiceClient extends ServiceClient<easymidi.Output> {}
+export type MidiOutputServiceClient = ServiceClient<easymidi.Output>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<MidiOutputServiceClient> | undefined => {
     const midiService = new MidiService(nodecg, "midi-output", __dirname, "../midi-output-schema.json");

@@ -8,7 +8,7 @@ interface IntelliJServiceConfig {
     address: string;
 }
 
-export interface IntelliJServiceClient extends ServiceClient<IntelliJ> {}
+export type IntelliJServiceClient = ServiceClient<IntelliJ>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<IntelliJServiceClient> | undefined => {
     const intellijService = new IntellijService(nodecg, "intellij", __dirname, "../intellij-schema.json");

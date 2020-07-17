@@ -13,7 +13,7 @@ interface SpotifyServiceConfig {
     scopes: Array<string>;
 }
 
-export interface SpotifyServiceClient extends ServiceClient<SpotifyWebApi> {}
+export type SpotifyServiceClient = ServiceClient<SpotifyWebApi>;
 
 let callbackUrl = "";
 const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";

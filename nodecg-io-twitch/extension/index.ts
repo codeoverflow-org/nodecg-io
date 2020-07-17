@@ -9,7 +9,7 @@ interface TwitchServiceConfig {
     oauthKey: string;
 }
 
-export interface TwitchServiceClient extends ServiceClient<ChatClient> {}
+export type TwitchServiceClient = ServiceClient<ChatClient>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
     const twitchService = new TwitchService(nodecg, "twitch", __dirname, "../twitch-schema.json");

@@ -9,7 +9,7 @@ interface StreamdeckServiceConfig {
     device: string;
 }
 
-export interface StreamdeckServiceClient extends ServiceClient<StreamDeck> {}
+export type StreamdeckServiceClient = ServiceClient<StreamDeck>;
 
 module.exports = (nodecg: NodeCG): ServiceProvider<StreamdeckServiceClient> | undefined => {
     const service = new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "../streamdeck-schema.json");
