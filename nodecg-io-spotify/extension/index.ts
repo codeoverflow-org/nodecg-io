@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import SpotifyWebApi = require("spotify-web-api-node");
@@ -13,9 +13,7 @@ interface SpotifyServiceConfig {
     scopes: Array<string>;
 }
 
-export interface SpotifyServiceClient {
-    getRawClient(): SpotifyWebApi;
-}
+export interface SpotifyServiceClient extends ServiceClient<SpotifyWebApi> {}
 
 let callbackUrl = "";
 const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";
@@ -58,7 +56,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         this.nodecg.log.info("Successfully connected to Spotify!");
 
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return spotifyApi;
             },
         });

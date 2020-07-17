@@ -1,11 +1,11 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
 import { Result, emptySuccess, error, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-import Api = require("node-hue-api/lib/api/Api");
+import HueApi = require("node-hue-api/lib/api/Api");
 const { api, discovery } = v3;
 
 const deviceName = "nodecg-io";
@@ -19,9 +19,7 @@ interface PhilipsHueServiceConfig {
     apiKey?: string;
 }
 
-export interface PhilipsHueServiceClient {
-    getRawClient(): Api;
-}
+export interface PhilipsHueServiceClient extends ServiceClient<HueApi> {}
 
 module.exports = function (nodecg: NodeCG): ServiceProvider<PhilipsHueServiceClient> | undefined {
     const philipshue = new PhilipsHueService(nodecg, "philips-hue", __dirname, "../philipshue-schema.json");
@@ -95,7 +93,7 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
         const client = await api.createLocal(ipAddr, port).connect(config.username, config.apiKey);
 
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return client;
             },
         });

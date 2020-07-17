@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import * as WebSocket from "ws";
@@ -8,8 +8,7 @@ interface WSClientServiceConfig {
     address: string;
 }
 
-export interface WSClientServiceClient {
-    getRawClient(): WebSocket;
+export interface WSClientServiceClient extends ServiceClient<WebSocket> {
     send(message: string): void;
     onMessage(func: (message: WebSocket.Data) => void): void;
     onClose(func: () => void): void;
@@ -46,7 +45,7 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
         });
         this.nodecg.log.info("Successfully connected to the WebSocket server.");
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return client;
             },
             send(message: string) {
@@ -65,6 +64,6 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
     }
 
     stopClient(client: WSClientServiceClient): void {
-        client.getRawClient().close();
+        client.getNativeClient().close();
     }
 }

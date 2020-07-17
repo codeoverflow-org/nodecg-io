@@ -129,3 +129,13 @@ export interface ServiceDependency<C> {
      */
     readonly clientUpdateCallback(client?: C): void;
 }
+
+/**
+ * A common interface between all service clients.
+ * Currently this only ensures that all services allow access to the underlying client
+ * by providing a getNativeClient() function.
+ * @typeParam T the type of the underlying client.
+ */
+export interface ServiceClient<T> {
+    getNativeClient(): T;
+}

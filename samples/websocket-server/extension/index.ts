@@ -15,7 +15,7 @@ module.exports = function (nodecg: NodeCG) {
         (client) => {
             nodecg.log.info("WebSocket Server has been set. Ready for connections.");
 
-            const server = client.getRawClient();
+            const server = client.getNativeClient();
             server.on("connection", (websocket) => {
                 websocket.on("message", (message) => {
                     if (message.toString().toLowerCase() === "ping") {

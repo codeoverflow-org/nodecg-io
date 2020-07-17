@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result, error } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Xdotool } from "./xdotool";
@@ -9,9 +9,7 @@ interface XdotoolServiceConfig {
     port: number;
 }
 
-export interface XdotoolServiceClient {
-    getRawClient(): Xdotool;
-}
+export interface XdotoolServiceClient extends ServiceClient<Xdotool> {}
 
 module.exports = (nodecg: NodeCG): ServiceProvider<XdotoolServiceClient> | undefined => {
     const service = new XdotoolServiceBundle(nodecg, "xdotool", __dirname, "../xdotool-schema.json");
@@ -33,7 +31,7 @@ class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolSe
         try {
             const xd = new Xdotool(config.host, config.port);
             return success({
-                getRawClient() {
+                getNativeClient() {
                     return xd;
                 },
             });

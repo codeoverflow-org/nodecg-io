@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Client as IRCClient } from "irc";
@@ -12,8 +12,7 @@ interface IRCServiceConfig {
     reconnectTries?: number;
 }
 
-export interface IRCServiceClient {
-    getRawClient(): IRCClient;
+export interface IRCServiceClient extends ServiceClient<IRCClient> {
     sendMessage(target: string, message: string): void;
 }
 
@@ -50,7 +49,7 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
         this.nodecg.log.info("Successfully connected to the IRC server.");
 
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return IRC;
             },
             sendMessage(target: string, message: string) {
@@ -60,7 +59,7 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
     }
 
     stopClient(client: IRCServiceClient): void {
-        client.getRawClient().disconnect("", () => {
+        client.getNativeClient().disconnect("", () => {
             this.nodecg.log.info("Stopped IRC client successfully.");
         });
     }

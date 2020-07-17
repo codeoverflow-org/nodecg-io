@@ -14,7 +14,7 @@ module.exports = function (nodecg: NodeCG): void {
         (hue) => {
             nodecg.log.info("Got Philips Hue client");
 
-            const client = hue.getRawClient();
+            const client = hue.getNativeClient();
 
             client.lights.getAll().then((lights) => {
                 nodecg.log.info(lights.length);

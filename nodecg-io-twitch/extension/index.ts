@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import TwitchClient from "twitch";
@@ -9,9 +9,7 @@ interface TwitchServiceConfig {
     oauthKey: string;
 }
 
-export interface TwitchServiceClient {
-    getRawClient(): ChatClient;
-}
+export interface TwitchServiceClient extends ServiceClient<ChatClient> {}
 
 module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
     const twitchService = new TwitchService(nodecg, "twitch", __dirname, "../twitch-schema.json");
@@ -43,16 +41,16 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClie
         this.nodecg.log.info("Successfully connected to twitch.");
 
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return chatClient;
             },
         });
     }
 
     stopClient(client: TwitchServiceClient): void {
-        client.getRawClient().removeListener();
+        client.getNativeClient().removeListener();
         client
-            .getRawClient()
+            .getNativeClient()
             .quit()
             .then(() => this.nodecg.log.info("Stopped twitch client successfully."));
     }

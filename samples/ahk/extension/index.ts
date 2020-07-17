@@ -13,7 +13,7 @@ module.exports = function (nodecg: NodeCG) {
         (client) => {
             nodecg.log.info("AHK client has been updated, sending Hello World Command.");
 
-            client.getRawClient().sendCommand("HelloWorld");
+            client.getNativeClient().sendCommand("HelloWorld");
         },
         () => nodecg.log.info("AHK client has been unset."),
     );
