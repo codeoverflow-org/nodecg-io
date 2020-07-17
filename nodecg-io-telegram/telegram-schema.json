@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "token": {
+        "type": "string",
+        "description": "The telegram api bot token to authenticate the bot with the telegram api."
+      },
+      "polling": {
+        "type": "boolean",
+        "description": ""
+      },
+      "webHook": {
+        "type": "boolean",
+        "description": ""
+      },
+      "onlyFirstMatch": {
+        "type": "boolean",
+        "description": ""
+      },
+      "baseApiUrl": {
+        "type": "string",
+        "description": ""
+      },
+      "filepath": {
+        "type": "boolean",
+        "description": ""
+      }
+    },
+    "required": ["token"]
+  }
