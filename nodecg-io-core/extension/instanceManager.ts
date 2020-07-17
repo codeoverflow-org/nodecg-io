@@ -189,6 +189,7 @@ export class InstanceManager {
 
         // Stop old client, as it isn't used by any bundle anymore.
         if (oldClient !== undefined) {
+            this.nodecg.log.info(`Stopping old unused ${inst.serviceType} client...`);
             service.stopClient(oldClient);
         }
     }

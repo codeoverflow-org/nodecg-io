@@ -50,12 +50,10 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClie
     }
 
     stopClient(client: TwitchServiceClient): void {
-        // quit currently doesn't work, so we settle for removeListener for now til the fix for that bug is in a stable version.
-        // See https://github.com/d-fischer/twitch/issues/128,
-        // https://github.com/d-fischer/twitch/commit/3d01210ff4592220f00f9e060f4cb47783808e7b
-        // and https://github.com/d-fischer/connection/commit/667634415efdbdbfbd095a160c125a81edd8ec6a
         client.getRawClient().removeListener();
-        // client.getRawClient().quit()
-        //     .then(r => console.log("Stopped twitch client successfully."))
+        client
+            .getRawClient()
+            .quit()
+            .then(() => this.nodecg.log.info("Stopped twitch client successfully."));
     }
 }
