@@ -74,6 +74,7 @@ nodecg-io/
 +--nodecg-io-midi-output/  MIDI output integration
 +--nodecg-io-philipshue/   Philips Hue integration
 +--nodecg-io-rcon/         Rcon integration
++--nodecg-io-slack/        Slack WebAPI Integration
 +--nodecg-io-spotify/      Spotify integration
 +--nodecg-io-streamdeck/   Elgato Stream Deck integration
 +--nodecg-io-twitch/       Twitch integration
@@ -86,6 +87,7 @@ nodecg-io/
    +--discord-guild-chat/  Discord Samplecode
    +--intellij/            IntelliJ Samplecode
    +--philips-hue/         Philips Hue Samplecode
+   +--slack/               Slack WebAPI Samplecodes
    +--streamdeck-rainbow/  Streamdeck Samplecode
    +--twitch-chat/         Twitch Samplecode
    +--twitter-timeline/    Twitter Samplecode
