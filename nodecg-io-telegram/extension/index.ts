@@ -24,8 +24,6 @@ module.exports = (nodecg: NodeCG): ServiceProvider<TelegramServiceClient> | unde
 
 class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServiceClient> {
     async validateConfig(config: TelegramServiceConfig): Promise<Result<void>> {
-        // We need one error handler or node will exit the process on an error.
-
         const bot = new TelegramBot(config.token);
         await bot.getMe();
 
@@ -33,7 +31,6 @@ class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServi
     }
 
     async createClient(config: TelegramServiceConfig): Promise<Result<TelegramServiceClient>> {
-        // We need one error handler or node will exit the process on an error.
         const options: TelegramBot.ConstructorOptions = {
             baseApiUrl: config.baseApiUrl,
             filepath: config.filepath,

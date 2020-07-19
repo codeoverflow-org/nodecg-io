@@ -9,23 +9,23 @@
       },
       "polling": {
         "type": "boolean",
-        "description": ""
+        "description": "Set true to enable polling. If a Webhook has been set, it will delete automatically."
       },
       "webHook": {
         "type": "boolean",
-        "description": ""
+        "description": "Set true to enable WebHook."
       },
       "onlyFirstMatch": {
         "type": "boolean",
-        "description": ""
+        "description": "Set true to stop after first match. Otherwise, all regexps are executed."
       },
       "baseApiUrl": {
         "type": "string",
-        "description": ""
+        "description": "The baseAPI URI."
       },
       "filepath": {
         "type": "boolean",
-        "description": ""
+        "description": "Allow passing file-paths as arguments when sending files."
       }
     },
     "required": ["token"]
