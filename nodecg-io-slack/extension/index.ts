@@ -44,7 +44,7 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
         }
     }
 
-    stopClient(client: SlackServiceClient): void {
-        client.getRawClient(); //Only that lint has no warnings
+    stopClient(_client: SlackServiceClient): void {
+        // Not supported by the client
     }
 }
