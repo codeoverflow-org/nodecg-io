@@ -119,9 +119,13 @@ export class InstanceManager {
             }
 
             // Validation by the service.
-            const validationRes = await service.result.validateConfig(config);
-            if (validationRes.failed) {
-                return error("Config invalid: " + validationRes.errorMessage);
+            try {
+                const validationRes = await service.result.validateConfig(config);
+                if (validationRes.failed) {
+                    return error("Config invalid: " + validationRes.errorMessage);
+                }
+            } catch (err) {
+                return error("Config invalid: " + err);
             }
         }
 
@@ -159,17 +163,24 @@ export class InstanceManager {
                 return;
             }
 
-            const client = await service.result.createClient(inst.config);
+            try {
+                const client = await service.result.createClient(inst.config);
 
-            // Check if a error happened while creating the client
-            if (client.failed) {
+                // Check if a error happened while creating the client
+                if (client.failed) {
+                    this.nodecg.log.error(
+                        `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
+                    );
+                    inst.client = undefined;
+                } else {
+                    // Update service instance object
+                    inst.client = client.result;
+                }
+            } catch (err) {
                 this.nodecg.log.error(
-                    `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
+                    `The "${inst.serviceType}" service function produced an error while creating a client: ${err}`,
                 );
                 inst.client = undefined;
-            } else {
-                // Update service instance object
-                inst.client = client.result;
             }
         }
 
@@ -178,6 +189,7 @@ export class InstanceManager {
 
         // Stop old client, as it isn't used by any bundle anymore.
         if (oldClient !== undefined) {
+            this.nodecg.log.info(`Stopping old unused ${inst.serviceType} client...`);
             service.stopClient(oldClient);
         }
     }

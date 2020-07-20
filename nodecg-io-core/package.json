@@ -30,13 +30,13 @@
   "license": "MIT",
   "devDependencies": {
     "@types/crypto-js": "^3.1.47",
-    "@types/node": "^13.13.5",
+    "@types/node": "^13.13.12",
     "nodecg": "^1.6.1"
   },
   "dependencies": {
     "ajv": "^6.12.2",
     "crypto-js": "^4.0.0",
     "tslib": "^2.0.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.6"
   }
 }
