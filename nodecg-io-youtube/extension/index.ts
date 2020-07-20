@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { NodeCGIOCore } from "nodecg-io-core/extension";
-import { Service, ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceProvider } from "nodecg-io-core/extension/types";
+import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { youtube_v3, google } from "googleapis";
 import { OAuth2Client } from "google-auth-library";
 import * as express from "express";
@@ -15,6 +15,29 @@ interface YoutubeServiceConfig {
 export interface YoutubeServiceClient {
     getRawClient(): youtube_v3.Youtube;
 }
+
+module.exports = (nodecg: NodeCG): ServiceProvider<YoutubeServiceClient> | undefined => {
+    const youtubeService = new YoutubeService(nodecg, "youtube", __dirname, "../youtube-schema.json");
+    return youtubeService.register();
+};
+
+class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceClient> {
+    async validateConfig(config: YoutubeServiceConfig): Promise<Result<void>> {
+        return emptySuccess();
+    }
+
+    async createClient(config: YoutubeServiceConfig): Promise<Result<YoutubeServiceClient>> {
+        const client = new youtube_v3.Youtube({});
+        return success({
+            getRawClient() {
+                return client;
+            },
+        });
+    }
+
+    stopClient(_client: YoutubeServiceClient): void {}
+}
+/*
 
 module.exports = (nodecg: NodeCG): ServiceProvider<YoutubeServiceClient> | undefined => {
     nodecg.log.info("Youtube bundle started");
@@ -99,3 +122,4 @@ function mountCallbackURL(nodecg: NodeCG, yt: youtube_v3.Youtube): Promise<strin
         nodecg.mount(router);
     });
 }
+*/
