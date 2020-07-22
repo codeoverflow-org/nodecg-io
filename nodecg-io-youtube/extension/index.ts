@@ -30,7 +30,7 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
         const auth = new google.auth.OAuth2({
             clientId: config.clientID,
             clientSecret: config.clientSecret,
-            redirectUri: "localhost:9090/nodecg-io-youtube/oauth2callback",
+            redirectUri: "http://localhost:9090/nodecg-io-youtube/oauth2callback",
         });
         const authUrl = auth.generateAuthUrl({
             access_type: "offline",
