@@ -51,10 +51,10 @@ class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServi
     }
 
     stopClient(client: TelegramServiceClient): void {
-        if(client.getRawClient().isPolling()) {
+        if (client.getRawClient().isPolling()) {
             client.getRawClient().stopPolling();
         }
-        if(client.getRawClient().hasOpenWebHook()) {
+        if (client.getRawClient().hasOpenWebHook()) {
             client.getRawClient().closeWebHook();
         }
     }
