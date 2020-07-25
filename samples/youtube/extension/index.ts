@@ -1,6 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { YoutubeServiceClient } from "nodecg-io-youtube/extension";
+import { youtube_v3 } from "googleapis";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for youtube started");
@@ -18,7 +19,14 @@ module.exports = function (nodecg: NodeCG) {
                 part: ["id", "snippet"],
                 id: ["PL9oBXB6tQnlX013V1v20WkfzI9R2zamHi"],
             });
-            nodecg.log.info(resp);
+            const items = resp.data.items;
+            if (items) {
+                const { title, channelTitle, publishedAt, description } = items[0]
+                    .snippet as youtube_v3.Schema$PlaylistItemSnippet;
+                nodecg.log.info(
+                    `${title}${description ? " - " : ""}${description} by ${channelTitle} created at ${publishedAt}`,
+                );
+            }
         },
         () => nodecg.log.info("Youtube client has been unset."),
     );

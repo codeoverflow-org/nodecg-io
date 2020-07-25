@@ -26,7 +26,6 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
     }
 
     async createClient(config: YoutubeServiceConfig): Promise<Result<YoutubeServiceClient>> {
-        // https://developers.google.com/identity/protocols/oauth2/web-server#creatingcred
         const auth = new google.auth.OAuth2({
             clientId: config.clientID,
             clientSecret: config.clientSecret,
@@ -44,6 +43,7 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
                 try {
                     const params = req.query;
                     res.end("<script>window.close()</script>");
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const { tokens } = await auth.getToken(params.code!.toString());
                     auth.credentials = tokens;
                     const client = new youtube_v3.Youtube({ auth });
@@ -64,5 +64,7 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
         });
     }
 
-    stopClient(_client: YoutubeServiceClient): void {}
+    stopClient(_client: YoutubeServiceClient): void {
+        // Cannot stop client
+    }
 }

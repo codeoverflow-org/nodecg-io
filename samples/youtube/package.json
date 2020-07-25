@@ -13,6 +13,7 @@
     },
     "license": "MIT",
     "dependencies": {
+        "googleapis": "^52.1.0",
         "nodecg-io-youtube": "0.1.0",
         "nodecg-io-core": "0.1.0",
         "@types/node": "^13.13.12",
