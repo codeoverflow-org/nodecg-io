@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=16&color=blue&style=flat-square)](https://nodecg.io/services/)
+[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=18&color=blue&style=flat-square)](https://nodecg.io/services/)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/sX2Gjbs/)
 
@@ -19,24 +19,25 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 - [x] AutoHotkey
 - [x] Discord
-- [X] IntelliJ IDEs
+- [x] IntelliJ IDEs
 - [x] IRC (Internet Relay Chat)
 - [x] MIDI Input
 - [x] MIDI Output
-- [X] Philips Hue
+- [x] Philips Hue
 - [x] RCON
 - [ ] Serial Port (Arduino)
 - [x] Slack WebAPI
 - [x] Spotify
-- [X] Elgato Stream Deck 
+- [x] Elgato Stream Deck 
 - [ ] StreamElements
+- [x] Telegram
 - [ ] TipeeeStream
 - [x] Twitch Chat
 - [x] Twitter
 - [x] WebSocket Client
 - [x] WebSocket Server
 - [x] Xdotool
-- [ ] YouTube
+- [x] YouTube
 
 ## How to use nodecg-io
 
@@ -77,11 +78,13 @@ nodecg-io/
 +--nodecg-io-slack/        Slack WebAPI Integration
 +--nodecg-io-spotify/      Spotify integration
 +--nodecg-io-streamdeck/   Elgato Stream Deck integration
++--nodecg-io-telegram/     Telegram integration
 +--nodecg-io-twitch/       Twitch integration
 +--nodecg-io-twitter/      Twitter integration
 +--nodecg-io-ws-client/    WebSocket client integration
 +--nodecg-io-ws-server/    WebSocket server integration
 +--nodecg-io-xdotool/      Xdotool integration
++--nodecg-io-youtube/      YouTube integration
 +--samples/                Samplecode
    +--ahk/                 AutoHotKey Samplecode
    +--discord-guild-chat/  Discord Samplecode
@@ -91,6 +94,7 @@ nodecg-io/
    +--streamdeck-rainbow/  Streamdeck Samplecode
    +--twitch-chat/         Twitch Samplecode
    +--twitter-timeline/    Twitter Samplecode
-   +--websocket-server/    Webosocket Server Samplecode
+   +--websocket-server/    Websocket Server Samplecode
    +--xdotool/             xdotool Samplecode
+   +--youtube/             YouTube Samplecode
 ```
