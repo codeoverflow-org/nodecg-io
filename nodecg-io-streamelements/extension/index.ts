@@ -20,12 +20,12 @@ module.exports = (nodecg: NodeCG) => {
 
 class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, StreamElementsServiceClient> {
     async validateConfig(config: StreamElementsServiceConfig) {
-        return new StreamElements(config.jwtToken, config.accountId).testConnection();
+        return new StreamElements(config.jwtToken, config.accountId, this.nodecg).testConnection();
     }
 
     async createClient(config: StreamElementsServiceConfig) {
         this.nodecg.log.info("Connecting to StreamElements socket server...");
-        const client = new StreamElements(config.jwtToken, config.accountId);
+        const client = new StreamElements(config.jwtToken, config.accountId, this.nodecg);
         await client.connect();
         this.nodecg.log.info("Successfully connected to StreamElements socket server.");
 
