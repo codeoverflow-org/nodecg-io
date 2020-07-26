@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "host": {
+            "type": "string",
+            "description": "An IP address to the IRC server"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port of the IRC server. (Optional) Default Port: 6667"
+        },
+        "password": {
+            "type": "string",
+            "description": "The password of the IRC server"
+        },
+        "nick": {
+            "type": "string",
+            "description": "The nickname of the IRC Bot"
+        },
+        "reconnectTries": {
+            "type": "integer",
+            "description": "The amount of reconnect tries to connect to the IRC server"
+        }
+    },
+    "required": ["host", "nick"]
+}

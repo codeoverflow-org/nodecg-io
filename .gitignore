@@ -18,5 +18,8 @@ package.json.lerna_backup
 !.eslintrc.js
 !.prettierrc.js
 
-# Output path of the documentation
-docs/build
+# Documentation
+docs/
+
+#lerna debug
+lerna-debug.log

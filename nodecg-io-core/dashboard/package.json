@@ -10,7 +10,7 @@
     "monaco-editor": "^0.20.0",
     "nodecg": "^1.6.1",
     "nodecg-io-core": "0.1.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.6"
   },
   "license": "MIT"
 }
