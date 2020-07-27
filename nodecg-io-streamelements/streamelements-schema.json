@@ -12,5 +12,5 @@
           "description": "Your Streamelements account id for streamelements"
       }
     },
-    "required": ["jwtToken","accountId"]
+    "required": ["jwtToken", "accountId"]
   }

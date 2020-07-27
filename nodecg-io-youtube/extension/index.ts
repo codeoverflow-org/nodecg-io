@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { youtube_v3, google } from "googleapis";
 import * as express from "express";
@@ -55,7 +55,7 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
                         }),
                     );
                 } catch (e) {
-                    reject(e);
+                    reject(error(e));
                 }
             });
 

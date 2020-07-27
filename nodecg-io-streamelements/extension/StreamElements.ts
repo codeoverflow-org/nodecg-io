@@ -1,7 +1,6 @@
 import io = require("socket.io-client");
 import { emptySuccess, error, Result } from "nodecg-io-core/extension/utils/result";
 import { StreamElementsEvent } from "./types";
-import { connect } from "socket.io-client";
 
 export class StreamElements {
     private socket: SocketIOClient.Socket;
