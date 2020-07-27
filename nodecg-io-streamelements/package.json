@@ -1,16 +1,19 @@
 {
-  "name": "nodecg-io-spotify",
+  "name": "nodecg-io-streamelements",
   "version": "0.1.0",
-  "description": "Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. ",
+  "description": "",
   "homepage": "",
-  "author": {
-    "name": "CodeOverflow team",
-    "url": "http://codeoverflow.org"
-  },
+  "contributors": ["sebinside", "Extremtechniker"],
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"
   },
+  "files": [
+    "dashboard",
+    "graphics",
+    "extension.js",
+    "extension"
+  ],
   "keywords": [
     "",
     "nodecg-bundle"
@@ -24,13 +27,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^13.13.12",
-    "@types/spotify-web-api-node": "^4.0.1",
     "nodecg": "^1.6.1",
     "typescript": "^3.9.6"
   },
   "dependencies": {
+    "@types/socket.io-client": "^1.4.33",
     "nodecg-io-core": "0.1.0",
-    "open": "^7.0.4",
-    "spotify-web-api-node": "^4.0.0"
+    "socket.io-client": "^2.3.0"
   }
 }
