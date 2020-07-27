@@ -4,8 +4,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-twitch": "0.1.0",
-            "nodecg-io-streamelements": "0.1.0"
+            "nodecg-io-twitch": "0.1.0"
         }
     },
     "scripts": {
@@ -15,7 +14,6 @@
     "license": "MIT",
     "dependencies": {
         "nodecg-io-twitch": "0.1.0",
-        "nodecg-io-streamelements": "0.1.0",
         "nodecg-io-core": "0.1.0",
         "@types/node": "^13.13.12",
         "nodecg": "^1.6.1",
