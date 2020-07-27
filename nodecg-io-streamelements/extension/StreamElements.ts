@@ -24,8 +24,11 @@ export class StreamElements extends EventEmitter {
     private registerEvents(): void {
         this.onEvent((data: StreamElementsEvent) => {
             if (data !== null) {
-                if (data.type === "subscriber" && data.gifted) {
-                    this.emit("gift");
+                if (data.type === "subscriber") {
+                    console.log(data.data.gifted);
+                    if (data.data.gifted) {
+                        this.emit("gift");
+                    }
                 }
                 this.emit(data.type);
             }
@@ -73,16 +76,12 @@ export class StreamElements extends EventEmitter {
         this.socket.on("connect_error", handler);
     }
 
-    onEventTest(handler: (data: StreamElementsEvent) => void): void {
-        this.socket.on("event:test", handler);
-    }
-
     onEvent(handler: (data: StreamElementsEvent) => void): void {
         this.socket.on("event", handler);
     }
 
     onSubscriber(handler: (data: StreamElementsEvent) => void): void {
-        this.on("subscribe", handler); // use data#displayName to get the name.
+        this.on("subscriber", handler); // use data#displayName to get the name.
     }
 
     onTip(handler: (data: StreamElementsEvent) => void): void {
@@ -108,8 +107,6 @@ export class StreamElements extends EventEmitter {
     onHost(handler: (data: StreamElementsEvent) => void): void {
         this.on("host", handler);
     }
-
-    // "cheer" x | "follow" x | "host" x | "raid" x | "subscriber" x | "tip" x;
 
     // TODO: Add support for sub bombs (e.g. by caching the last subs sender)
 }
