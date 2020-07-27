@@ -25,7 +25,6 @@ export class StreamElements extends EventEmitter {
         this.onEvent((data: StreamElementsEvent) => {
             if (data !== null) {
                 if (data.type === "subscriber") {
-                    console.log(data.data.gifted);
                     if (data.data.gifted) {
                         this.emit("gift");
                     }
