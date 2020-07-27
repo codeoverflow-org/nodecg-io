@@ -1,11 +1,14 @@
 import io = require("socket.io-client");
 import { emptySuccess, error, Result } from "nodecg-io-core/extension/utils/result";
 import { StreamElementsEvent } from "./types";
+import { EventEmitter } from "events";
 
-export class StreamElements {
+export class StreamElements extends EventEmitter {
     private socket: SocketIOClient.Socket;
 
-    constructor(private jwtToken: string) {}
+    constructor(private jwtToken: string) {
+        super();
+    }
 
     private createSocket() {
         this.socket = io("https://realtime.streamelements.com", { transports: ["websocket"] });
@@ -14,6 +17,18 @@ export class StreamElements {
                 method: "jwt",
                 token: this.jwtToken,
             });
+        });
+        this.registerEvents();
+    }
+
+    private registerEvents(): void {
+        this.onEvent((data: StreamElementsEvent) => {
+            if (data !== null) {
+                if (data.type === "subscriber" && data.gifted) {
+                    this.emit("gift");
+                }
+                this.emit(data.type);
+            }
         });
     }
 
@@ -58,41 +73,43 @@ export class StreamElements {
         this.socket.on("connect_error", handler);
     }
 
+    onEventTest(handler: (data: StreamElementsEvent) => void): void {
+        this.socket.on("event:test", handler);
+    }
+
     onEvent(handler: (data: StreamElementsEvent) => void): void {
         this.socket.on("event", handler);
     }
 
     onSubscriber(handler: (data: StreamElementsEvent) => void): void {
-        this.onEvent((data: StreamElementsEvent) => {
-            if (data !== null && data.type === "subscriber") {
-                handler(data); // use "displayName" to get the name
-            }
-        });
+        this.on("subscribe", handler); // use data#displayName to get the name.
     }
 
     onTip(handler: (data: StreamElementsEvent) => void): void {
-        this.onEvent((data: StreamElementsEvent) => {
-            if (data !== null && data.type === "tip") {
-                handler(data); // use "username" to get the name
-            }
-        });
+        this.on("tip", handler); // use data#username to get the name
     }
 
     onCheer(handler: (data: StreamElementsEvent) => void): void {
-        this.onEvent((data: StreamElementsEvent) => {
-            if (data !== null && data.type === "cheer") {
-                handler(data); // use "displayName" to get the name
-            }
-        });
+        this.on("cheer", handler); // use data#displayName to get the name.
     }
 
     onGift(handler: (data: StreamElementsEvent) => void): void {
-        this.onEvent((data: StreamElementsEvent) => {
-            if (data !== null && data.type === "subscriber" && data.gifted) {
-                handler(data); // use "sender" to get the name
-            }
-        });
+        this.on("gift", handler); // use data#sender to get the sender and data#displayName to get the name of the person hit.
     }
+
+    onFollow(handler: (data: StreamElementsEvent) => void): void {
+        this.on("follow", handler); // use data#displayName to get the name.
+    }
+
+    onRaid(handler: (data: StreamElementsEvent) => void): void {
+        this.on("raid", handler);
+    }
+
+    onHost(handler: (data: StreamElementsEvent) => void): void {
+        this.on("host", handler);
+    }
+
+    // "cheer" x | "follow" x | "host" x | "raid" x | "subscriber" x | "tip" x;
 
     // TODO: Add support for sub bombs (e.g. by caching the last subs sender)
 }
