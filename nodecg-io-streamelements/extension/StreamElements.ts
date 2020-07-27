@@ -5,7 +5,7 @@ import { StreamElementsEvent } from "./types";
 export class StreamElements {
     private socket: SocketIOClient.Socket;
 
-    constructor(private jwtToken: string, private accountId: string) {}
+    constructor(private jwtToken: string) {}
 
     private createSocket() {
         this.socket = io("https://realtime.streamelements.com", { transports: ["websocket"] });
@@ -17,7 +17,7 @@ export class StreamElements {
         });
     }
 
-    async connect() {
+    async connect(): Promise<void> {
         return new Promise((resolve, _reject) => {
             this.createSocket();
             this.onConnect(resolve);
@@ -37,30 +37,32 @@ export class StreamElements {
         });
     }
 
-    close() {
+    close(): void {
         this.socket.close();
     }
 
     // TODO: Add replicants
 
-    private onConnect(handler: () => void) {
+    private onConnect(handler: () => void): void {
         this.socket.on("connect", handler);
     }
-    private onDisconnect(handler: () => void) {
+    // onDisconnect isn't used internally but should still be available to bundles
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
+    private onDisconnect(handler: () => void): void {
         this.socket.on("disconnect", handler);
     }
-    private onAuthenticated(handler: () => void) {
+    private onAuthenticated(handler: () => void): void {
         this.socket.on("authenticated", handler);
     }
-    private onConnectionError(handler: (err: string) => void) {
+    private onConnectionError(handler: (err: string) => void): void {
         this.socket.on("connect_error", handler);
     }
 
-    onEvent(handler: (data: StreamElementsEvent) => void) {
+    onEvent(handler: (data: StreamElementsEvent) => void): void {
         this.socket.on("event", handler);
     }
 
-    onSubscriber(handler: (data: StreamElementsEvent) => void) {
+    onSubscriber(handler: (data: StreamElementsEvent) => void): void {
         this.onEvent((data: StreamElementsEvent) => {
             if (data !== null && data.type === "subscriber") {
                 handler(data); // use "displayName" to get the name
@@ -68,7 +70,7 @@ export class StreamElements {
         });
     }
 
-    onTip(handler: (data: StreamElementsEvent) => void) {
+    onTip(handler: (data: StreamElementsEvent) => void): void {
         this.onEvent((data: StreamElementsEvent) => {
             if (data !== null && data.type === "tip") {
                 handler(data); // use "username" to get the name
@@ -76,7 +78,7 @@ export class StreamElements {
         });
     }
 
-    onCheer(handler: (data: StreamElementsEvent) => void) {
+    onCheer(handler: (data: StreamElementsEvent) => void): void {
         this.onEvent((data: StreamElementsEvent) => {
             if (data !== null && data.type === "cheer") {
                 handler(data); // use "displayName" to get the name
@@ -84,7 +86,7 @@ export class StreamElements {
         });
     }
 
-    onGift(handler: (data: StreamElementsEvent) => void) {
+    onGift(handler: (data: StreamElementsEvent) => void): void {
         this.onEvent((data: StreamElementsEvent) => {
             if (data !== null && data.type === "subscriber" && data.gifted) {
                 handler(data); // use "sender" to get the name
