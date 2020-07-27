@@ -7,8 +7,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
-    - name: Install system dependencies
-      run: sudo apt-get -y install libasound2-dev
     - name: Install nodejs dependencies
       run: npm i
     - name: Run ESLint
