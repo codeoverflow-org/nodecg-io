@@ -1,9 +1,9 @@
 {
   "name": "nodecg-io-streamelements",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "homepage": "",
-  "contributors": ["sebinside", "Extremtechniker"],
+  "contributors": ["sebinside", "Extremtechniker", "derNiklaas"],
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"

@@ -80,23 +80,23 @@ export class StreamElements extends EventEmitter {
     }
 
     onSubscriber(handler: (data: StreamElementsEvent) => void): void {
-        this.on("subscriber", handler); // use data#displayName to get the name.
+        this.on("subscriber", handler);
     }
 
     onTip(handler: (data: StreamElementsEvent) => void): void {
-        this.on("tip", handler); // use data#username to get the name
+        this.on("tip", handler);
     }
 
     onCheer(handler: (data: StreamElementsEvent) => void): void {
-        this.on("cheer", handler); // use data#displayName to get the name.
+        this.on("cheer", handler);
     }
 
     onGift(handler: (data: StreamElementsEvent) => void): void {
-        this.on("gift", handler); // use data#sender to get the sender and data#displayName to get the name of the person hit.
+        this.on("gift", handler);
     }
 
     onFollow(handler: (data: StreamElementsEvent) => void): void {
-        this.on("follow", handler); // use data#displayName to get the name.
+        this.on("follow", handler);
     }
 
     onRaid(handler: (data: StreamElementsEvent) => void): void {

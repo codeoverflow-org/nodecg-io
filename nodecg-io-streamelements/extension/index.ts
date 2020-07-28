@@ -2,6 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { StreamElements } from "./StreamElements";
+import { StreamElementsEvent } from "./types";
 
 interface StreamElementsServiceConfig {
     jwtToken: string;
@@ -10,6 +11,14 @@ interface StreamElementsServiceConfig {
 
 export interface StreamElementsServiceClient {
     getRawClient(): StreamElements;
+    onEvent(handler: (data: StreamElementsEvent) => void): void;
+    onFollow(handler: (data: StreamElementsEvent) => void): void;
+    onRaid(handler: (data: StreamElementsEvent) => void): void;
+    onHost(handler: (data: StreamElementsEvent) => void): void;
+    onSubscriber(handler: (data: StreamElementsEvent) => void): void;
+    onGift(handler: (data: StreamElementsEvent) => void): void;
+    onTip(handler: (data: StreamElementsEvent) => void): void;
+    onCheer(handler: (data: StreamElementsEvent) => void): void;
 }
 
 module.exports = (nodecg: NodeCG) => {
@@ -32,6 +41,30 @@ class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, S
         return success({
             getRawClient() {
                 return client;
+            },
+            onEvent(handler: (data: StreamElementsEvent) => void) {
+                client.onEvent(handler);
+            },
+            onFollow(handler: (data: StreamElementsEvent) => void) {
+                client.onFollow(handler);
+            },
+            onHost(handler: (data: StreamElementsEvent) => void) {
+                client.onHost(handler);
+            },
+            onRaid(handler: (data: StreamElementsEvent) => void) {
+                client.onRaid(handler);
+            },
+            onSubscriber(handler: (data: StreamElementsEvent) => void) {
+                client.onSubscriber(handler);
+            },
+            onGift(handler: (data: StreamElementsEvent) => void) {
+                client.onGift(handler);
+            },
+            onTip(handler: (data: StreamElementsEvent) => void) {
+                client.onTip(handler);
+            },
+            onCheer(handler: (data: StreamElementsEvent) => void) {
+                client.onCheer(handler);
             },
         });
     }
