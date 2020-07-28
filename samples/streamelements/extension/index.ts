@@ -20,7 +20,7 @@ module.exports = function (nodecg: NodeCG) {
                     data.data.displayName +
                         " just cheered " +
                         data.data.amount +
-                        " bits. Message: " +
+                        " bit(s). Message: " +
                         data.data.message,
                 );
             });
@@ -51,7 +51,7 @@ module.exports = function (nodecg: NodeCG) {
                                 data.data.sender +
                                 "! It's " +
                                 data.data.displayName +
-                                " " +
+                                "'s " +
                                 data.data.amount +
                                 " month.",
                         );
@@ -62,7 +62,7 @@ module.exports = function (nodecg: NodeCG) {
                                 tier +
                                 " gift subscribtion! It's " +
                                 data.data.displayName +
-                                " " +
+                                "'s " +
                                 data.data.amount +
                                 " month.",
                         );
