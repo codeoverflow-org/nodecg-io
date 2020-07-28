@@ -23,11 +23,9 @@ export class StreamElements extends EventEmitter {
 
     private registerEvents(): void {
         this.onEvent((data: StreamElementsEvent) => {
-            if (data !== null) {
-                if (data.type === "subscriber") {
-                    if (data.data.gifted) {
-                        this.emit("gift");
-                    }
+            if (data.type === "subscriber") {
+                if (data.data.gifted) {
+                    this.emit("gift");
                 }
                 this.emit(data.type);
             }
@@ -76,7 +74,11 @@ export class StreamElements extends EventEmitter {
     }
 
     onEvent(handler: (data: StreamElementsEvent) => void): void {
-        this.socket.on("event", handler);
+        this.socket.on("event", (data: StreamElementsEvent) => {
+            if (data !== null) {
+                handler(data);
+            }
+        });
     }
 
     onSubscriber(handler: (data: StreamElementsEvent) => void): void {
