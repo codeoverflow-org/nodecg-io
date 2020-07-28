@@ -75,7 +75,7 @@ export class StreamElements extends EventEmitter {
 
     onEvent(handler: (data: StreamElementsEvent) => void): void {
         this.socket.on("event", (data: StreamElementsEvent) => {
-            if (data !== null) {
+            if (data) {
                 handler(data);
             }
         });
