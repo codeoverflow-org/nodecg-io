@@ -7,9 +7,6 @@ import { Service, ServiceProvider } from "./types";
 import { PersistenceManager } from "./persistenceManager";
 import { ServiceClientWrapper } from "./serviceClientWrapper";
 
-// Re-export requireService function for better usability
-export { requireService } from "./serviceClientWrapper";
-
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.
