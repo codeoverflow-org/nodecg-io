@@ -5,6 +5,10 @@ import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
 import { Service, ServiceProvider } from "./types";
 import { PersistenceManager } from "./persistenceManager";
+import { ServiceClientWrapper } from "./serviceClientWrapper";
+
+// Re-export requireService function for better usability
+export { requireService } from "./serviceClientWrapper";
 
 /**
  * Main type of NodeCG extension that the core bundle exposes.
@@ -12,6 +16,7 @@ import { PersistenceManager } from "./persistenceManager";
  */
 export interface NodeCGIOCore {
     registerService<R, C>(service: Service<R, C>): ServiceProvider<C>;
+    requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined;
 }
 
 module.exports = (nodecg: NodeCG): NodeCGIOCore => {
@@ -32,6 +37,20 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
         registerService<R, C>(service: Service<R, C>): ServiceProvider<C> {
             serviceManager.registerService(service);
             return bundleManager.createServiceProvider(service);
+        },
+        requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
+            const svc = serviceManager.getService(serviceType);
+
+            if (svc.failed) {
+                return;
+            }
+
+            const wrapper = new ServiceClientWrapper<C>();
+            bundleManager.registerServiceDependency(nodecg.bundleName, svc.result as Service<unknown, C>, (client) => {
+                wrapper.emit("update", client);
+            });
+
+            return wrapper;
         },
     };
 };

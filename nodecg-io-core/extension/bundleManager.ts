@@ -62,7 +62,7 @@ export class BundleManager {
      * @param service the service that the bundle depends upon.
      * @param clientUpdate the callback that should be called if a client becomes available or gets updated.
      */
-    private registerServiceDependency<C>(
+    registerServiceDependency<C>(
         bundleName: string,
         service: Service<unknown, C>,
         clientUpdate: (client?: C) => void,
