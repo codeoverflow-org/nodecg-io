@@ -4,7 +4,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-streamelements": "0.2.1"
+            "nodecg-io-streamelements": "0.2.2"
         }
     },
     "scripts": {
@@ -13,7 +13,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "nodecg-io-streamelements": "0.2.1",
+        "nodecg-io-streamelements": "0.2.2",
         "nodecg-io-core": "0.1.0",
         "@types/node": "^13.13.12",
         "nodecg": "^1.6.1",
