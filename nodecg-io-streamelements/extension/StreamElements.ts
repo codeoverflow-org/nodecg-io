@@ -25,10 +25,10 @@ export class StreamElements extends EventEmitter {
         this.onEvent((data: StreamElementsEvent) => {
             if (data.type === "subscriber") {
                 if (data.data.gifted) {
-                    this.emit("gift");
+                    this.emit("gift", data);
                 }
             }
-            this.emit(data.type);
+            this.emit(data.type, data);
         });
     }
 
