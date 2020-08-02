@@ -27,8 +27,8 @@ export class StreamElements extends EventEmitter {
                 if (data.data.gifted) {
                     this.emit("gift");
                 }
-                this.emit(data.type);
             }
+            this.emit(data.type);
         });
     }
 
@@ -61,14 +61,17 @@ export class StreamElements extends EventEmitter {
     private onConnect(handler: () => void): void {
         this.socket.on("connect", handler);
     }
+
     // onDisconnect isn't used internally but should still be available to bundles
     // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
     private onDisconnect(handler: () => void): void {
         this.socket.on("disconnect", handler);
     }
+
     private onAuthenticated(handler: () => void): void {
         this.socket.on("authenticated", handler);
     }
+
     private onConnectionError(handler: (err: string) => void): void {
         this.socket.on("connect_error", handler);
     }
