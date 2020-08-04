@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG) {
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
-    const twitchChannels = ["#daniel0611"];
+    const twitchChannels = ["#skate702", "#daniel0611"];
 
     // Once the service instance has been set we add listeners for messages in the corresponding channels.
     twitch?.onAvailable((client) => {
