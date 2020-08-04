@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import * as easymidi from "easymidi";
 
@@ -12,9 +11,8 @@ export interface MidiInputServiceClient {
     getRawClient(): easymidi.Input;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<MidiInputServiceClient> | undefined => {
-    const midiService = new MidiService(nodecg, "midi-input", __dirname, "../midi-input-schema.json");
-    return midiService.register();
+module.exports = (nodecg: NodeCG) => {
+    new MidiService(nodecg, "midi-input", __dirname, "../midi-input-schema.json").register();
 };
 
 class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputServiceClient> {
