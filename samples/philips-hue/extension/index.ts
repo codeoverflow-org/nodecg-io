@@ -3,7 +3,7 @@ import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { PhilipsHueServiceClient } from "nodecg-io-philipshue/extension";
 
 module.exports = function (nodecg: NodeCG): void {
-    nodecg.log.info("sample bundle for Philips Hue started");
+    nodecg.log.info("Sample bundle for Philips Hue started");
 
     const hue = (nodecg.extensions["nodecg-io-philipshue"] as unknown) as
         | ServiceProvider<PhilipsHueServiceClient>
