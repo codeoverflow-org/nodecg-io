@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import TelegramBot = require("node-telegram-bot-api");
 
@@ -17,9 +16,8 @@ export interface TelegramServiceClient {
     getRawClient(): TelegramBot;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<TelegramServiceClient> | undefined => {
-    const telegramService = new TelegramService(nodecg, "telegram", __dirname, "../telegram-schema.json");
-    return telegramService.register();
+module.exports = (nodecg: NodeCG) => {
+    new TelegramService(nodecg, "telegram", __dirname, "../telegram-schema.json").register();
 };
 
 class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServiceClient> {

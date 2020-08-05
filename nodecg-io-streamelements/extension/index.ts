@@ -23,8 +23,7 @@ export interface StreamElementsServiceClient {
 
 module.exports = (nodecg: NodeCG) => {
     const schemaPath = [__dirname, "../streamelements-schema.json"];
-    const streamElementsService = new StreamElementsService(nodecg, "streamelements", ...schemaPath);
-    return streamElementsService.register();
+    new StreamElementsService(nodecg, "streamelements", ...schemaPath).register();
 };
 
 class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, StreamElementsServiceClient> {

@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { IntelliJ } from "./intellij";
 
@@ -12,9 +11,8 @@ export interface IntelliJServiceClient {
     getRawClient(): IntelliJ;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<IntelliJServiceClient> | undefined => {
-    const intellijService = new IntellijService(nodecg, "intellij", __dirname, "../intellij-schema.json");
-    return intellijService.register();
+module.exports = (nodecg: NodeCG) => {
+    new IntellijService(nodecg, "intellij", __dirname, "../intellij-schema.json").register();
 };
 
 class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServiceClient> {

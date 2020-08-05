@@ -1,11 +1,10 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import * as express from "express";
+import { Router } from "express";
 import SpotifyWebApi = require("spotify-web-api-node");
 import open = require("open");
-import { Router } from "express";
-import * as express from "express";
 
 interface SpotifyServiceConfig {
     clientId: string;
@@ -22,11 +21,10 @@ const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";
 const defaultState = "defaultState";
 const refreshInterval = 1800000;
 
-module.exports = (nodecg: NodeCG): ServiceProvider<SpotifyServiceClient> | undefined => {
+module.exports = (nodecg: NodeCG) => {
     callbackUrl = `http://${nodecg.config.baseURL}${callbackEndpoint}`;
 
-    const spotifyService = new SpotifyService(nodecg, "spotify", __dirname, "../spotify-schema.json");
-    return spotifyService.register();
+    new SpotifyService(nodecg, "spotify", __dirname, "../spotify-schema.json").register();
 };
 
 class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceClient> {

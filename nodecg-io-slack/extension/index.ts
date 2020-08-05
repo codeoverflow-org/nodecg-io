@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { WebClient } from "@slack/web-api";
 
@@ -12,9 +11,8 @@ export interface SlackServiceClient {
     getRawClient(): WebClient;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<SlackServiceClient> | undefined => {
-    const slackService = new SlackService(nodecg, "slack", __dirname, "../slack-schema.json");
-    return slackService.register();
+module.exports = (nodecg: NodeCG) => {
+    new SlackService(nodecg, "slack", __dirname, "../slack-schema.json").register();
 };
 
 class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient> {

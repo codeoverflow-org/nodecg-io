@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import * as WebSocket from "ws";
 
@@ -16,9 +15,8 @@ export interface WSClientServiceClient {
     onError(func: (error: Error) => void): void;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<WSClientServiceClient> | undefined => {
-    const wsClientService = new WSClientService(nodecg, "websocket-client", __dirname, "../ws-schema.json");
-    return wsClientService.register();
+module.exports = (nodecg: NodeCG) => {
+    new WSClientService(nodecg, "websocket-client", __dirname, "../ws-schema.json").register();
 };
 
 class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServiceClient> {

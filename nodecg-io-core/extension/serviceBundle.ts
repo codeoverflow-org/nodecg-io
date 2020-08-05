@@ -1,6 +1,6 @@
 import { NodeCGIOCore } from ".";
 import { NodeCG } from "nodecg/types/server";
-import { Service, ServiceProvider } from "./types";
+import { Service } from "./types";
 import { Result } from "./utils/result";
 
 import * as fs from "fs";
@@ -36,6 +36,11 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
         this.serviceType = serviceName;
         this.schema = this.readSchema(pathSegments);
 
+        // Hide nodecg variable from serialization.
+        // The service is saved in a Replicant and nodecg tries to serialize everything in there, including
+        // nodecg instances, which throw errors when serialized.
+        Object.defineProperty(this, "nodecg", { enumerable: false });
+
         this.nodecg.log.info(this.serviceType + " bundle started.");
         this.core = (this.nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
         if (this.core === undefined) {
@@ -49,12 +54,8 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
      * Registers this service bundle at the core bundle, makes it appear in the GUI and makes it usable.
      * @return a service provider for this service, can be used by bundles to depend on this service.
      */
-    public register(): ServiceProvider<C> | undefined {
-        // Hide nodecg variable from serialization.
-        // The service is saved in a Replicant and nodecg tries to serialize everything in there, including
-        // nodecg instances, which throw errors when serialized.
-        Object.defineProperty(this, "nodecg", { enumerable: false });
-        return this.core?.registerService(this);
+    public register(): void {
+        this.core?.registerService(this);
     }
 
     /**

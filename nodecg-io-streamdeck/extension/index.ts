@@ -1,9 +1,8 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import { StreamDeck } from "elgato-stream-deck";
 import * as streamdeck from "elgato-stream-deck";
+import { StreamDeck } from "elgato-stream-deck";
 
 interface StreamdeckServiceConfig {
     device: string;
@@ -13,9 +12,8 @@ export interface StreamdeckServiceClient {
     getRawClient(): StreamDeck;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<StreamdeckServiceClient> | undefined => {
-    const service = new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "../streamdeck-schema.json");
-    return service.register();
+module.exports = (nodecg: NodeCG) => {
+    new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "../streamdeck-schema.json").register();
 };
 
 class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, StreamdeckServiceClient> {

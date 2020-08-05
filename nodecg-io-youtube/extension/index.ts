@@ -1,8 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import { youtube_v3, google } from "googleapis";
+import { google, youtube_v3 } from "googleapis";
 import * as express from "express";
 import opn = require("open");
 
@@ -15,9 +14,8 @@ export interface YoutubeServiceClient {
     getRawClient(): youtube_v3.Youtube;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<YoutubeServiceClient> | undefined => {
-    const youtubeService = new YoutubeService(nodecg, "youtube", __dirname, "../youtube-schema.json");
-    return youtubeService.register();
+module.exports = (nodecg: NodeCG) => {
+    new YoutubeService(nodecg, "youtube", __dirname, "../youtube-schema.json").register();
 };
 
 class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceClient> {

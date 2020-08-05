@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import Twitter = require("twitter");
 
@@ -15,9 +14,8 @@ export interface TwitterServiceClient {
     getRawClient(): Twitter;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<TwitterServiceClient> | undefined => {
-    const twitterService = new TwitterService(nodecg, "twitter", __dirname, "../twitter-schema.json");
-    return twitterService.register();
+module.exports = (nodecg: NodeCG) => {
+    new TwitterService(nodecg, "twitter", __dirname, "../twitter-schema.json").register();
 };
 
 class TwitterService extends ServiceBundle<TwitterServiceConfig, TwitterServiceClient> {
