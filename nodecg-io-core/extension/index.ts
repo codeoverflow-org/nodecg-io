@@ -35,14 +35,19 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
             serviceManager.registerService(service);
         },
         requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
+            const bundleName = nodecg.bundleName;
             const svc = serviceManager.getService(serviceType);
 
             if (svc.failed) {
+                nodecg.log.warn(
+                    `The bundle "${bundleName}" can't require the "${serviceType}" service: ` +
+                        "no service with such name.",
+                );
                 return;
             }
 
             const wrapper = new ServiceClientWrapper<C>();
-            bundleManager.registerServiceDependency(nodecg.bundleName, svc.result as Service<unknown, C>, (client) => {
+            bundleManager.registerServiceDependency(bundleName, svc.result as Service<unknown, C>, (client) => {
                 wrapper.emit("update", client);
             });
 
