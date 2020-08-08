@@ -2,7 +2,7 @@
     "name": "nodecg-io",
     "private": true,
     "scripts": {
-        "postinstall": "lerna bootstrap --hoist --nohoist monaco-editor",
+        "bootstrap": "lerna bootstrap --hoist --nohoist monaco-editor",
         "build": "lerna run build --parallel",
         "watch": "lerna run --parallel watch",
         "lint": "eslint . --ext ts",

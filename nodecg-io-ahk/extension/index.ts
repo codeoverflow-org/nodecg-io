@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { AHK } from "./AHK";
 
@@ -11,10 +11,10 @@ interface AHKServiceConfig {
 
 export type AHKServiceClient = ServiceClient<AHK>;
 
-module.exports = (nodecg: NodeCG): ServiceProvider<AHKServiceClient> | undefined => {
-    const ahkService = new AhkService(nodecg, "ahk", __dirname, "../ahk-schema.json");
-    return ahkService.register();
+module.exports = (nodecg: NodeCG) => {
+    new AhkService(nodecg, "ahk", __dirname, "../ahk-schema.json").register();
 };
+
 class AhkService extends ServiceBundle<AHKServiceConfig, AHKServiceClient> {
     async validateConfig(config: AHKServiceConfig): Promise<Result<void>> {
         const ahk = new AHK(config.host, config.port);

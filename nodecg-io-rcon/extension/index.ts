@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Rcon } from "rcon-client";
 
@@ -14,9 +14,8 @@ export interface RconServiceClient extends ServiceClient<Rcon> {
     sendMessage(message: string): Promise<string>;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<RconServiceClient> | undefined => {
-    const rconService = new RconService(nodecg, "rcon", __dirname, "../rcon-schema.json");
-    return rconService.register();
+module.exports = (nodecg: NodeCG) => {
+    new RconService(nodecg, "rcon", __dirname, "../rcon-schema.json").register();
 };
 
 class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {

@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
-import { Result, emptySuccess, error, success } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
+import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
@@ -21,9 +21,8 @@ interface PhilipsHueServiceConfig {
 
 export type PhilipsHueServiceClient = ServiceClient<HueApi>;
 
-module.exports = function (nodecg: NodeCG): ServiceProvider<PhilipsHueServiceClient> | undefined {
-    const philipshue = new PhilipsHueService(nodecg, "philips-hue", __dirname, "../philipshue-schema.json");
-    return philipshue.register();
+module.exports = (nodecg: NodeCG) => {
+    new PhilipsHueService(nodecg, "philips-hue", __dirname, "../philipshue-schema.json").register();
 };
 
 class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHueServiceClient> {

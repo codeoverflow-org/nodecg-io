@@ -1,20 +1,17 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { AHKServiceClient } from "nodecg-io-ahk/extension";
+import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for AHK started");
 
-    // This explicit cast determines the client type in the requireService call
-    const ahkClient = (nodecg.extensions["nodecg-io-ahk"] as unknown) as ServiceProvider<AHKServiceClient> | undefined;
+    const ahk = requireService<AHKServiceClient>(nodecg, "ahk");
 
-    ahkClient?.requireService(
-        "ahk",
-        (client) => {
-            nodecg.log.info("AHK client has been updated, sending Hello World Command.");
+    ahk?.onAvailable((client) => {
+        nodecg.log.info("AHK client has been updated, sending Hello World Command.");
 
-            client.getNativeClient().sendCommand("HelloWorld");
-        },
-        () => nodecg.log.info("AHK client has been unset."),
-    );
+        client.getNativeClient().sendCommand("HelloWorld");
+    });
+
+    ahk?.onUnavailable(() => nodecg.log.info("AHK client has been unset."));
 };

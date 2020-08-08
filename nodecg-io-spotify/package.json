@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "nodecg-io-core": "0.1.0",
-    "open": "^7.0.3",
+    "open": "^7.0.4",
     "spotify-web-api-node": "^4.0.0"
   }
 }

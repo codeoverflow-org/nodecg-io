@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
+import { ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Client as DiscordClient } from "discord.js";
@@ -10,9 +10,8 @@ interface DiscordServiceConfig {
 
 export type DiscordServiceClient = ServiceClient<DiscordClient>;
 
-module.exports = (nodecg: NodeCG): ServiceProvider<DiscordServiceClient> | undefined => {
-    const discordService = new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json");
-    return discordService.register();
+module.exports = (nodecg: NodeCG) => {
+    new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json").register();
 };
 
 class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceClient> {

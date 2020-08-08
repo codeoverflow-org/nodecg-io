@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import TwitchClient from "twitch";
 import ChatClient from "twitch-chat-client";
@@ -11,9 +11,8 @@ interface TwitchServiceConfig {
 
 export type TwitchServiceClient = ServiceClient<ChatClient>;
 
-module.exports = (nodecg: NodeCG): ServiceProvider<TwitchServiceClient> | undefined => {
-    const twitchService = new TwitchService(nodecg, "twitch", __dirname, "../twitch-schema.json");
-    return twitchService.register();
+module.exports = (nodecg: NodeCG) => {
+    new TwitchService(nodecg, "twitch", __dirname, "../twitch-schema.json").register();
 };
 
 class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClient> {

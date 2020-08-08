@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider, ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Client as IRCClient } from "irc";
 
@@ -16,9 +16,8 @@ export interface IRCServiceClient extends ServiceClient<IRCClient> {
     sendMessage(target: string, message: string): void;
 }
 
-module.exports = (nodecg: NodeCG): ServiceProvider<IRCServiceClient> | undefined => {
-    const ircService = new IRCService(nodecg, "irc", __dirname, "../irc-schema.json");
-    return ircService.register();
+module.exports = (nodecg: NodeCG) => {
+    new IRCService(nodecg, "irc", __dirname, "../irc-schema.json").register();
 };
 
 class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {

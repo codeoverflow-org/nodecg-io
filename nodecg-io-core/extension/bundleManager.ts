@@ -1,5 +1,5 @@
 import { NodeCG, ReplicantServer } from "nodecg/types/server";
-import { ObjectMap, Service, ServiceDependency, ServiceInstance, ServiceProvider } from "./types";
+import { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 
 /**
@@ -13,32 +13,6 @@ export class BundleManager {
             persistent: false,
             defaultValue: {},
         });
-    }
-
-    /**
-     * Creates a object which allows bundles to register them for a specific service.
-     * Indented to be called by services to allow registering by giving bundles this service provider.
-     * Dependencies on the service are registered using {@link registerServiceDependency}
-     *
-     * @param service the service that the bundle should register for and depend on.
-     * @return a service provider which offers a function for bundles to register and depend on the passed service.
-     */
-    createServiceProvider<C>(service: Service<unknown, C>): ServiceProvider<C> {
-        return {
-            requireService: (
-                bundleName: string,
-                clientAvailable: (client: C) => void,
-                clientUnavailable: () => void,
-            ) => {
-                this.registerServiceDependency(bundleName, service, (client) => {
-                    if (client === undefined) {
-                        clientUnavailable();
-                    } else {
-                        clientAvailable(client);
-                    }
-                });
-            },
-        };
     }
 
     /**
@@ -62,7 +36,7 @@ export class BundleManager {
      * @param service the service that the bundle depends upon.
      * @param clientUpdate the callback that should be called if a client becomes available or gets updated.
      */
-    private registerServiceDependency<C>(
+    registerServiceDependency<C>(
         bundleName: string,
         service: Service<unknown, C>,
         clientUpdate: (client?: C) => void,

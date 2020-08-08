@@ -3,15 +3,17 @@ import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
-import { Service, ServiceProvider } from "./types";
+import { Service } from "./types";
 import { PersistenceManager } from "./persistenceManager";
+import { ServiceClientWrapper } from "./serviceClientWrapper";
 
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.
  */
 export interface NodeCGIOCore {
-    registerService<R, C>(service: Service<R, C>): ServiceProvider<C>;
+    registerService<R, C>(service: Service<R, C>): void;
+    requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined;
 }
 
 module.exports = (nodecg: NodeCG): NodeCGIOCore => {
@@ -29,9 +31,27 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     // We use a extra object instead of returning a object containing all the managers and so on, because
     // any loaded bundle would be able to call any (public or private) of the managers which is not intended.
     return {
-        registerService<R, C>(service: Service<R, C>): ServiceProvider<C> {
+        registerService<R, C>(service: Service<R, C>): void {
             serviceManager.registerService(service);
-            return bundleManager.createServiceProvider(service);
+        },
+        requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
+            const bundleName = nodecg.bundleName;
+            const svc = serviceManager.getService(serviceType);
+
+            if (svc.failed) {
+                nodecg.log.warn(
+                    `The bundle "${bundleName}" can't require the "${serviceType}" service: ` +
+                        "no service with such name.",
+                );
+                return;
+            }
+
+            const wrapper = new ServiceClientWrapper<C>();
+            bundleManager.registerServiceDependency(bundleName, svc.result as Service<unknown, C>, (client) => {
+                wrapper.emit("update", client);
+            });
+
+            return wrapper;
         },
     };
 };
