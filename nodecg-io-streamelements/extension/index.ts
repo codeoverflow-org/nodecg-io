@@ -3,14 +3,14 @@ import { success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { StreamElements } from "./StreamElements";
 import { StreamElementsEvent } from "./types";
+import { ServiceClient } from "nodecg-io-core/extension/types";
 
 interface StreamElementsServiceConfig {
     jwtToken: string;
     accountId: string;
 }
 
-export interface StreamElementsServiceClient {
-    getRawClient(): StreamElements;
+export interface StreamElementsServiceClient extends ServiceClient<StreamElements> {
     onEvent(handler: (data: StreamElementsEvent) => void): void;
     onFollow(handler: (data: StreamElementsEvent) => void): void;
     onRaid(handler: (data: StreamElementsEvent) => void): void;
@@ -38,7 +38,7 @@ class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, S
         this.nodecg.log.info("Successfully connected to StreamElements socket server.");
 
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return client;
             },
             onEvent(handler: (data: StreamElementsEvent) => void) {
@@ -69,6 +69,6 @@ class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, S
     }
 
     stopClient(client: StreamElementsServiceClient) {
-        client.getRawClient().close();
+        client.getNativeClient().close();
     }
 }
