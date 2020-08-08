@@ -1,5 +1,5 @@
 import { NodeCG, ReplicantServer } from "nodecg/types/server";
-import { ObjectMap, Service, ServiceInstance } from "./types";
+import { ObjectMap, Service, ServiceClient, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
@@ -145,10 +145,10 @@ export class InstanceManager {
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
      * @param service the service of the service instance, needed to stop old client
      */
-    private async updateInstanceClient<R>(
-        inst: ServiceInstance<R, unknown>,
+    private async updateInstanceClient<R, C extends ServiceClient<unknown>>(
+        inst: ServiceInstance<R, C>,
         instanceName: string,
-        service: Service<R, unknown>,
+        service: Service<R, C>,
     ): Promise<void> {
         const oldClient = inst.client;
 

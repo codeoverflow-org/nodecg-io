@@ -1,6 +1,6 @@
 import { NodeCGIOCore } from ".";
 import { NodeCG } from "nodecg/types/server";
-import { Service } from "./types";
+import { Service, ServiceClient } from "./types";
 import { Result } from "./utils/result";
 
 import * as fs from "fs";
@@ -14,7 +14,7 @@ import * as path from "path";
  *              Intended to hold configurations and authentication information that the service needs to provide a client.
  * @typeParam C the type of a client that the service will provide to bundles using {@link createClient}.
  */
-export abstract class ServiceBundle<R, C> implements Service<R, C> {
+export abstract class ServiceBundle<R, C extends ServiceClient<unknown>> implements Service<R, C> {
     public core: NodeCGIOCore | undefined;
     public nodecg: NodeCG;
     public serviceType: string;

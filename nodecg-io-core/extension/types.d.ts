@@ -19,7 +19,7 @@ export type ObjectMap<K, V> = Record<K, V | undefined>;
  *              Intended to hold configurations and authentication information that the service needs to provide a client.
  * @typeParam C the type of a client that the service will provide to bundles using {@link createClient}.
  */
-export interface Service<R, C> {
+export interface Service<R, C extends ServiceClient<unknown>> {
     /**
      * User friendly name of the service that should explain the type of service, e.g. "twitch".
      */
