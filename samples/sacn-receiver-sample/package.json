@@ -1,7 +1,7 @@
 {
   "name": "sacn-sample",
   "version": "0.1.0",
-  "description": "Example nodecg-io scan-Bundle. Receives data via sACN ",
+  "description": "Example nodecg-io-sacn-receiver Bundle. Receives data via sACN",
   "homepage": "",
   "author": {
       "name": "Tim-Tech-Dev",
