@@ -62,7 +62,7 @@ class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
             .getRawClient()
             .end()
             .then(() => {
-                console.log("Stopped rcon client successfully.");
+                this.nodecg.log.info("Stopped rcon client successfully.");
             });
     }
 }

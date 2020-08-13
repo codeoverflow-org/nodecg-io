@@ -21,13 +21,7 @@ export interface SacnReceiverServiceClient {
 }
 
 module.exports = (nodecg: NodeCG) => {
-    const sacnReceiverService = new SacnReceiverService(
-        nodecg,
-        "sacn-receiver",
-        __dirname,
-        "../sacn-receiver-schema.json",
-    );
-    return sacnReceiverService.register();
+    new SacnReceiverService(nodecg, "sacn-receiver", __dirname, "../sacn-receiver-schema.json").register();
 };
 
 class SacnReceiverService extends ServiceBundle<SacnReceiverServiceConfig, SacnReceiverServiceClient> {
@@ -36,12 +30,7 @@ class SacnReceiverService extends ServiceBundle<SacnReceiverServiceConfig, SacnR
     }
 
     async createClient(config: SacnReceiverServiceConfig): Promise<Result<SacnReceiverServiceClient>> {
-        const sacn = new Receiver({
-            universes: config.universe,
-            port: config.port,
-            iface: config.iface,
-            reuseAddr: config.reuseAddr,
-        });
+        const sacn = new Receiver(config);
 
         return success({
             getRawClient() {
@@ -67,6 +56,6 @@ class SacnReceiverService extends ServiceBundle<SacnReceiverServiceConfig, SacnR
 
     stopClient(client: SacnReceiverServiceClient): void {
         client.getRawClient().close();
-        console.log("Stopped sACN Receiver successfully.");
+        this.nodecg.log.info("Stopped sACN Receiver successfully.");
     }
 }

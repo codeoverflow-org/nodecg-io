@@ -4,17 +4,18 @@
     "additionalProperties": false,
     "properties": {
         "universes": {
-          "type": "array",
-          "description": "The universes to use. Must be an array with numbers within 1-63999",
-          "items": {
-            "type": "number"}
+            "type": "array",
+            "description": "The universes to use. Must be an array with numbers within 1-63999",
+            "items": {
+                "type": "number"
+            }
         },
         "port": {
             "type": "number",
             "description": "Optional. The multicast port to use. All professional consoles broadcast to the default port 5568."
         },
-        "number":{
-            "type":"string",
+        "iface": {
+            "type": "string",
             "description": "Optional. If the computer is connected to multiple networks, specify which network adaptor to use by using this computer's local IP address."
         },
         "reuseAddr": {

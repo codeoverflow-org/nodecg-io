@@ -14,15 +14,15 @@ export interface SacnSenderServiceClient {
     /**
      * Send Payload via sACN
      *
-     * The `Payload` is an json object following enterys
+     * The `payload` is an json object following enterys
      *
      * DMX channel (1-512) : percentage value
      */
-    sendPayload(Payload: Record<number, number>): Promise<void>;
+    sendPayload(payload: Record<number, number>): Promise<void>;
     /**
      * Send a Packet via sACN
      *
-     * A `Packet` is the low-level implementation of the E1.31 (sACN) protocol.
+     * A `packet` is the low-level implementation of the E1.31 (sACN) protocol.
      * Constructed from either an existing `Buffer` or from `Options`.
      */
     sendPacket(packet: Packet): Promise<void>;
@@ -33,8 +33,7 @@ export interface SacnSenderServiceClient {
 }
 
 module.exports = (nodecg: NodeCG) => {
-    const sacnSenderService = new SacnSenderService(nodecg, "sacn-sender", __dirname, "../sacn-sender-schema.json");
-    return sacnSenderService.register();
+    new SacnSenderService(nodecg, "sacn-sender", __dirname, "../sacn-sender-schema.json").register();
 };
 
 class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSenderServiceClient> {
@@ -43,11 +42,7 @@ class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSende
     }
 
     async createClient(config: SacnSenderServiceConfig): Promise<Result<SacnSenderServiceClient>> {
-        const sacn = new Sender({
-            universe: config.universe,
-            port: config.port,
-            reuseAddr: config.reuseAddr,
-        });
+        const sacn = new Sender(config);
 
         return success({
             getRawClient() {
@@ -56,7 +51,7 @@ class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSende
             sendPayload(payload: Record<number, number>): Promise<void> {
                 return sacn.send({
                     payload: payload,
-                    sourceName: "nodecg-io-scan-sender",
+                    sourceName: "nodecg-io",
                     priority: 100,
                 });
             },
@@ -71,6 +66,6 @@ class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSende
 
     stopClient(client: SacnSenderServiceClient): void {
         client.getRawClient().close();
-        console.log("Stopped sACN Sender successfully.");
+        this.nodecg.log.info("Stopped sACN Sender successfully.");
     }
 }

@@ -1,6 +1,12 @@
 {
   "name": "discord-guild-chat",
   "version": "0.1.0",
+  "description": "Example nodecg-io Discord-Bundle. At the end of the day another Discord-bot",
+  "homepage": "",
+  "author": {
+      "name": "Tim-Tech-Dev",
+      "url": "https://github.com/Tim-Tech-Dev"
+  },
   "nodecg": {
     "compatibleRange": "^1.1.1",
     "bundleDependencies": {
