@@ -2,8 +2,9 @@ import io = require("socket.io-client");
 import { emptySuccess, error, Result } from "nodecg-io-core/extension/utils/result";
 import { StreamElementsEvent } from "./types";
 import { EventEmitter } from "events";
+import { ServiceClient } from "nodecg-io-core/extension/types";
 
-export class StreamElements extends EventEmitter {
+export class StreamElements extends EventEmitter implements ServiceClient<SocketIOClient.Socket> {
     private socket: SocketIOClient.Socket;
 
     constructor(private jwtToken: string) {
@@ -39,6 +40,10 @@ export class StreamElements extends EventEmitter {
         });
     }
 
+    getNativeClient(): SocketIOClient.Socket {
+        return this.socket;
+    }
+
     async testConnection(): Promise<Result<void>> {
         return new Promise((resolve, reject) => {
             this.createSocket();
@@ -55,8 +60,6 @@ export class StreamElements extends EventEmitter {
     close(): void {
         this.socket.close();
     }
-
-    // TODO: Add replicants
 
     private onConnect(handler: () => void): void {
         this.socket.on("connect", handler);
