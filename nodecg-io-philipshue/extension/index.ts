@@ -24,7 +24,7 @@ export interface PhilipsHueServiceClient {
 }
 
 module.exports = (nodecg: NodeCG) => {
-    new PhilipsHueService(nodecg, "philips-hue", __dirname, "../philipshue-schema.json").register();
+    new PhilipsHueService(nodecg, "philipshue", __dirname, "../philipshue-schema.json").register();
 };
 
 class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHueServiceClient> {

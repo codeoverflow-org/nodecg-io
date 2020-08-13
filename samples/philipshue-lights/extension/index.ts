@@ -5,7 +5,7 @@ import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 module.exports = function (nodecg: NodeCG): void {
     nodecg.log.info("Sample bundle for Philips Hue started");
 
-    const hue = requireService<PhilipsHueServiceClient>(nodecg, "philips-hue");
+    const hue = requireService<PhilipsHueServiceClient>(nodecg, "philipshue");
 
     hue?.onAvailable((hue) => {
         nodecg.log.info("Got Philips Hue client");
