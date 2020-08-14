@@ -3,10 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "oauthKey": {
-        "type": "string",
-        "description": "A OAuth2 key for the twitch api."
-      }
+        "oauthKey": {
+            "type": "string",
+            "description": "A OAuth2 key for the twitch api."
+        }
     },
     "required": ["oauthKey"]
-  }
+}

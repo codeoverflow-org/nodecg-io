@@ -1,39 +1,39 @@
 {
-  "name": "nodecg-io-youtube",
-  "version": "0.1.0",
-  "description": "Allows to connect and interact to youtube",
-  "homepage": "",
-  "author": {
-    "name": "CodeOverflow team",
-    "url": "http://codeoverflow.org"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
-  "keywords": [
-    "",
-    "nodecg-bundle"
-  ],
-  "nodecg": {
-    "compatibleRange": "^1.1.1",
-    "bundleDependencies": {
-      "nodecg-io-core": "0.1.0"
+    "name": "nodecg-io-youtube",
+    "version": "0.1.0",
+    "description": "Allows to connect and interact to youtube",
+    "homepage": "",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "http://codeoverflow.org"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w"
+    },
+    "keywords": [
+        "",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "0.1.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^13.13.12",
+        "nodecg": "^1.6.1",
+        "typescript": "^3.9.6"
+    },
+    "dependencies": {
+        "@types/express": "^4.17.6",
+        "@types/gapi": "0.0.39",
+        "@types/open": "^6.2.1",
+        "express": "^4.17.1",
+        "googleapis": "^52.1.0",
+        "nodecg-io-core": "0.1.0",
+        "open": "^7.0.4"
     }
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^13.13.12",
-    "nodecg": "^1.6.1",
-    "typescript": "^3.9.6"
-  },
-  "dependencies": {
-    "@types/express": "^4.17.6",
-    "@types/gapi": "0.0.39",
-    "@types/open": "^6.2.1",
-    "express": "^4.17.1",
-    "googleapis": "^52.1.0",
-    "nodecg-io-core": "0.1.0",
-    "open": "^7.0.4"
-  }
 }

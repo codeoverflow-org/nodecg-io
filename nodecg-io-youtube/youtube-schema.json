@@ -1,19 +1,16 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"type": "object",
-	"additionalProperties": false,
-	"properties": {
-		"clientID": {
-			"type": "string",
-			"description": "The oauth client id https://console.cloud.google.com/apis/credentials/oauthclient"
-		},
-		"clientSecret": {
-			"type": "string",
-			"description": "The oauth client secret https://console.cloud.google.com/apis/credentials/oauthclient"
-		}
-	},
-	"required": [
-        "clientID",
-        "clientSecret"
-	]
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "clientID": {
+            "type": "string",
+            "description": "The oauth client id https://console.cloud.google.com/apis/credentials/oauthclient"
+        },
+        "clientSecret": {
+            "type": "string",
+            "description": "The oauth client secret https://console.cloud.google.com/apis/credentials/oauthclient"
+        }
+    },
+    "required": ["clientID", "clientSecret"]
 }

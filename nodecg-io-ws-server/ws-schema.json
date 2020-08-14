@@ -3,10 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "port": {
-        "type": "number",
-        "description": "The port of the websocket"
-      }
+        "port": {
+            "type": "number",
+            "description": "The port of the websocket"
+        }
     },
     "required": ["port"]
-  }
+}

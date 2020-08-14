@@ -4,33 +4,32 @@
     "description": "Allows you to send commands to AutoHotkey.",
     "homepage": "",
     "author": {
-      "name": "derNiklaas",
-      "url": "https://github.com/derNiklaas"
+        "name": "derNiklaas",
+        "url": "https://github.com/derNiklaas"
     },
     "scripts": {
-      "build": "tsc",
-      "watch": "tsc -w"
+        "build": "tsc",
+        "watch": "tsc -w"
     },
     "keywords": [
-      "",
-      "nodecg-bundle"
+        "",
+        "nodecg-bundle"
     ],
     "nodecg": {
-      "compatibleRange": "^1.1.1",
-      "bundleDependencies": {
-        "nodecg-io-core": "0.1.0"
-      }
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "0.1.0"
+        }
     },
     "license": "MIT",
     "devDependencies": {
-      "@types/node": "^13.13.12",
-      "@types/node-fetch": "^2.5.7",
-      "nodecg": "^1.6.1",
-      "typescript": "^3.9.6"
+        "@types/node": "^13.13.12",
+        "@types/node-fetch": "^2.5.7",
+        "nodecg": "^1.6.1",
+        "typescript": "^3.9.6"
     },
     "dependencies": {
-      "nodecg-io-core": "0.1.0",
-      "node-fetch": "^2.5.7"
+        "nodecg-io-core": "0.1.0",
+        "node-fetch": "^2.5.7"
     }
-  }
-  
+}
