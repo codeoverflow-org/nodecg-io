@@ -1,13 +1,14 @@
 import { EventEmitter } from "events";
 import { NodeCGIOCore } from "./index";
 import { NodeCG } from "nodecg/types/server";
+import { ServiceClient } from "./types";
 
 /**
  * A wrapper around a ServiceClient that has helper functions for setting up callbacks and
  * a function which just returns the current ServiceClient.
  * This class gets its client updates through the framework, namely using the {@link ServiceDependency.clientUpdateCallback}.
  */
-export class ServiceClientWrapper<C> extends EventEmitter {
+export class ServiceClientWrapper<C extends ServiceClient<unknown>> extends EventEmitter {
     private currentClient: C | undefined;
 
     constructor() {
@@ -26,8 +27,6 @@ export class ServiceClientWrapper<C> extends EventEmitter {
     getClient(): C | undefined {
         return this.currentClient;
     }
-
-    // TODO: add getRawClient function, requires https://github.com/codeoverflow-org/nodecg-io/pull/68
 
     /**
      * Registers a callback that gets fired everytime the available client gets updated and is available,
@@ -63,7 +62,10 @@ export class ServiceClientWrapper<C> extends EventEmitter {
  * @return {ServiceClientWrapper<C> | undefined} a service client wrapper for access to the service client
  *                                               or undefined if the core wasn't loaded or the service type doesn't exist.
  */
-export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
+export function requireService<C extends ServiceClient<unknown>>(
+    nodecg: NodeCG,
+    serviceType: string,
+): ServiceClientWrapper<C> | undefined {
     const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error(

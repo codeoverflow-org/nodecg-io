@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     const youtube = requireService<YoutubeServiceClient>(nodecg, "youtube");
 
     youtube?.onAvailable(async (client) => {
-        const youtubeClient = client.getRawClient();
+        const youtubeClient = client.getNativeClient();
         const resp = await youtubeClient.playlists.list({
             part: ["id", "snippet"],
             id: ["PL9oBXB6tQnlX013V1v20WkfzI9R2zamHi"],

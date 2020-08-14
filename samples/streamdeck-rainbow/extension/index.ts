@@ -11,7 +11,7 @@ module.exports = function (nodecg: NodeCG) {
         nodecg.log.info("Streamdeck client has been updated, painting the streamdeck.");
 
         try {
-            const deck = client.getRawClient();
+            const deck = client.getNativeClient();
             const colors: Array<[number, number, number]> = [
                 [231, 60, 60],
                 [231, 128, 60],

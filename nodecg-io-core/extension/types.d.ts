@@ -19,7 +19,7 @@ export type ObjectMap<K, V> = Record<K, V | undefined>;
  *              Intended to hold configurations and authentication information that the service needs to provide a client.
  * @typeParam C the type of a client that the service will provide to bundles using {@link createClient}.
  */
-export interface Service<R, C> {
+export interface Service<R, C extends ServiceClient<unknown>> {
     /**
      * User friendly name of the service that should explain the type of service, e.g. "twitch".
      */
@@ -106,4 +106,14 @@ export interface ServiceDependency<C> {
      * @param client the client of the service or undefined if there is currently no service instance set.
      */
     readonly clientUpdateCallback(client?: C): void;
+}
+
+/**
+ * A common interface between all service clients.
+ * Currently this only ensures that all services allow access to the underlying client
+ * by providing a getNativeClient() function.
+ * @typeParam T the type of the underlying client.
+ */
+export interface ServiceClient<T> {
+    getNativeClient(): T;
 }

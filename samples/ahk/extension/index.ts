@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG) {
     ahk?.onAvailable((client) => {
         nodecg.log.info("AHK client has been updated, sending Hello World Command.");
 
-        client.getRawClient().sendCommand("HelloWorld");
+        client.getNativeClient().sendCommand("HelloWorld");
     });
 
     ahk?.onUnavailable(() => nodecg.log.info("AHK client has been unset."));

@@ -1,7 +1,8 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import { Sender, Packet } from "sacn";
+import { Sender } from "sacn";
+import { SacnSenderServiceClient } from "./sacnSenderClient";
 
 interface SacnSenderServiceConfig {
     universe: number;
@@ -9,28 +10,7 @@ interface SacnSenderServiceConfig {
     reuseAddr?: boolean;
 }
 
-export interface SacnSenderServiceClient {
-    getRawClient(): Sender;
-    /**
-     * Send Payload via sACN
-     *
-     * The `payload` is an json object following enterys
-     *
-     * DMX channel (1-512) : percentage value
-     */
-    sendPayload(payload: Record<number, number>): Promise<void>;
-    /**
-     * Send a Packet via sACN
-     *
-     * A `packet` is the low-level implementation of the E1.31 (sACN) protocol.
-     * Constructed from either an existing `Buffer` or from `Options`.
-     */
-    sendPacket(packet: Packet): Promise<void>;
-    /**
-     * Returns the Universe specified in the GUI
-     */
-    getUniverse(): number;
-}
+export { SacnSenderServiceClient } from "./sacnSenderClient";
 
 module.exports = (nodecg: NodeCG) => {
     new SacnSenderService(nodecg, "sacn-sender", __dirname, "../sacn-sender-schema.json").register();
@@ -43,29 +23,11 @@ class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSende
 
     async createClient(config: SacnSenderServiceConfig): Promise<Result<SacnSenderServiceClient>> {
         const sacn = new Sender(config);
-
-        return success({
-            getRawClient() {
-                return sacn;
-            },
-            sendPayload(payload: Record<number, number>): Promise<void> {
-                return sacn.send({
-                    payload: payload,
-                    sourceName: "nodecg-io",
-                    priority: 100,
-                });
-            },
-            sendPacket(packet: Packet): Promise<void> {
-                return sacn.send(packet);
-            },
-            getUniverse(): number {
-                return sacn.universe;
-            },
-        });
+        return success(new SacnSenderServiceClient(sacn));
     }
 
     stopClient(client: SacnSenderServiceClient): void {
-        client.getRawClient().close();
+        client.getNativeClient().close();
         this.nodecg.log.info("Stopped sACN Sender successfully.");
     }
 }

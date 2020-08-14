@@ -16,7 +16,7 @@ module.exports = function (nodecg: NodeCG) {
 };
 
 function addListeners(nodecg: NodeCG, client: DiscordServiceClient) {
-    const dc = client.getRawClient();
+    const dc = client.getNativeClient();
 
     dc.on("ready", () => {
         nodecg.log.info(`Logged in!`);

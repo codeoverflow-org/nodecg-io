@@ -1,4 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
+import { ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { AHK } from "./AHK";
@@ -8,9 +9,7 @@ interface AHKServiceConfig {
     port: number;
 }
 
-export interface AHKServiceClient {
-    getRawClient(): AHK;
-}
+export type AHKServiceClient = ServiceClient<AHK>;
 
 module.exports = (nodecg: NodeCG) => {
     new AhkService(nodecg, "ahk", __dirname, "../ahk-schema.json").register();
@@ -26,7 +25,7 @@ class AhkService extends ServiceBundle<AHKServiceConfig, AHKServiceClient> {
     async createClient(config: AHKServiceConfig): Promise<Result<AHKServiceClient>> {
         const ahk = new AHK(config.host, config.port);
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return ahk;
             },
         });
