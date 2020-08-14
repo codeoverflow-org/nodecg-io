@@ -1,14 +1,14 @@
 import { NodeCG } from "nodecg/types/server";
 import { success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import { StreamElements } from "./StreamElements";
+import { StreamElementsServiceClient } from "./StreamElements";
 
 interface StreamElementsServiceConfig {
     jwtToken: string;
     accountId: string;
 }
 
-export type StreamElementsServiceClient = StreamElements;
+export { StreamElementsServiceClient } from "./StreamElements";
 
 module.exports = (nodecg: NodeCG) => {
     const schemaPath = [__dirname, "../streamelements-schema.json"];
@@ -17,12 +17,12 @@ module.exports = (nodecg: NodeCG) => {
 
 class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, StreamElementsServiceClient> {
     async validateConfig(config: StreamElementsServiceConfig) {
-        return new StreamElements(config.jwtToken).testConnection();
+        return new StreamElementsServiceClient(config.jwtToken).testConnection();
     }
 
     async createClient(config: StreamElementsServiceConfig) {
         this.nodecg.log.info("Connecting to StreamElements socket server...");
-        const client = new StreamElements(config.jwtToken);
+        const client = new StreamElementsServiceClient(config.jwtToken);
         await client.connect();
         this.nodecg.log.info("Successfully connected to StreamElements socket server.");
 

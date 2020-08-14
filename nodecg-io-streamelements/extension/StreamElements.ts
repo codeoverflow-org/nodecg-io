@@ -4,7 +4,7 @@ import { StreamElementsEvent } from "./types";
 import { EventEmitter } from "events";
 import { ServiceClient } from "nodecg-io-core/extension/types";
 
-export class StreamElements extends EventEmitter implements ServiceClient<SocketIOClient.Socket> {
+export class StreamElementsServiceClient extends EventEmitter implements ServiceClient<SocketIOClient.Socket> {
     private socket: SocketIOClient.Socket;
 
     constructor(private jwtToken: string) {
