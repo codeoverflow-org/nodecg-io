@@ -10,10 +10,9 @@ const divAuth = document.getElementById("divAuth");
 const divMain = document.getElementById("divMain");
 const spanPasswordNotice = document.getElementById("spanPasswordNotice");
 
-// A hacky way to have a callback whenever nodecg restarts.
-// On start the replicant will be declared, resulting in a call to the passed callback.
-// Needed to show the framework as unloaded when nodecg gets restarted with the dashboard still running.
-nodecg.Replicant("restart", { persistent: false }).on("declared", () => {
+// Handler for when the socket.io client re-connects which is usually a nodecg restart.
+nodecg.socket.on("connect", () => {
+    // If a password has been entered previously try to directly login using it.
     if (inputPassword.value !== "") {
         loadFramework();
     } else {
@@ -22,6 +21,7 @@ nodecg.Replicant("restart", { persistent: false }).on("declared", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Render loaded status for initial load
     updateLoadedStatus();
 });
 
