@@ -1,4 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
+import { ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import * as WebSocket from "ws";
@@ -7,9 +8,7 @@ interface WSServerServiceConfig {
     port: number;
 }
 
-export interface WSServerServiceClient {
-    getRawClient(): WebSocket.Server;
-}
+export type WSServerServiceClient = ServiceClient<WebSocket.Server>;
 
 module.exports = (nodecg: NodeCG) => {
     new WSServerService(nodecg, "websocket-server", __dirname, "../ws-schema.json").register();
@@ -50,13 +49,13 @@ class WSServerService extends ServiceBundle<WSServerServiceConfig, WSServerServi
         }
         this.nodecg.log.info("Successfully started WebSocket server.");
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return client.result;
             },
         });
     }
 
     stopClient(client: WSServerServiceClient): void {
-        client.getRawClient().close();
+        client.getNativeClient().close();
     }
 }

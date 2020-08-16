@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
 
     slack?.onAvailable(async (client) => {
         // Get all channels
-        const channelListResponse = await client.getRawClient().conversations.list();
+        const channelListResponse = await client.getNativeClient().conversations.list();
 
         nodecg.log.info(JSON.stringify(channelListResponse.channels));
 
@@ -17,7 +17,7 @@ module.exports = function (nodecg: NodeCG) {
         const channel = "CHANNEL_ID";
 
         client
-            .getRawClient()
+            .getNativeClient()
             .chat.postMessage({ channel, text: "Hello world from nodecg.io" })
             .then((messageResponse) => {
                 nodecg.log.info(messageResponse);

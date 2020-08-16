@@ -25,7 +25,7 @@ module.exports = function (nodecg: NodeCG) {
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
-    const tw = client.getRawClient();
+    const tw = client.getNativeClient();
 
     tw.join(channel)
         .then(() => {

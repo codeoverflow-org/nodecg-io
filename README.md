@@ -32,7 +32,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] Slack WebAPI
 -   [x] Spotify
 -   [x] Elgato Stream Deck
--   [ ] StreamElements
+-   [x] StreamElements
 -   [x] Telegram
 -   [ ] TipeeeStream
 -   [x] Twitch Chat

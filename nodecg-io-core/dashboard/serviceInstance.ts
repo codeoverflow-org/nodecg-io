@@ -13,7 +13,8 @@ const editorDefaultText = "<---- Select a service instance to start editing it i
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
 
 // Replicants from the core extension
-const services = nodecg.Replicant<Service<unknown, unknown>[]>("services");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const services = nodecg.Replicant<Service<unknown, any>[]>("services");
 const serviceInstances = nodecg.Replicant<ObjectMap<string, ServiceInstance<unknown, unknown>>>("serviceInstances");
 document.addEventListener("DOMContentLoaded", () => {
     services.on("change", renderServices);
