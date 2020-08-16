@@ -1,7 +1,7 @@
 {
-  "name": "discord-guild-chat",
+  "name": "sacn-sample",
   "version": "0.1.0",
-  "description": "Example nodecg-io Discord-Bundle. At the end of the day another Discord-bot",
+  "description": "Example nodecg-io-sacn-receiver Bundle. Receives data via sACN",
   "homepage": "",
   "author": {
       "name": "Tim-Tech-Dev",
@@ -10,7 +10,7 @@
   "nodecg": {
     "compatibleRange": "^1.1.1",
     "bundleDependencies": {
-      "nodecg-io-discord": "0.1.0"
+      "nodecg-io-sacn-receiver": "0.1.0"
     }
   },
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "nodecg-io-discord": "0.1.0",
+    "nodecg-io-sacn-receiver": "0.1.0",
     "nodecg-io-core": "0.1.0",
     "@types/node": "^13.13.12",
     "nodecg": "^1.6.1",
