@@ -1,19 +1,16 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "additionalProperties": false,
-  "properties": {
-    "host": {
-      "type": "string",
-      "description": "An IP address to the xdotool server. Set this to localhost and port to -1 to use a locally installed xdotool."
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "host": {
+            "type": "string",
+            "description": "An IP address to the xdotool server. Set this to localhost and port to -1 to use a locally installed xdotool."
+        },
+        "port": {
+            "type": "number",
+            "description": "The port of the xdotool server. Set this to -1 and host to localhost to use a locally installed xdotool."
+        }
     },
-    "port": {
-      "type": "number",
-      "description": "The port of the xdotool server. Set this to -1 and host to localhost to use a locally installed xdotool."
-    }
-  },
-  "required": [
-    "host",
-    "port"
-  ]
+    "required": ["host", "port"]
 }

@@ -3,14 +3,14 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "host": {
-        "type": "string",
-        "description": "An IP address to the HotkeylessAHK server"
-      },
-      "port": {
-        "type": "number",
-        "description": "The port of the HotkeylessAHK server"
-      }
+        "host": {
+            "type": "string",
+            "description": "An IP address to the HotkeylessAHK server"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port of the HotkeylessAHK server"
+        }
     },
     "required": ["host", "port"]
-  }
+}

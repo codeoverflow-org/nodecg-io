@@ -3,10 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "token": {
-        "type": "string",
-        "description": "Your Slack bot token. Visit https://api.slack.com/apps to get your bot token (Bot User OAuth Access Token)"
-      }
+        "token": {
+            "type": "string",
+            "description": "Your Slack bot token. Visit https://api.slack.com/apps to get your bot token (Bot User OAuth Access Token)"
+        }
     },
     "required": ["token"]
-  }
+}

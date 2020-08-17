@@ -3,10 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "botToken": {
-        "type": "string",
-        "description": "The token of your bot"
-      }
+        "botToken": {
+            "type": "string",
+            "description": "The token of your bot"
+        }
     },
     "required": ["botToken"]
-  }
+}
