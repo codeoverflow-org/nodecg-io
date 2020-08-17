@@ -9,6 +9,14 @@ export class StreamElementsServiceClient extends EventEmitter implements Service
 
     constructor(private jwtToken: string) {
         super();
+
+        // Hide socket property because nodecg would try to serialize it so it can be saved in a replicant.
+        // But because socket contains recursions it can't be serialized and would end in an endless loop
+        // so therefore deactivate it.
+        Object.defineProperty(this, "socket", {
+            enumerable: false,
+            writable: true,
+        });
     }
 
     private createSocket() {
