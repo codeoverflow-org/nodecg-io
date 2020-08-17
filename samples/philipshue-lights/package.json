@@ -1,10 +1,10 @@
 {
-    "name": "intellij",
+    "name": "philipshue-lights",
     "version": "0.1.0",
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-intellij": "0.1.0"
+            "nodecg-io-philipshue": "0.1.0"
         }
     },
     "scripts": {
@@ -13,7 +13,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "nodecg-io-intellij": "0.1.0",
+        "nodecg-io-philipshue": "0.1.0",
         "nodecg-io-core": "0.1.0",
         "@types/node": "^13.13.12",
         "nodecg": "^1.6.1",

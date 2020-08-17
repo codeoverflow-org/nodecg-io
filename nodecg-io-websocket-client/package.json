@@ -1,7 +1,7 @@
 {
-    "name": "nodecg-io-ws-server",
-    "version": "0.1.0",
-    "description": "Allows to create a custom WebSocket server.",
+    "name": "nodecg-io-websocket-client",
+    "version": "0.2.0",
+    "description": "Allows to connect to a external WebSocket server.",
     "homepage": "",
     "author": {
         "name": "derNiklaas",

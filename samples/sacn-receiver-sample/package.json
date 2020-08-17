@@ -1,5 +1,5 @@
 {
-    "name": "sacn-sample",
+    "name": "sacn-receiver-sample",
     "version": "0.1.0",
     "description": "Example nodecg-io-sacn-receiver Bundle. Receives data via sACN",
     "homepage": "",
