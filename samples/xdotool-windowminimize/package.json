@@ -1,5 +1,5 @@
 {
-    "name": "xdotool-sample",
+    "name": "xdotool-windowminimize",
     "version": "0.1.0",
     "nodecg": {
         "compatibleRange": "^1.1.1",
