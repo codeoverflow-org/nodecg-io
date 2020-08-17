@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=20&color=blue&style=flat-square)](https://nodecg.io/services/)
+[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=21&color=blue&style=flat-square)](https://nodecg.io/services/)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/sX2Gjbs/)
 
@@ -67,40 +67,42 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 
 ```
 nodecg-io/
-+--docs/                      Documentation Repo (clone separately)
-+--nodecg-io-ahk/             AutoHotkey integration
-+--nodecg-io-core/            Core Lib
-   +--dashboard/              GUI
-+--nodecg-io-discord/         Discord integration
-+--nodecg-io-intellij/        IntelliJ integration
-+--nodecg-io-irc/             IRC integration
-+--nodecg-io-midi-input/      MIDI input integration
-+--nodecg-io-midi-output/     MIDI output integration
-+--nodecg-io-philipshue/      Philips Hue integration
-+--nodecg-io-rcon/            Rcon integration
-+--nodecg-io-sacn-receiver/   sACN input
-+--nodecg-io-sacn-sender/     sACN output
-+--nodecg-io-slack/           Slack WebAPI Integration
-+--nodecg-io-spotify/         Spotify integration
-+--nodecg-io-streamdeck/      Elgato Stream Deck integration
-+--nodecg-io-telegram/        Telegram integration
-+--nodecg-io-twitch/          Twitch integration
-+--nodecg-io-twitter/         Twitter integration
-+--nodecg-io-ws-client/       WebSocket client integration
-+--nodecg-io-ws-server/       WebSocket server integration
-+--nodecg-io-xdotool/         Xdotool integration
-+--nodecg-io-youtube/         YouTube integration
-+--samples/                   Samplecode
-   +--ahk/                    AutoHotKey Samplecode
-   +--discord-guild-chat/     Discord Samplecode
-   +--intellij/               IntelliJ Samplecode
-   +--philips-hue/            Philips Hue Samplecode
-   +--sacn-sample/            sACN Samplecode
-   +--slack/                  Slack WebAPI Samplecodes
-   +--streamdeck-rainbow/     Streamdeck Samplecode
-   +--twitch-chat/            Twitch Samplecode
-   +--twitter-timeline/       Twitter Samplecode
-   +--websocket-server/       Websocket Server Samplecode
-   +--xdotool/                xdotool Samplecode
-   +--youtube/                YouTube Samplecode
++--docs/                         Documentation Repo (clone separately)
++--nodecg-io-ahk/                AutoHotkey integration
++--nodecg-io-core/               Core Lib
+   +--dashboard/                    GUI
++--nodecg-io-discord/            Discord integration
++--nodecg-io-intellij/           IntelliJ integration
++--nodecg-io-irc/                IRC integration
++--nodecg-io-midi-input/         MIDI input integration
++--nodecg-io-midi-output/        MIDI output integration
++--nodecg-io-philipshue/         Philips Hue integration
++--nodecg-io-rcon/               Rcon integration
++--nodecg-io-sacn-receiver/      sACN input
++--nodecg-io-sacn-sender/        sACN output
++--nodecg-io-slack/              Slack WebAPI Integration
++--nodecg-io-spotify/            Spotify integration
++--nodecg-io-streamdeck/         Elgato Stream Deck integration
++--nodecg-io-telegram/           Telegram integration
++--nodecg-io-twitch/             Twitch integration
++--nodecg-io-twitter/            Twitter integration
++--nodecg-io-websocket-client/   WebSocket client integration
++--nodecg-io-websocket-server/   WebSocket server integration
++--nodecg-io-xdotool/            Xdotool integration
++--nodecg-io-youtube/            YouTube integration
++--samples/                      Samplecode
+   +--ahk-sendcommand/              AutoHotKey Samplecode
+   +--discord-guild-chat/           Discord Samplecode
+   +--intellij-integration/         IntelliJ Samplecode
+   +--philipshue-lights/            Philips Hue Samplecode
+   +--sacn-receiver-sample/         sACN Receiver Samplecode
+   +--slack-post/                   Slack WebAPI Samplecodes
+   +--streamdeck-rainbow/           Streamdeck Samplecode
+   +--streamelements-events/        Streamelements Samplecode
+   +--telegram-bot/                 Telegram Samplecode
+   +--twitch-chat/                  Twitch Samplecode
+   +--twitter-timeline/             Twitter Samplecode
+   +--websocket-server/             Websocket Server Samplecode
+   +--xdotool-windowminimize/       xdotool Samplecode
+   +--youtube-playlist/             YouTube Samplecode
 ```
