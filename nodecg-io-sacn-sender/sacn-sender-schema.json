@@ -4,8 +4,8 @@
     "additionalProperties": false,
     "properties": {
         "universe": {
-          "type": "number",
-          "description": "The universe to use. Must be a number within 1-63999"
+            "type": "number",
+            "description": "The universe to use. Must be a number within 1-63999"
         },
         "port": {
             "type": "number",

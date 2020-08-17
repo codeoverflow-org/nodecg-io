@@ -1,34 +1,34 @@
 {
-  "name": "nodecg-io-streamdeck",
-  "version": "0.1.0",
-  "description": "Allows to interface with the elgato streamdeck.",
-  "homepage": "",
-  "author": {
-    "name": "noeppi_noeppi",
-    "url": "https://github.com/noeppi-noeppi"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
-  "keywords": [
-    "",
-    "nodecg-bundle"
-  ],
-  "nodecg": {
-    "compatibleRange": "^1.1.1",
-    "bundleDependencies": {
-      "nodecg-io-core": "0.1.0"
+    "name": "nodecg-io-streamdeck",
+    "version": "0.1.0",
+    "description": "Allows to interface with the elgato streamdeck.",
+    "homepage": "",
+    "author": {
+        "name": "noeppi_noeppi",
+        "url": "https://github.com/noeppi-noeppi"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w"
+    },
+    "keywords": [
+        "",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "0.1.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^13.13.12",
+        "nodecg": "^1.6.1",
+        "typescript": "^3.9.6"
+    },
+    "dependencies": {
+        "nodecg-io-core": "0.1.0",
+        "elgato-stream-deck": "^3.3.0"
     }
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^13.13.12",
-    "nodecg": "^1.6.1",
-    "typescript": "^3.9.6"
-  },
-  "dependencies": {
-    "nodecg-io-core": "0.1.0",
-    "elgato-stream-deck": "^3.3.0"
-  }
 }

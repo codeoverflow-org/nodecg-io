@@ -1,36 +1,36 @@
 {
-  "name": "nodecg-io-spotify",
-  "version": "0.1.0",
-  "description": "Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. ",
-  "homepage": "",
-  "author": {
-    "name": "CodeOverflow team",
-    "url": "http://codeoverflow.org"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
-  "keywords": [
-    "",
-    "nodecg-bundle"
-  ],
-  "nodecg": {
-    "compatibleRange": "^1.1.1",
-    "bundleDependencies": {
-      "nodecg-io-core": "0.1.0"
+    "name": "nodecg-io-spotify",
+    "version": "0.1.0",
+    "description": "Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. ",
+    "homepage": "",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "http://codeoverflow.org"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w"
+    },
+    "keywords": [
+        "",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "0.1.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^13.13.12",
+        "@types/spotify-web-api-node": "^4.0.1",
+        "nodecg": "^1.6.1",
+        "typescript": "^3.9.6"
+    },
+    "dependencies": {
+        "nodecg-io-core": "0.1.0",
+        "open": "^7.0.4",
+        "spotify-web-api-node": "^4.0.0"
     }
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^13.13.12",
-    "@types/spotify-web-api-node": "^4.0.1",
-    "nodecg": "^1.6.1",
-    "typescript": "^3.9.6"
-  },
-  "dependencies": {
-    "nodecg-io-core": "0.1.0",
-    "open": "^7.0.4",
-    "spotify-web-api-node": "^4.0.0"
-  }
 }
