@@ -3,7 +3,8 @@
         "target": "ES2015",
 
         "lib": ["ES2015", "dom"],
-        "module": "ES2015"
+        "module": "ES2015",
+        "sourceMap": true
     },
     "extends": "../../tsconfig.common.json"
 }
