@@ -1,6 +1,4 @@
-/// <reference types="nodecg/types/browser" />
 /// <reference types="monaco-editor/monaco" />
-import { ObjectMap, Service, ServiceInstance } from "nodecg-io-core/extension/types";
 import {
     CreateServiceInstanceMessage,
     DeleteServiceInstanceMessage,
@@ -8,17 +6,16 @@ import {
 } from "nodecg-io-core/extension/messageManager";
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { objectDeepCopy } from "./utils/deepCopy";
+import { config } from "./crypto";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
 
-// Replicants from the core extension
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const services = nodecg.Replicant<Service<unknown, any>[]>("services");
-const serviceInstances = nodecg.Replicant<ObjectMap<string, ServiceInstance<unknown, unknown>>>("serviceInstances");
 document.addEventListener("DOMContentLoaded", () => {
-    services.on("change", renderServices);
-    serviceInstances.on("change", renderInstances);
+    config.onChange(() => {
+        renderServices();
+        renderInstances();
+    });
 });
 
 // Inputs
@@ -82,8 +79,8 @@ export function onInstanceSelectChange(value: string): void {
 }
 
 function showConfig(value: string) {
-    const inst = serviceInstances.value?.[value];
-    const service = services.value?.find((svc) => svc.serviceType === inst?.serviceType);
+    const inst = config.data?.instances[value];
+    const service = config.data?.services?.find((svc) => svc.serviceType === inst?.serviceType);
 
     editor?.updateOptions({
         readOnly: false,
@@ -182,24 +179,24 @@ export function createInstance(): void {
 // Render functions of Replicants
 
 function renderServices() {
-    if (services.value === undefined) {
+    if (config.data?.services === undefined) {
         return;
     }
     updateOptionsArr(
         selectService,
-        services.value.map((svc) => svc.serviceType),
+        config.data.services.map((svc) => svc.serviceType),
     );
 }
 
 function renderInstances() {
-    if (serviceInstances.value === undefined) {
+    if (!config.data) {
         return;
     }
 
     const previousSelected = selectInstance.options[selectInstance.selectedIndex]?.value || "select";
 
     // Render instances
-    updateOptionsMap(selectInstance, serviceInstances.value);
+    updateOptionsMap(selectInstance, config.data.instances);
 
     // Add new and select options
     const selectOption = document.createElement("option");

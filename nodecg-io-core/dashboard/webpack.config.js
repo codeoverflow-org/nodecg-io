@@ -1,4 +1,5 @@
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const ROOT = path.resolve( __dirname);
 const DESTINATION = path.resolve( __dirname, 'dist');
@@ -6,6 +7,7 @@ const DESTINATION = path.resolve( __dirname, 'dist');
 module.exports = {
     context: ROOT,
 
+    mode: "none",
     entry: {
         'main': './main.ts'
     },
@@ -28,16 +30,6 @@ module.exports = {
     module: {
         rules: [
             /****************
-             * PRE-LOADERS
-             *****************/
-            {
-                enforce: 'pre',
-                test: /\.js$/,
-                use: 'source-map-loader'
-            },
-
-
-            /****************
              * LOADERS
              *****************/
             {
@@ -47,6 +39,10 @@ module.exports = {
             }
         ]
     },
+
+    plugins: [
+        new CleanWebpackPlugin()
+    ],
 
     devtool: 'source-map',
     devServer: {}

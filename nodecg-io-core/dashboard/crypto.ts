@@ -1,26 +1,41 @@
 import { PersistentData, EncryptedData, decryptData } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
+import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/types";
 
 export const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
+const services = nodecg.Replicant<Service<unknown, any>[]>("services");
 let password: string | undefined;
 
 /**
- * ConfigData and the config variable give other components access to the decrypted data.
+ * Layer between the actual dashboard and PersistentData.
+ * a. the naming of bundleDependencies in the context of the dashboard is too long and
+ *    I don't want to change the format of the serialized data.
+ * b. having everything at hand using one variable is quite nice so I've added services here to complete it.
+ */
+interface ConfigData {
+    instances: ObjectMap<string, ServiceInstance<unknown, unknown>>;
+    bundles: ObjectMap<string, ServiceDependency<unknown>[]>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    services: Service<unknown, any>[] | undefined;
+}
+
+/**
+ * Config and the config variable give other components access to the decrypted data.
  * It can be used to get the raw value or to register a handler.
  */
-class ConfigData extends EventEmitter {
-    data: PersistentData | undefined;
+class Config extends EventEmitter {
+    data: ConfigData | undefined;
 
     constructor() {
         super();
         this.onChange((data) => (this.data = data));
     }
 
-    onChange(handler: (data: PersistentData) => void): void {
+    onChange(handler: (data: ConfigData) => void): void {
         super.on("change", handler);
     }
 }
-export const config = new ConfigData();
+export const config = new Config();
 
 /**
  * Sets the passed passwort to be used by the crypto module.
@@ -60,7 +75,7 @@ encryptedData.on("change", updateDecryptedData);
  */
 function updateDecryptedData(data: EncryptedData): void {
     let result: PersistentData | undefined = undefined;
-    if (password && data.cipherText) {
+    if (password !== undefined && data.cipherText) {
         const res = decryptData(data.cipherText, password);
         if (!res.failed) {
             result = res.result;
@@ -70,5 +85,16 @@ function updateDecryptedData(data: EncryptedData): void {
         }
     }
 
-    config.emit("change", result);
+    config.emit("change", persistentData2ConfigData(result));
+}
+
+function persistentData2ConfigData(data: PersistentData | undefined): ConfigData | undefined {
+    if (!data) return undefined;
+    return {
+        instances: data.instances,
+        bundles: data.bundleDependencies,
+        // services can be treated as constant because once loaded the shouldn't change anymore.
+        // Therefore we don't need a handler to rebuild this if services change.
+        services: services.value,
+    };
 }
