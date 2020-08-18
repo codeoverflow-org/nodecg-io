@@ -2,13 +2,13 @@ import { NodeCG, ReplicantServer } from "nodecg/types/server";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";
-import { emptySuccess, error, Result } from "./utils/result";
+import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./types";
 
 /**
  * Models all the data that needs to be persistent in a plain manner.
  */
-interface PersistentData {
+export interface PersistentData {
     /**
      * All instance data that is held by the {@link InstanceManager}.
      */
@@ -22,11 +22,29 @@ interface PersistentData {
 /**
  * Models all the data that needs to be persistent in a encrypted manner.
  */
-interface EncryptedData {
+export interface EncryptedData {
     /**
      * The encrypted format of the data that needs to be stored.
      */
     cipherText?: string;
+}
+
+/**
+ * Decryptes the passed encrypted data using the passed password.
+ * If the password is wrong an error will be returned.
+ *
+ * @param cipherText the ciphertext that needs to be decrypted.
+ * @param password the password for the encrypted data.
+ */
+export function decryptData(cipherText: string, password: string): Result<PersistentData> {
+    try {
+        const decryptedBytes = crypto.AES.decrypt(cipherText, password);
+        const decryptedText = decryptedBytes.toString(crypto.enc.Utf8);
+        const data: PersistentData = JSON.parse(decryptedText);
+        return success(data);
+    } catch {
+        return error("Password isn't correct.");
+    }
 }
 
 /**
@@ -92,20 +110,17 @@ export class PersistenceManager {
             this.nodecg.log.info("No saved configuration found, creating a empty one.");
             this.save();
         } else {
-            try {
-                // Decrypt config
-                this.nodecg.log.info("Decrypting and loading saved configuration.");
-                const decryptedBytes = crypto.AES.decrypt(this.encryptedData.value.cipherText, password);
-                const decryptedText = decryptedBytes.toString(crypto.enc.Utf8);
-                const data: PersistentData = JSON.parse(decryptedText);
-
-                // Load config into the respecting manager
-                // Instances first as the bundle dependency depend upon the existing instances.
-                this.loadServiceInstances(data.instances);
-                this.loadBundleDependencies(data.bundleDependencies);
-            } catch {
-                return error("Password isn't correct.");
+            // Decrypt config
+            this.nodecg.log.info("Decrypting and loading saved configuration.");
+            const data = decryptData(this.encryptedData.value.cipherText, password);
+            if (data.failed) {
+                return data;
             }
+
+            // Load config into the respecting manager
+            // Instances first as the bundle dependency depend upon the existing instances.
+            this.loadServiceInstances(data.result.instances);
+            this.loadBundleDependencies(data.result.bundleDependencies);
         }
 
         // Save password, used in save() function
