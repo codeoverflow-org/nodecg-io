@@ -1,7 +1,7 @@
 /// <reference types="nodecg/types/browser" />
 
 import { LoadFrameworkMessage } from "nodecg-io-core/extension/messageManager";
-import { updateMonacoLayout } from "./serviceInstance.js";
+import { updateMonacoLayout } from "./serviceInstance";
 
 // HTML elements
 const spanLoaded = document.getElementById("spanLoaded") as HTMLSpanElement;
@@ -9,6 +9,14 @@ const inputPassword = document.getElementById("inputPassword") as HTMLInputEleme
 const divAuth = document.getElementById("divAuth");
 const divMain = document.getElementById("divMain");
 const spanPasswordNotice = document.getElementById("spanPasswordNotice");
+
+// Add key listener to password input
+inputPassword?.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        loadFramework();
+    }
+});
 
 // Handler for when the socket.io client re-connects which is usually a nodecg restart.
 nodecg.socket.on("connect", () => {

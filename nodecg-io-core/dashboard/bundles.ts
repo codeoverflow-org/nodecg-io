@@ -1,7 +1,7 @@
 /// <reference types="nodecg/types/browser" />
 
 import { ObjectMap, ServiceDependency, ServiceInstance } from "nodecg-io-core/extension/types";
-import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
+import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { SetServiceDependencyMessage } from "nodecg-io-core/extension/messageManager";
 
 // Replicants

@@ -6,8 +6,8 @@ import {
     DeleteServiceInstanceMessage,
     UpdateInstanceConfigMessage,
 } from "nodecg-io-core/extension/messageManager";
-import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
-import { objectDeepCopy } from "./utils/deepCopy.js";
+import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
+import { objectDeepCopy } from "./utils/deepCopy";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
@@ -42,13 +42,11 @@ window.addEventListener("resize", () => {
     updateMonacoLayout();
 });
 export function updateMonacoLayout(): void {
-    if (instanceMonaco !== null) {
-        editor?.layout();
-    }
+    editor?.layout();
 }
 
 export function onMonacoReady(): void {
-    if (instanceMonaco !== null) {
+    if (instanceMonaco) {
         editor = monaco.editor.create(instanceMonaco, {
             theme: "vs-dark",
         });

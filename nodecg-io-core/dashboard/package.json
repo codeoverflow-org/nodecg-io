@@ -3,8 +3,14 @@
     "version": "0.1.0",
     "description": "",
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w"
+        "build": "webpack",
+        "watch": "webpack --watch"
+    },
+    "devDependencies": {
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12",
+        "ts-loader": "^8.0.2",
+        "source-map-loader": "^1.0.1"
     },
     "dependencies": {
         "monaco-editor": "^0.20.0",
