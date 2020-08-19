@@ -62,7 +62,7 @@ export class PersistenceManager {
         private readonly bundles: BundleManager,
     ) {
         this.encryptedData = nodecg.Replicant("encryptedConfig", {
-            persistent: true, // Is ok since it is encrypted, all other replicants don't store data for this reason.
+            persistent: true, // Is ok since it is encrypted
             defaultValue: {},
         });
     }
@@ -127,8 +127,8 @@ export class PersistenceManager {
         this.password = password;
 
         // Register handlers to save when something changes
-        this.instances.onInstanceUpdates(() => this.save());
-        this.bundles.onBundleDependencyUpdates(() => this.save());
+        this.instances.on("change", () => this.save());
+        this.bundles.on("change", () => this.save());
 
         return emptySuccess();
     }

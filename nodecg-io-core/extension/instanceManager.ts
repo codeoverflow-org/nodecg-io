@@ -1,15 +1,16 @@
-import { NodeCG, ReplicantServer } from "nodecg/types/server";
+import { NodeCG } from "nodecg/types/server";
 import { ObjectMap, Service, ServiceClient, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import * as Ajv from "ajv";
+import { EventEmitter } from "events";
 
 /**
  * Manages instances of services and their configs/clients.
  */
-export class InstanceManager {
-    private serviceInstances: ReplicantServer<ObjectMap<string, ServiceInstance<unknown, unknown>>>;
+export class InstanceManager extends EventEmitter {
+    private serviceInstances: ObjectMap<string, ServiceInstance<unknown, unknown>> = {};
     private ajv = new Ajv();
 
     constructor(
@@ -17,10 +18,7 @@ export class InstanceManager {
         private readonly services: ServiceManager,
         private readonly bundles: BundleManager,
     ) {
-        this.serviceInstances = this.nodecg.Replicant("serviceInstances", {
-            persistent: false,
-            defaultValue: {},
-        });
+        super();
     }
 
     /**
@@ -29,7 +27,7 @@ export class InstanceManager {
      * @return the wanted service instance if it has been found, undefined otherwise.
      */
     getServiceInstance(instanceName: string): ServiceInstance<unknown, unknown> | undefined {
-        return this.serviceInstances.value[instanceName];
+        return this.serviceInstances[instanceName];
     }
 
     /**
@@ -37,14 +35,7 @@ export class InstanceManager {
      * @return {ObjectMap<string, ServiceInstance<unknown, unknown>>} a map of the instance name to the instance.
      */
     getServiceInstances(): ObjectMap<string, ServiceInstance<unknown, unknown>> {
-        return this.serviceInstances.value;
-    }
-
-    /**
-     * Registers a handler that will get called whenever something about a service instance has been changed.
-     */
-    onInstanceUpdates(callback: () => void): void {
-        this.serviceInstances.on("change", callback);
+        return this.serviceInstances;
     }
 
     /**
@@ -55,7 +46,7 @@ export class InstanceManager {
      */
     createServiceInstance(serviceType: string, instanceName: string): Result<void> {
         // Check if a instance with the same name already exists.
-        if (this.serviceInstances.value[instanceName] !== undefined) {
+        if (this.serviceInstances[instanceName] !== undefined) {
             return error("A service instance with the same name already exists.");
         }
 
@@ -67,11 +58,12 @@ export class InstanceManager {
         const service = svcResult.result;
 
         // Create actual instance and save it
-        this.serviceInstances.value[instanceName] = {
+        this.serviceInstances[instanceName] = {
             serviceType: service.serviceType,
             config: service.defaultConfig,
             client: undefined,
         };
+        this.emit("change");
 
         this.nodecg.log.info(
             `Service instance "${instanceName}" of service "${service.serviceType}" has been successfully created.`,
@@ -87,7 +79,11 @@ export class InstanceManager {
     deleteServiceInstance(instanceName: string): boolean {
         // TODO: handle if a bundle is still connected to this instance, remove this instance from those bundle or don't allow deleting
         // Removing it from the list
-        return delete this.serviceInstances.value[instanceName];
+        const success = delete this.serviceInstances[instanceName];
+        if (success) {
+            this.emit("change");
+        }
+        return success;
     }
 
     /**
@@ -102,7 +98,7 @@ export class InstanceManager {
      */
     async updateInstanceConfig(instanceName: string, config: unknown, validation = true): Promise<Result<void>> {
         // Check existence and get service instance.
-        const inst = this.serviceInstances.value[instanceName];
+        const inst = this.serviceInstances[instanceName];
         if (inst === undefined) {
             return error("Service instance doesn't exist.");
         }
@@ -135,6 +131,7 @@ export class InstanceManager {
         // Update client of this instance using the new config.
         await this.updateInstanceClient(inst, instanceName, service.result);
 
+        this.emit("change");
         return emptySuccess();
     }
 
