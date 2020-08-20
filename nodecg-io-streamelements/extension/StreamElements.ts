@@ -53,14 +53,17 @@ export class StreamElementsServiceClient extends EventEmitter implements Service
     }
 
     async testConnection(): Promise<Result<void>> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             this.createSocket();
             this.onAuthenticated(() => {
                 this.close();
                 resolve(emptySuccess());
             });
             this.onConnectionError((err) => {
-                reject(error(err));
+                resolve(error(err));
+            });
+            this.onUnauthorized((err) => {
+                resolve(error(err));
             });
         });
     }
@@ -73,14 +76,14 @@ export class StreamElementsServiceClient extends EventEmitter implements Service
         this.socket.on("connect", handler);
     }
 
-    // onDisconnect isn't used internally but should still be available to bundles
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-    private onDisconnect(handler: () => void): void {
-        this.socket.on("disconnect", handler);
-    }
-
     private onAuthenticated(handler: () => void): void {
         this.socket.on("authenticated", handler);
+    }
+
+    private onUnauthorized(handler: (err: string) => void): void {
+        this.socket.on("unauthorized", (err: { message: string }) => {
+            handler(err.message);
+        });
     }
 
     private onConnectionError(handler: (err: string) => void): void {
