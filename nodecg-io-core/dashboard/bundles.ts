@@ -1,16 +1,12 @@
-/// <reference types="nodecg/types/browser" />
-
-import { ObjectMap, ServiceDependency, ServiceInstance } from "nodecg-io-core/extension/types";
-import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
+import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { SetServiceDependencyMessage } from "nodecg-io-core/extension/messageManager";
-
-// Replicants
-const serviceInstances = nodecg.Replicant<ObjectMap<string, ServiceInstance<unknown, unknown>>>("serviceInstances");
-const bundles = nodecg.Replicant<ObjectMap<string, ServiceDependency<unknown>[]>>("bundles");
+import { config } from "./crypto";
 
 document.addEventListener("DOMContentLoaded", () => {
-    bundles.on("change", renderBundles);
-    serviceInstances.on("change", renderInstanceSelector);
+    config.onChange(() => {
+        renderBundles();
+        renderInstanceSelector();
+    });
 });
 
 // HTML Elements
@@ -19,22 +15,22 @@ const selectBundleDepTypes = document.getElementById("selectBundleDepType") as H
 const selectBundleInstance = document.getElementById("selectBundleInstance") as HTMLSelectElement;
 
 function renderBundles() {
-    if (bundles.value === undefined) {
+    if (!config.data) {
         return;
     }
 
-    updateOptionsMap(selectBundle, bundles.value);
+    updateOptionsMap(selectBundle, config.data.bundles);
 
     renderBundleDeps();
 }
 
 export function renderBundleDeps(): void {
-    if (bundles.value === undefined) {
+    if (!config.data) {
         return;
     }
 
     const bundle = selectBundle.options[selectBundle.selectedIndex].value;
-    const bundleDependencies = bundles.value[bundle];
+    const bundleDependencies = config.data.bundles[bundle];
     if (bundleDependencies === undefined) {
         return;
     }
@@ -48,7 +44,7 @@ export function renderBundleDeps(): void {
 }
 
 export function renderInstanceSelector(): void {
-    if (bundles.status !== "declared" || bundles.value === undefined) {
+    if (!config.data) {
         return;
     }
 
@@ -56,12 +52,12 @@ export function renderInstanceSelector(): void {
     const serviceType = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex].value;
     const instances = ["none"];
 
-    for (const instName in serviceInstances.value) {
-        if (!Object.prototype.hasOwnProperty.call(serviceInstances.value, instName)) {
+    for (const instName in config.data.instances) {
+        if (!Object.prototype.hasOwnProperty.call(config.data.instances, instName)) {
             continue;
         }
 
-        if (serviceInstances.value[instName]?.serviceType === serviceType) {
+        if (config.data.instances[instName]?.serviceType === serviceType) {
             instances.push(instName);
         }
     }
@@ -69,7 +65,8 @@ export function renderInstanceSelector(): void {
 
     // Selecting option of current set instance
     const bundle = selectBundle.options[selectBundle.selectedIndex].value;
-    const currentInstance = bundles.value[bundle]?.find((dep) => dep.serviceType === serviceType)?.serviceInstance;
+    const currentInstance = config.data.bundles[bundle]?.find((dep) => dep.serviceType === serviceType)
+        ?.serviceInstance;
     let index = 0;
     for (let i = 0; i < selectBundleInstance.options.length; i++) {
         if (selectBundleInstance.options.item(i)?.value === currentInstance) {

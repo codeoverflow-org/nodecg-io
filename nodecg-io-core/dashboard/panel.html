@@ -75,42 +75,13 @@
         </div>
 
         <!-- Scripts -->
-        <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
-        <script type="module" src="utils/selectUtils.js"></script>
-        <script type="module" src="utils/deepCopy.js"></script>
-        <script type="module" src="serviceInstance.js"></script>
-        <script type="module" src="bundles.js"></script>
-        <script type="module">
-            import { loadFramework } from "./authentication.js";
-            import {
-                onMonacoReady,
-                onInstanceSelectChange,
-                createInstance,
-                saveInstanceConfig,
-                deleteInstance,
-            } from "./serviceInstance.js";
-            import { renderBundleDeps, renderInstanceSelector, setServiceDependency } from "./bundles.js";
+        <script src="./dist/main.bundle.js"></script>
 
+        <!-- monaco is manually included because when including it using webpack it created formatting issues. -->
+        <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+        <script>
             require.config({ paths: { vs: "node_modules/monaco-editor/min/vs" } });
             require(["vs/editor/editor.main"], onMonacoReady);
-
-            // Expose handlers from module to global window
-            window.loadFramework = loadFramework;
-            window.onInstanceSelectChange = onInstanceSelectChange;
-            window.createInstance = createInstance;
-            window.saveInstanceConfig = saveInstanceConfig;
-            window.deleteInstance = deleteInstance;
-            window.renderBundleDeps = renderBundleDeps;
-            window.renderInstanceSelector = renderInstanceSelector;
-            window.setServiceDependency = setServiceDependency;
-
-            // Add key listener to password input
-            document.getElementById("inputPassword").addEventListener("keyup", function (event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    window.loadFramework();
-                }
-            });
         </script>
     </body>
 </html>
