@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/types";
 
 export const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
-const services = nodecg.Replicant<Service<unknown, any>[]>("services");
+const services = nodecg.Replicant<Service<unknown, never>[]>("services");
 let password: string | undefined;
 
 /**
@@ -15,8 +15,7 @@ let password: string | undefined;
 interface ConfigData {
     instances: ObjectMap<string, ServiceInstance<unknown, unknown>>;
     bundles: ObjectMap<string, ServiceDependency<unknown>[]>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    services: Service<unknown, any>[] | undefined;
+    services: Service<unknown, never>[] | undefined;
 }
 
 /**
