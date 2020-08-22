@@ -3,6 +3,7 @@ import { emptySuccess, error, Result } from "./utils/result";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import { PersistenceManager } from "./persistenceManager";
+import { ServiceManager } from "./serviceManager";
 
 export interface UpdateInstanceConfigMessage {
     instanceName: string;
@@ -35,6 +36,7 @@ export interface LoadFrameworkMessage {
 export class MessageManager {
     static registerMessageHandlers(
         nodecg: NodeCG,
+        services: ServiceManager,
         instances: InstanceManager,
         bundles: BundleManager,
         persist: PersistenceManager,
@@ -101,6 +103,18 @@ export class MessageManager {
             const result = await persist.load(msg.password);
             if (!ack?.handled) {
                 ack?.(result.failed ? result.errorMessage : undefined, undefined);
+            }
+        });
+
+        nodecg.listenFor("getServices", (_msg: undefined, ack) => {
+            // We create a shallow copy of the service before we return them because if we return a reference
+            // another bundle could call this, get a reference and overwrite the createClient function on it
+            // and therefore get a copy of all credentials that are used for services.
+            // If we shallow copy the functions get excluded and other bundles can't overwrite it.
+            const result = services.getServices().map((svc) => Object.assign({}, svc));
+
+            if (!ack?.handled) {
+                ack?.(undefined, result);
             }
         });
     }

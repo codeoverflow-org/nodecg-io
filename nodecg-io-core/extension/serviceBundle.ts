@@ -40,6 +40,8 @@ export abstract class ServiceBundle<R, C extends ServiceClient<unknown>> impleme
         // The service is saved in a Replicant and nodecg tries to serialize everything in there, including
         // nodecg instances, which throw errors when serialized.
         Object.defineProperty(this, "nodecg", { enumerable: false });
+        // Core is not needed but avoids confusion because a service shouldn't have it.
+        Object.defineProperty(this, "core", { enumerable: false, writable: true });
 
         this.nodecg.log.info(this.serviceType + " bundle started.");
         this.core = (this.nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;

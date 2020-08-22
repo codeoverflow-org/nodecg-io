@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/types";
 
 export const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
-const services = nodecg.Replicant<Service<unknown, never>[]>("services");
+let services: Service<unknown, never>[] | undefined;
 let password: string | undefined;
 
 /**
@@ -15,7 +15,7 @@ let password: string | undefined;
 interface ConfigData {
     instances: ObjectMap<string, ServiceInstance<unknown, unknown>>;
     bundles: ObjectMap<string, ServiceDependency<unknown>[]>;
-    services: Service<unknown, never>[] | undefined;
+    services: Service<unknown, never>[];
 }
 
 /**
@@ -36,6 +36,10 @@ class Config extends EventEmitter {
 }
 export const config = new Config();
 
+// Update the decrypted copy of the data once the encrypted version changes (if pw available).
+// This ensures that the decrypted data is kept uptodate.
+encryptedData.on("change", updateDecryptedData);
+
 /**
  * Sets the passed passwort to be used by the crypto module.
  * Will try to decrypt decrypted data to tell whether the password is correct,
@@ -43,7 +47,15 @@ export const config = new Config();
  * Returns whether the password is correct.
  * @param pw the password which should be set.
  */
-export function setPassword(pw: string): boolean {
+export async function setPassword(pw: string): Promise<boolean> {
+    await Promise.all([
+        // Ensures that the encryptedData has been declared because it is needed by setPassword()
+        // This is especially needed when handling a reconnect as the replicant takes time to declare
+        // and the password check is usually faster than that.
+        NodeCG.waitForReplicants(encryptedData),
+        fetchServices(),
+    ]);
+
     password = pw;
 
     if (encryptedData.value) {
@@ -62,10 +74,6 @@ export function setPassword(pw: string): boolean {
 export function isPasswordSet(): boolean {
     return password !== undefined;
 }
-
-// Update the decrypted copy of the data once the encrypted version changes (if pw available).
-// This ensures that the decrypted data is kept uptodate.
-encryptedData.on("change", updateDecryptedData);
 
 /**
  * Decryptes the passed data using the global password variable and saves it into ConfigData.
@@ -89,11 +97,20 @@ function updateDecryptedData(data: EncryptedData): void {
 
 function persistentData2ConfigData(data: PersistentData | undefined): ConfigData | undefined {
     if (!data) return undefined;
+    if (!services) {
+        nodecg.log.warn("Tried to get config but services were not loaded yet.");
+        return undefined;
+    }
+
     return {
         instances: data.instances,
         bundles: data.bundleDependencies,
         // services can be treated as constant because once loaded the shouldn't change anymore.
         // Therefore we don't need a handler to rebuild this if services change.
-        services: services.value,
+        services,
     };
+}
+
+async function fetchServices() {
+    services = await nodecg.sendMessage("getServices");
 }
