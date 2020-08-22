@@ -2,7 +2,7 @@
 
 import { LoadFrameworkMessage } from "nodecg-io-core/extension/messageManager";
 import { updateMonacoLayout } from "./serviceInstance";
-import { setPassword, isPasswordSet, encryptedData as encryptedDataReplicant } from "./crypto";
+import { setPassword, isPasswordSet } from "./crypto";
 
 // HTML elements
 const spanLoaded = document.getElementById("spanLoaded") as HTMLSpanElement;
@@ -81,14 +81,9 @@ export async function loadFramework(): Promise<void> {
         });
     }
 
-    // Ensures that the encrypteDataReplicant has been declared because it is needed by setPassword()
-    // This is especially needed when handling a reconnect as the replicant takes time to declare
-    // and the password check is usually faster than that.
-    await NodeCG.waitForReplicants(encryptedDataReplicant);
-
     // If the framework was already loaded then this check actually checks the password.
     // If the above if was entered this just sets it because we assume that the password didn't change.
-    if (!setPassword(password)) {
+    if (!(await setPassword(password))) {
         wrongPassword();
     }
 

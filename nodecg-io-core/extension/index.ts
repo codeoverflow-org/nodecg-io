@@ -27,7 +27,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     const instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager);
     const persistenceManager = new PersistenceManager(nodecg, instanceManager, bundleManager);
 
-    MessageManager.registerMessageHandlers(nodecg, instanceManager, bundleManager, persistenceManager);
+    MessageManager.registerMessageHandlers(nodecg, serviceManager, instanceManager, bundleManager, persistenceManager);
 
     registerExitHandlers(nodecg, bundleManager, instanceManager, serviceManager);
 

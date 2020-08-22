@@ -80,7 +80,7 @@ export function onInstanceSelectChange(value: string): void {
 
 function showConfig(value: string) {
     const inst = config.data?.instances[value];
-    const service = config.data?.services?.find((svc) => svc.serviceType === inst?.serviceType);
+    const service = config.data?.services.find((svc) => svc.serviceType === inst?.serviceType);
 
     editor?.updateOptions({
         readOnly: false,
@@ -179,7 +179,7 @@ export function createInstance(): void {
 // Render functions of Replicants
 
 function renderServices() {
-    if (config.data?.services === undefined) {
+    if (!config.data) {
         return;
     }
     updateOptionsArr(
