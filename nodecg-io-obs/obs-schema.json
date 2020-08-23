@@ -16,5 +16,5 @@
             "description": "The password of the obs websocket server"
         }
     },
-    "required": ["host", "port", "password"]
+    "required": ["host", "port"]
 }

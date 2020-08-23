@@ -19,20 +19,27 @@ module.exports = (nodecg: NodeCG) => {
 class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
     async validateConfig(config: OBSServiceConfig): Promise<Result<void>> {
         const client = new OBSWebSocket();
-        let failed = false;
-        client.once("AuthenticationFailure", () => {
-            failed = true;
-        });
-        await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
-        if (failed) {
-            return error("Could not connect or authenticate.");
+        try {
+            if (config.password) {
+                await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+            } else {
+                await client.connect({ address: `${config.host}:${config.port}` });
+            }
+
+            client.disconnect();
+        } catch (e) {
+            return error(e.error);
         }
         return emptySuccess();
     }
 
     async createClient(config: OBSServiceConfig): Promise<Result<OBSServiceClient>> {
         const client = new OBSWebSocket();
-        await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+        if (config.password) {
+            await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+        } else {
+            await client.connect({ address: `${config.host}:${config.port}` });
+        }
         return success({
             getNativeClient() {
                 return client;
