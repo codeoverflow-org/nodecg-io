@@ -24,6 +24,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] IRC (Internet Relay Chat)
 -   [x] MIDI Input
 -   [x] MIDI Output
+-   [x] OBS
 -   [x] Philips Hue
 -   [x] RCON
 -   [x] sACN Receiver
@@ -76,6 +77,7 @@ nodecg-io/
 +--nodecg-io-irc/                IRC integration
 +--nodecg-io-midi-input/         MIDI input integration
 +--nodecg-io-midi-output/        MIDI output integration
++--nodecg-io-obs/                OBS integration
 +--nodecg-io-philipshue/         Philips Hue integration
 +--nodecg-io-rcon/               Rcon integration
 +--nodecg-io-sacn-receiver/      sACN input
@@ -94,6 +96,7 @@ nodecg-io/
    +--ahk-sendcommand/              AutoHotKey Samplecode
    +--discord-guild-chat/           Discord Samplecode
    +--intellij-integration/         IntelliJ Samplecode
+   +--obs-scenelist/                OBS Samplecode
    +--philipshue-lights/            Philips Hue Samplecode
    +--sacn-receiver-sample/         sACN Receiver Samplecode
    +--slack-post/                   Slack WebAPI Samplecodes
