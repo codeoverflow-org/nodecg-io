@@ -7,7 +7,7 @@ import * as OBSWebSocket from "obs-websocket-js";
 interface OBSServiceConfig {
     host: string;
     port: number;
-    password: string;
+    password?: string;
 }
 
 export type OBSServiceClient = ServiceClient<OBSWebSocket>;
@@ -20,11 +20,7 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
     async validateConfig(config: OBSServiceConfig): Promise<Result<void>> {
         const client = new OBSWebSocket();
         try {
-            if (config.password) {
-                await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
-            } else {
-                await client.connect({ address: `${config.host}:${config.port}` });
-            }
+            await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
 
             client.disconnect();
         } catch (e) {
@@ -35,11 +31,8 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
 
     async createClient(config: OBSServiceConfig): Promise<Result<OBSServiceClient>> {
         const client = new OBSWebSocket();
-        if (config.password) {
-            await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
-        } else {
-            await client.connect({ address: `${config.host}:${config.port}` });
-        }
+        await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+
         return success({
             getNativeClient() {
                 return client;
