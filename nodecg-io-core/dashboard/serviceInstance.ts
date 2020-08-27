@@ -6,7 +6,7 @@ import {
 } from "nodecg-io-core/extension/messageManager";
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { objectDeepCopy } from "./utils/deepCopy";
-import { config } from "./crypto";
+import { config, sendAuthenticatedMessage } from "./crypto";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
@@ -110,7 +110,7 @@ function showConfig(value: string) {
 }
 
 // Save button
-export function saveInstanceConfig(): void {
+export async function saveInstanceConfig(): Promise<void> {
     if (editor === undefined) {
         return;
     }
@@ -119,17 +119,11 @@ export function saveInstanceConfig(): void {
     try {
         const instName = selectInstance.options[selectInstance.selectedIndex].value;
         const config = JSON.parse(editor.getValue());
-        const msg: UpdateInstanceConfigMessage = {
+        const msg: Partial<UpdateInstanceConfigMessage> = {
             config: config,
             instanceName: instName,
         };
-        // noinspection JSIgnoredPromiseFromCall this actually doesn't always result in a Promise
-        nodecg.sendMessage("updateInstanceConfig", msg, (err) => {
-            if (err) {
-                console.log(err);
-                showError(err);
-            }
-        });
+        await sendAuthenticatedMessage("updateInstanceConfig", msg);
     } catch (err) {
         console.log(err);
         showError(err);
@@ -137,43 +131,34 @@ export function saveInstanceConfig(): void {
 }
 
 // Delete button
-export function deleteInstance(): void {
-    const msg: DeleteServiceInstanceMessage = {
+export async function deleteInstance(): Promise<void> {
+    const msg: Partial<DeleteServiceInstanceMessage> = {
         instanceName: selectInstance.options[selectInstance.selectedIndex].value,
     };
 
-    nodecg.sendMessage("deleteServiceInstance", msg).then((r) => {
-        if (r) {
-            selectServiceInstance("select");
-        } else {
-            console.log(
-                `Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`,
-            );
-        }
-    });
+    const deleted = await sendAuthenticatedMessage("deleteServiceInstance", msg);
+    if (deleted) {
+        selectServiceInstance("select");
+    } else {
+        console.log(`Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`);
+    }
 }
 
 // Create button
-export function createInstance(): void {
+export async function createInstance(): Promise<void> {
     const service = selectService.options[selectService.options.selectedIndex].value;
     const name = inputInstanceName.value;
 
-    const msg: CreateServiceInstanceMessage = {
+    const msg: Partial<CreateServiceInstanceMessage> = {
         serviceType: service,
         instanceName: name,
     };
 
-    // noinspection JSIgnoredPromiseFromCall this actually doesn't always result in a Promise
-    nodecg.sendMessage("createServiceInstance", msg, (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            // Give the browser some time to create the new instance select option and to add them to the DOM
-            setTimeout(() => {
-                selectServiceInstance(name);
-            }, 250);
-        }
-    });
+    await sendAuthenticatedMessage("createServiceInstance", msg);
+    // Give the browser some time to create the new instance select option and to add them to the DOM
+    setTimeout(() => {
+        selectServiceInstance(name);
+    }, 250);
 }
 
 // Render functions of Replicants
