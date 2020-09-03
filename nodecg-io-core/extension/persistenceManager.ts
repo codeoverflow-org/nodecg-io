@@ -68,23 +68,15 @@ export class PersistenceManager {
     }
 
     /**
-     * Encrypts and saves current state to the persistent replicant.
+     * Checks whether the passed password is correct. Only works if already loaded and a password is already set.
+     * @param password the password which should be checked for correctness
      */
-    private save() {
-        // Check if we have a password to encrypt the data with.
-        if (this.password === undefined) {
-            return;
+    checkPassword(password: string): boolean {
+        if (this.isLoaded()) {
+            return this.password === password;
+        } else {
+            return false;
         }
-
-        // Organise all data that will be encrypted into a single object.
-        const data: PersistentData = {
-            instances: this.instances.getServiceInstances(),
-            bundleDependencies: this.bundles.getBundleDependencies(),
-        };
-
-        // Encrypt and save data to persistent replicant.
-        const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
-        this.encryptedData.value.cipherText = cipherText.toString();
     }
 
     /**
@@ -202,5 +194,25 @@ export class PersistenceManager {
                 }
             });
         }
+    }
+
+    /**
+     * Encrypts and saves current state to the persistent replicant.
+     */
+    private save() {
+        // Check if we have a password to encrypt the data with.
+        if (this.password === undefined) {
+            return;
+        }
+
+        // Organise all data that will be encrypted into a single object.
+        const data: PersistentData = {
+            instances: this.instances.getServiceInstances(),
+            bundleDependencies: this.bundles.getBundleDependencies(),
+        };
+
+        // Encrypt and save data to persistent replicant.
+        const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
+        this.encryptedData.value.cipherText = cipherText.toString();
     }
 }

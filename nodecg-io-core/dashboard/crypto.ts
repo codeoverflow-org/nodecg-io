@@ -1,6 +1,8 @@
 import { PersistentData, EncryptedData, decryptData } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/types";
+import { isLoaded } from "./authentication";
+import { PasswordMessage } from "nodecg-io-core/extension/messageManager";
 
 export const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
 let services: Service<unknown, never>[] | undefined;
@@ -58,14 +60,26 @@ export async function setPassword(pw: string): Promise<boolean> {
 
     password = pw;
 
+    // Load framework, returns false if not already loaded and pw is wrong
+    if ((await loadFramework()) === false) return false;
+
     if (encryptedData.value) {
         updateDecryptedData(encryptedData.value);
         // Password is unset by updateDecryptedData if it is wrong.
-        if (!password) {
+        // This may happen if the framework was already loaded and loadFramework didn't check the pw.
+        if (password === undefined) {
             return false;
         }
     }
+
     return true;
+}
+
+export async function sendAuthenticatedMessage<V>(messageName: string, message: Partial<PasswordMessage>): Promise<V> {
+    if (password === undefined) throw "No password available";
+    const msgWithAuth = Object.assign({}, message);
+    msgWithAuth.password = password;
+    return await nodecg.sendMessage(messageName, msgWithAuth);
 }
 
 /**
@@ -113,4 +127,15 @@ function persistentData2ConfigData(data: PersistentData | undefined): ConfigData
 
 async function fetchServices() {
     services = await nodecg.sendMessage("getServices");
+}
+
+async function loadFramework(): Promise<boolean> {
+    if (await isLoaded()) return true;
+
+    try {
+        await nodecg.sendMessage("load", { password });
+        return true;
+    } catch {
+        return false;
+    }
 }

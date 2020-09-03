@@ -1,6 +1,5 @@
 /// <reference types="nodecg/types/browser" />
 
-import { LoadFrameworkMessage } from "nodecg-io-core/extension/messageManager";
 import { updateMonacoLayout } from "./serviceInstance";
 import { setPassword, isPasswordSet } from "./crypto";
 
@@ -9,7 +8,7 @@ const spanLoaded = document.getElementById("spanLoaded") as HTMLSpanElement;
 const inputPassword = document.getElementById("inputPassword") as HTMLInputElement;
 const divAuth = document.getElementById("divAuth");
 const divMain = document.getElementById("divMain");
-const spanPasswordNotice = document.getElementById("spanPasswordNotice");
+const spanPasswordNotice = document.getElementById("spanPasswordNotice") as HTMLSpanElement;
 
 // Add key listener to password input
 inputPassword?.addEventListener("keyup", function (event) {
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateLoadedStatus();
 });
 
-async function isLoaded(): Promise<boolean> {
+export async function isLoaded(): Promise<boolean> {
     return new Promise((resolve, _reject) => {
         nodecg.sendMessage("isLoaded", (_err, res) => resolve(res));
         setTimeout(() => resolve(false), 5000); // Fallback in case connection gets lost.
@@ -62,37 +61,13 @@ async function updateLoadedStatus(): Promise<void> {
 
 export async function loadFramework(): Promise<void> {
     const password = inputPassword.value;
-    const msg: LoadFrameworkMessage = { password };
 
-    // We first load nodecg-io if needed because it may need to generate a config if
-    // this is the first start and that way we don't need to handle the case of an nonexistant config.
-
-    // If nodecg-io has been already loaded we don't need to do it again and it would return an error.
-    if (!(await isLoaded())) {
-        nodecg.sendMessage("load", msg, (error) => {
-            if (spanPasswordNotice !== null) {
-                spanPasswordNotice.innerText = "";
-            }
-
-            if (error) {
-                wrongPassword();
-                return;
-            }
-        });
-    }
-
-    // If the framework was already loaded then this check actually checks the password.
-    // If the above if was entered this just sets it because we assume that the password didn't change.
-    if (!(await setPassword(password))) {
-        wrongPassword();
+    if (await setPassword(password)) {
+        spanPasswordNotice.innerText = "";
+    } else {
+        spanPasswordNotice.innerText = "The provided passwort isn't correct!";
+        inputPassword.value = "";
     }
 
     updateLoadedStatus();
-}
-
-function wrongPassword() {
-    if (spanPasswordNotice !== null) {
-        spanPasswordNotice.innerText = "The provided passwort isn't correct!";
-    }
-    inputPassword.value = "";
 }

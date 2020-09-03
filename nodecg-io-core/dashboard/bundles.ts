@@ -1,6 +1,6 @@
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { SetServiceDependencyMessage } from "nodecg-io-core/extension/messageManager";
-import { config } from "./crypto";
+import { config, sendAuthenticatedMessage } from "./crypto";
 
 document.addEventListener("DOMContentLoaded", () => {
     config.onChange(() => {
@@ -77,21 +77,20 @@ export function renderInstanceSelector(): void {
     selectBundleInstance.selectedIndex = index;
 }
 
-export function setServiceDependency(): void {
+export async function setServiceDependency(): Promise<void> {
     const bundle = selectBundle.options[selectBundle.selectedIndex].value;
     const instance = selectBundleInstance.options[selectBundleInstance.selectedIndex].value;
     const type = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex].value;
 
-    const msg: SetServiceDependencyMessage = {
+    const msg: Partial<SetServiceDependencyMessage> = {
         bundleName: bundle,
         instanceName: instance === "none" ? undefined : instance,
         serviceType: type,
     };
 
-    // noinspection JSIgnoredPromiseFromCall only returnes undefined
-    nodecg.sendMessage("setServiceDependency", msg, (err) => {
-        if (err) {
-            console.log(err);
-        }
-    });
+    try {
+        await sendAuthenticatedMessage("setServiceDependency", msg);
+    } catch (err) {
+        console.log(err);
+    }
 }
