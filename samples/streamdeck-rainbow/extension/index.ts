@@ -41,12 +41,10 @@ module.exports = function (nodecg: NodeCG) {
                     i += 1;
                 } catch (err) {
                     nodecg.log.info("Streamdeck error: " + String(err));
-                    nodecg.log.info("You might need to replug your streamdeck. This is due to issue #21");
                 }
             }, 200);
         } catch (err) {
             nodecg.log.info("Streamdeck error: " + String(err));
-            nodecg.log.info("You might need to replug your streamdeck. This is due to issue #21");
         }
     });
 
