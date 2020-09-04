@@ -23,12 +23,12 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^13.13.12",
+        "@types/node": "^14.6.4",
         "nodecg": "^1.6.1",
-        "typescript": "^3.9.6"
+        "typescript": "^4.0.2"
     },
     "dependencies": {
         "nodecg-io-core": "0.1.0",
-        "elgato-stream-deck": "^3.3.0"
+        "elgato-stream-deck": "^3.3.2"
     }
 }
