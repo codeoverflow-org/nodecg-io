@@ -77,11 +77,22 @@ export class InstanceManager extends EventEmitter {
      * @return true if it has been found and deleted, false if it couldn't been found.
      */
     deleteServiceInstance(instanceName: string): boolean {
-        // TODO: handle if a bundle is still connected to this instance, remove this instance from those bundle or don't allow deleting
-        // Removing it from the list
         const success = delete this.serviceInstances[instanceName];
         if (success) {
+            // Save deletion
             this.emit("change");
+
+            // Remove any assignment of a bundle to this service instance
+            const deps = this.bundles.getBundleDependencies();
+            for (const bundle in deps) {
+                if (!Object.prototype.hasOwnProperty.call(deps, bundle)) {
+                    continue;
+                }
+
+                deps[bundle]
+                    ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
+                    .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)); // unset all these
+            }
         }
         return success;
     }
