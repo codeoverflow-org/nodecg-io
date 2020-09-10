@@ -100,6 +100,7 @@ export class PersistenceManager {
             // No encrypted data has been saved, probably because this is the first startup.
             // Therefore nothing needs to be decrypted and we write a empty config to disk.
             this.nodecg.log.info("No saved configuration found, creating a empty one.");
+            this.password = password;
             this.save();
         } else {
             // Decrypt config
