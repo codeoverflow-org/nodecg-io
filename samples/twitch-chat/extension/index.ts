@@ -30,7 +30,7 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
     tw.join(channel)
         .then(() => {
             nodecg.log.info(`Connected to twitch channel "${channel}"`);
-            tw.onPrivmsg((chan, user, message, _msg) => {
+            tw.onMessage((chan, user, message, _msg) => {
                 if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }
