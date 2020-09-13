@@ -15,7 +15,7 @@ module.exports = (nodecg: NodeCG) => {
 
 class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClient> {
     async validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
-        TwitchServiceClient.getTokenInfo(config); // This will throw a error if the token is invalid
+        await TwitchServiceClient.getTokenInfo(config); // This will throw a error if the token is invalid
         return emptySuccess();
     }
 
