@@ -5,7 +5,6 @@ import { StreamElementsServiceClient } from "./StreamElements";
 
 interface StreamElementsServiceConfig {
     jwtToken: string;
-    accountId: string;
 }
 
 export { StreamElementsServiceClient } from "./StreamElements";
