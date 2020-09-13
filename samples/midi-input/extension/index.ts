@@ -46,7 +46,7 @@ module.exports = function (nodecg: NodeCG) {
 
     function printMessage(msg: any, event: string) {
         let str = "";
-        for (var prop in msg) {
+        for (const prop in msg) {
             str += prop + " " + msg[prop].toString() + " ";
         }
         nodecg.log.info(event + " " + str);
