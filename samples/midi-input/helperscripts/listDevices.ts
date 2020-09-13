@@ -1,6 +1,6 @@
-const midi = require("easymidi");
-const inputs = new midi.getInputs();
-const outputs = new midi.getOutputs();
+import * as midi from "easymidi";
+const inputs = midi.getInputs();
+const outputs = midi.getOutputs();
 
 console.log("Midi Inputs");
 inputs.forEach((element: string) => {
