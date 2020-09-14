@@ -7,44 +7,44 @@ module.exports = function (nodecg: NodeCG) {
 
     const service = requireService<MidiInputServiceClient>(nodecg, "midi-input");
     service?.onAvailable((client) => {
-        nodecg.log.info("Client has been updated.");
+        nodecg.log.info("Midi input client has been updated.");
 
         const midiClient = client.getNativeClient();
-        midiClient.on("cc", (msg: any) => {
+        midiClient.on("cc", (msg) => {
             printMessage(msg, "cc");
         });
-        midiClient.on("noteon", (msg: any) => {
+        midiClient.on("noteon", (msg) => {
             printMessage(msg, "noteon");
         });
-        midiClient.on("noteoff", (msg: any) => {
+        midiClient.on("noteoff", (msg) => {
             printMessage(msg, "noteoff");
         });
-        midiClient.on("poly aftertouch", (msg: any) => {
+        midiClient.on("poly aftertouch", (msg) => {
             printMessage(msg, "poly aftertouch");
         });
-        midiClient.on("channel aftertouch", (msg: any) => {
+        midiClient.on("channel aftertouch", (msg) => {
             printMessage(msg, "channel aftertouch");
         });
         midiClient.on("program", (msg) => {
             printMessage(msg, "program");
         });
-        midiClient.on("pitch", (msg: any) => {
+        midiClient.on("pitch", (msg) => {
             printMessage(msg, "pitch");
         });
-        midiClient.on("position", (msg: any) => {
+        midiClient.on("position", (msg) => {
             printMessage(msg, "position");
         });
-        midiClient.on("mtc", (msg: any) => {
+        midiClient.on("mtc", (msg) => {
             printMessage(msg, "mtc");
         });
-        midiClient.on("select", (msg: any) => {
-            printMessage(msg, "mtc");
+        midiClient.on("select", (msg) => {
+            printMessage(msg, "select");
         });
     });
 
-    service?.onUnavailable(() => nodecg.log.info("Client has been unset."));
+    service?.onUnavailable(() => nodecg.log.info("Midi input client has been unset."));
 
-    function printMessage(msg: any, event: string) {
+    function printMessage(msg, event: string) {
         let str = "";
         for (const prop in msg) {
             str += prop + " " + msg[prop].toString() + " ";
