@@ -4,13 +4,7 @@ import { getTokenInfo, StaticAuthProvider, TokenInfo } from "twitch-auth";
 import { TwitchServiceConfig } from "./index";
 
 export class TwitchServiceClient implements ServiceClient<ChatClient> {
-    constructor(private client: ChatClient) {
-        // TODO: don't let the framework serialize the client because of which we need to hide all circular objects
-        Object.defineProperty(this, "client", {
-            enumerable: false,
-            writable: true,
-        });
-    }
+    constructor(private client: ChatClient) {}
 
     /**
      * Creates a instance of TwitchServiceClient using the credentials from the passed config.
