@@ -10,7 +10,7 @@
     "scripts": {
         "build": "tsc",
         "watch": "tsc -w",
-        "list": "node helperscripts/listDevices.js"
+        "list": "node ../midi-input/helperscripts/listDevices.js"
     },
     "license": "MIT",
     "dependencies": {
