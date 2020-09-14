@@ -44,7 +44,7 @@ module.exports = function (nodecg: NodeCG) {
 
     service?.onUnavailable(() => nodecg.log.info("Midi input client has been unset."));
 
-    /*eslint-disable @typescript-eslint/no-explicit-any */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function printMessage(msg: any, event: string) {
         let str = "";
         for (const prop in msg) {
@@ -52,5 +52,4 @@ module.exports = function (nodecg: NodeCG) {
         }
         nodecg.log.info(event + " " + str);
     }
-    /*eslint-enable @typescript-eslint/no-explicit-any */
 };
