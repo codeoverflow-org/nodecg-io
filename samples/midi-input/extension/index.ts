@@ -46,11 +46,11 @@ module.exports = function (nodecg: NodeCG) {
 
     /*eslint-disable @typescript-eslint/no-explicit-any */
     function printMessage(msg: any, event: string) {
+        /*eslint-enable @typescript-eslint/no-explicit-any */
         let str = "";
         for (const prop in msg) {
             str += prop + " " + msg[prop].toString() + " ";
         }
         nodecg.log.info(event + " " + str);
     }
-    /*eslint-enable @typescript-eslint/no-explicit-any */
 };
