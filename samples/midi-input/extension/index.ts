@@ -46,7 +46,6 @@ module.exports = function (nodecg: NodeCG) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function printMessage(msg: any, event: string) {
-        /*eslint-enable @typescript-eslint/no-explicit-any */
         let str = "";
         for (const prop in msg) {
             str += prop + " " + msg[prop].toString() + " ";
