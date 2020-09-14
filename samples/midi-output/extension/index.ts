@@ -12,14 +12,14 @@ module.exports = function (nodecg: NodeCG) {
         const midiClient = client.getNativeClient();
 
         setInterval(() => {
-            let noteVal: number = Math.round(Math.random() * 126);
-            let velocityVal: number = Math.round(Math.random() * 126);
-            let channelVal: Channel = <Channel>Math.round(Math.random() * 1);
+            const noteVal: number = Math.round(Math.random() * 126);
+            const velocityVal: number = Math.round(Math.random() * 126);
+            const channelVal: Channel = <Channel>Math.round(Math.random() * 1);
 
             const data: Note = {
                 note: noteVal,
                 velocity: velocityVal,
-                channel: 0,
+                channel: channelVal,
             };
             midiClient.send("noteon", data);
         }, 1000);
