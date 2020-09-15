@@ -14,7 +14,7 @@ module.exports = function (nodecg: NodeCG) {
         setInterval(() => {
             const noteVal: number = Math.round(Math.random() * 127);
             const velocityVal: number = Math.round(Math.random() * 127);
-            const channelVal: Channel = <Channel>Math.round(Math.random() * 1);
+            const channelVal = <Channel>Math.round(Math.random() * 1);
 
             const data: Note = {
                 note: noteVal,
