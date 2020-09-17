@@ -5,7 +5,7 @@ import { MidiOutputServiceClient } from "nodecg-io-midi-output/extension";
 import { Input, Output } from "easymidi";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for <the-service-name> started");
+    nodecg.log.info("midi-io sample bundle started");
 
     const inputService = requireService<MidiInputServiceClient>(nodecg, "midi-input");
     const outputService = requireService<MidiOutputServiceClient>(nodecg, "midi-output");
