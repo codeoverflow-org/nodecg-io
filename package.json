@@ -3,7 +3,9 @@
     "private": true,
     "scripts": {
         "bootstrap": "lerna bootstrap --hoist --nohoist monaco-editor",
-        "build": "lerna run build --parallel",
+        "clean": "lerna run --parallel clean",
+        "build": "lerna run --stream build",
+        "rebuild": "npm run clean && npm run build",
         "watch": "lerna run --parallel watch",
         "lint": "eslint . --ext ts",
         "format": "prettier --write \"./**/*.{ts,html,css,json}\""

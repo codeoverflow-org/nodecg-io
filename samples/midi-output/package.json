@@ -8,8 +8,9 @@
         }
     },
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w",
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean",
         "list": "node ../midi-input/helperscripts/listDevices.js"
     },
     "license": "MIT",
