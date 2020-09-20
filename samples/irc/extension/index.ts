@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     service?.onAvailable((client) => {
         nodecg.log.info("IRCclient has been updated.");
         const chat = client.getNativeClient();
-        chat.join("#kubuntu"); // Change this channel, if you want to connet to a different channel.
+        chat.join("#skate702"); // Change this channel, if you want to connet to a different channel.
 
         chat.addListener("message", (from, to, message) => {
             console.log(from + " => " + to + ": " + message);
