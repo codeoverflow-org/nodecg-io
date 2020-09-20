@@ -16,7 +16,7 @@ module.exports = (nodecg: NodeCG) => {
 
 class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputServiceClient> {
     async validateConfig(config: MidiInputServiceConfig): Promise<Result<void>> {
-        let devices: Array<string> = new Array<string>();
+        const devices: Array<string> = new Array<string>();
 
         easymidi.getInputs().forEach((device) => {
             if (device.includes(config.device)) {
@@ -35,7 +35,7 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
 
     async createClient(config: MidiInputServiceConfig): Promise<Result<MidiInputServiceClient>> {
         this.nodecg.log.info(`Checking device name "${config.device}"`);
-        let devices: Array<string> = new Array<string>();
+        const devices: Array<string> = new Array<string>();
         let deviceName: string | null = null;
         easymidi.getInputs().forEach((device) => {
             if (device.includes(config.device) && deviceName == null) {
