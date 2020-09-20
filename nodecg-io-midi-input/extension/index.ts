@@ -38,7 +38,7 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
         let devices: Array<string> = new Array<string>();
         let deviceName: string | null = null;
         easymidi.getInputs().forEach((device) => {
-            if (device.includes(config.device)) {
+            if (device.includes(config.device) && deviceName == null) {
                 deviceName = device;
             }
         });
