@@ -1,26 +1,21 @@
 {
-    "name": "discord-guild-chat",
+    "name": "midi-output",
     "version": "0.1.0",
-    "description": "Example nodecg-io Discord-Bundle. At the end of the day another Discord-bot",
-    "homepage": "",
-    "author": {
-        "name": "Tim-Tech-Dev",
-        "url": "https://github.com/Tim-Tech-Dev"
-    },
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-discord": "0.1.0"
+            "nodecg-io-midi-output": "0.1.0"
         }
     },
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
-        "clean": "tsc -b --clean"
+        "clean": "tsc -b --clean",
+        "list": "node ../midi-input/helperscripts/listDevices.js"
     },
     "license": "MIT",
     "dependencies": {
-        "nodecg-io-discord": "0.1.0",
+        "nodecg-io-midi-output": "0.1.0",
         "nodecg-io-core": "0.1.0",
         "@types/node": "^14.6.4",
         "nodecg": "^1.6.1",

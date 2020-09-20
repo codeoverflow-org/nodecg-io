@@ -8,8 +8,9 @@
         "url": "https://github.com/Tim-Tech-Dev"
     },
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w"
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
     },
     "keywords": [
         "",

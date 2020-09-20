@@ -8,8 +8,9 @@
         "url": "https://github.com/noeppi-noeppi"
     },
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w"
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
     },
     "keywords": [
         "",
@@ -30,7 +31,7 @@
     },
     "dependencies": {
         "nodecg-io-core": "0.1.0",
-        "node-fetch": "^2.6.0",
+        "node-fetch": "^2.6.1",
         "@rauschma/stringio": "^1.4.0"
     }
 }

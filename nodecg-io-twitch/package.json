@@ -8,8 +8,9 @@
         "url": "http://codeoverflow.org"
     },
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w"
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
     },
     "keywords": [
         "",
