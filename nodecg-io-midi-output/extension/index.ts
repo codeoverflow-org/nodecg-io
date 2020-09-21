@@ -24,7 +24,7 @@ class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServi
             }
         });
 
-        if (devices.length == 0) {
+        if (devices.length === 0) {
             return error("no device matched the configured pattern.");
         }
         if (devices.length > 1) {
@@ -37,7 +37,7 @@ class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServi
         this.nodecg.log.info(`Checking device name "${config.device}"`);
         let deviceName: string | null = null;
         easymidi.getOutputs().forEach((device) => {
-            if (device.includes(config.device) && deviceName == null) {
+            if (device.includes(config.device) && deviceName === null) {
                 deviceName = device;
             }
         });
