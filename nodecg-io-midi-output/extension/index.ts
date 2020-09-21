@@ -35,7 +35,6 @@ class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServi
 
     async createClient(config: MidiOutputServiceConfig): Promise<Result<MidiOutputServiceClient>> {
         this.nodecg.log.info(`Checking device name "${config.device}"`);
-        const devices: Array<string> = new Array<string>();
         let deviceName: string | null = null;
         easymidi.getOutputs().forEach((device) => {
             if (device.includes(config.device) && deviceName == null) {
@@ -43,15 +42,19 @@ class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServi
             }
         });
 
-        this.nodecg.log.info(`Connecting to MIDI output device ${config.device}.`);
-        const client = new easymidi.Output(config.device);
-        this.nodecg.log.info(`Successfully connected to MIDI output device ${config.device}.`);
+        this.nodecg.log.info(`Connecting to MIDI output device ${deviceName}.`);
+        if (deviceName != null) {
+            const client = new easymidi.Output(deviceName);
+            this.nodecg.log.info(`Successfully connected to MIDI output device ${deviceName}.`);
 
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+            return success({
+                getNativeClient() {
+                    return client;
+                },
+            });
+        } else {
+            return error("Could not connect to the configured device.");
+        }
     }
 
     stopClient(client: MidiOutputServiceClient): void {

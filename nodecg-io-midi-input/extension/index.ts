@@ -35,7 +35,6 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
 
     async createClient(config: MidiInputServiceConfig): Promise<Result<MidiInputServiceClient>> {
         this.nodecg.log.info(`Checking device name "${config.device}"`);
-        const devices: Array<string> = new Array<string>();
         let deviceName: string | null = null;
         easymidi.getInputs().forEach((device) => {
             if (device.includes(config.device) && deviceName === null) {
@@ -44,14 +43,17 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
         });
 
         this.nodecg.log.info(`Connecting to MIDI input device ${deviceName}.`);
-        const client = new easymidi.Input(config.device);
-        this.nodecg.log.info(`Successfully connected to MIDI input device ${config.device}.`);
-
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        if (deviceName != null) {
+            const client = new easymidi.Input(deviceName);
+            this.nodecg.log.info(`Successfully connected to MIDI input device ${deviceName}.`);
+            return success({
+                getNativeClient() {
+                    return client;
+                },
+            });
+        } else {
+            return error("Could not connect to the configured device");
+        }
     }
 
     stopClient(client: MidiInputServiceClient): void {
