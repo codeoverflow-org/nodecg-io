@@ -9,13 +9,12 @@ module.exports = function (nodecg: NodeCG) {
     service?.onAvailable((client) => {
         nodecg.log.info("Client has been updated.");
 
-        const sock = client.getNativeClient();
-        sock.addListener("message", (code: number, data: string) => {
-            nodecg.log.info(`recieved message "${data}" with code: ${code}`);
+        client.onMessage((message) => {
+            nodecg.log.info(`recieved message "${message}"`);
         });
         setInterval(() => {
             nodecg.log.info("Sending ping ...");
-            sock.send("ping");
+            client.send("ping");
         }, 1000);
     });
 
