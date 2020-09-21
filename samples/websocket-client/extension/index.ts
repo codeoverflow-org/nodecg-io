@@ -16,7 +16,7 @@ module.exports = function (nodecg: NodeCG) {
         setInterval(() => {
             nodecg.log.info("Sending ping ...");
             sock.send("ping");
-        }, 1000);
+        }, 10000);
     });
 
     service?.onUnavailable(() => nodecg.log.info("Client has been unset."));
