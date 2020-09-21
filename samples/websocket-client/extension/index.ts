@@ -3,7 +3,7 @@ import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 import { WSClientServiceClient } from "nodecg-io-websocket-client/extension";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for <the-service-name> started");
+    nodecg.log.info("Sample bundle for websocket-client started");
 
     const service = requireService<WSClientServiceClient>(nodecg, "websocket-client");
     service?.onAvailable((client) => {
