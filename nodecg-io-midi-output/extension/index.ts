@@ -43,7 +43,7 @@ class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServi
         });
 
         this.nodecg.log.info(`Connecting to MIDI output device ${deviceName}.`);
-        if (deviceName != null) {
+        if (deviceName !== null) {
             const client = new easymidi.Output(deviceName);
             this.nodecg.log.info(`Successfully connected to MIDI output device ${deviceName}.`);
 
