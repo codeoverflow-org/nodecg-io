@@ -24,7 +24,7 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
             }
         });
 
-        if (devices.length == 0) {
+        if (devices.length === 0) {
             return error("no device matched the configured pattern.");
         }
         if (devices.length > 1) {
