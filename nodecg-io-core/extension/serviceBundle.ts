@@ -95,7 +95,7 @@ export abstract class ServiceBundle<R, C extends ServiceClient<unknown>> impleme
      * Can be left unimplemented if the serivce doesn't has any handlers e.g. a http wrapper
      * @param client the client of which all handlers should be removed
      */
-    abstract removeHandlers?(client: C): void;
+    removeHandlers?(client: C): void;
 
     private readSchema(pathSegments: string[]): unknown {
         const joinedPath = path.resolve(...pathSegments);
