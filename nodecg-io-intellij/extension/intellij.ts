@@ -19,6 +19,13 @@ export class IntelliJ {
     }
 
     /**
+     * Gets the PID of the IntelliJ process
+     */
+    async getPid(): Promise<number> {
+        return await this.rawRequest("get_pid", {});
+    }
+
+    /**
      * Gets the currently active Project with the given name. The Project must
      * be opened and it's window must hav the focus. If no project is found
      * or open, the promise is rejected.
