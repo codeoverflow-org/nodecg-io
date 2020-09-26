@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Tiane, connectTiane } from "./tiane";
 
@@ -8,38 +8,32 @@ interface TianeServiceConfig {
     address: string;
 }
 
-export interface TianeServiceClient {
-    getRawClient(): Tiane;
-}
+export type TianeServiceClient = ServiceClient<Tiane>;
 
-module.exports = (nodecg: NodeCG): ServiceProvider<TianeServiceClient> | undefined => {
-    const tianeService = new TianeServiceBundle(nodecg, "tiane", __dirname, "../tiane-schema.json");
-    return tianeService.register();
+module.exports = (nodecg: NodeCG) => {
+    new TianeService(nodecg, "tiane", __dirname, "../tiane-schema.json").register();
 };
 
-class TianeServiceBundle extends ServiceBundle<TianeServiceConfig, TianeServiceClient> {
+class TianeService extends ServiceBundle<TianeServiceConfig, TianeServiceClient> {
     async validateConfig(config: TianeServiceConfig): Promise<Result<void>> {
-        try {
-            (await connectTiane(config.address)).close();
-            return emptySuccess();
-        } catch (err) {
-            return error(err.toString());
-        }
+        (await connectTiane(config.address)).close();
+        return emptySuccess();
     }
 
     async createClient(config: TianeServiceConfig): Promise<Result<TianeServiceClient>> {
-        this.nodecg.log.info("Connecting to tiane...");
+        this.nodecg.log.info("Connecting to TIANE...");
         const client = await connectTiane(config.address);
-        this.nodecg.log.info("Successfully connected to tiane.");
+        this.nodecg.log.info("Successfully connected to TIANE.");
 
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return client;
             },
         });
     }
 
     stopClient(client: TianeServiceClient): void {
-        client.getRawClient().close();
+        client.getNativeClient().close();
+        this.nodecg.log.info("Disconnected from TIANE.");
     }
 }

@@ -95,7 +95,7 @@ export class Tiane extends EventEmitter {
     notify(text: string, user: string): void {
         this.websocket.send(
             JSON.stringify({
-                action: "listen",
+                action: "notify",
                 msg: text,
                 user: user,
             }),

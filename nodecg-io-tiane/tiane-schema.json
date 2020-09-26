@@ -3,10 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "address": {
-        "type": "string",
-        "description": "Hostname and port of TIANE's WebSocket server."
-      }
+        "address": {
+            "type": "string",
+            "description": "Hostname and port of TIANE's WebSocket server."
+        }
     },
     "required": ["address"]
-  }
+}
