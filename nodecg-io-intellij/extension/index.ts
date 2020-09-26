@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core/extension/types";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { IntelliJ } from "./intellij";
 
@@ -8,13 +8,10 @@ interface IntelliJServiceConfig {
     address: string;
 }
 
-export interface IntelliJServiceClient {
-    getRawClient(): IntelliJ;
-}
+export type IntelliJServiceClient = ServiceClient<IntelliJ>;
 
-module.exports = (nodecg: NodeCG): ServiceProvider<IntelliJServiceClient> | undefined => {
-    const intellijService = new IntellijService(nodecg, "intellij", __dirname, "../intellij-schema.json");
-    return intellijService.register();
+module.exports = (nodecg: NodeCG) => {
+    new IntellijService(nodecg, "intellij", __dirname, "../intellij-schema.json").register();
 };
 
 class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServiceClient> {
@@ -30,7 +27,7 @@ class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServi
         await ij.rawRequest("available_methods", {});
         this.nodecg.log.info("Successfully connected to IntelliJ at " + config.address + ".");
         return success({
-            getRawClient() {
+            getNativeClient() {
                 return ij;
             },
         });

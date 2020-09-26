@@ -1,22 +1,29 @@
 {
-  "name": "discord-guild-chat",
-  "version": "0.1.0",
-  "nodecg": {
-    "compatibleRange": "^1.1.1",
-    "bundleDependencies": {
-      "nodecg-io-discord": "0.1.0"
+    "name": "discord-guild-chat",
+    "version": "0.1.0",
+    "description": "Example nodecg-io Discord-Bundle. At the end of the day another Discord-bot",
+    "homepage": "",
+    "author": {
+        "name": "Tim-Tech-Dev",
+        "url": "https://github.com/Tim-Tech-Dev"
+    },
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-discord": "0.1.0"
+        }
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "nodecg-io-discord": "0.1.0",
+        "nodecg-io-core": "0.1.0",
+        "@types/node": "^14.6.4",
+        "nodecg": "^1.6.1",
+        "typescript": "^4.0.2"
     }
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "nodecg-io-discord": "0.1.0",
-    "nodecg-io-core": "0.1.0",
-    "@types/node": "^13.13.5",
-    "nodecg": "^1.6.1",
-    "typescript": "^3.8.3"
-  }
 }

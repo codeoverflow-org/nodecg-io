@@ -1,0 +1,35 @@
+{
+    "name": "nodecg-io-slack",
+    "version": "0.1.0",
+    "description": "Allows to connect to your slack. This enables you to e.g. send messages and list all channel. Visit https://api.slack.com/methods to see all methods ",
+    "homepage": "",
+    "author": {
+        "name": "ExtremTechniker",
+        "url": "https://github.com/ExtremTechniker"
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "keywords": [
+        "",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "0.1.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^14.6.4",
+        "nodecg": "^1.6.1",
+        "typescript": "^4.0.2"
+    },
+    "dependencies": {
+        "nodecg-io-core": "0.1.0",
+        "@slack/web-api": "^5.11.0"
+    }
+}

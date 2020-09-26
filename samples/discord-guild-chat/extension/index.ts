@@ -1,29 +1,25 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { DiscordServiceClient } from "nodecg-io-discord/extension";
+import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for discord started");
 
-    const discord = (nodecg.extensions["nodecg-io-discord"] as unknown) as
-        | ServiceProvider<DiscordServiceClient>
-        | undefined;
+    const discord = requireService<DiscordServiceClient>(nodecg, "discord");
 
-    discord?.requireService(
-        "discord-guild-chat",
-        (client) => {
-            nodecg.log.info("Discord client has been updated, adding handlers for messages.");
-            addListeners(client);
-        },
-        () => nodecg.log.info("Discord client has been unset."),
-    );
+    discord?.onAvailable((client) => {
+        nodecg.log.info("Discord client has been updated, adding handlers for messages.");
+        addListeners(nodecg, client);
+    });
+
+    discord?.onUnavailable(() => nodecg.log.info("Discord client has been unset."));
 };
 
-function addListeners(client: DiscordServiceClient) {
-    const dc = client.getRawClient();
+function addListeners(nodecg: NodeCG, client: DiscordServiceClient) {
+    const dc = client.getNativeClient();
 
     dc.on("ready", () => {
-        console.log(`Logged in!`);
+        nodecg.log.info(`Logged in!`);
     });
 
     dc.on("message", (msg) => {

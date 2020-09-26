@@ -1,39 +1,36 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceProvider } from "nodecg-io-core/extension/types";
 import { TwitchServiceClient } from "nodecg-io-twitch/extension";
+import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
-    // This explicit cast determines the client type in the requireService call
-    const twitch = (nodecg.extensions["nodecg-io-twitch"] as unknown) as
-        | ServiceProvider<TwitchServiceClient>
-        | undefined;
+    // Require the twitch service.
+    const twitch = requireService<TwitchServiceClient>(nodecg, "twitch");
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
     const twitchChannels = ["#skate702", "#daniel0611"];
 
-    twitch?.requireService(
-        "twitch-chat",
-        (client) => {
-            nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
+    // Once the service instance has been set we add listeners for messages in the corresponding channels.
+    twitch?.onAvailable((client) => {
+        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
 
-            twitchChannels.forEach((channel) => {
-                addListeners(nodecg, client, channel);
-            });
-        },
-        () => nodecg.log.info("Twitch client has been unset."),
-    );
+        twitchChannels.forEach((channel) => {
+            addListeners(nodecg, client, channel);
+        });
+    });
+
+    twitch?.onUnavailable(() => nodecg.log.info("Twitch client has been unset."));
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
-    const tw = client.getRawClient();
+    const tw = client.getNativeClient();
 
     tw.join(channel)
         .then(() => {
             nodecg.log.info(`Connected to twitch channel "${channel}"`);
-            tw.onPrivmsg((chan, user, message, _msg) => {
+            tw.onMessage((chan, user, message, _msg) => {
                 if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }
@@ -42,7 +39,7 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
         })
         .catch((reason) => {
             nodecg.log.error(`Couldn't connect to twitch: ${reason}.`);
-            nodecg.log.info(`Retrying in 5 seconds.`);
+            nodecg.log.info("Retrying in 5 seconds.");
             setTimeout(() => addListeners(nodecg, client, channel), 5000);
         });
 }

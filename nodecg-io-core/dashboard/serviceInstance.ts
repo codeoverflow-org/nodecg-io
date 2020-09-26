@@ -1,23 +1,21 @@
-/// <reference types="nodecg/types/browser" />
 /// <reference types="monaco-editor/monaco" />
-import { ObjectMap, Service, ServiceInstance } from "nodecg-io-core/extension/types";
 import {
     CreateServiceInstanceMessage,
     DeleteServiceInstanceMessage,
     UpdateInstanceConfigMessage,
 } from "nodecg-io-core/extension/messageManager";
-import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils.js";
-import { objectDeepCopy } from "./utils/deepCopy.js";
+import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
+import { objectDeepCopy } from "./utils/deepCopy";
+import { config, sendAuthenticatedMessage } from "./crypto";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
 
-// Replicants from the core extension
-const services = nodecg.Replicant<Service<unknown, unknown>[]>("services");
-const serviceInstances = nodecg.Replicant<ObjectMap<string, ServiceInstance<unknown, unknown>>>("serviceInstances");
 document.addEventListener("DOMContentLoaded", () => {
-    services.on("change", renderServices);
-    serviceInstances.on("change", renderInstances);
+    config.onChange(() => {
+        renderServices();
+        renderInstances();
+    });
 });
 
 // Inputs
@@ -41,13 +39,11 @@ window.addEventListener("resize", () => {
     updateMonacoLayout();
 });
 export function updateMonacoLayout(): void {
-    if (instanceMonaco !== null) {
-        editor?.layout();
-    }
+    editor?.layout();
 }
 
 export function onMonacoReady(): void {
-    if (instanceMonaco !== null) {
+    if (instanceMonaco) {
         editor = monaco.editor.create(instanceMonaco, {
             theme: "vs-dark",
         });
@@ -83,8 +79,8 @@ export function onInstanceSelectChange(value: string): void {
 }
 
 function showConfig(value: string) {
-    const inst = serviceInstances.value?.[value];
-    const service = services.value?.find((svc) => svc.serviceType === inst?.serviceType);
+    const inst = config.data?.instances[value];
+    const service = config.data?.services.find((svc) => svc.serviceType === inst?.serviceType);
 
     editor?.updateOptions({
         readOnly: false,
@@ -114,7 +110,7 @@ function showConfig(value: string) {
 }
 
 // Save button
-export function saveInstanceConfig(): void {
+export async function saveInstanceConfig(): Promise<void> {
     if (editor === undefined) {
         return;
     }
@@ -123,17 +119,11 @@ export function saveInstanceConfig(): void {
     try {
         const instName = selectInstance.options[selectInstance.selectedIndex].value;
         const config = JSON.parse(editor.getValue());
-        const msg: UpdateInstanceConfigMessage = {
+        const msg: Partial<UpdateInstanceConfigMessage> = {
             config: config,
             instanceName: instName,
         };
-        // noinspection JSIgnoredPromiseFromCall this actually doesn't always result in a Promise
-        nodecg.sendMessage("updateInstanceConfig", msg, (err) => {
-            if (err) {
-                console.log(err);
-                showError(err);
-            }
-        });
+        await sendAuthenticatedMessage("updateInstanceConfig", msg);
     } catch (err) {
         console.log(err);
         showError(err);
@@ -141,66 +131,57 @@ export function saveInstanceConfig(): void {
 }
 
 // Delete button
-export function deleteInstance(): void {
-    const msg: DeleteServiceInstanceMessage = {
+export async function deleteInstance(): Promise<void> {
+    const msg: Partial<DeleteServiceInstanceMessage> = {
         instanceName: selectInstance.options[selectInstance.selectedIndex].value,
     };
 
-    nodecg.sendMessage("deleteServiceInstance", msg).then((r) => {
-        if (r) {
-            selectServiceInstance("select");
-        } else {
-            console.log(
-                `Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`,
-            );
-        }
-    });
+    const deleted = await sendAuthenticatedMessage("deleteServiceInstance", msg);
+    if (deleted) {
+        selectServiceInstance("select");
+    } else {
+        console.log(`Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`);
+    }
 }
 
 // Create button
-export function createInstance(): void {
+export async function createInstance(): Promise<void> {
     const service = selectService.options[selectService.options.selectedIndex].value;
     const name = inputInstanceName.value;
 
-    const msg: CreateServiceInstanceMessage = {
+    const msg: Partial<CreateServiceInstanceMessage> = {
         serviceType: service,
         instanceName: name,
     };
 
-    // noinspection JSIgnoredPromiseFromCall this actually doesn't always result in a Promise
-    nodecg.sendMessage("createServiceInstance", msg, (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            // Give the browser some time to create the new instance select option and to add them to the DOM
-            setTimeout(() => {
-                selectServiceInstance(name);
-            }, 250);
-        }
-    });
+    await sendAuthenticatedMessage("createServiceInstance", msg);
+    // Give the browser some time to create the new instance select option and to add them to the DOM
+    setTimeout(() => {
+        selectServiceInstance(name);
+    }, 250);
 }
 
 // Render functions of Replicants
 
 function renderServices() {
-    if (services.value === undefined) {
+    if (!config.data) {
         return;
     }
     updateOptionsArr(
         selectService,
-        services.value.map((svc) => svc.serviceType),
+        config.data.services.map((svc) => svc.serviceType),
     );
 }
 
 function renderInstances() {
-    if (serviceInstances.value === undefined) {
+    if (!config.data) {
         return;
     }
 
     const previousSelected = selectInstance.options[selectInstance.selectedIndex]?.value || "select";
 
     // Render instances
-    updateOptionsMap(selectInstance, serviceInstances.value);
+    updateOptionsMap(selectInstance, config.data.instances);
 
     // Add new and select options
     const selectOption = document.createElement("option");

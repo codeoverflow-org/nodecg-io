@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "token": {
+            "type": "string",
+            "description": "The telegram api bot token to authenticate the bot with the telegram api."
+        },
+        "polling": {
+            "type": "boolean",
+            "description": "Set true to enable polling. If a Webhook has been set, it will delete automatically."
+        },
+        "webHook": {
+            "type": "boolean",
+            "description": "Set true to enable WebHook."
+        },
+        "onlyFirstMatch": {
+            "type": "boolean",
+            "description": "Set true to stop after first match. Otherwise, all regexps are executed."
+        },
+        "baseApiUrl": {
+            "type": "string",
+            "description": "The baseAPI URI."
+        },
+        "filepath": {
+            "type": "boolean",
+            "description": "Allow passing file-paths as arguments when sending files."
+        }
+    },
+    "required": ["token"]
+}

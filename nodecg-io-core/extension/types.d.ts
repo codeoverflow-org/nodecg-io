@@ -19,7 +19,7 @@ export type ObjectMap<K, V> = Record<K, V | undefined>;
  *              Intended to hold configurations and authentication information that the service needs to provide a client.
  * @typeParam C the type of a client that the service will provide to bundles using {@link createClient}.
  */
-export interface Service<R, C> {
+export interface Service<R, C extends ServiceClient<unknown>> {
     /**
      * User friendly name of the service that should explain the type of service, e.g. "twitch".
      */
@@ -84,28 +84,6 @@ export interface ServiceInstance<R, C> {
 }
 
 /**
- * A object which provides access of a service to a bundle.
- * @typeParam C the client object that the underlying service will give to the bundle.
- */
-export interface ServiceProvider<C> {
-    /**
-     * Registers the bundle as a consumer of the service.
-     *
-     * @param bundleName the name of the bundle that wants to get access to this service.
-     * @param clientAvailable the callback that is called once a service client is available or updated.
-     *                        The bundle should register handlers to the client here and hold a reference to the client if needed.
-     *                        If the bundle already got an client and this is called again, all references to the old client should be dropped.
-     * @param clientUnavailable the callback that is called when the bundle doesn't have a assigned service instance or it failed to create
-     *                          a service client.
-     */
-    readonly requireService(
-        bundleName: string,
-        clientAvailable: (client: C) => void,
-        clientUnavailable: () => void,
-    ): void;
-}
-
-/**
  * A dependency of a bundle on an instance of a service.
  */
 export interface ServiceDependency<C> {
@@ -128,4 +106,14 @@ export interface ServiceDependency<C> {
      * @param client the client of the service or undefined if there is currently no service instance set.
      */
     readonly clientUpdateCallback(client?: C): void;
+}
+
+/**
+ * A common interface between all service clients.
+ * Currently this only ensures that all services allow access to the underlying client
+ * by providing a getNativeClient() function.
+ * @typeParam T the type of the underlying client.
+ */
+export interface ServiceClient<T> {
+    getNativeClient(): T;
 }

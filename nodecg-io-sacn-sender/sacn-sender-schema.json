@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "universe": {
+            "type": "number",
+            "description": "The universe to use. Must be a number within 1-63999"
+        },
+        "port": {
+            "type": "number",
+            "description": "Optional. The multicast port to use. All professional consoles broadcast to the default port 5568."
+        },
+        "reuseAddr": {
+            "type": "boolean",
+            "description": "Optional. Allow multiple programs on your computer to listen to the same sACN universe."
+        }
+    },
+    "required": ["universe"]
+}

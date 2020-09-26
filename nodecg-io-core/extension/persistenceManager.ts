@@ -2,13 +2,13 @@ import { NodeCG, ReplicantServer } from "nodecg/types/server";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";
-import { emptySuccess, error, Result } from "./utils/result";
+import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./types";
 
 /**
  * Models all the data that needs to be persistent in a plain manner.
  */
-interface PersistentData {
+export interface PersistentData {
     /**
      * All instance data that is held by the {@link InstanceManager}.
      */
@@ -22,11 +22,29 @@ interface PersistentData {
 /**
  * Models all the data that needs to be persistent in a encrypted manner.
  */
-interface EncryptedData {
+export interface EncryptedData {
     /**
      * The encrypted format of the data that needs to be stored.
      */
     cipherText?: string;
+}
+
+/**
+ * Decryptes the passed encrypted data using the passed password.
+ * If the password is wrong an error will be returned.
+ *
+ * @param cipherText the ciphertext that needs to be decrypted.
+ * @param password the password for the encrypted data.
+ */
+export function decryptData(cipherText: string, password: string): Result<PersistentData> {
+    try {
+        const decryptedBytes = crypto.AES.decrypt(cipherText, password);
+        const decryptedText = decryptedBytes.toString(crypto.enc.Utf8);
+        const data: PersistentData = JSON.parse(decryptedText);
+        return success(data);
+    } catch {
+        return error("Password isn't correct.");
+    }
 }
 
 /**
@@ -44,29 +62,21 @@ export class PersistenceManager {
         private readonly bundles: BundleManager,
     ) {
         this.encryptedData = nodecg.Replicant("encryptedConfig", {
-            persistent: true, // Is ok since it is encrypted, all other replicants don't store data for this reason.
+            persistent: true, // Is ok since it is encrypted
             defaultValue: {},
         });
     }
 
     /**
-     * Encrypts and saves current state to the persistent replicant.
+     * Checks whether the passed password is correct. Only works if already loaded and a password is already set.
+     * @param password the password which should be checked for correctness
      */
-    private save() {
-        // Check if we have a password to encrypt the data with.
-        if (this.password === undefined) {
-            return;
+    checkPassword(password: string): boolean {
+        if (this.isLoaded()) {
+            return this.password === password;
+        } else {
+            return false;
         }
-
-        // Organise all data that will be encrypted into a single object.
-        const data: PersistentData = {
-            instances: this.instances.getServiceInstances(),
-            bundleDependencies: this.bundles.getBundleDependencies(),
-        };
-
-        // Encrypt and save data to persistent replicant.
-        const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
-        this.encryptedData.value.cipherText = cipherText.toString();
     }
 
     /**
@@ -90,30 +100,28 @@ export class PersistenceManager {
             // No encrypted data has been saved, probably because this is the first startup.
             // Therefore nothing needs to be decrypted and we write a empty config to disk.
             this.nodecg.log.info("No saved configuration found, creating a empty one.");
+            this.password = password;
             this.save();
         } else {
-            try {
-                // Decrypt config
-                this.nodecg.log.info("Decrypting and loading saved configuration.");
-                const decryptedBytes = crypto.AES.decrypt(this.encryptedData.value.cipherText, password);
-                const decryptedText = decryptedBytes.toString(crypto.enc.Utf8);
-                const data: PersistentData = JSON.parse(decryptedText);
-
-                // Load config into the respecting manager
-                // Instances first as the bundle dependency depend upon the existing instances.
-                this.loadServiceInstances(data.instances);
-                this.loadBundleDependencies(data.bundleDependencies);
-            } catch {
-                return error("Password isn't correct.");
+            // Decrypt config
+            this.nodecg.log.info("Decrypting and loading saved configuration.");
+            const data = decryptData(this.encryptedData.value.cipherText, password);
+            if (data.failed) {
+                return data;
             }
+
+            // Load config into the respecting manager
+            // Instances first as the bundle dependency depend upon the existing instances.
+            this.loadServiceInstances(data.result.instances);
+            this.loadBundleDependencies(data.result.bundleDependencies);
         }
 
         // Save password, used in save() function
         this.password = password;
 
         // Register handlers to save when something changes
-        this.instances.onInstanceUpdates(() => this.save());
-        this.bundles.onBundleDependencyUpdates(() => this.save());
+        this.instances.on("change", () => this.save());
+        this.bundles.on("change", () => this.save());
 
         return emptySuccess();
     }
@@ -187,5 +195,25 @@ export class PersistenceManager {
                 }
             });
         }
+    }
+
+    /**
+     * Encrypts and saves current state to the persistent replicant.
+     */
+    private save() {
+        // Check if we have a password to encrypt the data with.
+        if (this.password === undefined) {
+            return;
+        }
+
+        // Organise all data that will be encrypted into a single object.
+        const data: PersistentData = {
+            instances: this.instances.getServiceInstances(),
+            bundleDependencies: this.bundles.getBundleDependencies(),
+        };
+
+        // Encrypt and save data to persistent replicant.
+        const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
+        this.encryptedData.value.cipherText = cipherText.toString();
     }
 }
