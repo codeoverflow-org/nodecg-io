@@ -25,17 +25,18 @@ module.exports = function (nodecg: NodeCG) {
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
-    const tw = client.getNativeClient();
-
-    tw.join(channel)
+    client
+        .join(channel)
         .then(() => {
             nodecg.log.info(`Connected to twitch channel "${channel}"`);
-            tw.onMessage((chan, user, message, _msg) => {
+
+            client.getNativeClient().onMessage((chan, user, message, _msg) => {
                 if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }
             });
-            tw.say(channel, "Hello, nodecg-io speaking here!");
+
+            client.getNativeClient().say(channel, "Hello, nodecg-io speaking here!");
         })
         .catch((reason) => {
             nodecg.log.error(`Couldn't connect to twitch: ${reason}.`);
