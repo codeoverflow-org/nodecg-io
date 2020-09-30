@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "address": {
+            "type": "string",
+            "description": "Hostname and port of TIANE's WebSocket server."
+        }
+    },
+    "required": ["address"]
+}
