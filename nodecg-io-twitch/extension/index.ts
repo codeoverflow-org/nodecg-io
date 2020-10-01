@@ -28,10 +28,13 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClie
     }
 
     stopClient(client: TwitchServiceClient): void {
-        client.getNativeClient().removeListener();
         client
             .getNativeClient()
             .quit()
             .then(() => this.nodecg.log.info("Stopped twitch client successfully."));
+    }
+
+    removeHandlers(client: TwitchServiceClient): void {
+        client.getNativeClient().removeListener();
     }
 }
