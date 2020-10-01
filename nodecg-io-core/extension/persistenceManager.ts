@@ -208,12 +208,38 @@ export class PersistenceManager {
 
         // Organise all data that will be encrypted into a single object.
         const data: PersistentData = {
-            instances: this.instances.getServiceInstances(),
+            instances: this.getServiceInstances(),
             bundleDependencies: this.bundles.getBundleDependencies(),
         };
 
         // Encrypt and save data to persistent replicant.
         const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
         this.encryptedData.value.cipherText = cipherText.toString();
+    }
+
+    /**
+     * Creates a copy of all service instances without the service clients, because those
+     * shouldn't be serialized and don't need to be stored in the encrypted config file.
+     */
+    private getServiceInstances(): ObjectMap<string, ServiceInstance<unknown, unknown>> {
+        const instances = this.instances.getServiceInstances();
+        const copy: ObjectMap<string, ServiceInstance<unknown, unknown>> = {};
+
+        for (const instName in instances) {
+            if (!Object.prototype.hasOwnProperty.call(instances, instName)) {
+                continue;
+            }
+
+            const instance = instances[instName];
+            if (instance) {
+                copy[instName] = {
+                    serviceType: instance?.serviceType,
+                    config: instance?.config,
+                    client: undefined,
+                };
+            }
+        }
+
+        return copy;
     }
 }
