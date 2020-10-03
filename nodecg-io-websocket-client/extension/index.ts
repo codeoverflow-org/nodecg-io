@@ -65,4 +65,8 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
     stopClient(client: WSClientServiceClient): void {
         client.getNativeClient().close();
     }
+
+    removeHandlers(client: WSClientServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }

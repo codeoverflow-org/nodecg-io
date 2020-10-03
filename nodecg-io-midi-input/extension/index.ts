@@ -59,4 +59,8 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
     stopClient(client: MidiInputServiceClient): void {
         client.getNativeClient().close();
     }
+
+    removeHandlers(client: MidiInputServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }

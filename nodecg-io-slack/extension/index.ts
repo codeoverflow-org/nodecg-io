@@ -44,4 +44,8 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
     stopClient(_client: SlackServiceClient): void {
         // Not supported by the client
     }
+
+    removeHandlers(client: SlackServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }

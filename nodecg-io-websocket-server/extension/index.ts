@@ -58,4 +58,13 @@ class WSServerService extends ServiceBundle<WSServerServiceConfig, WSServerServi
     stopClient(client: WSServerServiceClient): void {
         client.getNativeClient().close();
     }
+
+    removeHandlers(client: WSServerServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+        // Drop all clients so that they have to reconnect and the bundles using
+        // ws.on("connection", ...) handlers are re-run
+        client.getNativeClient().clients.forEach((client) => {
+            client.close();
+        });
+    }
 }

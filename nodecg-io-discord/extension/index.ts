@@ -38,4 +38,8 @@ class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceC
         const rawClient = client.getNativeClient();
         rawClient.destroy();
     }
+
+    removeHandlers(client: DiscordServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }
