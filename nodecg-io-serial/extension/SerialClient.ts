@@ -1,5 +1,5 @@
 import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, error, Result } from "nodecg-io-core/extension/utils/result";
+import { success, error, Result } from "nodecg-io-core/extension/utils/result";
 import { ReadLine } from "readline";
 import SerialPort = require("serialport"); // This is neccesary, because serialport only likes require!
 // This is neccesary because serialport does not work with import...
@@ -28,19 +28,19 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
     private serialPort: SerialPort;
     private parser: ReadLine;
     constructor(settings: SerialServiceConfig) {
-        let port = "";
-        SerialServiceClient.inferPort(settings.device).then((value) => {
-            port = value;
+        SerialServiceClient.inferPort(settings.device).then((port) => {
+            if (!port.failed) {
+                this.serialPort = new SerialPort(port.result, settings.connection);
+                this.parser = this.serialPort.pipe(new Readline(settings.protocoll));
+            }
         });
-        this.serialPort = new SerialPort(port, settings.connection);
-        this.parser = this.serialPort.pipe(new Readline(settings.protocoll));
     }
 
     getNativeClient(): SerialPort {
         return this.serialPort;
     }
 
-    static async inferPort(deviceInfo: DeviceInfo): Promise<string> {
+    static async inferPort(deviceInfo: DeviceInfo): Promise<Result<string>> {
         const result = [];
         const devices = await SerialPort.list();
         if ("port" in deviceInfo) {
@@ -49,29 +49,26 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
             // hope this ignore is right.
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             devices.forEach((element: any) => {
-                console.log("path" in element);
                 if ("pnpId" in deviceInfo && "pnpId" in element && element.pnpId === deviceInfo["pnpId"]) {
-                    console.log(element);
-                    result.push(element.path);
+                    result.push(element["path"]);
                 } else if (
                     "manufacturer" in deviceInfo &&
                     "serialNumber" in deviceInfo &&
                     element.manufacturer === deviceInfo["manufacturer"] &&
                     element.serialNumber === deviceInfo["serialNumber"]
                 ) {
-                    console.log(element);
-                    result.push(element.path);
+                    result.push(element["path"]);
                 }
             });
         }
 
         // Check if result isn't empty or ambiguous
         if (result.length < 1) {
-            return "";
+            return error("No device matched the provided criteria.");
         } else if (result.length > 1) {
-            return "";
+            return error("The provided criteria were abiguous.");
         } else {
-            return result[0];
+            return success(result[0]);
         }
     }
 
