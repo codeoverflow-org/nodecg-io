@@ -46,7 +46,6 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         if ("port" in deviceInfo) {
             result.push(deviceInfo.port);
         } else {
-            // hope this ignore is right.
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             devices.forEach((element: any) => {
                 if ("pnpId" in deviceInfo && "pnpId" in element && element.pnpId === deviceInfo["pnpId"]) {
@@ -76,15 +75,18 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         this.serialPort.close();
     }
 
-    send(payload: string): void {
+    send(payload: string): Result<string> {
+        let res = success("OK") as Result<string>;
         this.serialPort.write(payload, (err) => {
             if (err) {
-                throw err;
+                res = error(err);
             }
         });
+        return res;
     }
 
-    onData(callback: (param: string) => string): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onData(callback: (...args: any[]) => void): void {
         this.parser.on("data", callback);
     }
 }
