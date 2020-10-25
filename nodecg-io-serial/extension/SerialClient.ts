@@ -74,14 +74,18 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         this.serialPort.close();
     }
 
-    send(payload: string): Result<string> {
-        let res = success("OK") as Result<string>;
-        this.serialPort.write(payload, (err) => {
-            if (err) {
-                res = error(err);
-            }
+    async send(payload: string): Promise<Result<string>> {
+        const err: Error | undefined | null = await new Promise((resolve) => {
+            this.serialPort.write(payload, (err) => {
+                resolve(err);
+            });
         });
-        return res;
+
+        if (err) {
+            return error(err.message);
+        } else {
+            return success("OK");
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
