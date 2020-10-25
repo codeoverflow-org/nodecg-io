@@ -64,7 +64,7 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         if (result.length < 1) {
             return error("No device matched the provided criteria.");
         } else if (result.length > 1) {
-            return error("The provided criteria were abiguous.");
+            return error("The provided criteria were ambiguous.");
         } else {
             return success(result[0]);
         }
