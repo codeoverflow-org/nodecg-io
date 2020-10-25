@@ -46,7 +46,8 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         if ("port" in deviceInfo) {
             result.push(deviceInfo.port);
         } else {
-            devices.forEach((element) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            devices.forEach((element: any) => {
                 if ("pnpId" in deviceInfo && "pnpId" in element && element.pnpId === deviceInfo["pnpId"]) {
                     result.push(element["path"]);
                 } else if (
