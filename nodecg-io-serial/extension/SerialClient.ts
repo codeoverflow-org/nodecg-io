@@ -86,7 +86,7 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onData(callback: (...args: any[]) => void): void {
+    onData(callback: (data: any) => void): void {
         this.parser.on("data", callback);
     }
 }
