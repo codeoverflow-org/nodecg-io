@@ -1,10 +1,6 @@
 import { ServiceClient } from "nodecg-io-core/extension/types";
 import { success, error, Result } from "nodecg-io-core/extension/utils/result";
-import { ReadLine } from "readline";
 import SerialPort = require("serialport"); // This is neccesary, because serialport only likes require!
-// This is neccesary because serialport does not work with import...
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Readline = require("@serialport/parser-readline");
 
 export interface DeviceInfo {
     port: string;
@@ -13,25 +9,25 @@ export interface DeviceInfo {
     pnpId: string;
 }
 
-interface Protocoll {
+interface Protocol {
     delimiter: string;
-    encoding: string;
+    encoding: "ascii" | "utf8" | "utf16le" | "ucs2" | "base64" | "binary" | "hex";
 }
 
 export interface SerialServiceConfig {
     device: DeviceInfo;
     connection: SerialPort.OpenOptions;
-    protocoll: Protocoll;
+    protocol: Protocol;
 }
 
 export class SerialServiceClient implements ServiceClient<SerialPort> {
     private serialPort: SerialPort;
-    private parser: ReadLine;
+    private parser: SerialPort.parsers.Readline;
     constructor(settings: SerialServiceConfig) {
         SerialServiceClient.inferPort(settings.device).then((port) => {
             if (!port.failed) {
                 this.serialPort = new SerialPort(port.result, settings.connection);
-                this.parser = this.serialPort.pipe(new Readline(settings.protocoll));
+                this.parser = this.serialPort.pipe(new SerialPort.parsers.Readline(settings.protocol));
             }
         });
     }

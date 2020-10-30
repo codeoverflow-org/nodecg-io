@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { SerialServiceClient } from "nodecg-io-serial/extension";
+import { SerialServiceClient } from "nodecg-io-serial/extension/SerialClient";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for serial started");
@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const service = requireService<SerialServiceClient>(nodecg, "serial");
     service?.onAvailable((client) => {
         nodecg.log.info("Client has been updated.");
-        client.onData((data) => {
+        client.onData((data: string) => {
             nodecg.log.info(data);
         });
 
