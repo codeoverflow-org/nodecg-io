@@ -7,6 +7,8 @@ module.exports = (nodecg: NodeCG) => {
     new SerialService(nodecg, "serial", __dirname, "../serial-schema.json").register();
 };
 
+export { SerialServiceClient } from "./SerialClient";
+
 class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClient> {
     async validateConfig(config: SerialServiceConfig): Promise<Result<void>> {
         const result = await SerialServiceClient.inferPort(config.device);
