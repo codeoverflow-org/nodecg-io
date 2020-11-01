@@ -77,24 +77,43 @@ export class InstanceManager extends EventEmitter {
      * @return true if it has been found and deleted, false if it couldn't been found.
      */
     deleteServiceInstance(instanceName: string): boolean {
-        const success = delete this.serviceInstances[instanceName];
-        if (success) {
-            // Save deletion
-            this.emit("change");
+        const instance = this.serviceInstances[instanceName];
+        if (!instance) return false;
 
-            // Remove any assignment of a bundle to this service instance
-            const deps = this.bundles.getBundleDependencies();
-            for (const bundle in deps) {
-                if (!Object.prototype.hasOwnProperty.call(deps, bundle)) {
-                    continue;
+        this.nodecg.log.info(`Deleting service instance "${instanceName}"`);
+
+        if (instance.client) {
+            // Stop service instance
+            this.nodecg.log.info(`Stopping client of service instance "${instanceName}"...`);
+            const svc = this.services.getService(instance.serviceType);
+            if (svc.failed) {
+                this.nodecg.log.error(`Failed to stop client: ${svc.errorMessage}`);
+            } else {
+                this.nodecg.log.info(`Sucessfully stopped client of service instance "${instanceName}".`);
+                try {
+                    svc.result.stopClient(instance.client);
+                } catch (e) {
+                    this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
                 }
-
-                deps[bundle]
-                    ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
-                    .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)); // unset all these
             }
         }
-        return success;
+
+        delete this.serviceInstances[instanceName];
+        // Save deletion
+        this.emit("change");
+
+        // Remove any assignment of a bundle to this service instance
+        const deps = this.bundles.getBundleDependencies();
+        for (const bundle in deps) {
+            if (!Object.prototype.hasOwnProperty.call(deps, bundle)) {
+                continue;
+            }
+
+            deps[bundle]
+                ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
+                .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)); // unset all these
+        }
+        return true;
     }
 
     /**
@@ -198,7 +217,11 @@ export class InstanceManager extends EventEmitter {
         // Stop old client, as it isn't used by any bundle anymore.
         if (oldClient !== undefined) {
             this.nodecg.log.info(`Stopping old unused ${inst.serviceType} client...`);
-            service.stopClient(oldClient);
+            try {
+                service.stopClient(oldClient);
+            } catch (e) {
+                this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
+            }
         }
     }
 }
