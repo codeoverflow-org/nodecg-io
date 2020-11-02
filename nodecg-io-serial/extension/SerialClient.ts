@@ -9,7 +9,7 @@ export interface DeviceInfo {
     pnpId: string;
 }
 
-interface Protocoll {
+interface Protocol {
     delimiter: string;
     encoding: string;
 }
@@ -17,7 +17,7 @@ interface Protocoll {
 export interface SerialServiceConfig {
     device: DeviceInfo;
     connection: SerialPort.OpenOptions;
-    protocoll: Protocoll;
+    protocol: Protocol;
 }
 
 export class SerialServiceClient implements ServiceClient<SerialPort> {
