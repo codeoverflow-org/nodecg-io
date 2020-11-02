@@ -10,8 +10,8 @@ export interface DeviceInfo {
 }
 
 interface Protocol {
-    delimiter: string;
-    encoding: string;
+    delimiter: "\n\r" | "\n";
+    encoding: "ascii" | "utf8" | "utf16le" | "ucs2" | "base64" | "binary" | "hex" | undefined;
 }
 
 export interface SerialServiceConfig {
