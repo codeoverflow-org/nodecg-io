@@ -1,10 +1,6 @@
 import { ServiceClient } from "nodecg-io-core/extension/types";
 import { success, error, Result } from "nodecg-io-core/extension/utils/result";
-import { ReadLine } from "readline";
-import SerialPort = require("serialport"); // This is neccesary, because serialport only likes require!
-// This is neccesary because serialport does not work with import...
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Readline = require("@serialport/parser-readline");
+import * as SerialPort from "serialport"; // This is neccesary, because serialport only likes require!
 
 export interface DeviceInfo {
     port: string;
@@ -26,14 +22,18 @@ export interface SerialServiceConfig {
 
 export class SerialServiceClient implements ServiceClient<SerialPort> {
     private serialPort: SerialPort;
-    private parser: ReadLine;
-    constructor(settings: SerialServiceConfig) {
-        SerialServiceClient.inferPort(settings.device).then((port) => {
-            if (!port.failed) {
-                this.serialPort = new SerialPort(port.result, settings.connection);
-                this.parser = this.serialPort.pipe(new Readline(settings.protocoll));
-            }
-        });
+    private parser: SerialPort.parsers.Readline;
+    constructor(private readonly settings: SerialServiceConfig) {}
+
+    async init(): Promise<void> {
+        const port = await SerialServiceClient.inferPort(this.settings.device);
+        if (!port.failed) {
+            this.serialPort = new SerialPort(port.result, this.settings.connection);
+            this.parser = this.serialPort.pipe(new SerialPort.parsers.Readline(this.settings.protocol));
+        } else {
+            console.log("Could not initialize the serial port");
+            // TODO: handle error properly
+        }
     }
 
     getNativeClient(): SerialPort {
@@ -43,18 +43,18 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
     static async inferPort(deviceInfo: DeviceInfo): Promise<Result<string>> {
         const result = [];
         const devices = await SerialPort.list();
-        if ("port" in deviceInfo) {
+        if (deviceInfo.port) {
             result.push(deviceInfo.port);
         } else {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             devices.forEach((element: any) => {
-                if ("pnpId" in deviceInfo && "pnpId" in element && element.pnpId === deviceInfo["pnpId"]) {
+                if (deviceInfo.pnpId && "pnpId" in element && element.pnpId === deviceInfo.pnpId) {
                     result.push(element["path"]);
                 } else if (
-                    "manufacturer" in deviceInfo &&
-                    "serialNumber" in deviceInfo &&
-                    element.manufacturer === deviceInfo["manufacturer"] &&
-                    element.serialNumber === deviceInfo["serialNumber"]
+                    deviceInfo.manucaturer &&
+                    deviceInfo.serialNumber &&
+                    element.manufacturer === deviceInfo.manucaturer &&
+                    element.serialNumber === deviceInfo.serialNumber
                 ) {
                     result.push(element["path"]);
                 }

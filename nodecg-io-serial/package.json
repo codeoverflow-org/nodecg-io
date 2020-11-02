@@ -10,7 +10,8 @@
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
-        "clean": "tsc -b --clean"
+        "clean": "tsc -b --clean",
+        "list": "npx @serialport/list"
     },
     "keywords": [
         "",
