@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "description": "Exposes serial deivces to nodecg-io",
     "homepage": "",
+    "private": true,
     "author": {
         "name": "Stefan Schmelz",
         "url": "https://github.com/StefanSchmelz"
