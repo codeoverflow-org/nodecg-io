@@ -115,7 +115,7 @@
             "title": "Information about the serial communication.",
             "description": "You can specify how the data should be transfered. With exception of the baud rate you will most likely not have to change any settings in this section if you only are using common microcontroller boards."
         },
-        "protocoll": {
+        "protocol": {
             "type": "object",
             "properties": {
                 "delimiter": {
