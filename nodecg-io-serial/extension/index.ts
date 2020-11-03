@@ -17,7 +17,9 @@ class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClie
     }
 
     async createClient(config: SerialServiceConfig): Promise<Result<SerialServiceClient>> {
-        return success(new SerialServiceClient(config));
+        const client = new SerialServiceClient(config);
+        await client.init();
+        return success(client);
     }
 
     stopClient(client: SerialServiceClient): void {
