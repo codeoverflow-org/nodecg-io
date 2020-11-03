@@ -47,15 +47,15 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
             result.push(deviceInfo.port);
         } else {
             devices.forEach((element) => {
-                if (deviceInfo.pnpId && "pnpId" in element && element.pnpId === deviceInfo.pnpId) {
-                    result.push(element["path"]);
+                if (deviceInfo.pnpId && element.pnpId && element.pnpId === deviceInfo.pnpId) {
+                    result.push(element.path);
                 } else if (
                     deviceInfo.manucaturer &&
                     deviceInfo.serialNumber &&
                     element.manufacturer === deviceInfo.manucaturer &&
                     element.serialNumber === deviceInfo.serialNumber
                 ) {
-                    result.push(element["path"]);
+                    result.push(element.path);
                 }
             });
         }
