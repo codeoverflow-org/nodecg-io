@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, success, Result, error } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { SerialServiceClient, SerialServiceConfig } from "./SerialClient";
 
@@ -18,8 +18,8 @@ class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClie
 
     async createClient(config: SerialServiceConfig): Promise<Result<SerialServiceClient>> {
         const client = new SerialServiceClient(config);
-        await client.init();
-        return success(client);
+        const result = await client.init();
+        return result.failed ? error(result.errorMessage) : success(client);
     }
 
     stopClient(client: SerialServiceClient): void {
