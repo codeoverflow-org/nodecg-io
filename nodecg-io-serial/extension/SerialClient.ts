@@ -1,5 +1,5 @@
 import { ServiceClient } from "nodecg-io-core/extension/types";
-import { success, error, Result, emptySuccess, Success } from "nodecg-io-core/extension/utils/result";
+import { success, error, Result, emptySuccess } from "nodecg-io-core/extension/utils/result";
 import * as SerialPort from "serialport"; // This is neccesary, because serialport only likes require!
 
 export interface DeviceInfo {
@@ -25,14 +25,14 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
     private parser: SerialPort.parsers.Readline;
     constructor(private readonly settings: SerialServiceConfig) {}
 
-    async init(): Promise<Success<void> | Error> {
+    async init(): Promise<Result<void>> {
         const port = await SerialServiceClient.inferPort(this.settings.device);
         if (!port.failed) {
             this.serialPort = new SerialPort(port.result, this.settings.connection);
             this.parser = this.serialPort.pipe(new SerialPort.parsers.Readline(this.settings.protocol));
             return emptySuccess();
         } else {
-            return Error(port.errorMessage);
+            return error(port.errorMessage);
         }
     }
 
