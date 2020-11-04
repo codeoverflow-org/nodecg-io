@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, success, Result, error } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { SerialServiceClient, SerialServiceConfig } from "./SerialClient";
 
