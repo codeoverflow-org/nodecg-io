@@ -10,8 +10,8 @@ export interface DeviceInfo {
 }
 
 interface Protocol {
-    delimiter: string;
-    encoding: "ascii" | "utf8" | "utf16le" | "ucs2" | "base64" | "binary" | "hex";
+    delimiter: "\n\r" | "\n";
+    encoding: "ascii" | "utf8" | "utf16le" | "ucs2" | "base64" | "binary" | "hex" | undefined;
 }
 
 export interface SerialServiceConfig {
@@ -28,7 +28,15 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
     async init(): Promise<Result<void>> {
         const port = await SerialServiceClient.inferPort(this.settings.device);
         if (!port.failed) {
-            this.serialPort = new SerialPort(port.result, this.settings.connection);
+            const openRes = await new Promise<Result<void>>((resolve) => {
+                this.serialPort = new SerialPort(port.result, this.settings.connection, (e) => {
+                    if (e) resolve(error(e.message));
+                    else resolve(emptySuccess());
+                });
+            });
+
+            if (openRes.failed) return openRes;
+
             this.parser = this.serialPort.pipe(new SerialPort.parsers.Readline(this.settings.protocol));
             return emptySuccess();
         } else {
@@ -74,7 +82,7 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         this.serialPort.close();
     }
 
-    async send(payload: string): Promise<Result<string>> {
+    async send(payload: string): Promise<Result<void>> {
         const err: Error | undefined | null = await new Promise((resolve) => {
             this.serialPort.write(payload, (err) => {
                 resolve(err);
@@ -84,7 +92,7 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         if (err) {
             return error(err.message);
         } else {
-            return success("OK");
+            return emptySuccess();
         }
     }
 

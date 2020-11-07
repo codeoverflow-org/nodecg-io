@@ -12,8 +12,7 @@ export { SerialServiceClient } from "./SerialClient";
 class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClient> {
     async validateConfig(config: SerialServiceConfig): Promise<Result<void>> {
         const result = await SerialServiceClient.inferPort(config.device);
-        this.nodecg.log.info(result);
-        return emptySuccess();
+        return result.failed ? error(result.errorMessage) : emptySuccess();
     }
 
     async createClient(config: SerialServiceConfig): Promise<Result<SerialServiceClient>> {
