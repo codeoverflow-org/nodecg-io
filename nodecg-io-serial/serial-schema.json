@@ -128,7 +128,7 @@
                 "encoding": {
                     "type": "string",
                     "default": "utf8",
-                    "enum": ["utf8", "latin1", "ascii", "binary"],
+                    "enum": ["ascii", "utf8", "utf16le", "ucs2", "base64", "binary", "hex"],
                     "title": "Character encoding used to transmit or receive",
                     "description": "The characterencoding specified which bit sequence results in what character."
                 }
