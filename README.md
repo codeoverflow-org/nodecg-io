@@ -29,12 +29,13 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] RCON
 -   [x] sACN Receiver
 -   [x] sACN Sender
--   [ ] Serial Port (Arduino)
+-   [x] Serial Port (Arduino)
 -   [x] Slack WebAPI
 -   [x] Spotify
 -   [x] Elgato Stream Deck
 -   [x] StreamElements
 -   [x] Telegram
+-   [x] TIANE
 -   [ ] TipeeeStream
 -   [x] Twitch Chat
 -   [x] Twitter
@@ -68,44 +69,9 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 
 ```
 nodecg-io/
-+--docs/                         Documentation Repo (clone separately)
-+--nodecg-io-ahk/                AutoHotkey integration
-+--nodecg-io-core/               Core Lib
++--docs/                         Documentation repo (you have to clone this separately)
++--nodecg-io-core/               Core framework
    +--dashboard/                    GUI
-+--nodecg-io-discord/            Discord integration
-+--nodecg-io-intellij/           IntelliJ integration
-+--nodecg-io-irc/                IRC integration
-+--nodecg-io-midi-input/         MIDI input integration
-+--nodecg-io-midi-output/        MIDI output integration
-+--nodecg-io-obs/                OBS integration
-+--nodecg-io-philipshue/         Philips Hue integration
-+--nodecg-io-rcon/               Rcon integration
-+--nodecg-io-sacn-receiver/      sACN input
-+--nodecg-io-sacn-sender/        sACN output
-+--nodecg-io-slack/              Slack WebAPI Integration
-+--nodecg-io-spotify/            Spotify integration
-+--nodecg-io-streamdeck/         Elgato Stream Deck integration
-+--nodecg-io-telegram/           Telegram integration
-+--nodecg-io-twitch/             Twitch integration
-+--nodecg-io-twitter/            Twitter integration
-+--nodecg-io-websocket-client/   WebSocket client integration
-+--nodecg-io-websocket-server/   WebSocket server integration
-+--nodecg-io-xdotool/            Xdotool integration
-+--nodecg-io-youtube/            YouTube integration
-+--samples/                      Samplecode
-   +--ahk-sendcommand/              AutoHotKey Samplecode
-   +--discord-guild-chat/           Discord Samplecode
-   +--intellij-integration/         IntelliJ Samplecode
-   +--obs-scenelist/                OBS Samplecode
-   +--philipshue-lights/            Philips Hue Samplecode
-   +--sacn-receiver-sample/         sACN Receiver Samplecode
-   +--slack-post/                   Slack WebAPI Samplecodes
-   +--streamdeck-rainbow/           Streamdeck Samplecode
-   +--streamelements-events/        Streamelements Samplecode
-   +--telegram-bot/                 Telegram Samplecode
-   +--twitch-chat/                  Twitch Samplecode
-   +--twitter-timeline/             Twitter Samplecode
-   +--websocket-server/             Websocket Server Samplecode
-   +--xdotool-windowminimize/       xdotool Samplecode
-   +--youtube-playlist/             YouTube Samplecode
++--nodecg-io-<service name>/     Service implementations
++--samples/                      Samplecode that shows how each service is used
 ```
