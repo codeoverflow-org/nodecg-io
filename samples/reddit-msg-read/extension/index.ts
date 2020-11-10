@@ -6,9 +6,9 @@ module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for discord started");
 
     const subreddit = "skate702";
-    const discord = requireService<RedditServiceClient>(nodecg, "reddit");
+    const reddit = requireService<RedditServiceClient>(nodecg, "reddit");
 
-    discord?.onAvailable(async (client) => {
+    reddit?.onAvailable(async (client) => {
         nodecg.log.info("Reddit client has been updated.");
         const posts = await client.getNativeClient().threads(subreddit);
         posts.forEach((post) => {
@@ -16,5 +16,5 @@ module.exports = function (nodecg: NodeCG) {
         });
     });
 
-    discord?.onUnavailable(() => nodecg.log.info("Reddit client has been unset."));
+    reddit?.onUnavailable(() => nodecg.log.info("Reddit client has been unset."));
 };

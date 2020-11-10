@@ -24,7 +24,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^14.6.4blueduck",
+        "@types/node": "^14.6.4",
         "nodecg": "^1.6.1",
         "typescript": "^4.0.2"
     },
