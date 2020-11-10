@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "clientId": {
+            "type": "string",
+            "description": "The client id of the reddit app."
+        },
+        "clientSecret": {
+            "type": "string",
+            "description": "The client secret of the reddit app."
+        },
+        "username": {
+            "type": "string",
+            "description": "The username of the user who registered the app."
+        },
+        "password": {
+            "type": "string",
+            "description": "The password of the user who registered the app."
+        }
+    },
+    "required": ["clientId", "clientSecret", "username", "password"]
+}
