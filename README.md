@@ -27,6 +27,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] OBS
 -   [x] Philips Hue
 -   [x] RCON
+-   [x] Reddit
 -   [x] sACN Receiver
 -   [x] sACN Sender
 -   [ ] Serial Port (Arduino)
