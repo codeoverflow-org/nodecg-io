@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { SlackServiceClient } from "nodecg-io-slack/extension";
+import { SlackServiceClient } from "nodecg-io-slack";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

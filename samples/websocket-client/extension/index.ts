@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { WSClientServiceClient } from "nodecg-io-websocket-client/extension";
+import { WSClientServiceClient } from "nodecg-io-websocket-client";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for websocket-client started");

@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { SacnReceiverServiceClient } from "nodecg-io-sacn-receiver/extension";
+import { SacnReceiverServiceClient } from "nodecg-io-sacn-receiver";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

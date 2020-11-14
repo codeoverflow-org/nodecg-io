@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { RconServiceClient } from "nodecg-io-rcon/extension";
+import { RconServiceClient } from "nodecg-io-rcon";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for sACN started");
