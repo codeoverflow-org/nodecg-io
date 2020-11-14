@@ -18,8 +18,8 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class RedditService extends ServiceBundle<RedditServiceConfig, RedditServiceClient> {
-    async validateConfig(config: RedditServiceConfig): Promise<Result<void>> {
-        const credentials = {
+    private buildCredentials(config: RedditServiceConfig) {
+        return {
             user_agent: "nodecg-io",
             o2a: {
                 client_id: config.clientId,
@@ -28,22 +28,16 @@ class RedditService extends ServiceBundle<RedditServiceConfig, RedditServiceClie
                 password: config.password,
             },
         };
-        const client = new RedditAPI(credentials);
+    }
+
+    async validateConfig(config: RedditServiceConfig): Promise<Result<void>> {
+        const client = new RedditAPI(this.buildCredentials(config));
         await client.me();
         return emptySuccess();
     }
 
     async createClient(config: RedditServiceConfig): Promise<Result<RedditServiceClient>> {
-        const credentials = {
-            user_agent: "nodecg-io",
-            o2a: {
-                client_id: config.clientId,
-                client_secret: config.clientSecret,
-                username: config.username,
-                password: config.password,
-            },
-        };
-        const client = new RedditAPI(credentials);
+        const client = new RedditAPI(this.buildCredentials(config));
         await client.me();
         this.nodecg.log.info("Successfully connected to reddit.");
         return success({
