@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "nodecg-io-core": "0.1.0",
-        "@rauschma/stringio": "^1.4.0"
+        "@rauschma/stringio": "^1.4.0",
+        "get-stream": "6.0.0"
     }
 }

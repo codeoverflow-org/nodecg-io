@@ -27,6 +27,20 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         const client = new Android(config.device);
         await client.connect();
         this.nodecg.log.info("Successfully connected to adb.");
+        await client.notify(
+            "Test",
+            "Dies ist ein test. YAY",
+            {
+                importance: "high",
+                mode: "public",
+                bypass_dnd: true,
+                auto_hide: false,
+            },
+            () => {
+                console.log("IT WAS CLICKED!!!");
+            },
+        );
+        this.nodecg.log.info("Test code done.");
         return success({
             getNativeClient() {
                 return client;
