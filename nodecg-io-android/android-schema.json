@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "device": {
+            "type": "string",
+            "description": "The device id of your android device. Find it out via `adb devices`."
+        }
+    },
+    "required": ["device"]
+}
