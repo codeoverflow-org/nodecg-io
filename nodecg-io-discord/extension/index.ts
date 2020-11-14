@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
+import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
 import { Client as DiscordClient } from "discord.js";
 
@@ -17,14 +17,14 @@ module.exports = (nodecg: NodeCG) => {
 class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceClient> {
     async validateConfig(config: DiscordServiceConfig): Promise<Result<void>> {
         const botToken = config.botToken;
-        const client = new DiscordClient();
+        const client = new DiscordClient({ partials: ["CHANNEL", "MESSAGE", "REACTION", "GUILD_MEMBER", "USER"] });
         await client.login(botToken);
         client.destroy();
         return emptySuccess();
     }
 
     async createClient(config: DiscordServiceConfig): Promise<Result<DiscordServiceClient>> {
-        const client = new DiscordClient();
+        const client = new DiscordClient({ partials: ["CHANNEL", "MESSAGE", "REACTION", "GUILD_MEMBER", "USER"] });
         await client.login(config.botToken);
         this.nodecg.log.info("Successfully connected to discord.");
         return success({
