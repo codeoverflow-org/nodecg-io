@@ -2,18 +2,24 @@
     "name": "nodecg-io-core",
     "version": "0.1.0",
     "description": "The core of nodecg-io. Connects everything up.",
-    "homepage": "http://codeoverflow.org",
+    "homepage": "https://nodecg.io",
     "author": {
         "name": "CodeOverflow team",
-        "url": "http://codeoverflow.org"
+        "url": "https://github.com/codeoverflow-org"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-core"
+    },
+    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "keywords": [
-        "",
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {

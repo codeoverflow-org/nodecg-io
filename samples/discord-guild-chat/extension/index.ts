@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { DiscordServiceClient } from "nodecg-io-discord/extension";
+import { DiscordServiceClient } from "nodecg-io-discord";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

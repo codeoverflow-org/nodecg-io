@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { SerialServiceClient } from "nodecg-io-serial/extension/SerialClient";
+import { SerialServiceClient } from "nodecg-io-serial";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for serial started");

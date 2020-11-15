@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { IntelliJServiceClient } from "nodecg-io-intellij/extension";
+import { IntelliJServiceClient } from "nodecg-io-intellij";
 import * as intellij from "nodecg-io-intellij/extension/intellij";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 

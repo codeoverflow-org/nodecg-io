@@ -2,24 +2,30 @@
     "name": "nodecg-io-intellij",
     "version": "0.1.0",
     "description": "Allows to control JetBrains IDEs via nodecg-io",
-    "homepage": "",
+    "homepage": "https://nodecg.io/samples/intellij",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-intellij"
+    },
+    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "keywords": [
-        "",
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "0.1.0"
+            "nodecg-io-core": "^0.1.0"
         }
     },
     "license": "MIT",
@@ -30,7 +36,7 @@
         "@types/node-fetch": "^2.5.7"
     },
     "dependencies": {
-        "nodecg-io-core": "0.1.0",
+        "nodecg-io-core": "^0.1.0",
         "node-fetch": "^2.6.1"
     }
 }

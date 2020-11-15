@@ -1,11 +1,12 @@
 {
     "name": "midi-io",
     "version": "0.1.0",
+    "private": true,
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-midi-input": "0.1.0",
-            "nodecg-io-midi-output": "0.1.0"
+            "nodecg-io-midi-input": "^0.1.0",
+            "nodecg-io-midi-output": "^0.1.0"
         }
     },
     "scripts": {
@@ -16,9 +17,9 @@
     },
     "license": "MIT",
     "dependencies": {
-        "nodecg-io-midi-input": "0.1.0",
-        "nodecg-io-midi-output": "0.1.0",
-        "nodecg-io-core": "0.1.0",
+        "nodecg-io-midi-input": "^0.1.0",
+        "nodecg-io-midi-output": "^0.1.0",
+        "nodecg-io-core": "^0.1.0",
         "@types/node": "^14.6.4",
         "nodecg": "^1.6.1",
         "typescript": "^4.0.2"

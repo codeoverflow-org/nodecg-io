@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { OBSServiceClient } from "nodecg-io-obs/extension";
+import { OBSServiceClient } from "nodecg-io-obs";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for OBS started");

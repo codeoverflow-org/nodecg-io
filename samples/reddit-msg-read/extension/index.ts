@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { RedditServiceClient } from "nodecg-io-reddit/extension";
+import { RedditServiceClient } from "nodecg-io-reddit";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

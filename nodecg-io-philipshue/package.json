@@ -2,23 +2,30 @@
     "name": "nodecg-io-philipshue",
     "version": "0.1.0",
     "description": "Allows you to connect with your Philips Hue bridge. This allows you to control your lights etc.",
-    "homepage": "",
+    "homepage": "https://nodecg.io",
     "author": {
         "name": "TheCrether",
         "url": "https://thecrether.at"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-philipshue"
+    },
+    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "keywords": [
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "0.1.0"
+            "nodecg-io-core": "^0.1.0"
         }
     },
     "license": "MIT",
@@ -30,6 +37,6 @@
     "dependencies": {
         "is-ip": "^3.1.0",
         "node-hue-api": "^4.0.9",
-        "nodecg-io-core": "0.1.0"
+        "nodecg-io-core": "^0.1.0"
     }
 }

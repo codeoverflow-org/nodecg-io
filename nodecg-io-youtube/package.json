@@ -2,24 +2,30 @@
     "name": "nodecg-io-youtube",
     "version": "0.1.0",
     "description": "Allows to connect and interact to youtube",
-    "homepage": "",
+    "homepage": "https://nodecg.io/samples/youtube",
     "author": {
         "name": "CodeOverflow team",
         "url": "http://codeoverflow.org"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-youtube"
+    },
+    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "keywords": [
-        "",
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "0.1.0"
+            "nodecg-io-core": "^0.1.0"
         }
     },
     "license": "MIT",
@@ -32,7 +38,7 @@
         "@types/gapi": "0.0.39",
         "express": "^4.17.1",
         "googleapis": "^59.0.0",
-        "nodecg-io-core": "0.1.0",
+        "nodecg-io-core": "^0.1.0",
         "open": "^7.2.1"
     }
 }

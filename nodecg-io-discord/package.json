@@ -2,24 +2,30 @@
     "name": "nodecg-io-discord",
     "version": "0.1.0",
     "description": "Allows to connect to discord via a discord-bot.",
-    "homepage": "",
+    "homepage": "https://nodecg.io/samples/discord",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-discord"
+    },
+    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "keywords": [
-        "",
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "0.1.0"
+            "nodecg-io-core": "^0.1.0"
         }
     },
     "license": "MIT",
@@ -29,7 +35,7 @@
         "typescript": "^4.0.2"
     },
     "dependencies": {
-        "nodecg-io-core": "0.1.0",
+        "nodecg-io-core": "^0.1.0",
         "discord.js": "^12.3.1"
     }
 }

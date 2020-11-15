@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { MidiInputServiceClient } from "nodecg-io-midi-input/extension";
-import { MidiOutputServiceClient } from "nodecg-io-midi-output/extension";
+import { MidiInputServiceClient } from "nodecg-io-midi-input";
+import { MidiOutputServiceClient } from "nodecg-io-midi-output";
 import { Input, Output } from "easymidi";
 
 module.exports = function (nodecg: NodeCG) {
