@@ -9,21 +9,17 @@ module.exports = function (nodecg: NodeCG) {
 
     pubsub?.onAvailable((client) => {
         nodecg.log.info("PubSub client has been updated, adding handlers for messages.");
-        client.onSubscription(async (message) => {
-            const user = await message.getUser();
-            if (user) console.log(`${user.displayName} just subscribed (${message.cumulativeMonths} months)`);
+        client.onSubscription((message) => {
+            console.log(`${message.userDisplayName} just subscribed (${message.cumulativeMonths} months)`);
         });
-        client.onBits(async (message) => {
-            const user = await message.getUser();
-            if (user) console.log(`${user.displayName} cheered ${message.bits} Bits`);
+        client.onBits((message) => {
+            console.log(`${message.userName} cheered ${message.bits} Bits`);
         });
-        client.onBitsBadgeUnlock(async (message) => {
-            const user = await message.getUser();
-            if (user) console.log(`${user.displayName} just unlocked the ${message.badgeTier} Badge`);
+        client.onBitsBadgeUnlock((message) => {
+            console.log(`${message.userName} just unlocked the ${message.badgeTier} Badge`);
         });
-        client.onRedemption(async (message) => {
-            const user = await message.getUser();
-            if (user) console.log(`${user.displayName} redeemed ${message.rewardName} (${message.message})`);
+        client.onRedemption((message) => {
+            console.log(`${message.userDisplayName} redeemed ${message.rewardName} (${message.message})`);
         });
     });
 
