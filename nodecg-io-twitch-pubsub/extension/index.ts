@@ -10,10 +10,10 @@ export interface PubSubServiceConfig {
 }
 
 module.exports = (nodecg: NodeCG) => {
-    new TwitchService(nodecg, "twitch-pubsub", __dirname, "../pubsub-schema.json").register();
+    new TwitchPubSubService(nodecg, "twitch-pubsub", __dirname, "../pubsub-schema.json").register();
 };
 
-class TwitchService extends ServiceBundle<PubSubServiceConfig, PubSubServiceClient> {
+class TwitchPubSubService extends ServiceBundle<PubSubServiceConfig, PubSubServiceClient> {
     async validateConfig(config: PubSubServiceConfig): Promise<Result<void>> {
         await PubSubServiceClient.getTokenInfo(config); // This will throw a error if the token is invalid
         return emptySuccess();
@@ -25,5 +25,7 @@ class TwitchService extends ServiceBundle<PubSubServiceConfig, PubSubServiceClie
         return success(client);
     }
 
-    stopClient(_: PubSubServiceClient): void {}
+    stopClient(_: PubSubServiceClient): void {
+        // Not possible
+    }
 }
