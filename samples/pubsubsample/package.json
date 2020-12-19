@@ -9,8 +9,8 @@
         }
     },
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w",
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "license": "MIT",
