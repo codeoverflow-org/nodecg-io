@@ -59,7 +59,7 @@ export abstract class ServiceBundle<R, C extends ServiceClient<unknown>> impleme
      * @param config the config which should be validated.
      * @return void if the config passes validation and an error string describing the issue if not.
      */
-    abstract async validateConfig(config: R): Promise<Result<void>>;
+    abstract validateConfig(config: R): Promise<Result<void>>;
 
     /**
      * Creates a client to the service using the validated config.
@@ -68,7 +68,7 @@ export abstract class ServiceBundle<R, C extends ServiceClient<unknown>> impleme
      * @param config the user provided config for the service.
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
-    abstract async createClient(config: R): Promise<Result<C>>;
+    abstract createClient(config: R): Promise<Result<C>>;
 
     /**
      * Stops a client of this service that is not needed anymore.

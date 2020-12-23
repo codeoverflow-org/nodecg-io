@@ -26,7 +26,7 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
             client.once("error", reject);
             client.on("open", () => {
                 client.off("error", reject);
-                resolve();
+                resolve(undefined);
             });
         });
         client.close();
@@ -39,7 +39,7 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
             client.once("error", reject);
             client.on("open", () => {
                 client.off("error", reject);
-                resolve();
+                resolve(undefined);
             });
         });
         this.nodecg.log.info("Successfully connected to the WebSocket server.");

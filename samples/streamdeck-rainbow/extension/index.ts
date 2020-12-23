@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { StreamdeckServiceClient } from "nodecg-io-streamdeck/extension";
+import { StreamdeckServiceClient } from "nodecg-io-streamdeck";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { WSServerServiceClient } from "nodecg-io-websocket-server/extension";
+import { WSServerServiceClient } from "nodecg-io-websocket-server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

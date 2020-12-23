@@ -76,7 +76,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
                         this.startTokenRefreshing(spotifyApi);
 
-                        resolve();
+                        resolve(undefined);
                     },
                     (err) => this.nodecg.log.error("Spotify login error.", err),
                 );

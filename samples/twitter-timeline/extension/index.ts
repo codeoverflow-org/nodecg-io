@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { TwitterServiceClient } from "nodecg-io-twitter/extension";
+import { TwitterServiceClient } from "nodecg-io-twitter";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

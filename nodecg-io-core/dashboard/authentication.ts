@@ -65,7 +65,7 @@ export async function loadFramework(): Promise<void> {
     if (await setPassword(password)) {
         spanPasswordNotice.innerText = "";
     } else {
-        spanPasswordNotice.innerText = "The provided passwort isn't correct!";
+        spanPasswordNotice.innerText = "The provided password isn't correct!";
         inputPassword.value = "";
     }
 
