@@ -246,6 +246,12 @@ export class InstanceManager extends EventEmitter {
             return;
         }
 
+        // Client should be recreated because the Service has no way to reset the handlers.
+        if (svc.result.reCreateClientToRemoveHandlers) {
+            this.updateInstanceClient(inst, instanceName, svc.result);
+            return;
+        }
+
         if (!svc.result.removeHandlers) return; // Service provides no way to remove handlers, thus this service has no handlers
 
         // Remove handlers

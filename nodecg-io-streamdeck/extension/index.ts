@@ -53,4 +53,7 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
     stopClient(client: StreamdeckServiceClient): void {
         client.getNativeClient().close();
     }
+
+    // Can't remove handlers for up/down/error, so re-create the client to get rid of the listeners
+    reCreateClientToRemoveHandlers = true;
 }

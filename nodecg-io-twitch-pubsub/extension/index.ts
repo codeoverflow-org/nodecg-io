@@ -28,4 +28,9 @@ class TwitchPubSubService extends ServiceBundle<PubSubServiceConfig, PubSubServi
     stopClient(_: PubSubServiceClient): void {
         // Not possible
     }
+
+    // Pubsub has no methods to close the connection or remove the handler.
+    // It has no way to access the underlying client too, so handlers that are setup once will currently live forever.
+    // TODO: implement a way to at least stop the client, removing handlers would be nice too
+    recreateClientToRemoveHandlers = true;
 }

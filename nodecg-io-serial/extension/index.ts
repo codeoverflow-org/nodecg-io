@@ -24,4 +24,8 @@ class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClie
     stopClient(client: SerialServiceClient): void {
         client.close();
     }
+
+    removeHandlers(client: SerialServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }
