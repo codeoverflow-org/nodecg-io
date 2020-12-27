@@ -10,7 +10,7 @@ export interface TwitchServiceConfig {
 export { TwitchServiceClient } from "./twitchClient";
 
 module.exports = (nodecg: NodeCG) => {
-    new TwitchService(nodecg, "twitch", __dirname, "../twitch-schema.json").register();
+    new TwitchService(nodecg, "twitch-chat", __dirname, "../twitch-schema.json").register();
 };
 
 class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClient> {
