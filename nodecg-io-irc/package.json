@@ -30,12 +30,12 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/irc": "^0.3.33",
         "@types/node": "^14.14.13",
         "nodecg": "^1.7.4",
         "typescript": "^4.1.3"
     },
     "dependencies": {
+        "@types/irc": "^0.3.33",
         "irc": "^0.5.2",
         "nodecg-io-core": "^0.1.0"
     }
