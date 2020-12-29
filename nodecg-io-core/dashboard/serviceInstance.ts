@@ -146,6 +146,7 @@ export async function deleteInstance(): Promise<void> {
 
 // Create button
 export async function createInstance(): Promise<void> {
+    showError(undefined);
     const service = selectService.options[selectService.options.selectedIndex].value;
     const name = inputInstanceName.value;
 
@@ -154,7 +155,13 @@ export async function createInstance(): Promise<void> {
         instanceName: name,
     };
 
-    await sendAuthenticatedMessage("createServiceInstance", msg);
+    try {
+        await sendAuthenticatedMessage("createServiceInstance", msg);
+    } catch (e) {
+        showError(e);
+        return;
+    }
+
     // Give the browser some time to create the new instance select option and to add them to the DOM
     setTimeout(() => {
         selectServiceInstance(name);
