@@ -29,7 +29,7 @@ export function renderBundleDeps(): void {
         return;
     }
 
-    const bundle = selectBundle.options[selectBundle.selectedIndex].value;
+    const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
     const bundleDependencies = config.data.bundles[bundle];
     if (bundleDependencies === undefined) {
         return;
