@@ -49,7 +49,7 @@ export function renderInstanceSelector(): void {
     }
 
     // Rendering options
-    const serviceType = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex].value;
+    const serviceType = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex]?.value;
     const instances = ["none"];
 
     for (const instName in config.data.instances) {
@@ -64,7 +64,7 @@ export function renderInstanceSelector(): void {
     updateOptionsArr(selectBundleInstance, instances);
 
     // Selecting option of current set instance
-    const bundle = selectBundle.options[selectBundle.selectedIndex].value;
+    const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
     const currentInstance = config.data.bundles[bundle]?.find((dep) => dep.serviceType === serviceType)
         ?.serviceInstance;
     let index = 0;
@@ -78,9 +78,9 @@ export function renderInstanceSelector(): void {
 }
 
 export async function setServiceDependency(): Promise<void> {
-    const bundle = selectBundle.options[selectBundle.selectedIndex].value;
-    const instance = selectBundleInstance.options[selectBundleInstance.selectedIndex].value;
-    const type = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex].value;
+    const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
+    const instance = selectBundleInstance.options[selectBundleInstance.selectedIndex]?.value;
+    const type = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex]?.value;
 
     const msg: Partial<SetServiceDependencyMessage> = {
         bundleName: bundle,

@@ -117,7 +117,7 @@ export async function saveInstanceConfig(): Promise<void> {
     showError(undefined);
 
     try {
-        const instName = selectInstance.options[selectInstance.selectedIndex].value;
+        const instName = selectInstance.options[selectInstance.selectedIndex]?.value;
         const config = JSON.parse(editor.getValue());
         const msg: Partial<UpdateInstanceConfigMessage> = {
             config: config,
@@ -133,7 +133,7 @@ export async function saveInstanceConfig(): Promise<void> {
 // Delete button
 export async function deleteInstance(): Promise<void> {
     const msg: Partial<DeleteServiceInstanceMessage> = {
-        instanceName: selectInstance.options[selectInstance.selectedIndex].value,
+        instanceName: selectInstance.options[selectInstance.selectedIndex]?.value,
     };
 
     const deleted = await sendAuthenticatedMessage("deleteServiceInstance", msg);
@@ -147,7 +147,7 @@ export async function deleteInstance(): Promise<void> {
 // Create button
 export async function createInstance(): Promise<void> {
     showError(undefined);
-    const service = selectService.options[selectService.options.selectedIndex].value;
+    const service = selectService.options[selectService.options.selectedIndex]?.value;
     const name = inputInstanceName.value;
 
     const msg: Partial<CreateServiceInstanceMessage> = {
@@ -210,7 +210,7 @@ function renderInstances() {
 function selectServiceInstance(instanceName: string) {
     for (let i = 0; i < selectInstance.options.length; i++) {
         const opt = selectInstance.options[i];
-        if (opt.value === instanceName) {
+        if (opt?.value === instanceName) {
             selectInstance.selectedIndex = i;
             onInstanceSelectChange(instanceName);
             break;
