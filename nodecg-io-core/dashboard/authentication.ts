@@ -9,6 +9,7 @@ const inputPassword = document.getElementById("inputPassword") as HTMLInputEleme
 const divAuth = document.getElementById("divAuth");
 const divMain = document.getElementById("divMain");
 const spanPasswordNotice = document.getElementById("spanPasswordNotice") as HTMLSpanElement;
+const pFirstStartup = document.getElementById("pFirstStartup");
 
 // Add key listener to password input
 inputPassword?.addEventListener("keyup", function (event) {
@@ -25,12 +26,14 @@ nodecg.socket.on("connect", () => {
         loadFramework();
     } else {
         updateLoadedStatus();
+        updateFirstStartupLabel();
     }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     // Render loaded status for initial load
     updateLoadedStatus();
+    updateFirstStartupLabel();
 });
 
 export async function isLoaded(): Promise<boolean> {
@@ -70,4 +73,13 @@ export async function loadFramework(): Promise<void> {
     }
 
     updateLoadedStatus();
+}
+
+async function updateFirstStartupLabel(): Promise<void> {
+    const isFirstStartup: boolean = await nodecg.sendMessage("isFirstStartup");
+    if (isFirstStartup) {
+        pFirstStartup?.classList.add("hidden");
+    } else {
+        pFirstStartup?.classList.remove("hidden");
+    }
 }
