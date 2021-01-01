@@ -48,6 +48,10 @@ export class InstanceManager extends EventEmitter {
      * @return void if everything went fine and a string describing the issue if not
      */
     createServiceInstance(serviceType: string, instanceName: string): Result<void> {
+        if (!instanceName) {
+            return error("Instance name must not be empty.");
+        }
+
         // Check if a instance with the same name already exists.
         if (this.serviceInstances[instanceName] !== undefined) {
             return error("A service instance with the same name already exists.");

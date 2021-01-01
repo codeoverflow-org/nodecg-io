@@ -12,7 +12,7 @@ const spanPasswordNotice = document.getElementById("spanPasswordNotice") as HTML
 
 // Add key listener to password input
 inputPassword?.addEventListener("keyup", function (event) {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 || event.key === "Enter") {
         event.preventDefault();
         loadFramework();
     }

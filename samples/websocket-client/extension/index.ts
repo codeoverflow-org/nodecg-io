@@ -6,17 +6,24 @@ module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for websocket-client started");
 
     const service = requireService<WSClientServiceClient>(nodecg, "websocket-client");
+    let interval: NodeJS.Timeout | undefined;
+
     service?.onAvailable((client) => {
         nodecg.log.info("Client has been updated.");
 
         client.onMessage((message) => {
             nodecg.log.info(`recieved message "${message}"`);
         });
-        setInterval(() => {
+        interval = setInterval(() => {
             nodecg.log.info("Sending ping ...");
             client.send("ping");
         }, 10000);
     });
 
-    service?.onUnavailable(() => nodecg.log.info("Client has been unset."));
+    service?.onUnavailable(() => {
+        nodecg.log.info("Client has been unset.");
+        if (interval) {
+            clearInterval(interval);
+        }
+    });
 };
