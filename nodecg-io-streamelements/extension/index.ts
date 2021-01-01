@@ -31,4 +31,8 @@ class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, S
     stopClient(client: StreamElementsServiceClient) {
         client.getNativeClient().close();
     }
+
+    removeHandlers(client: StreamElementsServiceClient) {
+        client.getNativeClient().removeAllListeners();
+    }
 }

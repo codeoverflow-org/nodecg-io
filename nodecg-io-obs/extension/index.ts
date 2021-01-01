@@ -47,4 +47,8 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
     stopClient(client: OBSServiceClient) {
         client.getNativeClient().disconnect();
     }
+
+    removeHandlers(client: OBSServiceClient) {
+        client.getNativeClient().removeAllListeners();
+    }
 }

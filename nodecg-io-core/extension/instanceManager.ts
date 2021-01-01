@@ -19,6 +19,9 @@ export class InstanceManager extends EventEmitter {
         private readonly bundles: BundleManager,
     ) {
         super();
+        bundles.on("reregisterInstance", (serviceInstance?: string) =>
+            this.reregisterHandlersOfInstance(serviceInstance),
+        );
     }
 
     /**
@@ -199,17 +202,14 @@ export class InstanceManager extends EventEmitter {
 
                 // Check if a error happened while creating the client
                 if (client.failed) {
-                    this.nodecg.log.error(
-                        `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
-                    );
-                    inst.client = undefined;
+                    throw client.errorMessage; // Error logging happens in catch block
                 } else {
                     // Update service instance object
                     inst.client = client.result;
                 }
             } catch (err) {
                 this.nodecg.log.error(
-                    `The "${inst.serviceType}" service function produced an error while creating a client: ${err}`,
+                    `The "${inst.serviceType}" service produced an error while creating a client: ${err}`,
                 );
                 inst.client = undefined;
             }
@@ -227,5 +227,47 @@ export class InstanceManager extends EventEmitter {
                 this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
             }
         }
+    }
+
+    /**
+     * Removes all handlers from the service client of the instance and lets bundles readd their handlers.
+     * @param instanceName the name of the instance which handlers should be re-registred
+     */
+    private reregisterHandlersOfInstance(instanceName?: string): void {
+        if (!instanceName) return;
+
+        const inst = this.getServiceInstance(instanceName);
+        if (!inst) {
+            this.nodecg.log.error(`Can't re-register handlers of instance "${instanceName}": instance not found`);
+            return;
+        }
+
+        const svc = this.services.getService(inst.serviceType);
+        if (svc.failed) {
+            this.nodecg.log.error(
+                `Can't reregister handlers of instance "${instanceName}": can't get service: ${svc.errorMessage}`,
+            );
+            return;
+        }
+
+        // Client should be recreated because the Service has no way to reset the handlers.
+        if (svc.result.reCreateClientToRemoveHandlers) {
+            this.updateInstanceClient(inst, instanceName, svc.result);
+            return;
+        }
+
+        if (!svc.result.removeHandlers) return; // Service provides no way to remove handlers, thus this service has no handlers
+
+        // Remove handlers
+        try {
+            svc.result.removeHandlers(inst.client);
+        } catch (err) {
+            this.nodecg.log.error(
+                `Can't re-register handlers of instance "${instanceName}": error while removing handlers: ${err.toString()}`,
+            );
+        }
+        // Readd handlers by running the `onAvailable` function of all bundles
+        // that are using this service instance.
+        this.bundles.handleInstanceUpdate(inst, instanceName);
     }
 }

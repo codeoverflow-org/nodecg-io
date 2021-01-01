@@ -81,6 +81,7 @@ export class BundleManager extends EventEmitter {
         if (svcDependency === undefined) {
             return error(`Bundle "${bundleName} doesn't depend on the "${instance.serviceType}" service.`);
         }
+        const oldInstance = svcDependency.serviceInstance;
 
         // Update service instance of service dependency, remove client update callback from old service instance (if applicable)
         // and add the callback to the new instance.
@@ -88,7 +89,9 @@ export class BundleManager extends EventEmitter {
 
         // Let the bundle update his reference to the client
         svcDependency.clientUpdateCallback(instance.client);
+
         this.emit("change");
+        this.emit("reregisterInstance", oldInstance);
         return emptySuccess();
     }
 
@@ -105,10 +108,15 @@ export class BundleManager extends EventEmitter {
         const svcDependency = bundle?.find((svcDep) => svcDep.serviceType === serviceType);
 
         if (svcDependency !== undefined) {
+            const oldInstance = svcDependency.serviceInstance;
+
             // Unset service instance and let the bundle know that it hasn't access to this service anymore.
             svcDependency.serviceInstance = undefined;
             svcDependency.clientUpdateCallback(undefined);
+
             this.emit("change");
+            this.emit("reregisterInstance", oldInstance);
+
             return true;
         }
 

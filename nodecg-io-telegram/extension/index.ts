@@ -55,4 +55,10 @@ class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServi
             client.getNativeClient().closeWebHook();
         }
     }
+
+    removeHandlers(client: TelegramServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+        client.getNativeClient().clearTextListeners();
+        client.getNativeClient().clearReplyListeners();
+    }
 }

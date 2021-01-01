@@ -108,6 +108,6 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
     }
 
     stopClient(_client: SpotifyServiceClient): void {
-        // Not supported from the client
+        // Not needed, it is just a stateless http client
     }
 }

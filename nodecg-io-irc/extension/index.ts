@@ -62,6 +62,10 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
             this.nodecg.log.info("Stopped IRC client successfully.");
         });
     }
+
+    removeHandlers(client: IRCServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }
 
 function sendMessage(client: IRCClient, target: string, message: string): void {
