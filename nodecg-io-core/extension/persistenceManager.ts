@@ -87,6 +87,14 @@ export class PersistenceManager {
     }
 
     /**
+     * Returns whether this is the first startup aka. whether any encrypted data has been saved.
+     * If this returns true {{@link load}} will accept any password and use it to encrypt the configuration.
+     */
+    isFirstStartup(): boolean {
+        return this.encryptedData.value.cipherText !== undefined;
+    }
+
+    /**
      * Decrypts and loads the locally stored configuration using the passed password.
      * @param password the password of the encrypted config.
      * @return success if the password was correct and loading has been successful and an error if the password is wrong.

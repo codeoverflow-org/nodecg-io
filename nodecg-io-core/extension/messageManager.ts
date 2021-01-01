@@ -141,6 +141,12 @@ export class MessageManager {
                 ack?.(undefined, result);
             }
         });
+
+        this.nodecg.listenFor("isFirstStartup", (_msg: undefined, ack) => {
+            if (!ack?.handled) {
+                ack?.(undefined, this.persist.isFirstStartup());
+            }
+        });
     }
 
     authRequired<M extends PasswordMessage, V>(handler: ListenForCallback<M, V>): ListenForCallback<M, V> {
