@@ -13,7 +13,19 @@ interface SpotifyServiceConfig {
     scopes: Array<string>;
 }
 
-export type SpotifyServiceClient = ServiceClient<SpotifyWebApi>;
+export class SpotifyServiceClient implements ServiceClient<SpotifyWebApi> {
+    constructor(private client: SpotifyWebApi, private refreshInterval: NodeJS.Timeout) {}
+
+    getNativeClient(): SpotifyWebApi {
+        return this.client;
+    }
+
+    stopTokenRefreshing(): void {
+        if (this.refreshInterval) {
+            clearInterval(this.refreshInterval);
+        }
+    }
+}
 
 let callbackUrl = "";
 const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";
@@ -49,32 +61,26 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
         // Create and call authorization URL
         const authorizeURL = spotifyApi.createAuthorizeURL(config.scopes, defaultState);
-        open(authorizeURL).then();
+        await open(authorizeURL);
 
         await promise;
         this.nodecg.log.info("Successfully connected to Spotify!");
 
-        return success({
-            getNativeClient() {
-                return spotifyApi;
-            },
-        });
+        return success(new SpotifyServiceClient(spotifyApi, this.startTokenRefreshing(spotifyApi)));
     }
 
-    mountCallBackURL(spotifyApi: SpotifyWebApi) {
+    private mountCallBackURL(spotifyApi: SpotifyWebApi) {
         return new Promise((resolve) => {
             const router: Router = express.Router();
 
             router.get(callbackEndpoint, (req, res) => {
                 // Get auth code with is returned as url query parameter if everything was successful
-                const authCode: string = req.query.code?.toString() || "";
+                const authCode: string = req.query.code?.toString() ?? "";
 
                 spotifyApi?.authorizationCodeGrant(authCode).then(
                     (data) => {
                         spotifyApi.setAccessToken(data.body["access_token"]);
                         spotifyApi.setRefreshToken(data.body["refresh_token"]);
-
-                        this.startTokenRefreshing(spotifyApi);
 
                         resolve(undefined);
                     },
@@ -91,8 +97,8 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         });
     }
 
-    startTokenRefreshing(spotifyApi: SpotifyWebApi) {
-        setInterval(() => {
+    private startTokenRefreshing(spotifyApi: SpotifyWebApi): NodeJS.Timeout {
+        return setInterval(() => {
             spotifyApi.refreshAccessToken().then(
                 (data) => {
                     this.nodecg.log.info("The spotify access token has been refreshed!");
@@ -107,7 +113,8 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         }, refreshInterval);
     }
 
-    stopClient(_client: SpotifyServiceClient): void {
-        // Not needed, it is just a stateless http client
+    stopClient(client: SpotifyServiceClient): void {
+        // Client can't be stopped, it is just a stateless http client but token refreshing should be stopped
+        client.stopTokenRefreshing();
     }
 }
