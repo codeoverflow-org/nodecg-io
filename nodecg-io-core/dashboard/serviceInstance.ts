@@ -211,8 +211,11 @@ function selectServiceInstance(instanceName: string) {
     for (let i = 0; i < selectInstance.options.length; i++) {
         const opt = selectInstance.options[i];
         if (opt?.value === instanceName) {
-            selectInstance.selectedIndex = i;
-            onInstanceSelectChange(instanceName);
+            // If already selected a re-render monaco is not needed
+            if (selectInstance.selectedIndex !== i) {
+                selectInstance.selectedIndex = i;
+                onInstanceSelectChange(instanceName);
+            }
             break;
         }
     }
