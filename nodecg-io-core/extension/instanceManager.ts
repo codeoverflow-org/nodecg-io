@@ -166,10 +166,10 @@ export class InstanceManager extends EventEmitter {
         inst.config = config;
 
         // Update client of this instance using the new config.
-        await this.updateInstanceClient(inst, instanceName, service.result);
+        const updateResult = await this.updateInstanceClient(inst, instanceName, service.result);
 
         this.emit("change");
-        return emptySuccess();
+        return updateResult;
     }
 
     /**
@@ -183,7 +183,7 @@ export class InstanceManager extends EventEmitter {
         inst: ServiceInstance<R, C>,
         instanceName: string,
         service: Service<R, C>,
-    ): Promise<void> {
+    ): Promise<Result<void>> {
         const oldClient = inst.client;
 
         if (inst.config === undefined) {
@@ -194,7 +194,7 @@ export class InstanceManager extends EventEmitter {
             const service = this.services.getService(inst.serviceType);
             if (service.failed) {
                 inst.client = undefined;
-                return;
+                return service;
             }
 
             try {
@@ -208,10 +208,10 @@ export class InstanceManager extends EventEmitter {
                     inst.client = client.result;
                 }
             } catch (err) {
-                this.nodecg.log.error(
-                    `The "${inst.serviceType}" service produced an error while creating a client: ${err}`,
-                );
+                const msg = `The "${inst.serviceType}" service produced an error while creating a client: ${err}`;
+                this.nodecg.log.error(msg);
                 inst.client = undefined;
+                return error(msg);
             }
         }
 
@@ -227,6 +227,8 @@ export class InstanceManager extends EventEmitter {
                 this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
             }
         }
+
+        return emptySuccess();
     }
 
     /**
