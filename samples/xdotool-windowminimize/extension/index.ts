@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { XdotoolServiceClient } from "nodecg-io-xdotool/extension";
+import { XdotoolServiceClient } from "nodecg-io-xdotool";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

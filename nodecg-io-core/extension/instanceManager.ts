@@ -19,6 +19,9 @@ export class InstanceManager extends EventEmitter {
         private readonly bundles: BundleManager,
     ) {
         super();
+        bundles.on("reregisterInstance", (serviceInstance?: string) =>
+            this.reregisterHandlersOfInstance(serviceInstance),
+        );
     }
 
     /**
@@ -45,6 +48,10 @@ export class InstanceManager extends EventEmitter {
      * @return void if everything went fine and a string describing the issue if not
      */
     createServiceInstance(serviceType: string, instanceName: string): Result<void> {
+        if (!instanceName) {
+            return error("Instance name must not be empty.");
+        }
+
         // Check if a instance with the same name already exists.
         if (this.serviceInstances[instanceName] !== undefined) {
             return error("A service instance with the same name already exists.");
@@ -77,24 +84,43 @@ export class InstanceManager extends EventEmitter {
      * @return true if it has been found and deleted, false if it couldn't been found.
      */
     deleteServiceInstance(instanceName: string): boolean {
-        const success = delete this.serviceInstances[instanceName];
-        if (success) {
-            // Save deletion
-            this.emit("change");
+        const instance = this.serviceInstances[instanceName];
+        if (!instance) return false;
 
-            // Remove any assignment of a bundle to this service instance
-            const deps = this.bundles.getBundleDependencies();
-            for (const bundle in deps) {
-                if (!Object.prototype.hasOwnProperty.call(deps, bundle)) {
-                    continue;
+        this.nodecg.log.info(`Deleting service instance "${instanceName}"`);
+
+        if (instance.client) {
+            // Stop service instance
+            this.nodecg.log.info(`Stopping client of service instance "${instanceName}"...`);
+            const svc = this.services.getService(instance.serviceType);
+            if (svc.failed) {
+                this.nodecg.log.error(`Failed to stop client: ${svc.errorMessage}`);
+            } else {
+                this.nodecg.log.info(`Sucessfully stopped client of service instance "${instanceName}".`);
+                try {
+                    svc.result.stopClient(instance.client);
+                } catch (e) {
+                    this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
                 }
-
-                deps[bundle]
-                    ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
-                    .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)); // unset all these
             }
         }
-        return success;
+
+        delete this.serviceInstances[instanceName];
+        // Save deletion
+        this.emit("change");
+
+        // Remove any assignment of a bundle to this service instance
+        const deps = this.bundles.getBundleDependencies();
+        for (const bundle in deps) {
+            if (!Object.prototype.hasOwnProperty.call(deps, bundle)) {
+                continue;
+            }
+
+            deps[bundle]
+                ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
+                .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)); // unset all these
+        }
+        return true;
     }
 
     /**
@@ -140,10 +166,10 @@ export class InstanceManager extends EventEmitter {
         inst.config = config;
 
         // Update client of this instance using the new config.
-        await this.updateInstanceClient(inst, instanceName, service.result);
+        const updateResult = await this.updateInstanceClient(inst, instanceName, service.result);
 
         this.emit("change");
-        return emptySuccess();
+        return updateResult;
     }
 
     /**
@@ -157,7 +183,7 @@ export class InstanceManager extends EventEmitter {
         inst: ServiceInstance<R, C>,
         instanceName: string,
         service: Service<R, C>,
-    ): Promise<void> {
+    ): Promise<Result<void>> {
         const oldClient = inst.client;
 
         if (inst.config === undefined) {
@@ -168,7 +194,7 @@ export class InstanceManager extends EventEmitter {
             const service = this.services.getService(inst.serviceType);
             if (service.failed) {
                 inst.client = undefined;
-                return;
+                return service;
             }
 
             try {
@@ -176,19 +202,16 @@ export class InstanceManager extends EventEmitter {
 
                 // Check if a error happened while creating the client
                 if (client.failed) {
-                    this.nodecg.log.error(
-                        `The "${inst.serviceType}" service produced an error while creating a client: ${client.errorMessage}`,
-                    );
-                    inst.client = undefined;
+                    throw client.errorMessage; // Error logging happens in catch block
                 } else {
                     // Update service instance object
                     inst.client = client.result;
                 }
             } catch (err) {
-                this.nodecg.log.error(
-                    `The "${inst.serviceType}" service function produced an error while creating a client: ${err}`,
-                );
+                const msg = `The "${inst.serviceType}" service produced an error while creating a client: ${err}`;
+                this.nodecg.log.error(msg);
                 inst.client = undefined;
+                return error(msg);
             }
         }
 
@@ -198,7 +221,55 @@ export class InstanceManager extends EventEmitter {
         // Stop old client, as it isn't used by any bundle anymore.
         if (oldClient !== undefined) {
             this.nodecg.log.info(`Stopping old unused ${inst.serviceType} client...`);
-            service.stopClient(oldClient);
+            try {
+                service.stopClient(oldClient);
+            } catch (e) {
+                this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
+            }
         }
+
+        return emptySuccess();
+    }
+
+    /**
+     * Removes all handlers from the service client of the instance and lets bundles readd their handlers.
+     * @param instanceName the name of the instance which handlers should be re-registred
+     */
+    private reregisterHandlersOfInstance(instanceName?: string): void {
+        if (!instanceName) return;
+
+        const inst = this.getServiceInstance(instanceName);
+        if (!inst) {
+            this.nodecg.log.error(`Can't re-register handlers of instance "${instanceName}": instance not found`);
+            return;
+        }
+
+        const svc = this.services.getService(inst.serviceType);
+        if (svc.failed) {
+            this.nodecg.log.error(
+                `Can't reregister handlers of instance "${instanceName}": can't get service: ${svc.errorMessage}`,
+            );
+            return;
+        }
+
+        // Client should be recreated because the Service has no way to reset the handlers.
+        if (svc.result.reCreateClientToRemoveHandlers) {
+            this.updateInstanceClient(inst, instanceName, svc.result);
+            return;
+        }
+
+        if (!svc.result.removeHandlers) return; // Service provides no way to remove handlers, thus this service has no handlers
+
+        // Remove handlers
+        try {
+            svc.result.removeHandlers(inst.client);
+        } catch (err) {
+            this.nodecg.log.error(
+                `Can't re-register handlers of instance "${instanceName}": error while removing handlers: ${err.toString()}`,
+            );
+        }
+        // Readd handlers by running the `onAvailable` function of all bundles
+        // that are using this service instance.
+        this.bundles.handleInstanceUpdate(inst, instanceName);
     }
 }

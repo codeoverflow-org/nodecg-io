@@ -10,7 +10,7 @@ export async function connectTiane(address: string): Promise<Tiane> {
         websocket.once("error", reject);
         websocket.on("open", () => {
             websocket.off("error", reject);
-            resolve();
+            resolve(undefined);
         });
     });
 

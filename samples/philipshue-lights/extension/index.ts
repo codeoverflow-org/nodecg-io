@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { PhilipsHueServiceClient } from "nodecg-io-philipshue/extension";
+import { PhilipsHueServiceClient } from "nodecg-io-philipshue";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG): void {

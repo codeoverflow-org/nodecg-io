@@ -1,8 +1,8 @@
 {
-    "name": "sacn-receiver-sample",
+    "name": "sacn-receiver",
     "version": "0.1.0",
     "description": "Example nodecg-io-sacn-receiver Bundle. Receives data via sACN",
-    "homepage": "",
+    "private": true,
     "author": {
         "name": "Tim-Tech-Dev",
         "url": "https://github.com/Tim-Tech-Dev"
@@ -10,7 +10,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-sacn-receiver": "0.1.0"
+            "nodecg-io-sacn-receiver": "^0.1.0"
         }
     },
     "scripts": {
@@ -20,10 +20,10 @@
     },
     "license": "MIT",
     "dependencies": {
-        "nodecg-io-sacn-receiver": "0.1.0",
-        "nodecg-io-core": "0.1.0",
-        "@types/node": "^14.6.4",
-        "nodecg": "^1.6.1",
-        "typescript": "^4.0.2"
+        "@types/node": "^14.14.13",
+        "nodecg": "^1.7.4",
+        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-sacn-receiver": "^0.1.0",
+        "typescript": "^4.1.3"
     }
 }

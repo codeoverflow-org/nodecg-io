@@ -31,7 +31,11 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
 
     async createClient(config: OBSServiceConfig): Promise<Result<OBSServiceClient>> {
         const client = new OBSWebSocket();
-        await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+        try {
+            await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+        } catch (e) {
+            return error(e.error);
+        }
 
         return success({
             getNativeClient() {
@@ -42,5 +46,9 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
 
     stopClient(client: OBSServiceClient) {
         client.getNativeClient().disconnect();
+    }
+
+    removeHandlers(client: OBSServiceClient) {
+        client.getNativeClient().removeAllListeners();
     }
 }

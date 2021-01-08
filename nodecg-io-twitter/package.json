@@ -2,35 +2,41 @@
     "name": "nodecg-io-twitter",
     "version": "0.1.0",
     "description": "Allows to connect to twitter, send, retweet or like messages.",
-    "homepage": "",
+    "homepage": "https://nodecg.io/samples/twitter",
     "author": {
         "name": "CodeOverflow team",
         "url": "http://codeoverflow.org"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-twitter"
+    },
+    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
     "keywords": [
-        "",
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "0.1.0"
+            "nodecg-io-core": "^0.1.0"
         }
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^14.6.4",
-        "nodecg": "^1.6.1",
-        "typescript": "^4.0.2"
+        "@types/node": "^14.14.13",
+        "nodecg": "^1.7.4",
+        "typescript": "^4.1.3"
     },
     "dependencies": {
         "@types/twitter": "^1.7.0",
-        "nodecg-io-core": "0.1.0",
+        "nodecg-io-core": "^0.1.0",
         "twitter": "^1.7.1"
     }
 }

@@ -21,7 +21,7 @@ export class TwitchServiceClient implements ServiceClient<ChatClient> {
 
         // This also waits till it has registered itself at the IRC server, which is needed to do anything.
         await new Promise((resolve, _reject) => {
-            chatClient.onRegister(resolve);
+            chatClient.onRegister(() => resolve(undefined));
         });
 
         return new TwitchServiceClient(chatClient);

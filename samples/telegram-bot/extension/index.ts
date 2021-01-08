@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { TelegramServiceClient } from "nodecg-io-telegram/extension";
+import { TelegramServiceClient } from "nodecg-io-telegram";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {

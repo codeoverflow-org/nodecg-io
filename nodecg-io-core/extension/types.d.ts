@@ -60,6 +60,28 @@ export interface Service<R, C extends ServiceClient<unknown>> {
      * @param client the client that needs to be stopped.
      */
     readonly stopClient(client: C): void;
+
+    /**
+     * Removes all handlers from a service client.
+     * This is used when a bundle no longer uses a service client it still has its handlers registered.
+     * Then this function is called that should remove all handlers
+     * and then all bundles that are still using this client will asked to re-register their handlers
+     * by running the onAvailable callback of the specific bundle.
+     *
+     * Can be left unimplemented if the serivce doesn't has any handlers e.g. a http wrapper
+     * @param client the client of which all handlers should be removed
+     */
+    readonly removeHandlers?(client: C): void;
+
+    /**
+     * This flag can be enabled by services if they can't implement removeHandlers but also have some handlers that
+     * should be reset if a bundleDependency has been changed.
+     * It gets rid of the handlers by stopping the client and creating a new one, to which then only the
+     * now wanted handlers get registered (e.g. if a bundle doesn't uses this service anymore but another still does).
+     * Not ideal, but if your service can't implement removeHandlers for some reason it is still better than
+     * having dangling handlers that still fire eventho they shouldn't.
+     */
+    reCreateClientToRemoveHandlers: boolean;
 }
 
 /**

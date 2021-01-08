@@ -36,4 +36,8 @@ class TianeService extends ServiceBundle<TianeServiceConfig, TianeServiceClient>
         client.getNativeClient().close();
         this.nodecg.log.info("Disconnected from TIANE.");
     }
+
+    removeHandlers(client: TianeServiceClient): void {
+        client.getNativeClient().removeAllListeners();
+    }
 }

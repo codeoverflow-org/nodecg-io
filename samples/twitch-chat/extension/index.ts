@@ -1,12 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { TwitchServiceClient } from "nodecg-io-twitch/extension";
+import { TwitchServiceClient } from "nodecg-io-twitch-chat";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");
 
     // Require the twitch service.
-    const twitch = requireService<TwitchServiceClient>(nodecg, "twitch");
+    const twitch = requireService<TwitchServiceClient>(nodecg, "twitch-chat");
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.

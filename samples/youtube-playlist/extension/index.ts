@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { YoutubeServiceClient } from "nodecg-io-youtube/extension";
+import { YoutubeServiceClient } from "nodecg-io-youtube";
 import { youtube_v3 } from "googleapis";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 

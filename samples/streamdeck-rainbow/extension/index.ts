@@ -1,11 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { StreamdeckServiceClient } from "nodecg-io-streamdeck/extension";
+import { StreamdeckServiceClient } from "nodecg-io-streamdeck";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for streamdeck started");
 
     const streamdeck = requireService<StreamdeckServiceClient>(nodecg, "streamdeck");
+    let timeout: NodeJS.Timeout | undefined;
 
     streamdeck?.onAvailable((client) => {
         nodecg.log.info("Streamdeck client has been updated, painting the streamdeck.");
@@ -30,7 +31,7 @@ module.exports = function (nodecg: NodeCG) {
             ];
             let i = 0;
 
-            setInterval(() => {
+            timeout = setInterval(() => {
                 try {
                     deck.fillColor(
                         i % deck.NUM_KEYS,
@@ -48,5 +49,10 @@ module.exports = function (nodecg: NodeCG) {
         }
     });
 
-    streamdeck?.onUnavailable(() => nodecg.log.info("Streamdeck client has been unset."));
+    streamdeck?.onUnavailable(() => {
+        nodecg.log.info("Streamdeck client has been unset.");
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+    });
 };

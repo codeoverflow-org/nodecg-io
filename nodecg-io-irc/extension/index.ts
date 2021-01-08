@@ -31,7 +31,7 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
             IRC.connect(config.reconnectTries || 5, res);
         });
         await new Promise((res) => {
-            IRC.disconnect("", res);
+            IRC.disconnect("", () => res(undefined));
         });
         return emptySuccess();
     }
@@ -61,6 +61,10 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
         client.getNativeClient().disconnect("", () => {
             this.nodecg.log.info("Stopped IRC client successfully.");
         });
+    }
+
+    removeHandlers(client: IRCServiceClient): void {
+        client.getNativeClient().removeAllListeners();
     }
 }
 

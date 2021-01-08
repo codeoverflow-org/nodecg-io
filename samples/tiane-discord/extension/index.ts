@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { DiscordServiceClient } from "nodecg-io-discord/extension";
-import { TianeServiceClient } from "nodecg-io-tiane/extension";
+import { DiscordServiceClient } from "nodecg-io-discord";
+import { TianeServiceClient } from "nodecg-io-tiane";
 import { TextChannel, User } from "discord.js";
 
 /*
