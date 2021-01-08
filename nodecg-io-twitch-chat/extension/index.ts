@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { TwitchServiceClient } from "./twitchClient";
 
 export interface TwitchServiceConfig {

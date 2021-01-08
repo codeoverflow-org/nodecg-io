@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { SacnReceiverServiceClient } from "./sacnReceiverClient";
 import { Receiver } from "sacn";
 

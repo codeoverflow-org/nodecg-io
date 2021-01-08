@@ -12,7 +12,6 @@
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
         "directory": "nodecg-io-core"
     },
-    "main": "extension",
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",

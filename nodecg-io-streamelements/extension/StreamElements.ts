@@ -1,8 +1,7 @@
 import io = require("socket.io-client");
-import { emptySuccess, error, Result } from "nodecg-io-core/extension/utils/result";
+import { Result, emptySuccess, error, ServiceClient } from "nodecg-io-core";
 import { StreamElementsEvent } from "./types";
 import { EventEmitter } from "events";
-import { ServiceClient } from "nodecg-io-core/extension/types";
 
 export class StreamElementsServiceClient extends EventEmitter implements ServiceClient<SocketIOClient.Socket> {
     private socket: SocketIOClient.Socket;

@@ -1,4 +1,4 @@
-import { ServiceClient } from "nodecg-io-core/extension/types";
+import { ServiceClient } from "nodecg-io-core";
 import { Packet, Sender } from "sacn";
 
 export class SacnSenderServiceClient implements ServiceClient<Sender> {

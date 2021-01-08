@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { SacnReceiverServiceClient } from "nodecg-io-sacn-receiver";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for sACN started");

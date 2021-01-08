@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { TwitterServiceClient } from "nodecg-io-twitter";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitter started");

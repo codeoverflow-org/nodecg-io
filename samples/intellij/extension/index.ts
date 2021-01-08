@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { IntelliJServiceClient } from "nodecg-io-intellij";
-import * as intellij from "nodecg-io-intellij/extension/intellij";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { Plugin } from "nodecg-io-intellij/extension/intellij";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for intellij started");
@@ -15,7 +15,7 @@ module.exports = function (nodecg: NodeCG) {
             .getNativeClient()
             .pluginManager.getPlugins(true)
             .then((plugins) => {
-                plugins.forEach((plugin: intellij.Plugin) => {
+                plugins.forEach((plugin: Plugin) => {
                     plugin
                         .getName()
                         .then((name) => {

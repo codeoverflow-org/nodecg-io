@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import * as express from "express";
 import { Router } from "express";
 import SpotifyWebApi = require("spotify-web-api-node");
