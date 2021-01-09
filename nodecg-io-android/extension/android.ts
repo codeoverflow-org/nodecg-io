@@ -17,9 +17,9 @@ export class Android {
 
     private connected: boolean;
     private nextId = 0;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private pending: Map<
         number,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [(data: any) => void, (err: any) => void, ((evt: any) => void) | undefined]
     > = new Map();
 
@@ -86,6 +86,7 @@ export class Android {
      */
     async disconnect(): Promise<void> {
         if (this.connected) {
+            await this.rawRequest("cancel_all_subscriptions", {});
             this.connected = false;
             await this.rawAdb(["reverse", "--remove", `tcp:${this.devicePort}`]);
             this.server.close();
@@ -127,10 +128,38 @@ export class Android {
     }
 
     /**
+     * Shows a toast (little notification that pops up at the bottom of the screen for a short while)
+     */
+    async toast(text: string): Promise<void> {
+        await this.rawRequest("show_toast", {
+            text: text,
+        });
+    }
+
+    /**
      * Gets a volume stream for a given channel.
      */
     volume(channel: VolumeChannel): VolumeStream {
         return new VolumeStream(this, channel);
+    }
+
+    /**
+     * Gets a sensor if it's present or undefined if it's not. If the required
+     * permissions are not granted, the promise is rejected.
+     */
+    async getSensor(id: "gps"): Promise<GpsSensor | null>;
+    async getSensor(id: SensorId): Promise<unknown | null> {
+        const result = await this.rawRequest("check_availability", {
+            type: "sensor",
+            value: id,
+        });
+        if (!result.available) {
+            return undefined;
+        }
+        switch (id) {
+            case "gps":
+                return new GpsSensor(this);
+        }
     }
 
     /**
@@ -484,6 +513,125 @@ export class Activity {
     }
 }
 
+/**
+ * An id of a sensor that might be present on a device
+ */
+export type SensorId = "gps";
+
+export class GpsSensor {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Checks whether GPS is activated.
+     */
+    async isActive(): Promise<boolean> {
+        const result = await this.android.rawRequest("gps_active", {});
+        return result.active;
+    }
+
+    /**
+     * Gets the last known position or undefined if there's no last known position. The promise id rejected if
+     * GPS is turned off. Use isActive() to check before.
+     */
+    async getLastKnownLocation(): Promise<LocationInfo | undefined> {
+        const result = await this.android.rawRequest("gps_last_known_location", {});
+        return result.location;
+    }
+
+    /**
+     * Subscribes for location updates. If GPS is turned off, you will get no updates. Always cancel the
+     * returned subscription if you don't need more updates.
+     *
+     * @param listener The function to be called when the location updates.
+     * @param time The minimum time (in milliseconds) between two location updates sent. Set this as high as possible.
+     * @param distance The minimum distance (in meters) between two location updates
+     */
+    async subscribeLocations(listener: (l: Location) => void, time = 5000, distance = 0): Promise<Subscription> {
+        const result = await this.android.rawRequest(
+            "gps_subscribe",
+            {
+                time: time,
+                distance: distance,
+            },
+            listener,
+        );
+        return Subscription.fromResult(this.android, result);
+    }
+}
+
+export type LocationInfo = {
+    /**
+     * The latitude in degrees
+     */
+    latitude: number;
+
+    /**
+     * The longitude in degrees
+     */
+    longitude: number;
+
+    /**
+     * The altitude in meters above the WGS 84 reference ellipsoid
+     */
+    altitude: number | undefined;
+
+    /**
+     * The speed in meters per second
+     */
+    speed: number | undefined;
+
+    /**
+     * The bearing in degrees
+     * Bearing is the horizontal direction of travel of this device, and is not related to the
+     * device orientation.
+     */
+    bearing: number | undefined;
+
+    /**
+     * The accuracy for latitude and longitude in meters
+     */
+    accuracyHorizontal: number | undefined;
+
+    /**
+     * The accuracy of the altitude in meters
+     */
+    accuracyVertical: number | undefined;
+
+    /**
+     * The speed accuracy in meters per second
+     */
+    accuracySpeed: number | undefined;
+
+    /**
+     * The bearing accuracy in degrees
+     */
+    accuracyBearing: number | undefined;
+};
+
+export class Subscription {
+    private readonly android: Android;
+    private readonly id: string;
+
+    constructor(android: Android, id: string) {
+        this.android = android;
+        this.id = id;
+    }
+
+    async cancel(): Promise<void> {
+        this.android.rawRequest("cancel_subscription", {
+            subscription_id: this.id,
+        });
+    }
+
+    static fromResult(android: Android, result: { subscription_id: string }): Subscription {
+        return new Subscription(android, result.subscription_id);
+    }
+}
+
 function quote(arg: string): string {
-    return '"' + arg.replace("\\", "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
+    return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
 }

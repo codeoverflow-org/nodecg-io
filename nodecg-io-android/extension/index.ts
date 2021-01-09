@@ -21,7 +21,10 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         console.log("Test");
         await client.ping();
         await client.requestPermissions("gps");
-        await client.disconnect();
+        const gps = await client.getSensor("gps");
+        console.log(await gps?.getLastKnownLocation());
+        gps?.subscribeLocations((l) => console.log(l));
+        //await client.disconnect();
         return emptySuccess();
     }
 
