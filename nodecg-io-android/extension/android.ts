@@ -148,6 +148,7 @@ export class Android {
      * permissions are not granted, the promise is rejected.
      */
     async getSensor(id: "gps"): Promise<GpsSensor | null>;
+    async getSensor(id: "motion"): Promise<MotionSensor | null>;
     async getSensor(id: SensorId): Promise<unknown | null> {
         const result = await this.rawRequest("check_availability", {
             type: "sensor",
@@ -159,6 +160,8 @@ export class Android {
         switch (id) {
             case "gps":
                 return new GpsSensor(this);
+            case "motion":
+                return new MotionSensor(this);
         }
     }
 
@@ -277,6 +280,11 @@ export class Android {
  * function that requires it.
  */
 export type Permission = "gps";
+
+/**
+ * An id of a sensor that might be present on a device
+ */
+export type SensorId = "gps" | "motion";
 
 /**
  * Used to control a volume channel on the device.
@@ -513,11 +521,6 @@ export class Activity {
     }
 }
 
-/**
- * An id of a sensor that might be present on a device
- */
-export type SensorId = "gps";
-
 export class GpsSensor {
     private readonly android: Android;
 
@@ -631,6 +634,215 @@ export class Subscription {
         return new Subscription(android, result.subscription_id);
     }
 }
+
+export class MotionSensor {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Gets the current motion of the device.
+     */
+    async motion(): Promise<Motion> {
+        const result = await this.android.rawRequest("motion_current", {});
+        return result.motion;
+    }
+
+    async subscribeMotion(
+        part: "accelerometer",
+        listener: (m: AccelerometerResult) => void,
+        time: number,
+    ): Promise<Subscription>;
+    async subscribeMotion(
+        part: "accelerometer_uncalibrated",
+        listener: (m: AccelerometerUncalibratedResult) => void,
+        time: number,
+    ): Promise<Subscription>;
+    async subscribeMotion(part: "gravity", listener: (m: GravityResult) => void, time: number): Promise<Subscription>;
+    async subscribeMotion(
+        part: "gyroscope",
+        listener: (m: GyroscopeResult) => void,
+        time: number,
+    ): Promise<Subscription>;
+    async subscribeMotion(
+        part: "gyroscope_uncalibrated",
+        listener: (m: GyroscopeUncalibratedResult) => void,
+        time: number,
+    ): Promise<Subscription>;
+    async subscribeMotion(
+        part: "linear_acceleration",
+        listener: (m: LinearAccelerationResult) => void,
+        time: number,
+    ): Promise<Subscription>;
+    async subscribeMotion(
+        part: "rotation_vector",
+        listener: (m: RotationVectorResult) => void,
+        time: number,
+    ): Promise<Subscription>;
+    async subscribeMotion(part: MotionSensorPart, listener: (m: never) => void, time = 100): Promise<Subscription> {
+        const result = await this.android.rawRequest(
+            "motion_subscribe",
+            {
+                part: part,
+                time: time,
+            },
+            listener,
+        );
+        return Subscription.fromResult(this.android, result);
+    }
+}
+
+export type MotionSensorPart =
+    | "accelerometer"
+    | "accelerometer_uncalibrated"
+    | "gravity"
+    | "gyroscope"
+    | "gyroscope_uncalibrated"
+    | "linear_acceleration"
+    | "rotation_vector";
+
+export type AccelerometerResult = {
+    /**
+     * Acceleration force along the x axis (including gravity) in meters per second squared
+     */
+    x: number;
+    /**
+     * Acceleration force along the y axis (including gravity) in meters per second squared
+     */
+    y: number;
+    /**
+     * Acceleration force along the z axis (including gravity) in meters per second squared
+     */
+    z: number;
+};
+
+export type AccelerometerUncalibratedResult = {
+    /**
+     * Measured Acceleration force along the x axis (without bias compensation) in meters per second squared
+     */
+    rawX: number;
+    /**
+     * Measured Acceleration force along the y axis (without bias compensation) in meters per second squared
+     */
+    rawY: number;
+    /**
+     * Measured Acceleration force along the z axis (without bias compensation) in meters per second squared
+     */
+    rawZ: number;
+    /**
+     * Measured Acceleration force along the x axis (with bias compensation) in meters per second squared
+     */
+    bcX: number;
+    /**
+     * Measured Acceleration force along the y axis (with bias compensation) in meters per second squared
+     */
+    bcY: number;
+    /**
+     * Measured Acceleration force along the z axis (with bias compensation) in meters per second squared
+     */
+    bcZ: number;
+};
+
+export type GravityResult = {
+    /**
+     * Force of gravity along the x axis in meters per second squared
+     */
+    gravityX: number;
+    /**
+     * Force of gravity along the y axis in meters per second squared
+     */
+    gravityY: number;
+    /**
+     * Force of gravity along the z axis in meters per second squared
+     */
+    gravityZ: number;
+};
+
+export type GyroscopeResult = {
+    /**
+     * Rotation around the x axis in radians / second
+     */
+    rotX: number;
+    /**
+     * Rotation around the y axis in radians / second
+     */
+    rotY: number;
+    /**
+     * Rotation around the z axis in radians / second
+     */
+    rotZ: number;
+};
+
+export type GyroscopeUncalibratedResult = {
+    /**
+     * Rotation around the x axis (without drift compensation) in radians / second
+     */
+    rawRotX: number;
+    /**
+     * Rotation around the y axis (without drift compensation) in radians / second
+     */
+    rawRotY: number;
+    /**
+     * Rotation around the z axis (without drift compensation) in radians / second
+     */
+    rawRotZ: number;
+    /**
+     * Estimated drift around the x axis in radians / second
+     */
+    driftX: number;
+    /**
+     * Estimated drift around the y axis in radians / second
+     */
+    driftY: number;
+    /**
+     * Estimated drift around the z axis in radians / second
+     */
+    driftZ: number;
+};
+
+export type LinearAccelerationResult = {
+    /**
+     * Acceleration force along the x axis (without gravity) in meters per second squared
+     */
+    ngX: number;
+    /**
+     * Acceleration force along the y axis (without gravity) in meters per second squared
+     */
+    ngY: number;
+    /**
+     * Acceleration force along the z axis (without gravity) in meters per second squared
+     */
+    ngZ: number;
+};
+
+export type RotationVectorResult = {
+    /**
+     * Rotation vector component along the x axis (x * sin(θ/2)).
+     */
+    rotVecX: number;
+    /**
+     * Rotation vector component along the y axis (y * sin(θ/2)).
+     */
+    rotVecY: number;
+    /**
+     * Rotation vector component along the z axis (z * sin(θ/2)).
+     */
+    rotVecZ: number;
+    /*
+     * Scalar component of the rotation vector ((cos(θ/2)).
+     */
+    rotScalar: number | undefined;
+};
+
+export type Motion = AccelerometerResult &
+    AccelerometerUncalibratedResult &
+    GravityResult &
+    GyroscopeResult &
+    GyroscopeUncalibratedResult &
+    LinearAccelerationResult &
+    RotationVectorResult;
 
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';

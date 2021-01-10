@@ -20,11 +20,10 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         await client.connect();
         console.log("Test");
         await client.ping();
-        await client.requestPermissions("gps");
-        const gps = await client.getSensor("gps");
-        console.log(await gps?.getLastKnownLocation());
-        gps?.subscribeLocations((l) => console.log(l));
-        //await client.disconnect();
+        const ms = await client.getSensor("motion");
+        console.log(await ms?.motion());
+        await ms?.subscribeMotion("gravity", (result) => console.log(result), 100);
+        setTimeout(() => client.disconnect(), 10000);
         return emptySuccess();
     }
 
