@@ -149,6 +149,8 @@ export class Android {
      */
     async getSensor(id: "gps"): Promise<GpsSensor | null>;
     async getSensor(id: "motion"): Promise<MotionSensor | null>;
+    async getSensor(id: "magnetic"): Promise<MagneticSensor | null>;
+    async getSensor(id: "light"): Promise<LightSensor | null>;
     async getSensor(id: SensorId): Promise<unknown | null> {
         const result = await this.rawRequest("check_availability", {
             type: "sensor",
@@ -162,6 +164,10 @@ export class Android {
                 return new GpsSensor(this);
             case "motion":
                 return new MotionSensor(this);
+            case "magnetic":
+                return new MagneticSensor(this);
+            case "light":
+                return new LightSensor(this);
         }
     }
 
@@ -284,7 +290,7 @@ export type Permission = "gps";
 /**
  * An id of a sensor that might be present on a device
  */
-export type SensorId = "gps" | "motion";
+export type SensorId = "gps" | "motion" | "magnetic" | "light";
 
 /**
  * Used to control a volume channel on the device.
@@ -650,43 +656,49 @@ export class MotionSensor {
         return result.motion;
     }
 
+    /**
+     * Subscribes for motion sensor updates.
+     * @param part The physical sensor to subscribe to
+     * @param listener A listener function
+     * @param time The time in milliseconds between two sensor updates
+     */
     async subscribeMotion(
         part: "accelerometer",
         listener: (m: AccelerometerResult) => void,
-        time: number,
+        time?: number,
     ): Promise<Subscription>;
     async subscribeMotion(
         part: "accelerometer_uncalibrated",
         listener: (m: AccelerometerUncalibratedResult) => void,
-        time: number,
+        time?: number,
     ): Promise<Subscription>;
-    async subscribeMotion(part: "gravity", listener: (m: GravityResult) => void, time: number): Promise<Subscription>;
+    async subscribeMotion(part: "gravity", listener: (m: GravityResult) => void, time?: number): Promise<Subscription>;
     async subscribeMotion(
         part: "gyroscope",
         listener: (m: GyroscopeResult) => void,
-        time: number,
+        time?: number,
     ): Promise<Subscription>;
     async subscribeMotion(
         part: "gyroscope_uncalibrated",
         listener: (m: GyroscopeUncalibratedResult) => void,
-        time: number,
+        time?: number,
     ): Promise<Subscription>;
     async subscribeMotion(
         part: "linear_acceleration",
         listener: (m: LinearAccelerationResult) => void,
-        time: number,
+        time?: number,
     ): Promise<Subscription>;
     async subscribeMotion(
         part: "rotation_vector",
         listener: (m: RotationVectorResult) => void,
-        time: number,
+        time?: number,
     ): Promise<Subscription>;
-    async subscribeMotion(part: MotionSensorPart, listener: (m: never) => void, time = 100): Promise<Subscription> {
+    async subscribeMotion(part: MotionSensorPart, listener: (m: never) => void, time?: number): Promise<Subscription> {
         const result = await this.android.rawRequest(
             "motion_subscribe",
             {
                 part: part,
-                time: time,
+                time: time === undefined ? 100 : time,
             },
             listener,
         );
@@ -843,6 +855,53 @@ export type Motion = AccelerometerResult &
     GyroscopeUncalibratedResult &
     LinearAccelerationResult &
     RotationVectorResult;
+
+export class MagneticSensor {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Gets the magnetic field.
+     */
+    async magneticField(): Promise<MagneticField> {
+        const result = await this.android.rawRequest("magnetic_field", {});
+        return result.magnetic_field;
+    }
+}
+
+export type MagneticField = {
+    /**
+     * The ambient magnetic field on x axis in micro-Tesla
+     */
+    x: number;
+    /**
+     * The ambient magnetic field on y axis in micro-Tesla
+     */
+    y: number;
+    /**
+     * The ambient magnetic field on z axis in micro-Tesla
+     */
+    z: number;
+};
+
+export class LightSensor {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Gets the ambient light in lux.
+     */
+    async ambientLight(): Promise<number> {
+        const result = await this.android.rawRequest("ambient_light", {});
+        return result.light;
+    }
+}
 
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';

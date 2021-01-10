@@ -20,10 +20,11 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         await client.connect();
         console.log("Test");
         await client.ping();
-        const ms = await client.getSensor("motion");
-        console.log(await ms?.motion());
-        await ms?.subscribeMotion("gravity", (result) => console.log(result), 100);
-        setTimeout(() => client.disconnect(), 10000);
+        const ps = await client.getSensor("magnetic");
+        console.log(await ps?.magneticField());
+        const ls = await client.getSensor("light");
+        console.log(await ls?.ambientLight());
+        await client.disconnect();
         return emptySuccess();
     }
 
