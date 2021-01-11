@@ -2,7 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import { Android } from "./android";
+import { Android, Telephony } from "./android";
 
 interface AndroidServiceConfig {
     device: string;
@@ -20,10 +20,13 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         await client.connect();
         console.log("Test");
         await client.ping();
-        const ps = await client.getSensor("magnetic");
-        console.log(await ps?.magneticField());
-        const ls = await client.getSensor("light");
-        console.log(await ls?.ambientLight());
+        await client.requestPermissions("phone");
+        const t: Telephony[] = await (await client.getTelephony()).getTelephonies();
+        console.log(t);
+        for (const tel of t) {
+            console.log("ABC");
+            console.log(await tel.properties());
+        }
         await client.disconnect();
         return emptySuccess();
     }

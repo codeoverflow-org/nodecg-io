@@ -37,12 +37,12 @@ export class Android {
      */
     async connect(): Promise<void> {
         if (this.connected) {
-            throw "Already connected";
+            throw new Error("Already connected");
         }
 
         const packages = await this.rawAdb(["shell", "pm", "list", "packages"]);
         if (!packages.includes("io.github.noeppi_noeppi.nodecg_io_android")) {
-            throw "The nodecg-io-android app is not installed on the device.";
+            throw new Error("The nodecg-io-android app is not installed on the device.");
         }
 
         this.server = http.createServer(async (req, res) => {
@@ -109,7 +109,7 @@ export class Android {
             permissions: permissions,
         });
         if (!result.success) {
-            throw result.errmsg;
+            throw new Error(result.errmsg);
         }
     }
 
@@ -144,20 +144,20 @@ export class Android {
     }
 
     /**
-     * Gets a sensor if it's present or undefined if it's not. If the required
-     * permissions are not granted, the promise is rejected.
+     * Gets a sensor of the given type. If the required permissions are not granted
+     * or the sensor is not present, the promise is rejected.
      */
-    async getSensor(id: "gps"): Promise<GpsSensor | null>;
-    async getSensor(id: "motion"): Promise<MotionSensor | null>;
-    async getSensor(id: "magnetic"): Promise<MagneticSensor | null>;
-    async getSensor(id: "light"): Promise<LightSensor | null>;
-    async getSensor(id: SensorId): Promise<unknown | null> {
+    async getSensor(id: "gps"): Promise<GpsSensor>;
+    async getSensor(id: "motion"): Promise<MotionSensor>;
+    async getSensor(id: "magnetic"): Promise<MagneticSensor>;
+    async getSensor(id: "light"): Promise<LightSensor>;
+    async getSensor(id: SensorId): Promise<unknown> {
         const result = await this.rawRequest("check_availability", {
             type: "sensor",
             value: id,
         });
         if (!result.available) {
-            return undefined;
+            throw new Error(`Sensor of type ${id} is not available on the device.`);
         }
         switch (id) {
             case "gps":
@@ -193,6 +193,21 @@ export class Android {
             },
             callback,
         );
+    }
+
+    /**
+     * Gets the Telephony object for this device. Ifthis device is not capable of telephony features,
+     * the promise is rejected.
+     */
+    async getTelephony(): Promise<TelephonyManager> {
+        const result = await this.rawRequest("check_availability", {
+            type: "system",
+            value: "telephony",
+        });
+        if (!result.available) {
+            throw new Error(`The device does not implement telephony features.`);
+        }
+        return new TelephonyManager(this);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -285,7 +300,7 @@ export class Android {
  * A special permission that has to be requested via requestPermissions() before using any
  * function that requires it.
  */
-export type Permission = "gps";
+export type Permission = "gps" | "phone" | "read_sms" | "send_sms";
 
 /**
  * An id of a sensor that might be present on a device
@@ -527,6 +542,9 @@ export class Activity {
     }
 }
 
+/**
+ * Allows access to the GPS sensor of the device. Requires the `gps` permission.
+ */
 export class GpsSensor {
     private readonly android: Android;
 
@@ -902,6 +920,88 @@ export class LightSensor {
         return result.light;
     }
 }
+
+export class TelephonyManager {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Gets a list of all Telephonies for this device. Requires the `phone` permission
+     */
+    async getTelephonies(): Promise<Array<Telephony>> {
+        const result = await this.android.rawRequest("get_telephonies", {});
+        const ids = result.telephonies as Array<number>;
+        return ids.map((id) => new Telephony(this.android, id));
+    }
+}
+
+/**
+ * A mobile subscription on the device. I could not find concrete information on what is considered
+ * a mobile subscription but but it's probably just one per UICC.
+ */
+export class Telephony {
+    private readonly android: Android;
+    private readonly id: number;
+
+    constructor(android: Android, id: number) {
+        this.android = android;
+        this.id = id;
+    }
+
+    async properties(): Promise<TelephonyProperties> {
+        const result = await this.android.rawRequest("get_telephony_properties", {
+            telephony: this.id,
+        });
+        return result.properties;
+    }
+}
+
+export type TelephonyProperties = {
+    /**
+     * The slot index (starting at 0) where the SIM of that telephony is located. Might be undefined
+     * for eUICCs or if not known.
+     */
+    simSlot: number | undefined;
+
+    /**
+     * The name of that telephony
+     */
+    name: string;
+
+    /**
+     * The mobile country code for the telephony
+     */
+    countryCode: string | undefined;
+
+    /**
+     * The mobile network code for the telephony
+     */
+    networkCode: string | undefined;
+
+    /**
+     * The ISO country code for the telephony
+     */
+    countryISO: string | undefined;
+
+    /**
+     * Whether the telephony is embedded (eUICC)
+     */
+    embedded: boolean;
+
+    /**
+     * The telephone number for this telephony. This is not always present and is cached by default.
+     * It's not guaranteed to be correct.
+     */
+    number: string | undefined;
+
+    /**
+     * The manufacturer code of the telephony
+     */
+    manufacturerCode: string | undefined;
+};
 
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
