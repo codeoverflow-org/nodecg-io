@@ -19,14 +19,16 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         const client = new Android(config.device);
         await client.connect();
         console.log("Test");
-        await client.ping();
-        await client.requestPermissions("phone");
-        const t: Telephony[] = await (await client.getTelephony()).getTelephonies();
-        console.log(t);
-        for (const tel of t) {
-            console.log("ABC");
-            console.log(await tel.properties());
-        }
+        const t = await client.getTelephony();
+        const tel = (await t.getTelephonies())[0];
+        const sms = t.smsManager;
+        console.log("ALL");
+        console.log(await sms.getSMS("all"));
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("FILTERED");
+        console.log(await sms.getSMS("inbox", tel));
         await client.disconnect();
         return emptySuccess();
     }

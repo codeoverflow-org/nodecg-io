@@ -649,7 +649,7 @@ export class Subscription {
     }
 
     async cancel(): Promise<void> {
-        this.android.rawRequest("cancel_subscription", {
+        await this.android.rawRequest("cancel_subscription", {
             subscription_id: this.id,
         });
     }
@@ -923,9 +923,11 @@ export class LightSensor {
 
 export class TelephonyManager {
     private readonly android: Android;
+    readonly smsManager: SmsManager;
 
     constructor(android: Android) {
         this.android = android;
+        this.smsManager = new SmsManager(android);
     }
 
     /**
@@ -942,13 +944,19 @@ export class TelephonyManager {
  * A mobile subscription on the device. I could not find concrete information on what is considered
  * a mobile subscription but but it's probably just one per UICC.
  */
-export class Telephony {
+export class Telephony implements SmsResolvable {
     private readonly android: Android;
     private readonly id: number;
+
+    readonly sms_provider = "telephony";
+    readonly sms_resolve_data: Record<string, unknown>;
 
     constructor(android: Android, id: number) {
         this.android = android;
         this.id = id;
+        this.sms_resolve_data = {
+            telephony: id,
+        };
     }
 
     async properties(): Promise<TelephonyProperties> {
@@ -1002,6 +1010,190 @@ export type TelephonyProperties = {
      */
     manufacturerCode: string | undefined;
 };
+
+export class SmsManager {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    async getSMS(category: SmsCategory, filter?: SmsResolvable): Promise<Array<Sms>> {
+        return await this.getMessages(category, filter, "get_sms", (data) => new Sms(this.android, data));
+    }
+
+    async getMMS(category: SmsCategory, filter?: SmsResolvable): Promise<Array<Mms>> {
+        return await this.getMessages(category, filter, "get_mms", (data) => new Mms(this.android, data));
+    }
+
+    private async getMessages<T>(
+        category: SmsCategory,
+        filter: SmsResolvable | undefined,
+        method: string,
+        factory: (data: Record<string, unknown>) => T,
+    ): Promise<Array<T>> {
+        const provider = filter == undefined ? "everything" : filter.sms_provider;
+        const filter_data = filter == undefined ? {} : filter.sms_resolve_data;
+        const result = await this.android.rawRequest(method, {
+            sms_category: category,
+            sms_filter: provider,
+            sms_resolve_data: filter_data,
+        });
+        const sms_array = result.sms as Array<Record<string, unknown>>;
+        return sms_array.map(factory);
+    }
+}
+
+export type SmsCategory = "all" | "inbox" | "outbox" | "sent" | "draft";
+
+export interface SmsResolvable {
+    sms_provider: string;
+    sms_resolve_data: Record<string, unknown>;
+}
+
+export type MessageType = "sms" | "mms";
+
+export abstract class AbstractMessage {
+    protected readonly android: Android;
+    protected readonly id: number;
+    private readonly thread_id: number;
+    private readonly telephony_id: number;
+
+    // eslint-disable-next-line
+    protected constructor(android: Android, msg: Record<string, any>) {
+        this.android = android;
+        this.id = msg.id;
+        this.thread_id = msg.thread_id;
+        this.telephony_id = msg.telephony_id;
+        this.subject = msg.subject;
+        this.text = msg.text;
+        this.received = msg.received == undefined ? undefined : new Date(msg.received);
+        this.sent = msg.sent == undefined ? undefined : new Date(msg.sent);
+        this.read = msg.read;
+        this.seen = msg.seen;
+    }
+
+    /**
+     * The type of this message.
+     */
+    abstract readonly messageType: MessageType;
+
+    /**
+     * The subject of the message
+     */
+    readonly subject: string | undefined;
+
+    /**
+     * The text body of the message
+     */
+    readonly text: string | undefined;
+
+    /**
+     * Date and time when the message was received. undefined if not received yet.
+     */
+    readonly received: Date | undefined;
+
+    /**
+     * Date and time when the message was received. undefined if not sent yet. (For example in drafts)
+     */
+    readonly sent: Date | undefined;
+
+    /**
+     * Whether the message was read by the user. This seems to be always false for incoming messages.
+     */
+    readonly read: boolean;
+
+    /**
+     * Whether the message was seen by the user. This seems to be always false for incoming messages.
+     */
+    readonly seen: boolean;
+
+    /**
+     * Gets the thread for this message. A thread is identified by the phone number participating in it.
+     */
+    async getThread(): Promise<never /*MessageThread*/> {
+        throw new Error("NOT IMPLEMENTED");
+    }
+
+    /**
+     * Gets the telephony object that was used to send or receive the message. This is an optional value.
+     */
+    async getTelephony(): Promise<Telephony | undefined> {
+        const result = await this.android.rawRequest("get_telephony_for_message", {
+            telephony_id: this.telephony_id,
+        });
+        if (result.available) {
+            return new Telephony(this.android, this.telephony_id);
+        } else {
+            return undefined;
+        }
+    }
+}
+
+export class Sms extends AbstractMessage {
+    private readonly sender_id: number;
+
+    // eslint-disable-next-line
+    constructor(android: Android, msg: Record<string, any>) {
+        super(android, msg);
+        this.address = msg.address;
+        this.sender_id = msg.sender_id;
+    }
+
+    readonly messageType: MessageType = "sms";
+
+    /**
+     * The name of the chat (person or group) in which the message was sent. Try to not use this value
+     * but get this via the MessageThread as this might be missing and is not available for Mms.
+     */
+    readonly address: string | undefined;
+
+    /**
+     * Sms always has a text. It's never undefined.
+     */
+    readonly text: string;
+
+    async getSender(): Promise<never /*Contact*/> {
+        throw new Error("NOT IMPLEMENTED");
+    }
+}
+
+export class Mms extends AbstractMessage {
+    // eslint-disable-next-line
+    constructor(android: Android, msg: Record<string, any>) {
+        super(android, msg);
+        this.textOnly = msg.textOnly;
+        this.contentType = msg.contentType;
+        this.contentLocation = msg.contentLocation;
+        this.expiry = msg.expiry == undefined ? undefined : new Date(msg.expiry);
+    }
+
+    readonly messageType: MessageType = "mms";
+
+    /**
+     * Whether this is a text-only mms.
+     */
+    readonly textOnly: boolean;
+
+    /**
+     * The content type for the message
+     */
+    readonly contentType: string;
+
+    /**
+     * The content location for the message
+     */
+    readonly contentLocation: string | undefined;
+
+    /**
+     * The expiry for the message.
+     */
+    readonly expiry: Date | undefined;
+}
+
+export class MessageThread {}
+
+export class Contact {}
 
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
