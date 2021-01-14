@@ -22,13 +22,6 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         const t = await client.getTelephony();
         const tel = (await t.getTelephonies())[0];
         const sms = t.smsManager;
-        console.log("ALL");
-        console.log(await sms.getSMS("all"));
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("FILTERED");
-        console.log(await sms.getSMS("inbox", tel));
         await client.disconnect();
         return emptySuccess();
     }
@@ -50,7 +43,7 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
             await rawClient.disconnect();
         } catch (err) {
             this.nodecg.log.error(err);
-            // Do nothing. If we did not catch it it's cause an infinite loop.
+            // Do nothing. If we did not catch it it'd cause an infinite loop.
         }
     }
 }

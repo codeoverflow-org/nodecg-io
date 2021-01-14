@@ -300,7 +300,7 @@ export class Android {
  * A special permission that has to be requested via requestPermissions() before using any
  * function that requires it.
  */
-export type Permission = "gps" | "phone" | "read_sms" | "send_sms";
+export type Permission = "gps" | "phone" | "read_sms" | "send_sms" | "contacts";
 
 /**
  * An id of a sensor that might be present on a device
@@ -1018,10 +1018,16 @@ export class SmsManager {
         this.android = android;
     }
 
+    /**
+     * Gets all SMS matching the given category and filter. This requires the `read_sms` permission.
+     */
     async getSMS(category: SmsCategory, filter?: SmsResolvable): Promise<Array<Sms>> {
         return await this.getMessages(category, filter, "get_sms", (data) => new Sms(this.android, data));
     }
 
+    /**
+     * Gets all MMS matching the given category and filter. This requires the `read_sms` permission.
+     */
     async getMMS(category: SmsCategory, filter?: SmsResolvable): Promise<Array<Mms>> {
         return await this.getMessages(category, filter, "get_mms", (data) => new Mms(this.android, data));
     }
@@ -1047,8 +1053,8 @@ export class SmsManager {
 export type SmsCategory = "all" | "inbox" | "outbox" | "sent" | "draft";
 
 export interface SmsResolvable {
-    sms_provider: string;
-    sms_resolve_data: Record<string, unknown>;
+    readonly sms_provider: string;
+    readonly sms_resolve_data: Record<string, unknown>;
 }
 
 export type MessageType = "sms" | "mms";
@@ -1109,14 +1115,22 @@ export abstract class AbstractMessage {
     readonly seen: boolean;
 
     /**
-     * Gets the thread for this message. A thread is identified by the phone number participating in it.
+     * Gets the thread for this message. A thread is identified by the phone numbers participating in it.
      */
-    async getThread(): Promise<never /*MessageThread*/> {
-        throw new Error("NOT IMPLEMENTED");
+    async getThread(): Promise<MessageThread | undefined> {
+        const result = await this.android.rawRequest("get_thread_for_message", {
+            thread_id: this.thread_id,
+        });
+        if (result.available) {
+            return new MessageThread(this.android, result.thread);
+        } else {
+            return undefined;
+        }
     }
 
     /**
      * Gets the telephony object that was used to send or receive the message. This is an optional value.
+     * This requires the `phone` permission
      */
     async getTelephony(): Promise<Telephony | undefined> {
         const result = await this.android.rawRequest("get_telephony_for_message", {
@@ -1144,7 +1158,8 @@ export class Sms extends AbstractMessage {
 
     /**
      * The name of the chat (person or group) in which the message was sent. Try to not use this value
-     * but get this via the MessageThread as this might be missing and is not available for Mms.
+     * but get this via the MessageThread as this might be missing and is not available for Mms. On some
+     * devices you'll also only get this with the `contacts` permission.
      */
     readonly address: string | undefined;
 
@@ -1153,8 +1168,19 @@ export class Sms extends AbstractMessage {
      */
     readonly text: string;
 
-    async getSender(): Promise<never /*Contact*/> {
-        throw new Error("NOT IMPLEMENTED");
+    /**
+     * Gets the phone number who sent this sms. This is not always available. Try to get this via the
+     * MessageThread instead.
+     */
+    async getSender(): Promise<Recipient | undefined> {
+        const result = await this.android.rawRequest("get_sms_recipient", {
+            sender_id: this.sender_id,
+        });
+        if (result.available) {
+            return new Recipient(this.android, result.recipient);
+        } else {
+            return undefined;
+        }
     }
 }
 
@@ -1191,7 +1217,90 @@ export class Mms extends AbstractMessage {
     readonly expiry: Date | undefined;
 }
 
-export class MessageThread {}
+/**
+ * A thread is identified by the phone number participating in it. A thread may
+ * contain SMS and MMS messages.
+ */
+export class MessageThread implements SmsResolvable {
+    protected readonly android: Android;
+    protected readonly id: number;
+    readonly sms_provider = "thread";
+    readonly sms_resolve_data: Record<string, unknown>;
+
+    // eslint-disable-next-line
+    constructor(android: Android, msg: Record<string, any>) {
+        this.android = android;
+        this.id = msg.id;
+        this.sms_resolve_data = {
+            thread_id: msg.id,
+        };
+    }
+
+    /**
+     * How many messages exist in that thread in total.
+     */
+    readonly messageCount: number;
+
+    /**
+     * Whether all messages in this thread have been read.
+     */
+    readonly allRead: number;
+
+    /**
+     * A snippet from the last message in this thread.
+     */
+    readonly snippet: string | undefined;
+
+    /**
+     * Whether this is a broadcast thread.
+     */
+    readonly broadcast: boolean;
+
+    /**
+     * Whether this thread is archived.
+     */
+    readonly archived: boolean;
+
+    /**
+     * Gets all participants of this thread.
+     */
+    async getRecipients(): Promise<Array<Recipient>> {
+        const result = await this.android.rawRequest("get_thread_recipients", {
+            id: this.id,
+        });
+        const recipients: Array<Record<string, unknown>> = result.recipients;
+        return recipients.map((data) => new Recipient(this.android, data));
+    }
+}
+
+/**
+ * Represents a phone number. In some cases there's no phone number given but
+ * a name. (Often when the mobile provider sends sms)
+ */
+export class Recipient {
+    private readonly android: Android;
+    private readonly id: number;
+
+    /**
+     * The phone number or name of this Recipient.
+     */
+    readonly address: string;
+
+    // eslint-disable-next-line
+    constructor(android: Android, msg: Record<string, any>) {
+        this.android = android;
+        this.id = msg.id;
+        this.address = msg.address;
+    }
+
+    /**
+     * Get the contact for this recipient. Multiple recipients may map to the same
+     * contact as a contact can hold multiple phone numbers.
+     */
+    async toContact(): Promise<never /*Contact | undefined*/> {
+        throw new Error("NOT IMPLEMENTED");
+    }
+}
 
 export class Contact {}
 
