@@ -19,9 +19,11 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         const client = new Android(config.device);
         await client.connect();
         console.log("Test");
-        const t = await client.getTelephony();
-        const tel = (await t.getTelephonies())[0];
-        const sms = t.smsManager;
+        await client.requestPermissions("contacts");
+        const c = (await client.contactManager.getAllContacts())[0];
+        console.log(c.displayName);
+        console.log(await c.getName());
+        console.log(await c.getStatus());
         await client.disconnect();
         return emptySuccess();
     }

@@ -24,12 +24,14 @@ export class Android {
     > = new Map();
 
     public readonly packageManager: PackageManager;
+    public readonly contactManager: ContactManager;
 
     constructor(device: string) {
         this.device = device;
         this.connected = false;
 
         this.packageManager = new PackageManager(this);
+        this.contactManager = new ContactManager(this);
     }
 
     /**
@@ -196,10 +198,10 @@ export class Android {
     }
 
     /**
-     * Gets the Telephony object for this device. Ifthis device is not capable of telephony features,
+     * Gets the TelephonyManager for this device. If this device is not capable of telephony features,
      * the promise is rejected.
      */
-    async getTelephony(): Promise<TelephonyManager> {
+    async getTelephonyManager(): Promise<TelephonyManager> {
         const result = await this.rawRequest("check_availability", {
             type: "system",
             value: "telephony",
@@ -535,10 +537,17 @@ export class Activity {
      * Starts the activity.
      */
     async start(): Promise<void> {
-        await this.android.rawRequest("start_activity", {
-            package: this.pkg.id,
-            activity: this.id,
-        });
+        await this.android.rawAdb([
+            "shell",
+            "am",
+            "start",
+            "-a",
+            "android.intent.action.MAIN",
+            "-c",
+            "android.intent.category.LAUNCHER",
+            "-n",
+            quote(this.pkg.id + "/" + this.id),
+        ]);
     }
 }
 
@@ -946,7 +955,7 @@ export class TelephonyManager {
  */
 export class Telephony implements SmsResolvable {
     private readonly android: Android;
-    private readonly id: number;
+    readonly id: number;
 
     readonly sms_provider = "telephony";
     readonly sms_resolve_data: Record<string, unknown>;
@@ -1030,6 +1039,45 @@ export class SmsManager {
      */
     async getMMS(category: SmsCategory, filter?: SmsResolvable): Promise<Array<Mms>> {
         return await this.getMessages(category, filter, "get_mms", (data) => new Mms(this.android, data));
+    }
+
+    /**
+     * Sends an SMS. If the text is too long to fit into a simple SMS, A multipart SMS is sent. This
+     * required `phone` and `send_sms` permissions.
+     *
+     * @param telephony The telephony object to use.
+     * @param address The adress to send the SMS to.
+     * @param text The text of the sms.
+     * @param sent This function will get called as soon as the SMS was sent or failed to send. If
+     *             it got split up into a multipart SMS you may receive this event multiple times,
+     *             once for each part.
+     * @param delivered This function will get called as soon as the SMS was delivered. If it got split
+     *                  up into a multipart SMS you may receive this event multiple times, once for each
+     *                  part.
+     */
+    async sendSMS(
+        telephony: Telephony,
+        address: SmsReceiver,
+        text: string,
+        sent?: (result: SmsResult) => void,
+        delivered?: () => void,
+    ): Promise<void> {
+        const addressStr: string = address instanceof Recipient ? address.address : address;
+        await this.android.rawRequest(
+            "send_sms",
+            {
+                telephony: telephony.id,
+                address: addressStr,
+                text: text,
+            },
+            (data) => {
+                if ((data as { type: string }).type == "sent" && sent != undefined) {
+                    sent((data as { code: SmsResult }).code);
+                } else if ((data as { type: string }).type == "delivered" && delivered != undefined) {
+                    delivered();
+                }
+            },
+        );
     }
 
     private async getMessages<T>(
@@ -1279,7 +1327,7 @@ export class MessageThread implements SmsResolvable {
  */
 export class Recipient {
     private readonly android: Android;
-    private readonly id: number;
+    private readonly _id: number;
 
     /**
      * The phone number or name of this Recipient.
@@ -1289,20 +1337,188 @@ export class Recipient {
     // eslint-disable-next-line
     constructor(android: Android, msg: Record<string, any>) {
         this.android = android;
-        this.id = msg.id;
+        this._id = msg.id;
         this.address = msg.address;
     }
 
     /**
      * Get the contact for this recipient. Multiple recipients may map to the same
-     * contact as a contact can hold multiple phone numbers.
+     * contact as a contact can hold multiple phone numbers. Requires the `contacts`
+     * permission.
      */
-    async toContact(): Promise<never /*Contact | undefined*/> {
+    async toContact(): Promise<Contact | undefined> {
+        return await this.android.contactManager.findContact("phone", this.address);
+    }
+}
+
+export type SmsReceiver = string | Recipient; // TODO add Contact to this type
+
+export type SmsResultSuccess = "success";
+export type SmsResultFailure =
+    | "error_generic_failure"
+    | "error_radio_off"
+    | "error_null_pdu"
+    | "error_no_service"
+    | "error_limit_exceeded"
+    | "error_fdn_check_failure"
+    | "error_short_code_not_allowed"
+    | "error_short_code_never_allowed"
+    | "radio_not_available"
+    | "network_reject"
+    | "invalid_arguments"
+    | "invalid_state"
+    | "no_memory"
+    | "invalid_sms_format"
+    | "system_error"
+    | "modem_error"
+    | "network_error"
+    | "encoding_error"
+    | "invalid_smsc_address"
+    | "operation_not_allowed"
+    | "internal_error"
+    | "no_resources"
+    | "cancelled"
+    | "request_not_supported"
+    | "no_bluetooth_service"
+    | "invalid_bluetooth_address"
+    | "bluetooth_disconnected"
+    | "unexpected_event_stop_sending"
+    | "sms_blocked_during_emergency"
+    | "sms_send_retry_failed"
+    | "remote_exception"
+    | "no_default_sms_app"
+    | "ril_radio_not_available"
+    | "ril_sms_send_fail_retry"
+    | "ril_network_reject"
+    | "ril_invalid_state"
+    | "ril_invalid_arguments"
+    | "ril_no_memory"
+    | "ril_request_rate_limited"
+    | "ril_invalid_sms_format"
+    | "ril_system_err"
+    | "ril_encoding_err"
+    | "ril_invalid_smsc_address"
+    | "ril_modem_err"
+    | "ril_network_err"
+    | "ril_internal_err"
+    | "ril_request_not_supported"
+    | "ril_invalid_modem_state"
+    | "ril_network_not_ready"
+    | "ril_operation_not_allowed"
+    | "ril_no_resources"
+    | "ril_cancelled"
+    | "ril_sim_absent";
+export type SmsResultUnknown = "unknown";
+export type SmsResult = SmsResultSuccess | SmsResultFailure | SmsResultUnknown;
+
+export class ContactManager {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    async findContact(dataId: ContactDataId, value: string): Promise<Contact | undefined> {
+        throw new Error("NOT IMPLEMENTED");
+    }
+
+    /**
+     * Gets all contacts on the phone. Requires the `contacts` permission.
+     */
+    async getAllContacts(): Promise<Array<Contact>> {
+        const result = await this.android.rawRequest("get_all_contacts", {});
+        const contactIds: Array<[number, string]> = result.contact_ids;
+        return contactIds.map((elem) => new Contact(this.android, elem[0], elem[1]));
+    }
+}
+
+export class Contact {
+    private readonly android: Android;
+    private readonly id: number;
+    readonly displayName: string;
+
+    constructor(android: Android, id: number, displayName: string) {
+        this.android = android;
+        this.id = id;
+        this.displayName = displayName;
+    }
+
+    async getStatus(): Promise<ContactStatus> {
+        const result = await this.android.rawRequest("contact_status", {
+            id: this.id,
+        });
+        return result.status;
+    }
+
+    async getName(): Promise<ContactNameInfo> {
+        const result = await this.android.rawRequest("contact_name", {
+            id: this.id,
+        });
+        return result.name;
+    }
+
+    async getData(dataId: "phone"): Promise<ContactDataPhone | undefined>;
+    async getData(dataId: ContactDataId): Promise<unknown | undefined> {
         throw new Error("NOT IMPLEMENTED");
     }
 }
 
-export class Contact {}
+export type ContactPresence = "offline" | "invisible" | "away" | "idle" | "do_not_disturb" | "available";
+
+export type ContactStatus = {
+    /**
+     * The status message of that contact
+     */
+    status: string | undefined;
+    /**
+     * The time when the status message was set.
+     */
+    statusTime: Date | undefined;
+    /**
+     * The presence of the contact.
+     */
+    presence: ContactPresence;
+};
+
+/**
+ * Asian is used when it can nut be determined whether `chinese`, `japanese` or `korean` is correct.
+ */
+export type ContactNameStyle = "unset" | "western" | "asian" | "chinese" | "japanese" | "korean";
+
+export type ContactNameInfo = {
+    /**
+     * The name that should be used to display the contact.
+     */
+    display_name: string;
+    /**
+     * The given name for the contact.
+     */
+    given_name: string | undefined;
+    /**
+     * The family name for the contact.
+     */
+    family_name: string | undefined;
+    /**
+     * The contact's honorific prefix, e.g. "Sir"
+     */
+    prefix: string | undefined;
+    /**
+     * The contact's middle name
+     */
+    middle_name: string | undefined;
+    /**
+     * The contact's honorific suffix, e.g. "Jr"
+     */
+    suffix: string | undefined;
+    /**
+     * The style used for combining given/middle/family name into a full name.
+     */
+    style: ContactNameStyle;
+};
+
+export type ContactDataId = "phone";
+
+export class ContactDataPhone {}
 
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
