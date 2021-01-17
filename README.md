@@ -5,7 +5,7 @@
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
 [![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=21&color=blue&style=flat-square)](https://nodecg.io/services/)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
-[![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/sX2Gjbs/)
+[![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/GEJzxBGRu6)
 
 **A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**
 
