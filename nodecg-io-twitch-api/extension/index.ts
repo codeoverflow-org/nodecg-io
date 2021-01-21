@@ -19,9 +19,8 @@ class TwitchService extends ServiceBundle<TwitchApiServiceConfig, TwitchApiServi
     }
 
     async createClient(config: TwitchApiServiceConfig): Promise<Result<TwitchApiServiceClient>> {
-        this.nodecg.log.info("Connecting to twitch chat...");
         const client = await TwitchApiServiceClient.createClient(config);
-        this.nodecg.log.info("Successfully connected to twitch.");
+        this.nodecg.log.info("Successfully created twitch-api client.");
 
         return success(client);
     }
