@@ -9,7 +9,7 @@ export interface TwitchApiServiceConfig {
 export { TwitchApiServiceClient } from "./twitchApiClient";
 
 module.exports = (nodecg: NodeCG) => {
-    new TwitchService(nodecg, "twitch-api", __dirname, "../twitch-schema.json").register();
+    new TwitchService(nodecg, "twitch-api", __dirname, "../twitch-api-schema.json").register();
 };
 
 class TwitchService extends ServiceBundle<TwitchApiServiceConfig, TwitchApiServiceClient> {
