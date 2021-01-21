@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { success, ServiceBundle } from "nodecg-io-core";
 import { StreamElementsServiceClient } from "./StreamElements";
 
 interface StreamElementsServiceConfig {

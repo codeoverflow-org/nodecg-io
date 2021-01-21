@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { SpotifyServiceClient } from "nodecg-io-spotify";
 
 module.exports = function (nodecg: NodeCG) {

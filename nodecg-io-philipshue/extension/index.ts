@@ -1,9 +1,8 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
+// Only needed for type because of that it is "unused" but still needed
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
 import HueApi = require("node-hue-api/lib/api/Api");
 const { api, discovery } = v3;

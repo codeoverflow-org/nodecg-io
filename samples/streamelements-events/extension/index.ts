@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { StreamElementsServiceClient } from "nodecg-io-streamelements";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for StreamElements started");

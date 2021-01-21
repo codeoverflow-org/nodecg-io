@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { SerialServiceClient } from "nodecg-io-serial";
 
 module.exports = function (nodecg: NodeCG) {

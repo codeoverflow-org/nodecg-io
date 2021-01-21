@@ -1,4 +1,4 @@
-import { ServiceClient } from "nodecg-io-core/extension/types";
+import { ServiceClient } from "nodecg-io-core";
 import { getTokenInfo, StaticAuthProvider, TokenInfo } from "twitch-auth";
 import { PubSubServiceConfig } from "./index";
 import {

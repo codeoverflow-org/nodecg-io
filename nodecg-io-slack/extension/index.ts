@@ -1,8 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import { WebClient } from "@slack/web-api";
-import { ServiceClient } from "nodecg-io-core/extension/types";
 
 interface SlackServiceConfig {
     token: string;

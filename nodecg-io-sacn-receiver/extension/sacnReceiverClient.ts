@@ -1,4 +1,4 @@
-import { ServiceClient } from "nodecg-io-core/extension/types";
+import { ServiceClient } from "nodecg-io-core";
 import { Packet, Receiver } from "sacn";
 import { AssertionError } from "assert";
 

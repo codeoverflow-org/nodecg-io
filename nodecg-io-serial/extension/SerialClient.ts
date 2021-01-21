@@ -1,5 +1,5 @@
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { success, error, Result, emptySuccess } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core";
+import { success, error, Result, emptySuccess } from "nodecg-io-core";
 import * as SerialPort from "serialport"; // This is neccesary, because serialport only likes require!
 
 export interface DeviceInfo {

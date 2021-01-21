@@ -1,8 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import TelegramBot = require("node-telegram-bot-api");
-import { ServiceClient } from "nodecg-io-core/extension/types";
 
 interface TelegramServiceConfig {
     token: string;
