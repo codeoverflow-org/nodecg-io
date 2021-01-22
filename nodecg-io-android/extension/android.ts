@@ -25,6 +25,7 @@ export class Android {
 
     public readonly packageManager: PackageManager;
     public readonly contactManager: ContactManager;
+    public readonly wifiManager: WifiManager;
 
     constructor(device: string) {
         this.device = device;
@@ -32,6 +33,7 @@ export class Android {
 
         this.packageManager = new PackageManager(this);
         this.contactManager = new ContactManager(this);
+        this.wifiManager = new WifiManager(this);
     }
 
     /**
@@ -1802,3 +1804,191 @@ export type ContactDataAddress = {
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
 }
+
+export class WifiManager {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Retrieves information about what features this device supports.
+     */
+    async getInfo(): Promise<WifiInformation> {
+        const result = await this.android.rawRequest("wifi_information", {});
+        return result.info;
+    }
+
+    /**
+     * Retrieves information about the current state of the device.
+     * WifiState in itself has not may fields. Wrap it in a check for WifiState#connected to get access to
+     * fields only available when connected.
+     * Because it's technically possible to get location data from the available wlan networks and android does
+     * not differentiate between accessing the current connection and scanning for WLAN networks, some of the
+     * fields in WifiState may hold meaningless values if the `gps` permission is not granted.
+     */
+    async getState(): Promise<WifiState> {
+        const result = await this.android.rawRequest("wifi_state", {});
+        return result.state;
+    }
+}
+
+export type WifiInformation = {
+    /**
+     * Whether this device supports the 5GHz Band
+     */
+    has5GHz: boolean;
+
+    /**
+     * Whether this device supports the 6GHz Band
+     */
+    has6GHz: boolean;
+
+    /**
+     * Whether this device supports Wi-Fi Direct
+     */
+    p2p: boolean;
+
+    /**
+     * Whether this device can act as station and access point at the same time (connecting to a
+     * network and creating a hotspot)
+     */
+    sta_ap_concurrency: boolean;
+
+    /**
+     * Whether Tunnel Directed Link Setup is supported
+     */
+    tdls: boolean;
+
+    /**
+     * Whether Easy Connect (DPP) is supported.
+     */
+    easy_connect: boolean;
+
+    /**
+     * Whether Enhanced Open (OWE) is supported.
+     */
+    enhanced_open: boolean;
+
+    /**
+     * Whether WAPI is supported.
+     */
+    wapi: boolean;
+
+    /**
+     * Whether WPA3-Personal SAE is supported.
+     */
+    wpa3sae: boolean;
+
+    /**
+     * Whether WPA3-Enterprise Suite-B-192 is supported.
+     */
+    wpa3sb192: boolean;
+
+    /**
+     * Whether wifi standard IEEE 802.11a/b/g is supported.
+     * This will be false for all devices running on Android 10 or lower even if it is supported.
+     */
+    ieee80211abg: boolean;
+
+    /**
+     * Whether wifi standard IEEE 802.11n is supported.
+     * This will be false for all devices running on Android 10 or lower even if it is supported.
+     */
+    ieee80211n: boolean;
+
+    /**
+     * Whether wifi standard IEEE 802.11ac is supported.
+     * This will be false for all devices running on Android 10 or lower even if it is supported.
+     */
+    ieee80211ac: boolean;
+
+    /**
+     * Whether wifi standard IEEE 802.11ax is supported.
+     * This will be false for all devices running on Android 10 or lower even if it is supported.
+     */
+    ieee80211ax: boolean;
+};
+
+export type WifiStandard = "ieee80211abg" | "ieee80211n" | "ieee80211ac" | "ieee80211ax" | "unknown";
+export type WifiDeviceState = "disabled" | "disabling" | "enabled" | "enabling" | "unknown";
+
+export type WifiStateCommon = {
+    /**
+     * The state of the wifi device
+     */
+    device_state: WifiDeviceState;
+
+    /**
+     * Whether the device is connected
+     */
+    connected: boolean;
+};
+
+export type WifiStateDisconnected = {
+    connected: false;
+};
+
+export type WifiStateConnected = {
+    connected: true;
+
+    /**
+     * The SSID of the connected network.
+     */
+    ssid: string;
+
+    /**
+     * The BSSID of the connected network.
+     */
+    bssid: string;
+
+    /**
+     * Whether the SSID of the connected network is hidden.
+     */
+    hidden_ssid: boolean;
+
+    /**
+     * The ip address of this device in the network.
+     */
+    ip: string;
+
+    /**
+     * The frequency on which this network currently runs in MHz
+     */
+    frequency: number;
+
+    /**
+     * The current link speed in MB/s
+     */
+    link_speed?: number;
+
+    /**
+     * The maximum supported RX link speed for this connection in MB/s
+     */
+    max_rx?: number;
+
+    /**
+     * The maximum supported TX link speed for this connection in MB/s
+     */
+    max_tx?: number;
+
+    /**
+     * The MAC-Address used for this connection. THIS ADDRESS IS NOT NECESSARILY
+     * THE ADDRESS OF THE DEVICE AS ANDROID ALLOWS USING RANDOM MAC ADDRESSES.
+     */
+    mac_address: number;
+
+    /**
+     * The current received signal strength indication in dBm
+     */
+    rssi: number;
+
+    /**
+     * The rssi aligned to a scale from 0 to 1.
+     * Avoid using this as it's not very meaningful.
+     */
+    signal_level: number;
+};
+
+export type WifiState = WifiStateCommon & (WifiStateConnected | WifiStateDisconnected);

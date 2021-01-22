@@ -2,7 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { ServiceClient } from "nodecg-io-core/extension/types";
 import { emptySuccess, success, Result } from "nodecg-io-core/extension/utils/result";
 import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
-import { Android, Telephony } from "./android";
+import { Android } from "./android";
 
 interface AndroidServiceConfig {
     device: string;
@@ -19,15 +19,8 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         const client = new Android(config.device);
         await client.connect();
         console.log("Test");
-        await client.requestPermissions("contacts");
-        const c = await client.contactManager.findContact("phone", "***");
-        console.log(c?.displayName);
-        console.log(await c?.getName());
-        console.log(await c?.getStatus());
-        console.log(await c?.getData("phone"));
-        console.log(await c?.getData("address"));
-        console.log(await c?.getData("notes"));
-        console.log(await c?.getData("email"));
+        console.log(await client.wifiManager.getInfo());
+        console.log(await client.wifiManager.getState());
         await client.disconnect();
         return emptySuccess();
     }
