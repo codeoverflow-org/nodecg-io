@@ -613,39 +613,39 @@ export type LocationInfo = {
     /**
      * The altitude in meters above the WGS 84 reference ellipsoid
      */
-    altitude: number | undefined;
+    altitude?: number;
 
     /**
      * The speed in meters per second
      */
-    speed: number | undefined;
+    speed?: number;
 
     /**
      * The bearing in degrees
      * Bearing is the horizontal direction of travel of this device, and is not related to the
      * device orientation.
      */
-    bearing: number | undefined;
+    bearing?: number;
 
     /**
      * The accuracy for latitude and longitude in meters
      */
-    accuracyHorizontal: number | undefined;
+    accuracyHorizontal?: number;
 
     /**
      * The accuracy of the altitude in meters
      */
-    accuracyVertical: number | undefined;
+    accuracyVertical?: number;
 
     /**
      * The speed accuracy in meters per second
      */
-    accuracySpeed: number | undefined;
+    accuracySpeed?: number;
 
     /**
      * The bearing accuracy in degrees
      */
-    accuracyBearing: number | undefined;
+    accuracyBearing?: number;
 };
 
 export class Subscription {
@@ -872,7 +872,7 @@ export type RotationVectorResult = {
     /*
      * Scalar component of the rotation vector ((cos(θ/2)).
      */
-    rotScalar: number | undefined;
+    rotScalar?: number;
 };
 
 export type Motion = AccelerometerResult &
@@ -981,7 +981,7 @@ export type TelephonyProperties = {
      * The slot index (starting at 0) where the SIM of that telephony is located. Might be undefined
      * for eUICCs or if not known.
      */
-    simSlot: number | undefined;
+    simSlot?: number;
 
     /**
      * The name of that telephony
@@ -991,17 +991,17 @@ export type TelephonyProperties = {
     /**
      * The mobile country code for the telephony
      */
-    countryCode: string | undefined;
+    countryCode?: string;
 
     /**
      * The mobile network code for the telephony
      */
-    networkCode: string | undefined;
+    networkCode?: string;
 
     /**
      * The ISO country code for the telephony
      */
-    countryISO: string | undefined;
+    countryISO?: string;
 
     /**
      * Whether the telephony is embedded (eUICC)
@@ -1012,12 +1012,12 @@ export type TelephonyProperties = {
      * The telephone number for this telephony. This is not always present and is cached by default.
      * It's not guaranteed to be correct.
      */
-    number: string | undefined;
+    number?: string;
 
     /**
      * The manufacturer code of the telephony
      */
-    manufacturerCode: string | undefined;
+    manufacturerCode?: string;
 };
 
 export class SmsManager {
@@ -1062,7 +1062,20 @@ export class SmsManager {
         sent?: (result: SmsResult) => void,
         delivered?: () => void,
     ): Promise<void> {
-        const addressStr: string = address instanceof Recipient ? address.address : address;
+        let addressStr: string;
+        if (address instanceof Recipient) {
+            addressStr = address.address;
+        } else if (address instanceof Contact) {
+            const phone_numbers = await address.getData("phone");
+            if (phone_numbers.length <= 0) {
+                throw new Error(
+                    `Can't use contact as sms receiver: No phone number available for contact ${address.displayName}`,
+                );
+            }
+            addressStr = phone_numbers[0].number;
+        } else {
+            addressStr = address;
+        }
         await this.android.rawRequest(
             "send_sms",
             {
@@ -1135,22 +1148,22 @@ export abstract class AbstractMessage {
     /**
      * The subject of the message
      */
-    readonly subject: string | undefined;
+    readonly subject?: string;
 
     /**
      * The text body of the message
      */
-    readonly text: string | undefined;
+    readonly text?: string;
 
     /**
      * Date and time when the message was received. undefined if not received yet.
      */
-    readonly received: Date | undefined;
+    readonly received?: Date;
 
     /**
      * Date and time when the message was received. undefined if not sent yet. (For example in drafts)
      */
-    readonly sent: Date | undefined;
+    readonly sent?: Date;
 
     /**
      * Whether the message was read by the user. This seems to be always false for incoming messages.
@@ -1209,7 +1222,7 @@ export class Sms extends AbstractMessage {
      * but get this via the MessageThread as this might be missing and is not available for Mms. On some
      * devices you'll also only get this with the `contacts` permission.
      */
-    readonly address: string | undefined;
+    readonly address?: string;
 
     /**
      * Sms always has a text. It's never undefined.
@@ -1257,12 +1270,12 @@ export class Mms extends AbstractMessage {
     /**
      * The content location for the message
      */
-    readonly contentLocation: string | undefined;
+    readonly contentLocation?: string;
 
     /**
      * The expiry for the message.
      */
-    readonly expiry: Date | undefined;
+    readonly expiry?: Date;
 }
 
 /**
@@ -1297,7 +1310,7 @@ export class MessageThread implements SmsResolvable {
     /**
      * A snippet from the last message in this thread.
      */
-    readonly snippet: string | undefined;
+    readonly snippet?: string;
 
     /**
      * Whether this is a broadcast thread.
@@ -1344,14 +1357,16 @@ export class Recipient {
     /**
      * Get the contact for this recipient. Multiple recipients may map to the same
      * contact as a contact can hold multiple phone numbers. Requires the `contacts`
-     * permission.
+     * permission. If the same phone number is stored in multiple contacts, the first
+     * match is returned. However this is guaranteed to always return the same contact
+     * even if more than one exists unless the contact database gets changed between calls.
      */
     async toContact(): Promise<Contact | undefined> {
         return await this.android.contactManager.findContact("phone", this.address);
     }
 }
 
-export type SmsReceiver = string | Recipient; // TODO add Contact to this type
+export type SmsReceiver = string | Recipient | Contact;
 
 export type SmsResultSuccess = "success";
 export type SmsResultFailure =
@@ -1412,14 +1427,48 @@ export type SmsResultUnknown = "unknown";
 export type SmsResult = SmsResultSuccess | SmsResultFailure | SmsResultUnknown;
 
 export class ContactManager {
+    static readonly PHONE: ContactDataAccount = ["com.android.localphone", "PHONE"];
+
     private readonly android: Android;
 
     constructor(android: Android) {
         this.android = android;
     }
 
+    /**
+     * Looks up a contact. If the same data is stored in multiple contacts, the first
+     * match is returned. However this is guaranteed to always return the same contact
+     * even if more than one exists unless the contact database gets changed between calls.
+     * To find out what columns are searched for which ContactDataId, see the documentation
+     * there.
+     * This require the `contacts` permission.
+     */
     async findContact(dataId: ContactDataId, value: string): Promise<Contact | undefined> {
-        throw new Error("NOT IMPLEMENTED");
+        const result = await this.android.rawRequest("find_contact", {
+            dataId: dataId,
+            value: value,
+        });
+        const contactId: [number, string] = result.contact_id;
+        if (contactId == undefined) {
+            return undefined;
+        } else {
+            return new Contact(this.android, contactId[0], contactId[1]);
+        }
+    }
+
+    /**
+     * Looks up a contact. This will return all contacts, that have the given data stored.
+     * They're not guaranteed to be returned in the same order between requests. To find out
+     * what columns are searched for which ContactDataId, see the documentation there.
+     * This require the `contacts` permission.
+     */
+    async findContacts(dataId: ContactDataId, value: string): Promise<Array<Contact>> {
+        const result = await this.android.rawRequest("find_contacts", {
+            dataId: dataId,
+            value: value,
+        });
+        const contactIds: Array<[number, string]> = result.contact_ids;
+        return contactIds.map((elem) => new Contact(this.android, elem[0], elem[1]));
     }
 
     /**
@@ -1451,15 +1500,40 @@ export class Contact {
     }
 
     async getName(): Promise<ContactNameInfo> {
-        const result = await this.android.rawRequest("contact_name", {
-            id: this.id,
-        });
-        return result.name;
+        const result = await this.getData("name");
+        if (result == undefined) {
+            return {
+                display_name: "",
+                style: "unset",
+            };
+        } else {
+            return result;
+        }
     }
 
-    async getData(dataId: "phone"): Promise<ContactDataPhone | undefined>;
-    async getData(dataId: ContactDataId): Promise<unknown | undefined> {
-        throw new Error("NOT IMPLEMENTED");
+    /**
+     * Gets some data associated with this contact.
+     * @param dataId The type of requested data.
+     * @param account The ContactDataAccount to use. See documentation of ContactDataAccount for more info.
+     *                In the special case where dataId = "name", account is ignored.
+     */
+    async getData(dataId: "name", account?: undefined): Promise<ContactNameInfo | undefined>;
+    async getData(dataId: "phone", account?: ContactDataAccount): Promise<Array<ContactDataPhone>>;
+    async getData(dataId: "email", account?: ContactDataAccount): Promise<Array<ContactDataEmail>>;
+    async getData(dataId: "event", account?: ContactDataAccount): Promise<Array<ContactDataEvent>>;
+    async getData(dataId: "nickname", account?: ContactDataAccount): Promise<Array<ContactDataNickname>>;
+    async getData(dataId: "notes", account?: ContactDataAccount): Promise<ContactNotes | undefined>;
+    async getData(dataId: "address", account?: ContactDataAccount): Promise<Array<ContactDataAddress>>;
+    async getData(dataId: ContactDataId, account?: ContactDataAccount): Promise<unknown> {
+        const acc = account == undefined ? ContactManager.PHONE : account;
+        const result = await this.android.rawRequest("get_contact_data", {
+            id: this.id,
+            dataId: dataId,
+            contact_account: acc,
+        });
+        // Return type from nodecg-io-android is always either an array (named data) that is always present but may
+        // be empty or a value (also named data) that may be undefined. Type depends on ContactDataId
+        return result.data;
     }
 }
 
@@ -1469,16 +1543,36 @@ export type ContactStatus = {
     /**
      * The status message of that contact
      */
-    status: string | undefined;
+    status?: string;
     /**
      * The time when the status message was set.
      */
-    statusTime: Date | undefined;
+    statusTime?: Date;
     /**
      * The presence of the contact.
      */
     presence: ContactPresence;
 };
+
+/**
+ * An account for contact data. The default ist ContactManager#PHONE. Other apps may add their own.
+ * For example WhatsApp adds `['com.whatsapp', 'WhatsApp']` for WhatsApp data.
+ * The first string is the account type, the second string is the account name.
+ */
+export type ContactDataAccount = [string, string];
+
+/**
+ * A type of data that may be stored in a contact. When used to find contacts from database, the
+ * following columns are searched:
+ * 'name': display_name, given_name and family_name
+ * 'phone': entered_number and number
+ * 'email': address and display_name
+ * 'event': date
+ * 'nickname': name
+ * 'notes': This data set ist not searchable. Searching for 'notes' will never find a contact
+ * 'address': address, street, post_box, post_code, city
+ */
+export type ContactDataId = "name" | "phone" | "email" | "event" | "nickname" | "notes" | "address";
 
 /**
  * Asian is used when it can nut be determined whether `chinese`, `japanese` or `korean` is correct.
@@ -1493,32 +1587,217 @@ export type ContactNameInfo = {
     /**
      * The given name for the contact.
      */
-    given_name: string | undefined;
+    given_name?: string;
     /**
      * The family name for the contact.
      */
-    family_name: string | undefined;
+    family_name?: string;
     /**
      * The contact's honorific prefix, e.g. "Sir"
      */
-    prefix: string | undefined;
+    prefix?: string;
     /**
      * The contact's middle name
      */
-    middle_name: string | undefined;
+    middle_name?: string;
     /**
      * The contact's honorific suffix, e.g. "Jr"
      */
-    suffix: string | undefined;
+    suffix?: string;
     /**
      * The style used for combining given/middle/family name into a full name.
      */
     style: ContactNameStyle;
 };
 
-export type ContactDataId = "phone";
+export type PhoneNumberType =
+    | "home"
+    | "mobile"
+    | "work"
+    | "fax_work"
+    | "fax_home"
+    | "pager"
+    | "other"
+    | "callback"
+    | "car"
+    | "company_main"
+    | "isdn"
+    | "main"
+    | "other_fax"
+    | "radio"
+    | "telex"
+    | "tty_tdd"
+    | "work_mobile"
+    | "work_pager"
+    | "assistant"
+    | "mms";
 
-export class ContactDataPhone {}
+/**
+ * Represents one phone number
+ */
+export type ContactDataPhone = {
+    /**
+     * The phone number as the user entered it.
+     */
+    entered_number: string;
+
+    /**
+     * The phone number normalised. This should be used instead of entered_number in most cases.
+     */
+    number: string;
+
+    /**
+     * The type of the phone number.
+     */
+    type: PhoneNumberType;
+
+    /**
+     * A label for the type. Can be used to differentiate fields with 'other' type.
+     */
+    type_label?: string;
+};
+
+export type EmailType = "home" | "mobile" | "work" | "other";
+
+/**
+ * Represents one email address
+ */
+export type ContactDataEmail = {
+    /**
+     * The email address.
+     */
+    address: string;
+
+    /**
+     * The display name for this email address.
+     */
+    display_name: string;
+
+    /**
+     * The type of the email address.
+     */
+    type: EmailType;
+
+    /**
+     * A label for the type. Can be used to differentiate fields with 'other' type.
+     */
+    type_label?: string;
+};
+
+export type EventType = "birthday" | "anniversary" | "other";
+
+/**
+ * Represents one special event for a contact
+ */
+export type ContactDataEvent = {
+    /**
+     * The date of the event as the user entered it. This is not sored as a timestamp in the database
+     * and you can expect any type of text here. So be careful when trying to get a Date object from this.
+     */
+    date: string;
+
+    /**
+     * The type of the event.
+     */
+    type: EventType;
+
+    /**
+     * A label for the type. Can be used to differentiate fields with 'other' type.
+     */
+    type_label?: string;
+};
+
+export type NicknameType = "default" | "other" | "maiden_name" | "short_name" | "initials";
+
+/**
+ * Represents one nickname for a contact
+ */
+export type ContactDataNickname = {
+    /**
+     * The nickname of the contact
+     */
+    name: string;
+
+    /**
+     * The type of the nickname.
+     */
+    type: NicknameType;
+
+    /**
+     * A label for the type. Can be used to differentiate fields with 'other' type.
+     */
+    type_label?: string;
+};
+
+/**
+ * The notes for a contact.
+ */
+export type ContactNotes = {
+    /**
+     * The text in the notes
+     */
+    text: string;
+};
+
+export type AddressType = "home" | "work" | "other";
+
+/**
+ * Represents one nickname for a contact
+ */
+export type ContactDataAddress = {
+    /**
+     * The address in one string as he user entered it.
+     */
+    address: string;
+
+    /**
+     * The street, house number and floor number. On some device this may also just
+     * contain the same value as `address` and all the other address related fields
+     * are missing.
+     */
+    street?: string;
+
+    /**
+     * A post box for this address.
+     */
+    post_box?: string;
+
+    /**
+     * The neighbourhood of the address. This is used to differentiate multiple
+     * streets with the same name in the same city.
+     */
+    neighbourhood?: string;
+
+    /**
+     * The city, village, town or borough for the address.
+     */
+    city?: string;
+
+    /**
+     * A state, province, county (in Ireland), Land (in Germany), departement (in France) etc.
+     */
+    region?: string;
+
+    /**
+     * Postal code. Usually country-wide, but sometimes specific to the city
+     */
+    post_code?: string;
+
+    /**
+     * The name or code of the country.
+     */
+    country?: string;
+
+    /**
+     * The type of the address.
+     */
+    type: AddressType;
+
+    /**
+     * A label for the type. Can be used to differentiate fields with 'other' type.
+     */
+    type_label?: string;
+};
 
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';

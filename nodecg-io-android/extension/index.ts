@@ -20,10 +20,14 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         await client.connect();
         console.log("Test");
         await client.requestPermissions("contacts");
-        const c = (await client.contactManager.getAllContacts())[0];
-        console.log(c.displayName);
-        console.log(await c.getName());
-        console.log(await c.getStatus());
+        const c = await client.contactManager.findContact("phone", "***");
+        console.log(c?.displayName);
+        console.log(await c?.getName());
+        console.log(await c?.getStatus());
+        console.log(await c?.getData("phone"));
+        console.log(await c?.getData("address"));
+        console.log(await c?.getData("notes"));
+        console.log(await c?.getData("email"));
         await client.disconnect();
         return emptySuccess();
     }
