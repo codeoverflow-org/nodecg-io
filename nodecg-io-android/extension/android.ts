@@ -22,10 +22,10 @@ export class Android {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [(data: any) => void, (err: any) => void, ((evt: any) => void) | undefined]
     > = new Map();
+    private disconnectHandlers: Array<() => Promise<unknown>> = [];
 
     public readonly packageManager: PackageManager;
     public readonly contactManager: ContactManager;
-    public readonly wifiManager: WifiManager;
 
     constructor(device: string) {
         this.device = device;
@@ -33,7 +33,6 @@ export class Android {
 
         this.packageManager = new PackageManager(this);
         this.contactManager = new ContactManager(this);
-        this.wifiManager = new WifiManager(this);
     }
 
     /**
@@ -90,6 +89,13 @@ export class Android {
      */
     async disconnect(): Promise<void> {
         if (this.connected) {
+            for (const handler of this.disconnectHandlers) {
+                try {
+                    await handler();
+                } catch (err) {
+                    console.log(`A disconnect handler for nodecg-io-android threw an error: ${err}`);
+                }
+            }
             await this.rawRequest("cancel_all_subscriptions", {});
             this.connected = false;
             await this.rawAdb(["reverse", "--remove", `tcp:${this.devicePort}`]);
@@ -209,9 +215,42 @@ export class Android {
             value: "telephony",
         });
         if (!result.available) {
-            throw new Error(`The device does not implement telephony features.`);
+            throw new Error("The device does not implement telephony features.");
         }
         return new TelephonyManager(this);
+    }
+
+    /**
+     * Gets the WifiManager for this device. If this device is not capable of wifi features,
+     * the promise is rejected.
+     */
+    async getWifiManager(): Promise<WifiManager> {
+        const result = await this.rawRequest("check_availability", {
+            type: "system",
+            value: "wifi",
+        });
+        if (!result.available) {
+            throw new Error("The device does not implement wifi features.");
+        }
+        return new WifiManager(this);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                       //
+    //   METHODS FROM HERE ONWARDS UNTIL END OF CLASS Android ARE NOT MEANT TO BE CALLED BY BUNDLES.         //
+    //   THEY MAY GIVE MORE POSSIBILITIES BUT YOU CAN ALSO BREAK MUCH WITH IT. CALL THEM AT YOUR OWN RISK.   //
+    //                                                                                                       //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    addDisconnectHandler(handler: () => Promise<unknown>): void {
+        this.disconnectHandlers.push(handler);
+    }
+
+    removeDisconnectHandler(handler: () => Promise<unknown>): void {
+        const index = this.disconnectHandlers.indexOf(handler);
+        if (index >= 0) {
+            this.disconnectHandlers.splice(index, 1);
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1824,13 +1863,127 @@ export class WifiManager {
      * Retrieves information about the current state of the device.
      * WifiState in itself has not may fields. Wrap it in a check for WifiState#connected to get access to
      * fields only available when connected.
-     * Because it's technically possible to get location data from the available wlan networks and android does
-     * not differentiate between accessing the current connection and scanning for WLAN networks, some of the
+     * Because it's technically possible to get location data from the available wlan networks, some of the
      * fields in WifiState may hold meaningless values if the `gps` permission is not granted.
      */
     async getState(): Promise<WifiState> {
         const result = await this.android.rawRequest("wifi_state", {});
         return result.state;
+    }
+
+    /**
+     * Retrieves information about currently available WLAN networks.
+     * Because it's technically possible to get location data from the available wlan networks, some of the
+     * fields in WifiScanResult may hold meaningless values if the `gps` permission is not granted.
+     * For the same reason this will always throw an error if location services are disabled.
+     * Note that this method may take a very long time.
+     */
+    async scanNetworks(): Promise<Array<WifiScanResult>> {
+        // Because this was restricted to 1 scan every 30 minutes to save battery we need to disable this first.
+        // Also we need to disable the background location throttle
+        // Query current value:
+        const wifiThrottleEnabled = (
+            await this.android.rawAdb(["shell", "settings", "get", "global", "wifi_scan_throttle_enabled"])
+        ).trim();
+        const locationThrottleMs = (
+            await this.android.rawAdb([
+                "shell",
+                "settings",
+                "get",
+                "global",
+                "location_background_throttle_interval_ms",
+            ])
+        ).trim();
+        // If we disconnect from the device while still waiting for scan results we need to change the settings back
+        const handler = async () => {
+            // If the queried settings value is 'null' the setting does not exist so we can't set it. In this case
+            // there will have been a fail probably in the call above but we might as well have hit the one scan
+            // that is allowed every 30 minutes.
+            try {
+                // settingValue = 0 means the setting was disabled before so we just leave it disabled.
+                if (wifiThrottleEnabled != "null" && wifiThrottleEnabled != "0") {
+                    await this.android.rawAdb([
+                        "shell",
+                        "settings",
+                        "put",
+                        "global",
+                        "wifi_scan_throttle_enabled",
+                        wifiThrottleEnabled,
+                    ]);
+                }
+            } catch (err) {
+                // Ignore
+            }
+            try {
+                await this.android.rawAdb([
+                    "shell",
+                    "settings",
+                    "put",
+                    "global",
+                    "location_background_throttle_interval_ms",
+                    locationThrottleMs,
+                ]);
+            } catch (err) {
+                // Ignore
+            }
+        };
+        this.android.addDisconnectHandler(handler);
+        // Disable wifi scan throttle
+        await this.android.rawAdbExitCode(["shell", "settings", "put", "global", "wifi_scan_throttle_enabled", "0"]);
+        await this.android.rawAdbExitCode([
+            "shell",
+            "settings",
+            "put",
+            "global",
+            "location_background_throttle_interval_ms",
+            "0",
+        ]);
+        // Fetch the result from the app.
+        try {
+            const result = await this.android.rawRequest("scan_wifi", {});
+            return result.results;
+        } finally {
+            // Unregister the handler and call it.
+            this.android.removeDisconnectHandler(handler);
+            await handler();
+        }
+    }
+
+    /**
+     * Enables or disable WLAN
+     */
+    async setEnabled(enabled: boolean): Promise<void> {
+        const result = await this.android.rawAdbExitCode(["shell", "svc", "wifi", enabled ? "enable" : "disable"]);
+        if (result != 0) {
+            throw new Error(`Could not change wifi state: scv returned exit code ${result}`);
+        }
+    }
+
+    /**
+     * Request a connection to a WLAN network. This willl turn on wifi if it's disabled.
+     * IMPORTANT: This is not meant to make the phone connect to an already saved network. This can be used to
+     * create a connection to a new network where the user then does not need to enter a passphrase. The
+     * connection is temporary. That means when it is lost, the user can not just reconnect but you need to call
+     * this again.
+     * IMPORTANT II: This will throw an error if running on Android 9 or lower.
+     * Please note that this requires user interaction and WILL launch the activity.
+     */
+    async requestConnection(
+        request: WifiConnectionRequest,
+        connected_listener?: (network: Network) => void,
+    ): Promise<void> {
+        try {
+            await this.setEnabled(true);
+        } catch (err) {
+            //
+        }
+        const listener =
+            connected_listener == undefined
+                ? undefined
+                : (data: { network_handle: number }) => {
+                      connected_listener(new Network(this.android, data.network_handle));
+                  };
+        await this.android.rawRequest("request_wifi_connection", request, listener);
     }
 }
 
@@ -1913,6 +2066,62 @@ export type WifiInformation = {
 
 export type WifiStandard = "ieee80211abg" | "ieee80211n" | "ieee80211ac" | "ieee80211ax" | "unknown";
 export type WifiDeviceState = "disabled" | "disabling" | "enabled" | "enabling" | "unknown";
+/**
+ * Channel width for wifi scan result. 80Mhz+ means the channel is using 160Mhz but as 80Mhz + 80MHz
+ */
+export type WifiChannelWidth = "20MHz" | "40Mhz" | "80Mhz" | "160Mhz" | "80MHz+" | "unknown";
+
+export type WifiScanResultBase = {
+    /**
+     * The SSID of the connected network.
+     */
+    ssid: string;
+
+    /**
+     * The BSSID of the connected network.
+     */
+    bssid: string;
+
+    /**
+     * The wifi standard used for the connection. This will always be 'unknown' when running on Android 10 or lower.
+     */
+    standard: WifiStandard;
+
+    /**
+     * The frequency on which this network currently runs in MHz
+     */
+    frequency: number;
+
+    /**
+     * The current received signal strength indication in dBm
+     */
+    rssi: number;
+
+    /**
+     * The rssi aligned to a scale from 0 to 1.
+     * Avoid using this as it's not very meaningful.
+     */
+    signal_level: number;
+
+    /**
+     * Whether this is a passpoint network
+     */
+    passpoint: boolean;
+};
+
+export type WifiScanResultExtra = {
+    /**
+     * Whether this network support rtt (802.11mc)
+     */
+    rtt: boolean;
+
+    /**
+     * The bandwidth of the used channel.
+     */
+    channel_width: WifiChannelWidth;
+};
+
+export type WifiScanResult = WifiScanResultBase & WifiScanResultExtra;
 
 export type WifiStateCommon = {
     /**
@@ -1926,22 +2135,8 @@ export type WifiStateCommon = {
     connected: boolean;
 };
 
-export type WifiStateDisconnected = {
-    connected: false;
-};
-
-export type WifiStateConnected = {
+export type WifiStateConnectedExtra = {
     connected: true;
-
-    /**
-     * The SSID of the connected network.
-     */
-    ssid: string;
-
-    /**
-     * The BSSID of the connected network.
-     */
-    bssid: string;
 
     /**
      * Whether the SSID of the connected network is hidden.
@@ -1952,11 +2147,6 @@ export type WifiStateConnected = {
      * The ip address of this device in the network.
      */
     ip: string;
-
-    /**
-     * The frequency on which this network currently runs in MHz
-     */
-    frequency: number;
 
     /**
      * The current link speed in MB/s
@@ -1980,15 +2170,97 @@ export type WifiStateConnected = {
     mac_address: number;
 
     /**
-     * The current received signal strength indication in dBm
+     * The Fully Qualified Domain Name of the passpoint network. If this is not
+     * a passpoint network, the value is undefined.
      */
-    rssi: number;
-
-    /**
-     * The rssi aligned to a scale from 0 to 1.
-     * Avoid using this as it's not very meaningful.
-     */
-    signal_level: number;
+    passpoint_fqdn?: string;
 };
 
-export type WifiState = WifiStateCommon & (WifiStateConnected | WifiStateDisconnected);
+export type WifiStateDisconnectedExtra = {
+    connected: false;
+};
+
+export type WifiStateConnected = WifiStateCommon & WifiStateConnectedExtra & WifiScanResultBase;
+export type WifiStateDisconnected = WifiStateCommon & WifiStateDisconnectedExtra;
+
+export type WifiState = WifiStateConnected | WifiStateDisconnected;
+
+/**
+ * A wifi encryption method that requires no passphrase
+ */
+export type WifiEncryptionSimple = {
+    /**
+     * The type: Either none or enhanced_open (OWE).
+     */
+    type: "none" | "enhanced_open";
+};
+
+/**
+ * A wifi encryption method that requires a passphrase
+ */
+export type WifiEncryptionPassphrase = {
+    /**
+     * The type: Either WPA2 or WPA3. If you need support for WPA try WPA2. On some device it will work.
+     * WPA2/3 Enterprise is not supported for this.
+     */
+    type: "wpa2" | "wpa3";
+
+    /**
+     * The passphrase to use.
+     */
+    passphrase: string;
+};
+
+/**
+ * A type of encryption to be used for a wifi connect request.
+ */
+export type WifiEncryption = WifiEncryptionSimple | WifiEncryptionPassphrase;
+
+/**
+ * Base type for a wifi connection request. Must be joined with either WifiConnectionRequestSSID
+ * or WifiConnectionRequestBSSID or both to get a valid request.
+ */
+export type WifiConnectionRequestBase = {
+    encryption?: WifiEncryption;
+};
+
+/**
+ * Specifies a SSID for a WLAN network to connect to.
+ */
+export type WifiConnectionRequestSSID = {
+    /**
+     * The SSID of the WLAN network to connect to.
+     */
+    ssid: string;
+};
+
+/**
+ * Specifies a BSSID for a WLAN network to connect to.
+ */
+export type WifiConnectionRequestBSSID = {
+    /**
+     * The BSSID of the WLAN network to connect to.
+     */
+    bssid: string;
+
+    /**
+     * A mask for the BSSID. If this is given, any network with a BSSID b for that `b & bssid_mask == bssid` is true.
+     */
+    bssid_mask?: string;
+};
+
+/**
+ * Specifies a WLAN network to connect to.
+ */
+export type WifiConnectionRequest = WifiConnectionRequestBase &
+    (WifiConnectionRequestSSID | WifiConnectionRequestBSSID | (WifiConnectionRequestSSID & WifiConnectionRequestBSSID));
+
+export class Network {
+    private readonly android: Android;
+    private readonly handle: number;
+
+    constructor(android: Android, handle: number) {
+        this.android = android;
+        this.handle = handle;
+    }
+}

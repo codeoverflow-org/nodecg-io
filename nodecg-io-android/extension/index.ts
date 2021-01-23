@@ -19,8 +19,6 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
         const client = new Android(config.device);
         await client.connect();
         console.log("Test");
-        console.log(await client.wifiManager.getInfo());
-        console.log(await client.wifiManager.getState());
         await client.disconnect();
         return emptySuccess();
     }
