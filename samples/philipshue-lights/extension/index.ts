@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG): void {
     const hue = requireService<PhilipsHueServiceClient>(nodecg, "philipshue");
 
     hue?.onAvailable((hue) => {
-        nodecg.log.info("Got Philips Hue client");
+        nodecg.log.info("Philips Hue client has been updated, counting lights.");
 
         const client = hue.getNativeClient();
 

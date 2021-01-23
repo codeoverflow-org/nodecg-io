@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const streamElements = requireService<StreamElementsServiceClient>(nodecg, "streamelements");
 
     streamElements?.onAvailable((client) => {
-        nodecg.log.info("SE client has been set, registering handlers now.");
+        nodecg.log.info("SE client has been updated, registering handlers now.");
 
         client.onCheer((data) => {
             nodecg.log.info(

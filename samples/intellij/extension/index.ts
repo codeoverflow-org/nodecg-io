@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     const ij = requireService<IntelliJServiceClient>(nodecg, "intellij");
 
     ij?.onAvailable((intellij) => {
-        nodecg.log.info("IntelliJ client has been updated. Printing all plugins.");
+        nodecg.log.info("IntelliJ client has been updated, printing all plugins.");
 
         intellij
             .getNativeClient()

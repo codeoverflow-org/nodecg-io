@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     const reddit = requireService<RedditServiceClient>(nodecg, "reddit");
 
     reddit?.onAvailable(async (client) => {
-        nodecg.log.info("Reddit client has been updated.");
+        nodecg.log.info("Reddit client has been updated, checking for recent post.");
         const posts = await client.getNativeClient().threads(subreddit);
         posts.forEach((post) => {
             nodecg.log.info(`Recent Post: ${post.title} by ${post.author}. Created: ${post.date}. See ${post.url}`);
