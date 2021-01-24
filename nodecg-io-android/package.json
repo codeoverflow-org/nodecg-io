@@ -2,16 +2,22 @@
     "name": "nodecg-io-android",
     "version": "0.1.0",
     "description": "Allows to connect to an android device via adb.",
-    "homepage": "",
+    "homepage": "https://nodecg.io/samples/android",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-android"
     },
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
+    "main": "extension",
     "keywords": [
         "",
         "nodecg-bundle"

@@ -60,7 +60,6 @@ export class Android {
                         const event = promise[2];
                         try {
                             const data = JSON.parse(await readableToString(req, "utf-8"));
-                            console.log(data);
                             if (data.event) {
                                 if (event !== undefined) {
                                     event(data);
