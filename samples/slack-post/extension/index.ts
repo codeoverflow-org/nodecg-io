@@ -8,6 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const slack = requireService<SlackServiceClient>(nodecg, "slack");
 
     slack?.onAvailable(async (client) => {
+        nodecg.log.info("Slack WebAPI client has been updated, sending message to channel.");
         // Get all channels
         const channelListResponse = await client.getNativeClient().conversations.list();
 

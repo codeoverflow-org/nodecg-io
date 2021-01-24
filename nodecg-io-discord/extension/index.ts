@@ -24,7 +24,7 @@ class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceC
     async createClient(config: DiscordServiceConfig): Promise<Result<DiscordServiceClient>> {
         const client = new DiscordClient({ partials: ["CHANNEL", "MESSAGE", "REACTION", "GUILD_MEMBER", "USER"] });
         await client.login(config.botToken);
-        this.nodecg.log.info("Successfully connected to discord.");
+        this.nodecg.log.info("Successfully connected to Discord.");
         return success({
             getNativeClient() {
                 return client;

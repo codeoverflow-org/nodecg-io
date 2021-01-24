@@ -39,7 +39,7 @@ module.exports = (nodecg: NodeCG) => {
 class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceClient> {
     async validateConfig(config: SpotifyServiceConfig): Promise<Result<void>> {
         if (config.scopes === undefined || config.scopes.length === 0) {
-            return error("Scopes are empty. Please specify at least one scope.");
+            return error("Scopes are empty. Please specify at least one scope!");
         } else {
             return emptySuccess();
         }
@@ -62,7 +62,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         await open(authorizeURL);
 
         await promise;
-        this.nodecg.log.info("Successfully connected to Spotify!");
+        this.nodecg.log.info("Successfully connected to Spotify.");
 
         return success(new SpotifyServiceClient(spotifyApi, this.startTokenRefreshing(spotifyApi)));
     }
@@ -82,7 +82,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
                         resolve(undefined);
                     },
-                    (err) => this.nodecg.log.error("Spotify login error.", err),
+                    (err) => this.nodecg.log.error("Spotify login error!", err),
                 );
 
                 // This little snippet closes the oauth window after the connection was successful
@@ -99,7 +99,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         return setInterval(() => {
             spotifyApi.refreshAccessToken().then(
                 (data) => {
-                    this.nodecg.log.info("The spotify access token has been refreshed!");
+                    this.nodecg.log.info("The Spotify access token has been refreshed.");
 
                     // Save the access token so that it's used in future calls
                     spotifyApi.setAccessToken(data.body["access_token"]);

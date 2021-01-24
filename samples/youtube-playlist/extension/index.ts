@@ -9,6 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     const youtube = requireService<YoutubeServiceClient>(nodecg, "youtube");
 
     youtube?.onAvailable(async (client) => {
+        nodecg.log.info("Youtube client has been updated, listing videos from playlist.");
         const youtubeClient = client.getNativeClient();
         const resp = await youtubeClient.playlists.list({
             part: ["id", "snippet"],
