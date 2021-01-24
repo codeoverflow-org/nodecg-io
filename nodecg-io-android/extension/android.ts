@@ -111,12 +111,37 @@ export class Android {
     }
 
     /**
-     * Requests some special permissions. This should be called once on bundle
+     * Check fors some permissions to be granted. This will make no attempt to get
+     * access to the permissions and the activity won't get launched. If a permission
+     * is not granted, the promise is rejected.
+     */
+    async ensurePermissions(...permissions: Array<Permission>): Promise<void> {
+        await this.rawRequest("ensure_permissions", {
+            permissions: permissions,
+        });
+    }
+
+    /**
+     * Requests some runtime permissions. This should be called once on bundle
      * startup as it requires starting the activity.
      */
-    async requestPermissions(...permissions: Permission[]): Promise<void> {
+    async requestPermissions(...permissions: Array<BasicPermission>): Promise<void> {
         const result = await this.rawRequest("request_permissions", {
             permissions: permissions,
+        });
+        if (!result.success) {
+            throw new Error(result.errmsg);
+        }
+    }
+
+    /**
+     * Requests a special permissions. This should be called once on bundle
+     * startup as it requires starting the activity. Special permissions must
+     * be explicitly enabled in the settings one after another.
+     */
+    async requestSpecial(permission: SpecialPermission): Promise<void> {
+        const result = await this.rawRequest("request_special", {
+            permission: permission,
         });
         if (!result.success) {
             throw new Error(result.errmsg);
@@ -235,6 +260,10 @@ export class Android {
         return new WifiManager(this);
     }
 
+    equals(other: Android): boolean {
+        return this == other;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                       //
     //   METHODS FROM HERE ONWARDS UNTIL END OF CLASS Android ARE NOT MEANT TO BE CALLED BY BUNDLES.         //
@@ -340,10 +369,21 @@ export class Android {
 }
 
 /**
- * A special permission that has to be requested via requestPermissions() before using any
+ * A runtime permission that has to be requested via requestPermissions() before using any
  * function that requires it.
  */
-export type Permission = "gps" | "phone" | "read_sms" | "send_sms" | "contacts";
+export type BasicPermission = "gps" | "phone" | "read_sms" | "send_sms" | "contacts";
+
+/**
+ * Special permissions are considered more dangerous than runtime permissions. They must be
+ * requested one after another via requestSpecial().
+ */
+export type SpecialPermission = "statistics";
+
+/**
+ * A permission that needs to be granted at runtime.
+ */
+export type Permission = BasicPermission | SpecialPermission;
 
 /**
  * An id of a sensor that might be present on a device
@@ -406,6 +446,10 @@ export class VolumeStream {
             adjustment: adjustment,
             flags: flags,
         });
+    }
+
+    equals(other: VolumeStream): boolean {
+        return this.android.equals(other.android) && this.channel == other.channel;
     }
 }
 
@@ -512,6 +556,10 @@ export class PackageManager {
         });
         return new Package(this.android, id);
     }
+
+    equals(other: PackageManager): boolean {
+        return this.android.equals(other.android);
+    }
 }
 
 /**
@@ -558,6 +606,36 @@ export class Package {
         });
         return result.version;
     }
+
+    /**
+     * Gets usage statistics for this package for a given period of time.
+     * Required the special `statistics` permission.
+     */
+    async getUsageStats(time: UsageStatsTime): Promise<UsageStats | undefined> {
+        const result = await this.android.rawRequest("get_usage_statistics", {
+            package: this.id,
+            start_date: time.start == undefined ? undefined : time.start.getDate(),
+            end_date: time.end == undefined ? undefined : time.end.getDate(),
+        });
+        const stats = result.stats;
+        if (stats != undefined) {
+            return {
+                package: stats.package,
+                start: new Date(stats.start),
+                end: new Date(stats.end),
+                lastTimeUsed: new Date(stats.lastTimeUsed),
+                lastTimeVisible: new Date(stats.lastTimeVisible),
+                totalTimeUsed: stats.totalTimeUsed,
+                totalTimeVisible: stats.totalTimeVisible,
+            };
+        } else {
+            return undefined;
+        }
+    }
+
+    equals(other: Package): boolean {
+        return this.android.equals(other.android) && this.id == other.id;
+    }
 }
 
 /**
@@ -589,6 +667,10 @@ export class Activity {
             "-n",
             quote(this.pkg.id + "/" + this.id),
         ]);
+    }
+
+    equals(other: Activity): boolean {
+        return this.pkg.equals(other.pkg) && this.id == other.id;
     }
 }
 
@@ -637,6 +719,10 @@ export class GpsSensor {
             listener,
         );
         return Subscription.fromResult(this.android, result);
+    }
+
+    equals(other: GpsSensor): boolean {
+        return this.android.equals(other.android);
     }
 }
 
@@ -689,6 +775,10 @@ export type LocationInfo = {
     accuracyBearing?: number;
 };
 
+/**
+ * A subscription is returned when the device keeps sending data. Cancel the subscription to
+ * stop delivery of said data.
+ */
 export class Subscription {
     private readonly android: Android;
     private readonly id: string;
@@ -698,6 +788,9 @@ export class Subscription {
         this.id = id;
     }
 
+    /**
+     * Cancels the subscription
+     */
     async cancel(): Promise<void> {
         await this.android.rawRequest("cancel_subscription", {
             subscription_id: this.id,
@@ -707,8 +800,15 @@ export class Subscription {
     static fromResult(android: Android, result: { subscription_id: string }): Subscription {
         return new Subscription(android, result.subscription_id);
     }
+
+    equals(other: Subscription): boolean {
+        return this.android.equals(other.android) && this.id == other.id;
+    }
 }
 
+/**
+ * This class unifies all the motion sensors on the device.
+ */
 export class MotionSensor {
     private readonly android: Android;
 
@@ -772,8 +872,15 @@ export class MotionSensor {
         );
         return Subscription.fromResult(this.android, result);
     }
+
+    equals(other: MotionSensor): boolean {
+        return this.android.equals(other.android);
+    }
 }
 
+/**
+ * A single sensor that is used to get the whole motion
+ */
 export type MotionSensorPart =
     | "accelerometer"
     | "accelerometer_uncalibrated"
@@ -924,6 +1031,9 @@ export type Motion = AccelerometerResult &
     LinearAccelerationResult &
     RotationVectorResult;
 
+/**
+ * A sensor for magnetic field data.
+ */
 export class MagneticSensor {
     private readonly android: Android;
 
@@ -938,8 +1048,15 @@ export class MagneticSensor {
         const result = await this.android.rawRequest("magnetic_field", {});
         return result.magnetic_field;
     }
+
+    equals(other: MagneticSensor): boolean {
+        return this.android.equals(other.android);
+    }
 }
 
+/**
+ * The result of a magnetic field sensor
+ */
 export type MagneticField = {
     /**
      * The ambient magnetic field on x axis in micro-Tesla
@@ -955,6 +1072,9 @@ export type MagneticField = {
     z: number;
 };
 
+/**
+ * A light sensor
+ */
 export class LightSensor {
     private readonly android: Android;
 
@@ -969,8 +1089,15 @@ export class LightSensor {
         const result = await this.android.rawRequest("ambient_light", {});
         return result.light;
     }
+
+    equals(other: LightSensor): boolean {
+        return this.android.equals(other.android);
+    }
 }
 
+/**
+ * Manager for telephony features
+ */
 export class TelephonyManager {
     private readonly android: Android;
     readonly smsManager: SmsManager;
@@ -986,7 +1113,28 @@ export class TelephonyManager {
     async getTelephonies(): Promise<Array<Telephony>> {
         const result = await this.android.rawRequest("get_telephonies", {});
         const ids = result.telephonies as Array<number>;
-        return ids.map((id) => new Telephony(this.android, id));
+        return ids.map((id) => new Telephony(this.android, this, id));
+    }
+
+    /**
+     * Enables or disables Airplane Mode
+     */
+    async setAirplane(enabled: boolean): Promise<void> {
+        const result = await this.android.rawAdbExitCode([
+            "shell",
+            "settings",
+            "put",
+            "global",
+            "airplane_mode_on",
+            enabled ? "1" : "0",
+        ]);
+        if (result != 0) {
+            throw new Error(`Could not change airplane mode state: failed to change settings: ${result}`);
+        }
+    }
+
+    equals(other: TelephonyManager): boolean {
+        return this.android.equals(other.android);
     }
 }
 
@@ -996,27 +1144,59 @@ export class TelephonyManager {
  */
 export class Telephony implements SmsResolvable {
     private readonly android: Android;
+    private readonly manager: TelephonyManager;
     readonly id: number;
 
     readonly sms_provider = "telephony";
     readonly sms_resolve_data: Record<string, unknown>;
 
-    constructor(android: Android, id: number) {
+    constructor(android: Android, manager: TelephonyManager, id: number) {
         this.android = android;
+        this.manager = manager;
         this.id = id;
         this.sms_resolve_data = {
             telephony: id,
         };
     }
 
+    /**
+     * Gets the properties for this Telephony
+     */
     async properties(): Promise<TelephonyProperties> {
         const result = await this.android.rawRequest("get_telephony_properties", {
             telephony: this.id,
         });
         return result.properties;
     }
+
+    /**
+     * Request a connection to this Telephony. This will turn off airplane mode if it's enabled.
+     * IMPORTANT: This will throw an error if running on Android 10 or lower.
+     * Please note that this requires user interaction and WILL launch the activity.
+     */
+    async requestConnection(connected_listener?: () => void): Promise<void> {
+        try {
+            await this.manager.setAirplane(false);
+        } catch (err) {
+            //
+        }
+        await this.android.rawRequest(
+            "request_telephony_connection",
+            {
+                telephony: this.id,
+            },
+            connected_listener,
+        );
+    }
+
+    equals(other: Telephony): boolean {
+        return this.manager.equals(other.manager) && this.id == other.id;
+    }
 }
 
+/**
+ * Properties for a Telephony object.
+ */
 export type TelephonyProperties = {
     /**
      * The slot index (starting at 0) where the SIM of that telephony is located. Might be undefined
@@ -1061,6 +1241,9 @@ export type TelephonyProperties = {
     manufacturerCode?: string;
 };
 
+/**
+ * Manager to read and send SMS and MS
+ */
 export class SmsManager {
     private readonly android: Android;
 
@@ -1150,17 +1333,33 @@ export class SmsManager {
         const sms_array = result.sms as Array<Record<string, unknown>>;
         return sms_array.map(factory);
     }
+
+    equals(other: SmsManager): boolean {
+        return this.android.equals(other.android);
+    }
 }
 
+/**
+ * A category / state of a sms message
+ */
 export type SmsCategory = "all" | "inbox" | "outbox" | "sent" | "draft";
 
+/**
+ * Something that can be used to filter SMS.
+ */
 export interface SmsResolvable {
     readonly sms_provider: string;
     readonly sms_resolve_data: Record<string, unknown>;
 }
 
+/**
+ * A type of message (sms or mms)
+ */
 export type MessageType = "sms" | "mms";
 
+/**
+ * Common parts of a message that ies either sms or mms.
+ */
 export abstract class AbstractMessage {
     protected readonly android: Android;
     protected readonly id: number;
@@ -1239,13 +1438,16 @@ export abstract class AbstractMessage {
             telephony_id: this.telephony_id,
         });
         if (result.available) {
-            return new Telephony(this.android, this.telephony_id);
+            return new Telephony(this.android, await this.android.getTelephonyManager(), this.telephony_id);
         } else {
             return undefined;
         }
     }
 }
 
+/**
+ * A SMS message
+ */
 export class Sms extends AbstractMessage {
     private readonly sender_id: number;
 
@@ -1286,6 +1488,9 @@ export class Sms extends AbstractMessage {
     }
 }
 
+/**
+ * A MMS message
+ */
 export class Mms extends AbstractMessage {
     // eslint-disable-next-line
     constructor(android: Android, msg: Record<string, any>) {
@@ -1381,7 +1586,7 @@ export class MessageThread implements SmsResolvable {
  */
 export class Recipient {
     private readonly android: Android;
-    private readonly _id: number;
+    private readonly id: number;
 
     /**
      * The phone number or name of this Recipient.
@@ -1391,7 +1596,7 @@ export class Recipient {
     // eslint-disable-next-line
     constructor(android: Android, msg: Record<string, any>) {
         this.android = android;
-        this._id = msg.id;
+        this.id = msg.id;
         this.address = msg.address;
     }
 
@@ -1405,11 +1610,25 @@ export class Recipient {
     async toContact(): Promise<Contact | undefined> {
         return await this.android.contactManager.findContact("phone", this.address);
     }
+
+    equals(other: Recipient): boolean {
+        return this.android.equals(other.android) && this.id == other.id;
+    }
 }
 
+/**
+ * Anything that can be used to send a sms or mms message to.
+ */
 export type SmsReceiver = string | Recipient | Contact;
 
+/**
+ * A successful result when sending a message
+ */
 export type SmsResultSuccess = "success";
+
+/**
+ * An errored result when sending a message
+ */
 export type SmsResultFailure =
     | "error_generic_failure"
     | "error_radio_off"
@@ -1465,8 +1684,15 @@ export type SmsResultFailure =
     | "ril_cancelled"
     | "ril_sim_absent";
 export type SmsResultUnknown = "unknown";
+
+/**
+ * A result when sending a message
+ */
 export type SmsResult = SmsResultSuccess | SmsResultFailure | SmsResultUnknown;
 
+/**
+ * Manager for contacts on the device.
+ */
 export class ContactManager {
     static readonly PHONE: ContactDataAccount = ["com.android.localphone", "PHONE"];
 
@@ -1520,8 +1746,15 @@ export class ContactManager {
         const contactIds: Array<[number, string]> = result.contact_ids;
         return contactIds.map((elem) => new Contact(this.android, elem[0], elem[1]));
     }
+
+    equals(other: ContactManager): boolean {
+        return this.android.equals(other.android);
+    }
 }
 
+/**
+ * One contact
+ */
 export class Contact {
     private readonly android: Android;
     private readonly id: number;
@@ -1533,6 +1766,9 @@ export class Contact {
         this.displayName = displayName;
     }
 
+    /**
+     * Gets the status of the contact. I don't really know what this is used for.
+     */
     async getStatus(): Promise<ContactStatus> {
         const result = await this.android.rawRequest("contact_status", {
             id: this.id,
@@ -1540,6 +1776,9 @@ export class Contact {
         return result.status;
     }
 
+    /**
+     * Gets detailed name info about this contact.
+     */
     async getName(): Promise<ContactNameInfo> {
         const result = await this.getData("name");
         if (result == undefined) {
@@ -1575,6 +1814,10 @@ export class Contact {
         // Return type from nodecg-io-android is always either an array (named data) that is always present but may
         // be empty or a value (also named data) that may be undefined. Type depends on ContactDataId
         return result.data;
+    }
+
+    equals(other: Contact): boolean {
+        return this.android.equals(other.android) && this.id == other.id;
     }
 }
 
@@ -1620,6 +1863,9 @@ export type ContactDataId = "name" | "phone" | "email" | "event" | "nickname" | 
  */
 export type ContactNameStyle = "unset" | "western" | "asian" | "chinese" | "japanese" | "korean";
 
+/**
+ * Name information for a contact
+ */
 export type ContactNameInfo = {
     /**
      * The name that should be used to display the contact.
@@ -1651,6 +1897,9 @@ export type ContactNameInfo = {
     style: ContactNameStyle;
 };
 
+/**
+ * A type of a phone number
+ */
 export type PhoneNumberType =
     | "home"
     | "mobile"
@@ -1698,6 +1947,9 @@ export type ContactDataPhone = {
     type_label?: string;
 };
 
+/**
+ * A type of email address
+ */
 export type EmailType = "home" | "mobile" | "work" | "other";
 
 /**
@@ -1725,6 +1977,9 @@ export type ContactDataEmail = {
     type_label?: string;
 };
 
+/**
+ * A type of contact related event
+ */
 export type EventType = "birthday" | "anniversary" | "other";
 
 /**
@@ -1748,6 +2003,9 @@ export type ContactDataEvent = {
     type_label?: string;
 };
 
+/**
+ * A type of contact nickname
+ */
 export type NicknameType = "default" | "other" | "maiden_name" | "short_name" | "initials";
 
 /**
@@ -1780,10 +2038,13 @@ export type ContactNotes = {
     text: string;
 };
 
+/**
+ * A type of address
+ */
 export type AddressType = "home" | "work" | "other";
 
 /**
- * Represents one nickname for a contact
+ * Represents one address for a contact
  */
 export type ContactDataAddress = {
     /**
@@ -1840,10 +2101,9 @@ export type ContactDataAddress = {
     type_label?: string;
 };
 
-function quote(arg: string): string {
-    return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
-}
-
+/**
+ * Manager for wifi related features
+ */
 export class WifiManager {
     private readonly android: Android;
 
@@ -1950,7 +2210,7 @@ export class WifiManager {
     }
 
     /**
-     * Enables or disable WLAN
+     * Enables or disables WLAN
      */
     async setEnabled(enabled: boolean): Promise<void> {
         const result = await this.android.rawAdbExitCode(["shell", "svc", "wifi", enabled ? "enable" : "disable"]);
@@ -1968,25 +2228,23 @@ export class WifiManager {
      * IMPORTANT II: This will throw an error if running on Android 9 or lower.
      * Please note that this requires user interaction and WILL launch the activity.
      */
-    async requestConnection(
-        request: WifiConnectionRequest,
-        connected_listener?: (network: Network) => void,
-    ): Promise<void> {
+    async requestConnection(request: WifiConnectionRequest, connected_listener?: () => void): Promise<void> {
         try {
             await this.setEnabled(true);
         } catch (err) {
             //
         }
-        const listener =
-            connected_listener == undefined
-                ? undefined
-                : (data: { network_handle: number }) => {
-                      connected_listener(new Network(this.android, data.network_handle));
-                  };
-        await this.android.rawRequest("request_wifi_connection", request, listener);
+        await this.android.rawRequest("request_wifi_connection", request, connected_listener);
+    }
+
+    equals(other: WifiManager): boolean {
+        return this.android.equals(other.android);
     }
 }
 
+/**
+ * Information about the wifi device.
+ */
 export type WifiInformation = {
     /**
      * Whether this device supports the 5GHz Band
@@ -2064,8 +2322,16 @@ export type WifiInformation = {
     ieee80211ax: boolean;
 };
 
+/**
+ * A wifi standard. This is supported only on Android 11+
+ */
 export type WifiStandard = "ieee80211abg" | "ieee80211n" | "ieee80211ac" | "ieee80211ax" | "unknown";
+
+/**
+ * A state for the wifi device
+ */
 export type WifiDeviceState = "disabled" | "disabling" | "enabled" | "enabling" | "unknown";
+
 /**
  * Channel width for wifi scan result. 80Mhz+ means the channel is using 160Mhz but as 80Mhz + 80MHz
  */
@@ -2121,6 +2387,9 @@ export type WifiScanResultExtra = {
     channel_width: WifiChannelWidth;
 };
 
+/**
+ * A result entry for a wifi scan
+ */
 export type WifiScanResult = WifiScanResultBase & WifiScanResultExtra;
 
 export type WifiStateCommon = {
@@ -2183,6 +2452,9 @@ export type WifiStateDisconnectedExtra = {
 export type WifiStateConnected = WifiStateCommon & WifiStateConnectedExtra & WifiScanResultBase;
 export type WifiStateDisconnected = WifiStateCommon & WifiStateDisconnectedExtra;
 
+/**
+ * Connection state of the wifi device
+ */
 export type WifiState = WifiStateConnected | WifiStateDisconnected;
 
 /**
@@ -2255,12 +2527,61 @@ export type WifiConnectionRequestBSSID = {
 export type WifiConnectionRequest = WifiConnectionRequestBase &
     (WifiConnectionRequestSSID | WifiConnectionRequestBSSID | (WifiConnectionRequestSSID & WifiConnectionRequestBSSID));
 
-export class Network {
-    private readonly android: Android;
-    private readonly handle: number;
+/**
+ * A period of time to get usage statistics.
+ */
+export type UsageStatsTime = {
+    /**
+     * The start of the period of time. Set to undefined to make it an open start.
+     */
+    start: Date | undefined;
 
-    constructor(android: Android, handle: number) {
-        this.android = android;
-        this.handle = handle;
-    }
+    /**
+     * The end of the period of time. Set to undefined to make it an open end.
+     */
+    end: Date | undefined;
+};
+
+/**
+ * Usage statistics for a package
+ */
+export type UsageStats = {
+    /**
+     * The package for the statistic
+     */
+    package: Package;
+
+    /**
+     * The date when the statistics entry started. This may be different to the date you gave as a start date.
+     */
+    start: Date;
+
+    /**
+     * The date when the statistics entry started. This may be different to the date you gave as a start date.
+     */
+    end: Date;
+
+    /**
+     * The last time any activity of this package was used
+     */
+    lastTimeUsed: Date;
+
+    /**
+     * The last time any activity of this package was visible on the screen
+     */
+    lastTimeVisible: Date;
+
+    /**
+     * The total time the package's activity was used in milliseconds
+     */
+    totalTimeUsed: number;
+
+    /**
+     * The total time the package's activity was visible on the screen in milliseconds
+     */
+    totalTimeVisible: number;
+};
+
+function quote(arg: string): string {
+    return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
 }

@@ -18,7 +18,6 @@ class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceC
     async validateConfig(config: AndroidServiceConfig): Promise<Result<void>> {
         const client = new Android(config.device);
         await client.connect();
-        console.log("Test");
         await client.disconnect();
         return emptySuccess();
     }
