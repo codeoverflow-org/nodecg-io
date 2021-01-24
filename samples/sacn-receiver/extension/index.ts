@@ -8,11 +8,11 @@ module.exports = function (nodecg: NodeCG) {
     const sacn = requireService<SacnReceiverServiceClient>(nodecg, "sacn-receiver");
 
     sacn?.onAvailable((client) => {
-        nodecg.log.info("sACN sample has been updated, adding handlers for data.");
+        nodecg.log.info("sACN receiver has been updated, adding handlers for data.");
         addListeners(nodecg, client);
     });
 
-    sacn?.onUnavailable(() => nodecg.log.info("sACN sample has been unset."));
+    sacn?.onUnavailable(() => nodecg.log.info("sACN receiver has been unset."));
 };
 
 function addListeners(nodecg: NodeCG, client: SacnReceiverServiceClient) {

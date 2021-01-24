@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     let interval: NodeJS.Timeout | undefined;
 
     service?.onAvailable((client) => {
-        nodecg.log.info("Client has been updated.");
+        nodecg.log.info("Client has been updated, waiting for messages.");
 
         client.onMessage((message) => {
             nodecg.log.info(`recieved message "${message}"`);

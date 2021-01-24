@@ -7,7 +7,7 @@ module.exports = function (nodecg: NodeCG) {
 
     const service = requireService<SacnSenderServiceClient>(nodecg, "sacn-sender");
     service?.onAvailable((client) => {
-        nodecg.log.info("sacn-sender has been updated.");
+        nodecg.log.info("sACN sender has been updated, setting up interval for sending payloads.");
 
         setInterval(() => {
             const channel = Math.round(Math.random() * 512).toString();
@@ -20,5 +20,5 @@ module.exports = function (nodecg: NodeCG) {
         }, 10000);
     });
 
-    service?.onUnavailable(() => nodecg.log.info("sacn-sender has been unset."));
+    service?.onUnavailable(() => nodecg.log.info("sACN sender has been unset."));
 };

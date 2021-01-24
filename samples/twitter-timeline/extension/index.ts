@@ -22,5 +22,5 @@ module.exports = function (nodecg: NodeCG) {
             .catch((err) => nodecg.log.error(err));
     });
 
-    twitter?.onUnavailable(() => nodecg.log.info("Twitter client has been unset!"));
+    twitter?.onUnavailable(() => nodecg.log.info("Twitter client has been unset."));
 };

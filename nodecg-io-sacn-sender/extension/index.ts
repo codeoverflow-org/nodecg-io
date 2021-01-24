@@ -27,6 +27,6 @@ class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSende
 
     stopClient(client: SacnSenderServiceClient): void {
         client.getNativeClient().close();
-        this.nodecg.log.info("Stopped sACN Sender successfully.");
+        this.nodecg.log.info("Successfully stopped sACN Sender.");
     }
 }

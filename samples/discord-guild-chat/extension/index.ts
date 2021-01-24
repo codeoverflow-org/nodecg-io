@@ -3,7 +3,7 @@ import { DiscordServiceClient } from "nodecg-io-discord";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for discord started");
+    nodecg.log.info("Sample bundle for Discord started");
 
     const discord = requireService<DiscordServiceClient>(nodecg, "discord");
 

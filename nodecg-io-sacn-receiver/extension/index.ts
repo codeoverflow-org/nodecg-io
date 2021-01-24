@@ -28,7 +28,7 @@ class SacnReceiverService extends ServiceBundle<SacnReceiverServiceConfig, SacnR
 
     stopClient(client: SacnReceiverServiceClient): void {
         client.getNativeClient().close();
-        this.nodecg.log.info("Stopped sACN Receiver successfully.");
+        this.nodecg.log.info("Successfully stopped sACN Receiver.");
     }
 
     removeHandlers(client: SacnReceiverServiceClient): void {
