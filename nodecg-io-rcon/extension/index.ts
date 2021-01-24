@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import { Rcon } from "rcon-client";
 
 interface RconServiceConfig {
@@ -45,7 +43,7 @@ class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
         rcon.on("error", (_err) => {});
 
         await rcon.connect(); // This will throw an exception if there is an error.
-        this.nodecg.log.info("Successfully connected to the rcon server.");
+        this.nodecg.log.info("Successfully connected to the RCON server.");
 
         return success({
             getNativeClient() {
@@ -62,7 +60,7 @@ class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
             .getNativeClient()
             .end()
             .then(() => {
-                this.nodecg.log.info("Stopped rcon client successfully.");
+                this.nodecg.log.info("Successfully stopped RCON client.");
             });
     }
 }

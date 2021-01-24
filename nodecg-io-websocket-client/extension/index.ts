@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import * as WebSocket from "ws";
 
 interface WSClientServiceConfig {

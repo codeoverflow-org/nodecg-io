@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { MidiOutputServiceClient } from "nodecg-io-midi-output";
 import { Note, Channel } from "easymidi";
 
@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
 
     const service = requireService<MidiOutputServiceClient>(nodecg, "midi-output");
     service?.onAvailable((client) => {
-        nodecg.log.info("Midioutput client has been updated.");
+        nodecg.log.info("Midi-output client has been updated, sending data.");
         const midiClient = client.getNativeClient();
 
         setInterval(() => {
@@ -25,5 +25,5 @@ module.exports = function (nodecg: NodeCG) {
         }, 1000);
     });
 
-    service?.onUnavailable(() => nodecg.log.info("Midi output client has been unset."));
+    service?.onUnavailable(() => nodecg.log.info("Midi-output client has been unset."));
 };

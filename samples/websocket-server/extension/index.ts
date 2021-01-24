@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { WSServerServiceClient } from "nodecg-io-websocket-server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for WebSocket Server started");
@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const webSocketServer = requireService<WSServerServiceClient>(nodecg, "websocket-server");
 
     webSocketServer?.onAvailable((client) => {
-        nodecg.log.info("WebSocket Server has been set. Ready for connections.");
+        nodecg.log.info("WebSocket Server has been updated. Ready for connections.");
 
         const server = client.getNativeClient();
         server.on("connection", (websocket) => {
@@ -22,5 +22,5 @@ module.exports = function (nodecg: NodeCG) {
         });
     });
 
-    webSocketServer?.onUnavailable(() => nodecg.log.info("WebSocket Server has been unset!"));
+    webSocketServer?.onUnavailable(() => nodecg.log.info("WebSocket Server has been unset."));
 };

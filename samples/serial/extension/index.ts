@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { SerialServiceClient } from "nodecg-io-serial";
 
 module.exports = function (nodecg: NodeCG) {
@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     let interval: NodeJS.Timeout | undefined;
 
     service?.onAvailable((client) => {
-        nodecg.log.info("Client has been updated.");
+        nodecg.log.info("Serial client has been updated, logging incoming data.");
         client.onData((data: string) => {
             nodecg.log.info(data);
         });
@@ -20,7 +20,7 @@ module.exports = function (nodecg: NodeCG) {
     });
 
     service?.onUnavailable(() => {
-        nodecg.log.info("Client has been unset.");
+        nodecg.log.info("Serial client has been unset.");
         if (interval) {
             clearInterval(interval);
         }

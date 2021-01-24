@@ -1,9 +1,8 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, error, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
+// Only needed for type because of that it is "unused" but still needed
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
 import HueApi = require("node-hue-api/lib/api/Api");
 const { api, discovery } = v3;
@@ -35,11 +34,11 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
         } else if (!discover) {
             // check the ip address if its there
             if (ipAddr && !ipv4(ipAddr)) {
-                return error("Invalid IP address, can handle only IPv4 at the moment");
+                return error("Invalid IP address, can handle only IPv4 at the moment!");
             }
 
             // discover is not set but there is no ip address
-            return error("discover isn't true there is no IP address!");
+            return error("Discover isn't true there is no IP address!");
         } else if (port && !(0 <= port && port <= 65535)) {
             // the port is there but the port is wrong
             return error("Your port is not between 0 and 65535!");
@@ -56,7 +55,7 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
                 config.ipAddr = discIP;
                 config.discover = false;
             } else {
-                return error("could not discover your Hue Bridge, maybe try specifying a specific IP!");
+                return error("Could not discover your Hue Bridge, maybe try specifying a specific IP!");
             }
         }
 
@@ -80,7 +79,7 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
                 if (err.getHueErrorType() === 101) {
                     return error(
                         "The Link button on the bridge was not pressed. Please press the Link button and try again.\n" +
-                            "for the one who is seeing this in the console, you need to press the big button on the bridge for creating an bundle/instance",
+                            "for the one who is seeing this in the console, you need to press the big button on the bridge for creating an bundle/instance!",
                     );
                 } else {
                     return error(`Unexpected Error: ${err.message}`);

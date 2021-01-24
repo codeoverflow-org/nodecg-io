@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import Twitter = require("twitter");
 
 interface TwitterServiceConfig {
@@ -32,14 +30,14 @@ class TwitterService extends ServiceBundle<TwitterServiceConfig, TwitterServiceC
     }
 
     async createClient(config: TwitterServiceConfig): Promise<Result<TwitterServiceClient>> {
-        this.nodecg.log.info("Connecting to twitter ...");
+        this.nodecg.log.info("Connecting to twitter...");
         const client = new Twitter({
             consumer_key: config.oauthConsumerKey, // eslint-disable-line camelcase
             consumer_secret: config.oauthConsumerSecret, // eslint-disable-line camelcase
             access_token_key: config.oauthToken, // eslint-disable-line camelcase
             access_token_secret: config.oauthTokenSecret, // eslint-disable-line camelcase
         });
-        this.nodecg.log.info("Successfully connected to twitter!");
+        this.nodecg.log.info("Successfully connected to twitter.");
 
         return success({
             getNativeClient() {

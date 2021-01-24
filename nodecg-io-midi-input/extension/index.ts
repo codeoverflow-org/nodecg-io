@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, Result, success, error } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import * as easymidi from "easymidi";
 
 interface MidiInputServiceConfig {
@@ -25,16 +23,16 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
         });
 
         if (devices.length === 0) {
-            return error("No device matched the configured pattern.");
+            return error("No device matched the configured pattern!");
         }
         if (devices.length > 1) {
-            return error("The configured pattern is ambiguous.");
+            return error("The configured pattern is ambiguous!");
         }
         return emptySuccess();
     }
 
     async createClient(config: MidiInputServiceConfig): Promise<Result<MidiInputServiceClient>> {
-        this.nodecg.log.info(`Checking device name "${config.device}"`);
+        this.nodecg.log.info(`Checking device name "${config.device}".`);
         let deviceName: string | null = null;
         easymidi.getInputs().forEach((device) => {
             if (device.includes(config.device) && deviceName === null) {
@@ -52,7 +50,7 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
                 },
             });
         } else {
-            return error("Could not connect to the configured device");
+            return error("Could not connect to the configured device!");
         }
     }
 

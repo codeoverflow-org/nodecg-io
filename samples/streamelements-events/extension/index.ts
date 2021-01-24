@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { StreamElementsServiceClient } from "nodecg-io-streamelements";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for StreamElements started");
@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const streamElements = requireService<StreamElementsServiceClient>(nodecg, "streamelements");
 
     streamElements?.onAvailable((client) => {
-        nodecg.log.info("SE client has been set, registering handlers now.");
+        nodecg.log.info("SE client has been updated, registering handlers now.");
 
         client.onCheer((data) => {
             nodecg.log.info(

@@ -1,8 +1,8 @@
 {
     "name": "nodecg-io-twitch-chat",
     "version": "0.1.0",
-    "description": "Allows to connect to twitch with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
-    "homepage": "https://nodecg.io/samples/twitch",
+    "description": "Allows to connect to the twitch chat with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
+    "homepage": "https://nodecg.io/samples/twitch-chat",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"
@@ -10,7 +10,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
-        "directory": "nodecg-io-twitch"
+        "directory": "nodecg-io-twitch-chat"
     },
     "main": "extension",
     "scripts": {

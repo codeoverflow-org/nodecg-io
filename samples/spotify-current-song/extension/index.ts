@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { SpotifyServiceClient } from "nodecg-io-spotify";
 
 module.exports = function (nodecg: NodeCG) {
@@ -7,7 +7,7 @@ module.exports = function (nodecg: NodeCG) {
 
     const service = requireService<SpotifyServiceClient>(nodecg, "spotify");
     service?.onAvailable(async (client) => {
-        nodecg.log.info("Client has been updated.");
+        nodecg.log.info("Spotify client has been updated, searching for current song information.");
 
         const track = await client.getNativeClient().getMyCurrentPlayingTrack();
         const name = track.body.item?.name;
@@ -15,5 +15,5 @@ module.exports = function (nodecg: NodeCG) {
         nodecg.log.info(`Currently playing "${name}" by "${artists}".`);
     });
 
-    service?.onUnavailable(() => nodecg.log.info("Client has been unset."));
+    service?.onUnavailable(() => nodecg.log.info("Spotify client has been unset."));
 };

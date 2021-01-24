@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { StreamdeckServiceClient } from "nodecg-io-streamdeck";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for streamdeck started");
@@ -9,7 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     let timeout: NodeJS.Timeout | undefined;
 
     streamdeck?.onAvailable((client) => {
-        nodecg.log.info("Streamdeck client has been updated, painting the streamdeck.");
+        nodecg.log.info("Streamdeck client has been updated, painting the Streamdeck.");
 
         try {
             const deck = client.getNativeClient();

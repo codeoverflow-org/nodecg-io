@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
 import { IntelliJ } from "./intellij";
 
 interface IntelliJServiceConfig {
@@ -25,7 +23,7 @@ class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServi
     async createClient(config: IntelliJServiceConfig): Promise<Result<IntelliJServiceClient>> {
         const ij = new IntelliJ(config.address);
         await ij.rawRequest("available_methods", {});
-        this.nodecg.log.info("Successfully connected to IntelliJ at " + config.address + ".");
+        this.nodecg.log.info(`Successfully connected to IntelliJ at ${config.address}.`);
         return success({
             getNativeClient() {
                 return ij;

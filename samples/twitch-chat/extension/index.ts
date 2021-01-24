@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { TwitchServiceClient } from "nodecg-io-twitch-chat";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch started");

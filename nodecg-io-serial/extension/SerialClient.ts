@@ -1,5 +1,5 @@
-import { ServiceClient } from "nodecg-io-core/extension/types";
-import { success, error, Result, emptySuccess } from "nodecg-io-core/extension/utils/result";
+import { ServiceClient } from "nodecg-io-core";
+import { success, error, Result, emptySuccess } from "nodecg-io-core";
 import * as SerialPort from "serialport"; // This is neccesary, because serialport only likes require!
 
 export interface DeviceInfo {
@@ -70,9 +70,9 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
 
         // Check if result isn't empty or ambiguous
         if (result.length < 1) {
-            return error("No device matched the provided criteria.");
+            return error("No device matched the provided criteria!");
         } else if (result.length > 1) {
-            return error("The provided criteria were ambiguous.");
+            return error("The provided criteria were ambiguous!");
         } else {
             return success(result[0]);
         }

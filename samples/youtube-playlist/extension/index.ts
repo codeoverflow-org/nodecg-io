@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { YoutubeServiceClient } from "nodecg-io-youtube";
 import { youtube_v3 } from "googleapis";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for youtube started");
@@ -9,6 +9,7 @@ module.exports = function (nodecg: NodeCG) {
     const youtube = requireService<YoutubeServiceClient>(nodecg, "youtube");
 
     youtube?.onAvailable(async (client) => {
+        nodecg.log.info("Youtube client has been updated, listing videos from playlist.");
         const youtubeClient = client.getNativeClient();
         const resp = await youtubeClient.playlists.list({
             part: ["id", "snippet"],

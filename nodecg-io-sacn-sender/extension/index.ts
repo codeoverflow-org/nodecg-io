@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { Sender } from "sacn";
 import { SacnSenderServiceClient } from "./sacnSenderClient";
 
@@ -28,6 +27,6 @@ class SacnSenderService extends ServiceBundle<SacnSenderServiceConfig, SacnSende
 
     stopClient(client: SacnSenderServiceClient): void {
         client.getNativeClient().close();
-        this.nodecg.log.info("Stopped sACN Sender successfully.");
+        this.nodecg.log.info("Successfully stopped sACN Sender.");
     }
 }

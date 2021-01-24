@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { OBSServiceClient } from "nodecg-io-obs";
 
 module.exports = function (nodecg: NodeCG) {
@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const obs = requireService<OBSServiceClient>(nodecg, "obs");
 
     obs?.onAvailable((client) => {
-        nodecg.log.info("OBS client has been updated.");
+        nodecg.log.info("OBS client has been updated, counting scenes and switching to another one.");
         client
             .getNativeClient()
             .send("GetSceneList")
@@ -16,7 +16,7 @@ module.exports = function (nodecg: NodeCG) {
                 nodecg.log.info(`There are ${data.scenes.length} scenes!`);
             });
         client.getNativeClient().on("SwitchScenes", (data) => {
-            nodecg.log.info(`Scene changed to ${data["scene-name"]}`);
+            nodecg.log.info(`Scene changed to ${data["scene-name"]}.`);
         });
     });
 

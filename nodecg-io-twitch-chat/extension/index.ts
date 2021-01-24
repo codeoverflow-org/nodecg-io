@@ -1,6 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { emptySuccess, Result, success } from "nodecg-io-core/extension/utils/result";
-import { ServiceBundle } from "nodecg-io-core/extension/serviceBundle";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { TwitchServiceClient } from "./twitchClient";
 
 export interface TwitchServiceConfig {
@@ -31,7 +30,7 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchServiceClie
         client
             .getNativeClient()
             .quit()
-            .then(() => this.nodecg.log.info("Stopped twitch client successfully."));
+            .then(() => this.nodecg.log.info("Successfully stopped twitch client."));
     }
 
     removeHandlers(client: TwitchServiceClient): void {

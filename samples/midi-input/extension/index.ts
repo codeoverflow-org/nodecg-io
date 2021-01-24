@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
+import { requireService } from "nodecg-io-core";
 import { MidiInputServiceClient } from "nodecg-io-midi-input";
 
 module.exports = function (nodecg: NodeCG) {
@@ -7,7 +7,7 @@ module.exports = function (nodecg: NodeCG) {
 
     const service = requireService<MidiInputServiceClient>(nodecg, "midi-input");
     service?.onAvailable((client) => {
-        nodecg.log.info("Midi input client has been updated.");
+        nodecg.log.info("Midi-input client has been updated, listening to events.");
 
         const midiClient = client.getNativeClient();
         midiClient.on("cc", (msg) => {
@@ -42,7 +42,7 @@ module.exports = function (nodecg: NodeCG) {
         });
     });
 
-    service?.onUnavailable(() => nodecg.log.info("Midi input client has been unset."));
+    service?.onUnavailable(() => nodecg.log.info("Midi-input client has been unset."));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function printMessage(msg: any, event: string) {
