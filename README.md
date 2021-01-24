@@ -38,7 +38,9 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] Telegram
 -   [x] TIANE
 -   [ ] TipeeeStream
+-   [x] Twitch API
 -   [x] Twitch Chat
+-   [x] Twitch PubSub
 -   [x] Twitter
 -   [x] WebSocket Client
 -   [x] WebSocket Server
