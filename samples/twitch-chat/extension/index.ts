@@ -3,7 +3,7 @@ import { TwitchServiceClient } from "nodecg-io-twitch-chat";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for twitch started");
+    nodecg.log.info("Sample bundle for twitch-chat started");
 
     // Require the twitch service.
     const twitch = requireService<TwitchServiceClient>(nodecg, "twitch-chat");
@@ -14,14 +14,14 @@ module.exports = function (nodecg: NodeCG) {
 
     // Once the service instance has been set we add listeners for messages in the corresponding channels.
     twitch?.onAvailable((client) => {
-        nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
+        nodecg.log.info("Twitch chat client has been updated, adding handlers for messages.");
 
         twitchChannels.forEach((channel) => {
             addListeners(nodecg, client, channel);
         });
     });
 
-    twitch?.onUnavailable(() => nodecg.log.info("Twitch client has been unset."));
+    twitch?.onUnavailable(() => nodecg.log.info("Twitch chat client has been unset."));
 };
 
 function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
