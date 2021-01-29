@@ -35,8 +35,6 @@ function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: stri
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }
             });
-
-            client.getNativeClient().say(channel, "Hello, nodecg-io speaking here!");
         })
         .catch((reason) => {
             nodecg.log.error(`Couldn't connect to twitch: ${reason}.`);
