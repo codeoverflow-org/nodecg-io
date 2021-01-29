@@ -19,13 +19,13 @@
     },
     "main": "extension",
     "keywords": [
-        "",
+        "nodecg-io",
         "nodecg-bundle"
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "0.1.0"
+            "nodecg-io-core": "^0.1.0"
         }
     },
     "license": "MIT",
@@ -35,7 +35,7 @@
         "typescript": "^4.1.3"
     },
     "dependencies": {
-        "nodecg-io-core": "0.1.0",
+        "nodecg-io-core": "^0.1.0",
         "@rauschma/stringio": "^1.4.0",
         "get-stream": "6.0.0"
     }
