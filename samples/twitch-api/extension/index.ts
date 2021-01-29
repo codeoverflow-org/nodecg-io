@@ -14,8 +14,8 @@ module.exports = function (nodecg: NodeCG) {
         const follows = await user.getFollows();
         const stream = await user.getStream();
         nodecg.log.info(
-            `You are user "${user.name}", follow ${follows.total} people and are ${
-                stream === null ? "not" : ""
+            `You are user "${user.name}", follow ${follows.total} people and are${
+                stream === null ? " not" : ""
             } streaming.`,
         );
     });
