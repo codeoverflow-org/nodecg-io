@@ -17,6 +17,10 @@
                 "type": "string"
             },
             "description": "A list of scopes. More information: https://developer.spotify.com/documentation/general/guides/scopes/"
+        },
+        "refreshToken": {
+            "type": "string",
+            "description": "A refresh token to get and refresh access tokens. Gets set by nodecg-io. You don't need to set this!"
         }
     },
     "required": ["clientId", "clientSecret", "scopes"]

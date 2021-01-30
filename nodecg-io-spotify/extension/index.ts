@@ -9,6 +9,7 @@ interface SpotifyServiceConfig {
     clientId: string;
     clientSecret: string;
     scopes: Array<string>;
+    refreshToken?: string;
 }
 
 export class SpotifyServiceClient implements ServiceClient<SpotifyWebApi> {
@@ -54,14 +55,32 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
             redirectUri: callbackUrl,
         });
 
-        // Creates a callback entry point using express. The promise resolves when this url is called.
-        const promise = this.mountCallBackURL(spotifyApi);
+        // if we already have a refresh token is available we can use it to create a access token without the need to annoy the user
+        // by opening and directly after closing a browser window.
+        if (config.refreshToken) {
+            try {
+                // Load refresh token and use it to get a access token.
+                spotifyApi.setRefreshToken(config.refreshToken);
+                const refreshData = await spotifyApi.refreshAccessToken();
+                spotifyApi.setAccessToken(refreshData.body["access_token"]);
+                this.nodecg.log.info("Successfully authenticated using saved refresh token.");
+            } catch (e) {
+                this.nodecg.log.warn(`Couldn't re-use refresh token ("${e}"). Creating a new one...`);
+                config.refreshToken = undefined;
+                return await this.createClient(config);
+            }
+        } else {
+            // Creates a callback entry point using express. The promise resolves when this url is called.
+            const promise = this.mountCallBackURL(spotifyApi);
 
-        // Create and call authorization URL
-        const authorizeURL = spotifyApi.createAuthorizeURL(config.scopes, defaultState);
-        await open(authorizeURL);
+            // Create and call authorization URL
+            const authorizeURL = spotifyApi.createAuthorizeURL(config.scopes, defaultState);
+            await open(authorizeURL);
 
-        await promise;
+            await promise;
+            config.refreshToken = spotifyApi.getRefreshToken();
+        }
+
         this.nodecg.log.info("Successfully connected to Spotify.");
 
         return success(new SpotifyServiceClient(spotifyApi, this.startTokenRefreshing(spotifyApi)));
