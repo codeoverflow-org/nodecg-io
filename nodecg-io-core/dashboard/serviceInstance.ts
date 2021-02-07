@@ -56,7 +56,7 @@ export function onMonacoReady(): void {
 
 // Instance drop-down
 export function onInstanceSelectChange(value: string): void {
-    showError(undefined);
+    showNotice(undefined);
     switch (value) {
         case "new":
             editor?.updateOptions({
@@ -114,7 +114,7 @@ export async function saveInstanceConfig(): Promise<void> {
     if (editor === undefined) {
         return;
     }
-    showError(undefined);
+    showNotice(undefined);
 
     try {
         const instName = selectInstance.options[selectInstance.selectedIndex]?.value;
@@ -123,10 +123,12 @@ export async function saveInstanceConfig(): Promise<void> {
             config: config,
             instanceName: instName,
         };
+        showNotice("Saving...");
         await sendAuthenticatedMessage("updateInstanceConfig", msg);
+        showNotice("Successfully saved.");
     } catch (err) {
         console.log(err);
-        showError(err);
+        showNotice(err);
     }
 }
 
@@ -146,7 +148,7 @@ export async function deleteInstance(): Promise<void> {
 
 // Create button
 export async function createInstance(): Promise<void> {
-    showError(undefined);
+    showNotice(undefined);
     const service = selectService.options[selectService.options.selectedIndex]?.value;
     const name = inputInstanceName.value;
 
@@ -158,7 +160,7 @@ export async function createInstance(): Promise<void> {
     try {
         await sendAuthenticatedMessage("createServiceInstance", msg);
     } catch (e) {
-        showError(e);
+        showNotice(e);
         return;
     }
 
@@ -237,7 +239,7 @@ function setCreateInputs(createMode: boolean, instanceSelected: boolean) {
     setVisible(instanceServiceSelector, createMode);
 }
 
-export function showError(msg: string | undefined): void {
+export function showNotice(msg: string | undefined): void {
     if (spanInstanceNotice !== null) {
         spanInstanceNotice.innerText = msg !== undefined ? msg : "";
     }
