@@ -16,7 +16,7 @@ module.exports = (nodecg: NodeCG) => {
 class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolServiceClient> {
     async validateConfig(config: XdotoolServiceConfig): Promise<Result<void>> {
         try {
-            const xd = new Xdotool(config.host, config.port);
+            const xd = new Xdotool(this.nodecg, config.host, config.port);
             await xd.testConnection();
             return emptySuccess();
         } catch (err) {
@@ -26,7 +26,7 @@ class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolSe
 
     async createClient(config: XdotoolServiceConfig): Promise<Result<XdotoolServiceClient>> {
         try {
-            const xd = new Xdotool(config.host, config.port);
+            const xd = new Xdotool(this.nodecg, config.host, config.port);
             return success({
                 getNativeClient() {
                     return xd;

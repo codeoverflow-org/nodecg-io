@@ -21,5 +21,8 @@ module.exports = {
 
         // We simply have empty functions at some places, so we ignore this rule.
         "@typescript-eslint/no-empty-function": ["warn", { allow: ["arrowFunctions"] }],
+
+        // Instead of console the integrated nodecg logger should be used.
+        "no-console": ["warn"],
     },
 };

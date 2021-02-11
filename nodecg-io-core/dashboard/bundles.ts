@@ -91,6 +91,6 @@ export async function setServiceDependency(): Promise<void> {
     try {
         await sendAuthenticatedMessage("setServiceDependency", msg);
     } catch (err) {
-        console.log(err);
+        nodecg.log.error(err);
     }
 }

@@ -127,7 +127,7 @@ export async function saveInstanceConfig(): Promise<void> {
         await sendAuthenticatedMessage("updateInstanceConfig", msg);
         showNotice("Successfully saved.");
     } catch (err) {
-        console.log(err);
+        nodecg.log.error(`Couldn't save instance config: ${err}`);
         showNotice(err);
     }
 }
@@ -142,7 +142,9 @@ export async function deleteInstance(): Promise<void> {
     if (deleted) {
         selectServiceInstance("select");
     } else {
-        console.log(`Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`);
+        nodecg.log.info(
+            `Couldn't delete the instance "${msg.instanceName}" for some reason, please check the nodecg log`,
+        );
     }
 }
 
