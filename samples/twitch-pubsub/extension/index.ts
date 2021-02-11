@@ -10,16 +10,16 @@ module.exports = function (nodecg: NodeCG) {
     pubsub?.onAvailable((client) => {
         nodecg.log.info("PubSub client has been updated, adding handlers for messages.");
         client.onSubscription((message) => {
-            console.log(`${message.userDisplayName} just subscribed (${message.cumulativeMonths} months)`);
+            nodecg.log.info(`${message.userDisplayName} just subscribed (${message.cumulativeMonths} months)`);
         });
         client.onBits((message) => {
-            console.log(`${message.userName} cheered ${message.bits} Bits`);
+            nodecg.log.info(`${message.userName} cheered ${message.bits} Bits`);
         });
         client.onBitsBadgeUnlock((message) => {
-            console.log(`${message.userName} just unlocked the ${message.badgeTier} Badge`);
+            nodecg.log.info(`${message.userName} just unlocked the ${message.badgeTier} Badge`);
         });
         client.onRedemption((message) => {
-            console.log(`${message.userDisplayName} redeemed ${message.rewardName} (${message.message})`);
+            nodecg.log.info(`${message.userDisplayName} redeemed ${message.rewardName} (${message.message})`);
         });
     });
 

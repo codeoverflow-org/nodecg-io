@@ -4,6 +4,7 @@ import { spawn } from "child_process";
 import { onExit, readableToString } from "@rauschma/stringio";
 import { AddressInfo } from "net";
 import { buffer as readableToBuffer } from "get-stream";
+import { NodeCG } from "nodecg/types/server";
 
 /**
  * Represents an android device that is connected via ADB.
@@ -27,7 +28,7 @@ export class Android {
     public readonly packageManager: PackageManager;
     public readonly contactManager: ContactManager;
 
-    constructor(device: string) {
+    constructor(private nodecg: NodeCG, device: string) {
         this.device = device;
         this.connected = false;
 
@@ -92,7 +93,7 @@ export class Android {
                 try {
                     await handler();
                 } catch (err) {
-                    console.log(`A disconnect handler for nodecg-io-android threw an error: ${err}`);
+                    this.nodecg.log.error(`A disconnect handler for nodecg-io-android threw an error: ${err}`);
                 }
             }
             await this.rawRequest("cancel_all_subscriptions", {});
