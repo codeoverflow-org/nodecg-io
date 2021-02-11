@@ -14,14 +14,14 @@ module.exports = (nodecg: NodeCG) => {
 
 class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceClient> {
     async validateConfig(config: AndroidServiceConfig): Promise<Result<void>> {
-        const client = new Android(config.device);
+        const client = new Android(this.nodecg, config.device);
         await client.connect();
         await client.disconnect();
         return emptySuccess();
     }
 
     async createClient(config: AndroidServiceConfig): Promise<Result<AndroidServiceClient>> {
-        const client = new Android(config.device);
+        const client = new Android(this.nodecg, config.device);
         await client.connect();
         this.nodecg.log.info("Successfully connected to adb.");
         return success({
