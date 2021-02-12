@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "authKey": {
+            "type": "string",
+            "description": "An auth key. If not specified, the service will automatically try to acquire one for you."
+        },
+        "ipAddress": {
+            "type": "string",
+            "description": "The IP-Address of a nanoleaf controller in your local network."
+        }
+    },
+    "required": ["ipAddress"]
+}
