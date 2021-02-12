@@ -27,9 +27,9 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
     constructor(private ipAddress: string, private authToken: string, nodecg: NodeCG) {
         NanoleafUtils.verifyAuthKey(ipAddress, authToken).then((response) => {
             if (response) {
-                nodecg.log.info("Connected to Nanoleafs successfully!");
+                nodecg.log.info("Connected to Nanoleafs successfully.");
             } else {
-                nodecg.log.error("Unable to connect to Nanoleafs. Please check your credentials.");
+                nodecg.log.error("Unable to connect to Nanoleafs! Please check your credentials!");
             }
         });
     }
