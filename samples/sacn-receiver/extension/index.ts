@@ -16,7 +16,7 @@ module.exports = function (nodecg: NodeCG) {
 };
 
 function addListeners(nodecg: NodeCG, client: SacnReceiverServiceClient) {
-    nodecg.log.info("Listening to these universes: " + client.getNativeClient().universes);
+    nodecg.log.info("Listening to these universes: " + client.universes);
     client.onPacket((packet) => {
         nodecg.log.info("Received sACN data: " + packet);
     });

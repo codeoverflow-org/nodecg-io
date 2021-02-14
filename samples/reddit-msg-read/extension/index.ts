@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG) {
 
     reddit?.onAvailable(async (client) => {
         nodecg.log.info("Reddit client has been updated, checking for recent post.");
-        const posts = await client.getNativeClient().threads(subreddit);
+        const posts = await client.threads(subreddit);
         posts.forEach((post) => {
             nodecg.log.info(`Recent Post: ${post.title} by ${post.author}. Created: ${post.date}. See ${post.url}`);
         });

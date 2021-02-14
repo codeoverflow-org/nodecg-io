@@ -1,31 +1,29 @@
-import { ServiceClient } from "nodecg-io-core";
 import { Packet, Receiver } from "sacn";
 import { AssertionError } from "assert";
+import { SacnReceiverServiceConfig } from "./index";
 
-export class SacnReceiverServiceClient implements ServiceClient<Receiver> {
-    constructor(private sacn: Receiver) {}
-
-    getNativeClient(): Receiver {
-        return this.sacn;
+export class SacnReceiverServiceClient extends Receiver {
+    constructor(config: SacnReceiverServiceConfig) {
+        super(config);
     }
 
     onPacket(listener: (packet: Packet) => void): Receiver {
-        return this.sacn.on("packet", listener);
+        return this.on("packet", listener);
     }
 
     onPacketCorruption(listener: (err: AssertionError) => void): Receiver {
-        return this.sacn.on("PacketCorruption", listener);
+        return this.on("PacketCorruption", listener);
     }
 
     onPacketOutOfOrder(listener: (err: Error) => void): Receiver {
-        return this.sacn.on("PacketOutOfOrder", listener);
+        return this.on("PacketOutOfOrder", listener);
     }
 
     onError(listener: (err: Error) => void): Receiver {
-        return this.sacn.on("error", listener);
+        return this.on("error", listener);
     }
 
     setUniverses(universes: number[]): number[] {
-        return (this.sacn.universes = universes);
+        return (this.universes = universes);
     }
 }

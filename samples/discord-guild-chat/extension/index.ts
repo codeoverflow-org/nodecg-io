@@ -16,9 +16,7 @@ module.exports = function (nodecg: NodeCG) {
 };
 
 function addListeners(client: DiscordServiceClient) {
-    const dc = client.getNativeClient();
-
-    dc.on("message", (msg) => {
+    client.on("message", (msg) => {
         if (msg.content === "ping" || msg.content === "!ping") {
             msg.reply("pong");
         }

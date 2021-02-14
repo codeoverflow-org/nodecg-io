@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ObjectMap, Service, ServiceClient, ServiceDependency, ServiceInstance } from "./types";
+import { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { EventEmitter } from "events";
 
@@ -27,7 +27,7 @@ export class BundleManager extends EventEmitter {
      * @param service the service that the bundle depends upon.
      * @param clientUpdate the callback that should be called if a client becomes available or gets updated.
      */
-    registerServiceDependency<C extends ServiceClient<unknown>>(
+    registerServiceDependency<C>(
         bundleName: string,
         service: Service<unknown, C>,
         clientUpdate: (client?: C) => void,

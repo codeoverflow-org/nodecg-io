@@ -14,15 +14,13 @@ module.exports = function (nodecg: NodeCG) {
             description: "This is a simple test command.",
         };
 
-        client.getNativeClient().setMyCommands([testCommand]);
+        client.setMyCommands([testCommand]);
 
-        client.getNativeClient().onText(/\/test/, (message) => {
+        client.onText(/\/test/, (message) => {
             const chatID = message.chat.id;
 
-            client.getNativeClient().sendMessage(chatID, `Your ChatID is ${chatID}.`);
-            client
-                .getNativeClient()
-                .sendVenue(chatID, 50.9438305556, 6.97453611111, "Koelnmesse", "Messeplatz 1 Mülheim, 50679 Köln");
+            client.sendMessage(chatID, `Your ChatID is ${chatID}.`);
+            client.sendVenue(chatID, 50.9438305556, 6.97453611111, "Koelnmesse", "Messeplatz 1 Mülheim, 50679 Köln");
         });
     });
 

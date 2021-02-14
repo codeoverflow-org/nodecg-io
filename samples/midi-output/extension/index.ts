@@ -9,7 +9,6 @@ module.exports = function (nodecg: NodeCG) {
     const service = requireService<MidiOutputServiceClient>(nodecg, "midi-output");
     service?.onAvailable((client) => {
         nodecg.log.info("Midi-output client has been updated, sending data.");
-        const midiClient = client.getNativeClient();
 
         setInterval(() => {
             const noteVal: number = Math.round(Math.random() * 127);
@@ -21,7 +20,7 @@ module.exports = function (nodecg: NodeCG) {
                 velocity: velocityVal,
                 channel: channelVal,
             };
-            midiClient.send("noteon", data);
+            client.send("noteon", data);
         }, 1000);
     });
 

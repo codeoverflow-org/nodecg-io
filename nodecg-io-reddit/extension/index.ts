@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import RedditAPI from "reddit-ts";
 
 interface RedditServiceConfig {
@@ -9,7 +9,7 @@ interface RedditServiceConfig {
     password: string;
 }
 
-export type RedditServiceClient = ServiceClient<RedditAPI>;
+export type RedditServiceClient = RedditAPI;
 
 module.exports = (nodecg: NodeCG) => {
     new RedditService(nodecg, "reddit", __dirname, "../reddit-schema.json").register();
@@ -38,11 +38,7 @@ class RedditService extends ServiceBundle<RedditServiceConfig, RedditServiceClie
         const client = new RedditAPI(this.buildCredentials(config));
         await client.me();
         this.nodecg.log.info("Successfully connected to reddit.");
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        return success(client);
     }
 
     stopClient(_client: RedditServiceClient): void {

@@ -1,12 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import { WebClient } from "@slack/web-api";
 
 interface SlackServiceConfig {
     token: string;
 }
 
-export type SlackServiceClient = ServiceClient<WebClient>;
+export type SlackServiceClient = WebClient;
 
 module.exports = (nodecg: NodeCG) => {
     new SlackService(nodecg, "slack", __dirname, "../slack-schema.json").register();
@@ -29,11 +29,7 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
         this.nodecg.log.info("Successfully created Web Client for Slack WebAPI.");
         const res = await client.auth.test();
         if (res.ok) {
-            return success({
-                getNativeClient() {
-                    return client;
-                },
-            });
+            return success(client);
         } else {
             return error(res.error || "");
         }
@@ -45,6 +41,6 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
     }
 
     removeHandlers(client: SlackServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
     }
 }

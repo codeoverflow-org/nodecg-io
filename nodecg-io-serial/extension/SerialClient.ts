@@ -1,4 +1,3 @@
-import { ServiceClient } from "nodecg-io-core";
 import { success, error, Result, emptySuccess } from "nodecg-io-core";
 import * as SerialPort from "serialport"; // This is neccesary, because serialport only likes require!
 
@@ -20,32 +19,30 @@ export interface SerialServiceConfig {
     protocol: Protocol;
 }
 
-export class SerialServiceClient implements ServiceClient<SerialPort> {
-    private serialPort: SerialPort;
+export class SerialServiceClient extends SerialPort {
     private parser: SerialPort.parsers.Readline;
-    constructor(private readonly settings: SerialServiceConfig) {}
+    constructor(
+        path: string,
+        protocol: Protocol,
+        options?: SerialPort.OpenOptions,
+        callback?: SerialPort.ErrorCallback,
+    ) {
+        super(path, options, callback);
+        this.parser = this.pipe(new SerialPort.parsers.Readline(protocol));
+    }
 
-    async init(): Promise<Result<void>> {
-        const port = await SerialServiceClient.inferPort(this.settings.device);
+    static async createClient(config: SerialServiceConfig): Promise<Result<SerialServiceClient>> {
+        const port = await SerialServiceClient.inferPort(config.device);
         if (!port.failed) {
-            const openRes = await new Promise<Result<void>>((resolve) => {
-                this.serialPort = new SerialPort(port.result, this.settings.connection, (e) => {
+            return await new Promise<Result<SerialServiceClient>>((resolve) => {
+                const serialPort = new SerialServiceClient(port.result, config.protocol, config.connection, (e) => {
                     if (e) resolve(error(e.message));
-                    else resolve(emptySuccess());
+                    else resolve(success(serialPort));
                 });
             });
-
-            if (openRes.failed) return openRes;
-
-            this.parser = this.serialPort.pipe(new SerialPort.parsers.Readline(this.settings.protocol));
-            return emptySuccess();
         } else {
             return error(port.errorMessage);
         }
-    }
-
-    getNativeClient(): SerialPort {
-        return this.serialPort;
     }
 
     static async inferPort(deviceInfo: DeviceInfo): Promise<Result<string>> {
@@ -78,13 +75,9 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
         }
     }
 
-    close(): void {
-        this.serialPort.close();
-    }
-
     async send(payload: string): Promise<Result<void>> {
         const err: Error | undefined | null = await new Promise((resolve) => {
-            this.serialPort.write(payload, (err) => {
+            this.write(payload, (err) => {
                 resolve(err);
             });
         });
@@ -99,5 +92,9 @@ export class SerialServiceClient implements ServiceClient<SerialPort> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onData(callback: (data: any) => void): void {
         this.parser.on("data", callback);
+    }
+
+    removeAllParserListeners(): void {
+        this.parser.removeAllListeners();
     }
 }

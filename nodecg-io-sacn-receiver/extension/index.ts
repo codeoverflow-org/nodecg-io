@@ -1,9 +1,8 @@
 import { NodeCG } from "nodecg/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { SacnReceiverServiceClient } from "./sacnReceiverClient";
-import { Receiver } from "sacn";
 
-interface SacnReceiverServiceConfig {
+export interface SacnReceiverServiceConfig {
     universe: number[];
     port?: number;
     iface?: string;
@@ -22,16 +21,16 @@ class SacnReceiverService extends ServiceBundle<SacnReceiverServiceConfig, SacnR
     }
 
     async createClient(config: SacnReceiverServiceConfig): Promise<Result<SacnReceiverServiceClient>> {
-        const sacn = new Receiver(config);
-        return success(new SacnReceiverServiceClient(sacn));
+        const sacn = new SacnReceiverServiceClient(config);
+        return success(sacn);
     }
 
     stopClient(client: SacnReceiverServiceClient): void {
-        client.getNativeClient().close();
+        client.close();
         this.nodecg.log.info("Successfully stopped sACN Receiver.");
     }
 
     removeHandlers(client: SacnReceiverServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
     }
 }

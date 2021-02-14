@@ -9,13 +9,10 @@ module.exports = function (nodecg: NodeCG) {
 
     obs?.onAvailable((client) => {
         nodecg.log.info("OBS client has been updated, counting scenes and switching to another one.");
-        client
-            .getNativeClient()
-            .send("GetSceneList")
-            .then((data) => {
-                nodecg.log.info(`There are ${data.scenes.length} scenes!`);
-            });
-        client.getNativeClient().on("SwitchScenes", (data) => {
+        client.send("GetSceneList").then((data) => {
+            nodecg.log.info(`There are ${data.scenes.length} scenes!`);
+        });
+        client.on("SwitchScenes", (data) => {
             nodecg.log.info(`Scene changed to ${data["scene-name"]}.`);
         });
     });

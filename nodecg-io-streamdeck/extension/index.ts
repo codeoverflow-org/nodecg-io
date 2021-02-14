@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import * as streamdeck from "elgato-stream-deck";
 import { StreamDeck } from "elgato-stream-deck";
 
@@ -7,7 +7,7 @@ interface StreamdeckServiceConfig {
     device: string;
 }
 
-export type StreamdeckServiceClient = ServiceClient<StreamDeck>;
+export type StreamdeckServiceClient = StreamDeck;
 
 module.exports = (nodecg: NodeCG) => {
     new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "../streamdeck-schema.json").register();
@@ -38,18 +38,14 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
             const deck = streamdeck.openStreamDeck(device);
             this.nodecg.log.info(`Successfully connected to the streamdeck ${config.device}.`);
 
-            return success({
-                getNativeClient() {
-                    return deck;
-                },
-            });
+            return success(deck);
         } catch (err) {
             return error(err.toString());
         }
     }
 
     stopClient(client: StreamdeckServiceClient): void {
-        client.getNativeClient().close();
+        client.close();
     }
 
     // Can't remove handlers for up/down/error, so re-create the client to get rid of the listeners

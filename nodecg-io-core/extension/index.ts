@@ -3,7 +3,7 @@ import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
-import { Service, ServiceClient } from "./types";
+import { Service } from "./types";
 import { PersistenceManager } from "./persistenceManager";
 import { ServiceClientWrapper } from "./serviceClientWrapper";
 
@@ -12,11 +12,8 @@ import { ServiceClientWrapper } from "./serviceClientWrapper";
  * Contains references to all internal modules.
  */
 export interface NodeCGIOCore {
-    registerService<R, C extends ServiceClient<unknown>>(service: Service<R, C>): void;
-    requireService<C extends ServiceClient<unknown>>(
-        nodecg: NodeCG,
-        serviceType: string,
-    ): ServiceClientWrapper<C> | undefined;
+    registerService<R, C>(service: Service<R, C>): void;
+    requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined;
 }
 
 module.exports = (nodecg: NodeCG): NodeCGIOCore => {
@@ -40,13 +37,10 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     // We use a extra object instead of returning a object containing all the managers and so on, because
     // any loaded bundle would be able to call any (public or private) of the managers which is not intended.
     return {
-        registerService<R, C extends ServiceClient<unknown>>(service: Service<R, C>): void {
+        registerService<R, C>(service: Service<R, C>): void {
             serviceManager.registerService(service);
         },
-        requireService<C extends ServiceClient<unknown>>(
-            nodecg: NodeCG,
-            serviceType: string,
-        ): ServiceClientWrapper<C> | undefined {
+        requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
             const bundleName = nodecg.bundleName;
             const svc = serviceManager.getService(serviceType);
 

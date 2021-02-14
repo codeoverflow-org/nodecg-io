@@ -1,11 +1,11 @@
 import { NodeCG } from "nodecg/types/server";
-import { PubSubServiceClient } from "nodecg-io-twitch-pubsub";
+import { TwitchPubSubServiceClient } from "nodecg-io-twitch-pubsub";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch-pubsub started");
 
-    const pubsub = requireService<PubSubServiceClient>(nodecg, "twitch-pubsub");
+    const pubsub = requireService<TwitchPubSubServiceClient>(nodecg, "twitch-pubsub");
 
     pubsub?.onAvailable((client) => {
         nodecg.log.info("PubSub client has been updated, adding handlers for messages.");

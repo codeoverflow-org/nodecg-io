@@ -9,8 +9,7 @@ module.exports = function (nodecg: NodeCG) {
 
     twitchApi?.onAvailable(async (client) => {
         nodecg.log.info("Twitch api client has been updated, getting user info.");
-        const c = client.getNativeClient();
-        const user = await c.helix.users.getMe();
+        const user = await client.helix.users.getMe();
         const follows = await user.getFollows();
         const stream = await user.getStream();
         nodecg.log.info(

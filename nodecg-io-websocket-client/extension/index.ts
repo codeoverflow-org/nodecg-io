@@ -1,16 +1,27 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import * as WebSocket from "ws";
 
 interface WSClientServiceConfig {
     address: string;
 }
 
-export interface WSClientServiceClient extends ServiceClient<WebSocket> {
-    send(message: string): void;
-    onMessage(func: (message: WebSocket.Data) => void): void;
-    onClose(func: () => void): void;
-    onError(func: (error: Error) => void): void;
+export class WSClientServiceClient extends WebSocket {
+    constructor(address: string) {
+        super(address);
+    }
+
+    onClose(func: () => void): this {
+        return this.on("close", func);
+    }
+
+    onMessage(func: (message: WebSocket.Data) => void): this {
+        return this.on("message", func);
+    }
+
+    onError(func: (error: Error) => void): this {
+        return this.on("error", func);
+    }
 }
 
 module.exports = (nodecg: NodeCG) => {
@@ -19,7 +30,7 @@ module.exports = (nodecg: NodeCG) => {
 
 class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServiceClient> {
     async validateConfig(config: WSClientServiceConfig): Promise<Result<void>> {
-        const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+        const client = new WSClientServiceClient(config.address); // Let Websocket connect, will throw an error if it doesn't work.
         await new Promise((resolve, reject) => {
             client.once("error", reject);
             client.on("open", () => {
@@ -32,7 +43,7 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
     }
 
     async createClient(config: WSClientServiceConfig): Promise<Result<WSClientServiceClient>> {
-        const client = new WebSocket(config.address); // Let Websocket connect, will throw an error if it doesn't work.
+        const client = new WSClientServiceClient(config.address); // Let Websocket connect, will throw an error if it doesn't work.
         await new Promise((resolve, reject) => {
             client.once("error", reject);
             client.on("open", () => {
@@ -41,30 +52,14 @@ class WSClientService extends ServiceBundle<WSClientServiceConfig, WSClientServi
             });
         });
         this.nodecg.log.info("Successfully connected to the WebSocket server.");
-        return success({
-            getNativeClient() {
-                return client;
-            },
-            send(message: string) {
-                client.send(message);
-            },
-            onClose(func: () => void) {
-                client.on("close", func);
-            },
-            onMessage(func: (message: WebSocket.Data) => void) {
-                client.on("message", func);
-            },
-            onError(func: (error: Error) => void) {
-                client.on("error", func);
-            },
-        });
+        return success(client);
     }
 
     stopClient(client: WSClientServiceClient): void {
-        client.getNativeClient().close();
+        client.close();
     }
 
     removeHandlers(client: WSClientServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
     }
 }

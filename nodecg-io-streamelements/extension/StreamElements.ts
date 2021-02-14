@@ -1,9 +1,9 @@
 import io = require("socket.io-client");
-import { Result, emptySuccess, error, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, error } from "nodecg-io-core";
 import { StreamElementsEvent } from "./types";
 import { EventEmitter } from "events";
 
-export class StreamElementsServiceClient extends EventEmitter implements ServiceClient<SocketIOClient.Socket> {
+export class StreamElementsServiceClient extends EventEmitter {
     private socket: SocketIOClient.Socket;
 
     constructor(private jwtToken: string) {
@@ -37,10 +37,6 @@ export class StreamElementsServiceClient extends EventEmitter implements Service
             this.createSocket();
             this.onConnect(resolve);
         });
-    }
-
-    getNativeClient(): SocketIOClient.Socket {
-        return this.socket;
     }
 
     async testConnection(): Promise<Result<void>> {

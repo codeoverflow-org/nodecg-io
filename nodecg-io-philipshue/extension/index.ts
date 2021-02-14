@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
 // Only needed for type because of that it is "unused" but still needed
@@ -18,7 +18,7 @@ interface PhilipsHueServiceConfig {
     apiKey?: string;
 }
 
-export type PhilipsHueServiceClient = ServiceClient<HueApi>;
+export type PhilipsHueServiceClient = HueApi;
 
 module.exports = (nodecg: NodeCG) => {
     new PhilipsHueService(nodecg, "philipshue", __dirname, "../philipshue-schema.json").register();
@@ -90,11 +90,7 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
         // Create a new API instance that is authenticated with the new user we created
         const client = await api.createLocal(ipAddr, port).connect(config.username, config.apiKey);
 
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        return success(client);
     }
 
     stopClient(_client: PhilipsHueServiceClient) {

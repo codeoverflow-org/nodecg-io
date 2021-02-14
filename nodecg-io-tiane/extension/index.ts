@@ -1,12 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { Tiane, connectTiane } from "./tiane";
 
 interface TianeServiceConfig {
     address: string;
 }
 
-export type TianeServiceClient = ServiceClient<Tiane>;
+export type TianeServiceClient = Tiane;
 
 module.exports = (nodecg: NodeCG) => {
     new TianeService(nodecg, "tiane", __dirname, "../tiane-schema.json").register();
@@ -23,19 +23,15 @@ class TianeService extends ServiceBundle<TianeServiceConfig, TianeServiceClient>
         const client = await connectTiane(config.address);
         this.nodecg.log.info("Successfully connected to TIANE.");
 
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        return success(client);
     }
 
     stopClient(client: TianeServiceClient): void {
-        client.getNativeClient().close();
+        client.close();
         this.nodecg.log.info("Disconnected from TIANE.");
     }
 
     removeHandlers(client: TianeServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
     }
 }

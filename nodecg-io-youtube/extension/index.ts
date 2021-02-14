@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import { google, youtube_v3 } from "googleapis";
 import * as express from "express";
 import opn = require("open");
@@ -9,7 +9,7 @@ interface YoutubeServiceConfig {
     clientSecret: string;
 }
 
-export type YoutubeServiceClient = ServiceClient<youtube_v3.Youtube>;
+export type YoutubeServiceClient = youtube_v3.Youtube;
 
 module.exports = (nodecg: NodeCG) => {
     new YoutubeService(nodecg, "youtube", __dirname, "../youtube-schema.json").register();
@@ -42,13 +42,7 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
                     const { tokens } = await auth.getToken(params.code!.toString());
                     auth.credentials = tokens;
                     const client = new youtube_v3.Youtube({ auth });
-                    resolve(
-                        success({
-                            getNativeClient() {
-                                return client;
-                            },
-                        }),
-                    );
+                    resolve(success(client));
                 } catch (e) {
                     reject(error(e));
                 }

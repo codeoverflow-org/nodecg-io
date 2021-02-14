@@ -9,35 +9,34 @@ module.exports = function (nodecg: NodeCG) {
     service?.onAvailable((client) => {
         nodecg.log.info("Midi-input client has been updated, listening to events.");
 
-        const midiClient = client.getNativeClient();
-        midiClient.on("cc", (msg) => {
+        client.on("cc", (msg) => {
             printMessage(msg, "cc");
         });
-        midiClient.on("noteon", (msg) => {
+        client.on("noteon", (msg) => {
             printMessage(msg, "noteon");
         });
-        midiClient.on("noteoff", (msg) => {
+        client.on("noteoff", (msg) => {
             printMessage(msg, "noteoff");
         });
-        midiClient.on("poly aftertouch", (msg) => {
+        client.on("poly aftertouch", (msg) => {
             printMessage(msg, "poly aftertouch");
         });
-        midiClient.on("channel aftertouch", (msg) => {
+        client.on("channel aftertouch", (msg) => {
             printMessage(msg, "channel aftertouch");
         });
-        midiClient.on("program", (msg) => {
+        client.on("program", (msg) => {
             printMessage(msg, "program");
         });
-        midiClient.on("pitch", (msg) => {
+        client.on("pitch", (msg) => {
             printMessage(msg, "pitch");
         });
-        midiClient.on("position", (msg) => {
+        client.on("position", (msg) => {
             printMessage(msg, "position");
         });
-        midiClient.on("mtc", (msg) => {
+        client.on("mtc", (msg) => {
             printMessage(msg, "mtc");
         });
-        midiClient.on("select", (msg) => {
+        client.on("select", (msg) => {
             printMessage(msg, "select");
         });
     });

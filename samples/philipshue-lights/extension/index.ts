@@ -10,9 +10,7 @@ module.exports = function (nodecg: NodeCG): void {
     hue?.onAvailable((hue) => {
         nodecg.log.info("Philips Hue client has been updated, counting lights.");
 
-        const client = hue.getNativeClient();
-
-        client.lights.getAll().then((lights) => {
+        hue.lights.getAll().then((lights) => {
             nodecg.log.info(lights.length);
         });
     });

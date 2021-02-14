@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { Rcon } from "rcon-client";
 
 interface RconServiceConfig {
@@ -8,9 +8,7 @@ interface RconServiceConfig {
     password: string;
 }
 
-export interface RconServiceClient extends ServiceClient<Rcon> {
-    sendMessage(message: string): Promise<string>;
-}
+export type RconServiceClient = Rcon;
 
 module.exports = (nodecg: NodeCG) => {
     new RconService(nodecg, "rcon", __dirname, "../rcon-schema.json").register();
@@ -45,26 +43,12 @@ class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
         await rcon.connect(); // This will throw an exception if there is an error.
         this.nodecg.log.info("Successfully connected to the RCON server.");
 
-        return success({
-            getNativeClient() {
-                return rcon;
-            },
-            sendMessage(message: string) {
-                return sendMessage(rcon, message);
-            },
-        });
+        return success(rcon);
     }
 
     stopClient(client: RconServiceClient): void {
-        client
-            .getNativeClient()
-            .end()
-            .then(() => {
-                this.nodecg.log.info("Successfully stopped RCON client.");
-            });
+        client.end().then(() => {
+            this.nodecg.log.info("Successfully stopped RCON client.");
+        });
     }
-}
-
-function sendMessage(client: Rcon, message: string): Promise<string> {
-    return client.send(message);
 }
