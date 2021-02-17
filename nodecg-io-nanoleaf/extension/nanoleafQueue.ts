@@ -1,11 +1,9 @@
 export class NanoleafQueue {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private eventQueue: { functionCall: () => any; durationInSeconds: number }[] = [];
+    private eventQueue: { functionCall: () => void; durationInSeconds: number }[] = [];
     private isQueueWorkerRunning = false;
     private isQueuePaused = false;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queueEvent(functionCall: () => any, durationInSeconds: number): void {
+    queueEvent(functionCall: () => void, durationInSeconds: number): void {
         this.eventQueue.push({ functionCall, durationInSeconds });
         if (!this.isQueueWorkerRunning) {
             this.isQueueWorkerRunning = true;

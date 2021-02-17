@@ -8,7 +8,11 @@ export interface NanoleafServiceConfig {
     ipAddress: string;
 }
 
-export { NanoleafClient } from "./nanoleafClient";
+// Reexporting all important classes
+export { NanoleafClient as NanoleafServiceClient } from "./nanoleafClient";
+export { NanoleafUtils } from "./nanoleafUtils";
+export { Color, ColoredPanel, PanelEffect } from "./interfaces";
+export { NanoleafQueue } from "./nanoleafQueue";
 
 module.exports = (nodecg: NodeCG) => {
     new NanoleafService(nodecg, "nanoleaf", __dirname, "../nanoleaf-schema.json").register();
@@ -44,11 +48,12 @@ class NanoleafService extends ServiceBundle<NanoleafServiceConfig, NanoleafClien
 
     async createClient(config: NanoleafServiceConfig): Promise<Result<NanoleafClient>> {
         this.nodecg.log.info("Connecting to nanoleaf controller...");
-        if (NanoleafUtils.verifyAuthKey(config.ipAddress, config.authKey || "")) {
-            const client = new NanoleafClient(config.ipAddress, config.authKey || "", this.nodecg);
+        if (await NanoleafUtils.verifyAuthKey(config.ipAddress, config.authKey || "")) {
+            const client = new NanoleafClient(config.ipAddress, config.authKey || "");
+            this.nodecg.log.info("Connected to Nanoleafs successfully.");
             return success(client);
         } else {
-            return error("Unable to verify auth key!");
+            return error("Unable to connect to Nanoleafs! Please check your credentials!");
         }
     }
 

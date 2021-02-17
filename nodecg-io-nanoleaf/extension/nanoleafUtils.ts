@@ -7,7 +7,6 @@ import { Color } from "./interfaces";
  */
 
 export class NanoleafUtils {
-    //
     /**
      * This port seems to be default for all nanoleaf controllers
      */
@@ -45,34 +44,28 @@ export class NanoleafUtils {
         const errorMessage =
             "Received error while requesting nanoleaf auth token. Make sure to press the 'on' button for 5 seconds before executing this command.";
 
-        let authKey = "";
-
         try {
             const response = await fetch(`http://${ipAddress}:${this.defaultPort}/api/v1/new`, { method: "POST" });
 
             const json = await response.json();
-            if (json.auth_token) {
-                const authToken = json.auth_token;
-                authKey = authToken;
-            }
+            return json.authToken || "";
         } catch (error) {
             nodecg.log.warn(errorMessage);
+            return "";
         }
-
-        return authKey;
     }
 
     private static async checkConnection(ipAddress: string, authToken: string) {
-        let status = 404;
         try {
             const response = await fetch(NanoleafUtils.buildBaseRequestAddress(ipAddress, authToken), {
                 method: "GET",
             });
-            status = response.status;
+
+            return response.status;
         } catch {
             // Nothing to do here
         }
-        return status;
+        return 404;
     }
 
     /**

@@ -1,7 +1,6 @@
 import { ServiceClient } from "nodecg-io-core";
 import fetch from "node-fetch";
 import { Response } from "node-fetch";
-import { NodeCG } from "nodecg/types/server";
 import { Color, ColoredPanel, PanelEffect } from "./interfaces";
 import { NanoleafQueue } from "./nanoleafQueue";
 import { NanoleafUtils } from "./nanoleafUtils";
@@ -24,15 +23,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
         return this; // yolo
     }
 
-    constructor(private ipAddress: string, private authToken: string, nodecg: NodeCG) {
-        NanoleafUtils.verifyAuthKey(ipAddress, authToken).then((response) => {
-            if (response) {
-                nodecg.log.info("Connected to Nanoleafs successfully.");
-            } else {
-                nodecg.log.error("Unable to connect to Nanoleafs! Please check your credentials!");
-            }
-        });
-    }
+    constructor(private ipAddress: string, private authToken: string) {}
 
     private async callGET(relativePath: string) {
         return fetch(NanoleafUtils.buildBaseRequestAddress(this.ipAddress, this.authToken) + relativePath, {
@@ -70,8 +61,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
         }
 
         const json = await response.json();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const positionData: Array<any> = json.panelLayout?.layout?.positionData;
+        const positionData: Array<{ x: number; y: number; panelId: number }> = json.panelLayout?.layout?.positionData;
         const panels = sortedByY ? positionData.sort((a, b) => a.y - b.y) : positionData.sort((a, b) => a.x - b.x);
         const panelIDs = panels?.map((entry: { panelId: number }) => entry.panelId);
         const panelIDsWithoutController = panelIDs.filter((entry: number) => entry !== 0);
@@ -85,7 +75,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      * @param color the color to send
      */
     async setPanelColor(panelId: number, color: Color): Promise<void> {
-        this.setPanelColors([{ panelId: panelId, color: color }]);
+        await this.setPanelColors([{ panelId: panelId, color: color }]);
     }
 
     /**
@@ -102,7 +92,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
                 frames: [{ color: entry.color, transitionTime: 1 }],
             }));
 
-            this.writeRawEffect("display", "static", false, panelData);
+            await this.writeRawEffect("display", "static", false, panelData);
         }
     }
 
@@ -125,18 +115,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
         if (panelData.every((panel) => panel.frames.length >= 1)) {
             // Create animData by mapping the PanelEffect objects to a data stream which is compliant to the nanoleaf documentation §3.2.6.1.
             const animData =
-                `${panelData.length}` +
-                panelData
-                    .map(
-                        (entry) =>
-                            ` ${entry.panelId} ${entry.frames.length}${entry.frames
-                                .map(
-                                    (frame) =>
-                                        ` ${frame.color.red} ${frame.color.green} ${frame.color.blue} 0 ${frame.transitionTime}`,
-                                )
-                                .join("")}`,
-                    )
-                    .join("");
+                `${panelData.length}` + panelData.map((entry) => this.mapPanelEffectToAnimData(entry)).join("");
 
             const json = {
                 write: {
@@ -149,8 +128,18 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
                 },
             };
 
-            this.callPUT("/effects", json);
+            await this.callPUT("/effects", json);
         }
+    }
+
+    private mapPanelEffectToAnimData(panelEffect: PanelEffect): string {
+        return ` ${panelEffect.panelId} ${panelEffect.frames.length}${panelEffect.frames
+            .map((frame) => this.mapFrameToAnimData(frame.color, frame.transitionTime))
+            .join("")}`;
+    }
+
+    private mapFrameToAnimData(color: Color, transitionTime: number): string {
+        return ` ${color.red} ${color.green} ${color.blue} 0 ${transitionTime}`;
     }
 
     /**
@@ -174,7 +163,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      */
     async setBrightness(level: number): Promise<void> {
         const data = { brightness: { value: level } };
-        this.callPUT("/state", data);
+        await this.callPUT("/state", data);
     }
 
     /**
@@ -183,7 +172,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      */
     async setState(on: boolean): Promise<void> {
         const data = { on: { value: on } };
-        this.callPUT("/state", data);
+        await this.callPUT("/state", data);
     }
 
     /**
@@ -192,7 +181,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      */
     async setHue(hue: number): Promise<void> {
         const data = { hue: { value: hue } };
-        this.callPUT("/state", data);
+        await this.callPUT("/state", data);
     }
 
     /**
@@ -201,7 +190,7 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      */
     async setSaturation(sat: number): Promise<void> {
         const data = { sat: { value: sat } };
-        this.callPUT("/state", data);
+        await this.callPUT("/state", data);
     }
 
     /**
@@ -210,6 +199,6 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      */
     async setColorTemperature(temperature: number): Promise<void> {
         const data = { ct: { value: temperature } };
-        this.callPUT("/state", data);
+        await this.callPUT("/state", data);
     }
 }
