@@ -25,6 +25,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] IRC (Internet Relay Chat)
 -   [x] MIDI Input
 -   [x] MIDI Output
+-   [x] Nanoleafs
 -   [x] OBS
 -   [x] Philips Hue
 -   [x] RCON
