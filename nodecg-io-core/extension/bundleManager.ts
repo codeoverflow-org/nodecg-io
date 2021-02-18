@@ -2,6 +2,7 @@ import { NodeCG } from "nodecg/types/server";
 import { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { EventEmitter } from "events";
+import { ServiceProvider } from "./serviceProvider";
 
 /**
  * Manages bundles and their dependencies on nodecg-io services.
@@ -27,11 +28,7 @@ export class BundleManager extends EventEmitter {
      * @param service the service that the bundle depends upon.
      * @param clientUpdate the callback that should be called if a client becomes available or gets updated.
      */
-    registerServiceDependency<C>(
-        bundleName: string,
-        service: Service<unknown, C>,
-        clientUpdate: (client?: C) => void,
-    ): void {
+    registerServiceDependency<C>(bundleName: string, service: Service<unknown, C>): ServiceProvider<C> | undefined {
         // Get current service dependencies or an empty array if none
         const serviceDependencies = this.bundles[bundleName] || [];
 
@@ -43,11 +40,13 @@ export class BundleManager extends EventEmitter {
             return;
         }
 
+        const provider = new ServiceProvider<C>();
+
         // Create and add dependency on this service
         serviceDependencies.push({
             serviceType: service.serviceType,
             serviceInstance: undefined, // User has to create a service instance and then set it in the gui
-            clientUpdateCallback: clientUpdate,
+            provider,
         });
 
         // Save new dependencies.
@@ -56,6 +55,7 @@ export class BundleManager extends EventEmitter {
         this.nodecg.log.info(
             `Bundle "${bundleName}" has registered a dependency on the service "${service.serviceType}"`,
         );
+        return provider;
     }
 
     /**
@@ -88,7 +88,7 @@ export class BundleManager extends EventEmitter {
         svcDependency.serviceInstance = instanceName;
 
         // Let the bundle update his reference to the client
-        svcDependency.clientUpdateCallback(instance.client);
+        svcDependency.provider.updateClient(instance.client);
 
         this.emit("change");
         this.emit("reregisterInstance", oldInstance);
@@ -112,7 +112,7 @@ export class BundleManager extends EventEmitter {
 
             // Unset service instance and let the bundle know that it hasn't access to this service anymore.
             svcDependency.serviceInstance = undefined;
-            svcDependency.clientUpdateCallback(undefined);
+            svcDependency.provider.updateClient(undefined);
 
             this.emit("change");
             this.emit("reregisterInstance", oldInstance);
@@ -139,7 +139,7 @@ export class BundleManager extends EventEmitter {
             const dependencies = this.bundles[bundle];
             dependencies?.forEach((dep) => {
                 if (dep.serviceInstance === instName) {
-                    dep.clientUpdateCallback(serviceInstance.client);
+                    dep.provider.updateClient(serviceInstance.client);
                 }
             });
         }

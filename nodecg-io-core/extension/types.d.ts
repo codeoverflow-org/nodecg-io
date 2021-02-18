@@ -1,6 +1,7 @@
 // Holds generic types for the whole project
 
 import { Result } from "./utils/result";
+import { ServiceProvider } from "./serviceProvider";
 
 /**
  * Models a map using a object, instead of a iterator like the javascript es6 map.
@@ -122,10 +123,8 @@ export interface ServiceDependency<C> {
     serviceInstance?: string;
 
     /**
-     * Callback that will give the client of the service to the bundle.
-     * Called on initial set of the service instance or if the config of the service instance has changed.
-     *
-     * @param client the client of the service or undefined if there is currently no service instance set.
+     * The provider that will provide the service client to the bundle that expressed this service dependency.
+     * Will also be used to inform bundle about client updates and unsets.
      */
-    readonly clientUpdateCallback(client?: C): void;
+    readonly provider: ServiceProvider<C>;
 }
