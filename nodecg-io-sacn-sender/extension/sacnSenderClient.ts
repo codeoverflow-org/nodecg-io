@@ -1,11 +1,9 @@
-import { ServiceClient } from "nodecg-io-core";
 import { Packet, Sender } from "sacn";
+import { SacnSenderServiceConfig } from "./index";
 
-export class SacnSenderServiceClient implements ServiceClient<Sender> {
-    constructor(private sacn: Sender) {}
-
-    getNativeClient(): Sender {
-        return this.sacn;
+export class SacnSenderServiceClient extends Sender {
+    constructor(config: SacnSenderServiceConfig) {
+        super(config);
     }
 
     /**
@@ -16,7 +14,7 @@ export class SacnSenderServiceClient implements ServiceClient<Sender> {
      * DMX channel (1-512) : percentage value
      */
     sendPayload(payload: Record<number, number>): Promise<void> {
-        return this.sacn.send({
+        return this.send({
             payload: payload,
             sourceName: "nodecg-io",
             priority: 100,
@@ -30,13 +28,13 @@ export class SacnSenderServiceClient implements ServiceClient<Sender> {
      * Constructed from either an existing `Buffer` or from `Options`.
      */
     sendPacket(packet: Packet): Promise<void> {
-        return this.sacn.send(packet);
+        return this.send(packet);
     }
 
     /**
      * Returns the Universe specified in the GUI
      */
     getUniverse(): number {
-        return this.sacn.universe;
+        return this.universe;
     }
 }

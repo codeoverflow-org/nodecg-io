@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ObjectMap, Service, ServiceClient, ServiceInstance } from "./types";
+import { ObjectMap, Service, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
@@ -179,7 +179,7 @@ export class InstanceManager extends EventEmitter {
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
      * @param service the service of the service instance, needed to stop old client
      */
-    private async updateInstanceClient<R, C extends ServiceClient<unknown>>(
+    private async updateInstanceClient<R, C>(
         inst: ServiceInstance<R, C>,
         instanceName: string,
         service: Service<R, C>,

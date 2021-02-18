@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG) {
     a?.onAvailable(async (android) => {
         nodecg.log.info("Android client has been updated, turning on WLAN.");
 
-        const wifi = await android.getNativeClient().getWifiManager();
+        const wifi = await android.getWifiManager();
         await wifi.setEnabled(true);
     });
 

@@ -1,12 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { Client as DiscordClient } from "discord.js";
 
 interface DiscordServiceConfig {
     botToken: string;
 }
 
-export type DiscordServiceClient = ServiceClient<DiscordClient>;
+export type DiscordServiceClient = DiscordClient;
 
 module.exports = (nodecg: NodeCG) => {
     new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json").register();
@@ -25,19 +25,14 @@ class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceC
         const client = new DiscordClient({ partials: ["CHANNEL", "MESSAGE", "REACTION", "GUILD_MEMBER", "USER"] });
         await client.login(config.botToken);
         this.nodecg.log.info("Successfully connected to Discord.");
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        return success(client);
     }
 
     stopClient(client: DiscordServiceClient): void {
-        const rawClient = client.getNativeClient();
-        rawClient.destroy();
+        client.destroy();
     }
 
     removeHandlers(client: DiscordServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
     }
 }

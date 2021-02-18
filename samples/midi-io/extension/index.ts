@@ -15,14 +15,14 @@ module.exports = function (nodecg: NodeCG) {
 
     inputService?.onAvailable((client) => {
         nodecg.log.info("Midi-input client has been updated, setting listeners.");
-        midiInput = client.getNativeClient();
+        midiInput = client;
         if (midiOutput != null) {
             setListeners(midiInput, midiOutput);
         }
     });
     outputService?.onAvailable((client) => {
         nodecg.log.info("Midi-output client has been updated, setting listeners.");
-        midiOutput = client.getNativeClient();
+        midiOutput = client;
         if (midiInput != null) {
             setListeners(midiInput, midiOutput);
         }

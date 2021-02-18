@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import Twitter = require("twitter");
 
 interface TwitterServiceConfig {
@@ -9,7 +9,7 @@ interface TwitterServiceConfig {
     oauthTokenSecret: string;
 }
 
-export type TwitterServiceClient = ServiceClient<Twitter>;
+export type TwitterServiceClient = Twitter;
 
 module.exports = (nodecg: NodeCG) => {
     new TwitterService(nodecg, "twitter", __dirname, "../twitter-schema.json").register();
@@ -39,11 +39,7 @@ class TwitterService extends ServiceBundle<TwitterServiceConfig, TwitterServiceC
         });
         this.nodecg.log.info("Successfully connected to twitter.");
 
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        return success(client);
     }
 
     stopClient(_client: TwitterServiceClient): void {

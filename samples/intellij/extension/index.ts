@@ -11,9 +11,8 @@ module.exports = function (nodecg: NodeCG) {
     ij?.onAvailable((intellij) => {
         nodecg.log.info("IntelliJ client has been updated, printing all plugins.");
 
-        intellij
-            .getNativeClient()
-            .pluginManager.getPlugins(true)
+        intellij.pluginManager
+            .getPlugins(true)
             .then((plugins) => {
                 plugins.forEach((plugin: Plugin) => {
                     plugin

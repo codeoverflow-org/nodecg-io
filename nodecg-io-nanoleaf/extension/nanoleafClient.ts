@@ -1,11 +1,10 @@
-import { ServiceClient } from "nodecg-io-core";
 import fetch from "node-fetch";
 import { Response } from "node-fetch";
 import { Color, ColoredPanel, PanelEffect } from "./interfaces";
 import { NanoleafQueue } from "./nanoleafQueue";
 import { NanoleafUtils } from "./nanoleafUtils";
 
-export class NanoleafClient implements ServiceClient<NanoleafClient> {
+export class NanoleafClient {
     // Important: Does only remember colors which were directly set by using setPanelColor(s)
     private colors: Map<number, Color> = new Map<number, Color>();
 
@@ -17,10 +16,6 @@ export class NanoleafClient implements ServiceClient<NanoleafClient> {
      */
     getQueue(): NanoleafQueue {
         return this.queue;
-    }
-
-    getNativeClient(): NanoleafClient {
-        return this; // yolo
     }
 
     constructor(private ipAddress: string, private authToken: string) {}

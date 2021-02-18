@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG) {
     xdotool?.onAvailable((client) => {
         nodecg.log.info("Xdotool client has been updated, minimising current window.");
 
-        client.getNativeClient().sendCommand("getactivewindow windowminimize");
+        client.sendCommand("getactivewindow windowminimize");
     });
 
     xdotool?.onUnavailable(() => nodecg.log.info("Xdotool client has been unset."));

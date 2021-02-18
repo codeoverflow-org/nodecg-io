@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import * as express from "express";
 import { Router } from "express";
 import SpotifyWebApi = require("spotify-web-api-node");
@@ -12,19 +12,7 @@ interface SpotifyServiceConfig {
     refreshToken?: string;
 }
 
-export class SpotifyServiceClient implements ServiceClient<SpotifyWebApi> {
-    constructor(private client: SpotifyWebApi, private refreshInterval: NodeJS.Timeout) {}
-
-    getNativeClient(): SpotifyWebApi {
-        return this.client;
-    }
-
-    stopTokenRefreshing(): void {
-        if (this.refreshInterval) {
-            clearInterval(this.refreshInterval);
-        }
-    }
-}
+export type SpotifyServiceClient = SpotifyWebApi;
 
 let callbackUrl = "";
 const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";
@@ -83,7 +71,8 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
         this.nodecg.log.info("Successfully connected to Spotify.");
 
-        return success(new SpotifyServiceClient(spotifyApi, this.startTokenRefreshing(spotifyApi)));
+        this.startTokenRefreshing(spotifyApi);
+        return success(spotifyApi);
     }
 
     private mountCallBackURL(spotifyApi: SpotifyWebApi) {
@@ -114,8 +103,12 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         });
     }
 
-    private startTokenRefreshing(spotifyApi: SpotifyWebApi): NodeJS.Timeout {
-        return setInterval(() => {
+    private startTokenRefreshing(spotifyApi: SpotifyWebApi) {
+        const interval = setInterval(() => {
+            if (spotifyApi.getAccessToken() === undefined) {
+                clearInterval(interval);
+                return;
+            }
             spotifyApi.refreshAccessToken().then(
                 (data) => {
                     this.nodecg.log.info("The Spotify access token has been refreshed.");
@@ -132,6 +125,8 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
     stopClient(client: SpotifyServiceClient): void {
         // Client can't be stopped, it is just a stateless http client but token refreshing should be stopped
-        client.stopTokenRefreshing();
+        // To do that we reset the refresh token which will be checked by the interval that refreshes the access token
+        // and will result in it stopping to resfresh.
+        client.resetAccessToken();
     }
 }

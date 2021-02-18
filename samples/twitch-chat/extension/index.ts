@@ -1,12 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { TwitchServiceClient } from "nodecg-io-twitch-chat";
+import { TwitchChatServiceClient } from "nodecg-io-twitch-chat";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for twitch-chat started");
 
     // Require the twitch service.
-    const twitch = requireService<TwitchServiceClient>(nodecg, "twitch-chat");
+    const twitch = requireService<TwitchChatServiceClient>(nodecg, "twitch-chat");
 
     // Hardcoded channels for testing purposes.
     // Note that this does need a # before the channel name and is case-insensitive.
@@ -24,13 +24,13 @@ module.exports = function (nodecg: NodeCG) {
     twitch?.onUnavailable(() => nodecg.log.info("Twitch chat client has been unset."));
 };
 
-function addListeners(nodecg: NodeCG, client: TwitchServiceClient, channel: string) {
+function addListeners(nodecg: NodeCG, client: TwitchChatServiceClient, channel: string) {
     client
         .join(channel)
         .then(() => {
             nodecg.log.info(`Connected to twitch channel "${channel}"`);
 
-            client.getNativeClient().onMessage((chan, user, message, _msg) => {
+            client.onMessage((chan, user, message, _msg) => {
                 if (chan === channel.toLowerCase()) {
                     nodecg.log.info(`Twitch chat: ${user}@${channel}: ${message}`);
                 }

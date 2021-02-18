@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, error, ServiceBundle } from "nodecg-io-core";
 import { SerialServiceClient, SerialServiceConfig } from "./SerialClient";
 
 module.exports = (nodecg: NodeCG) => {
@@ -15,9 +15,7 @@ class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClie
     }
 
     async createClient(config: SerialServiceConfig): Promise<Result<SerialServiceClient>> {
-        const client = new SerialServiceClient(config);
-        const result = await client.init();
-        return result.failed ? error(result.errorMessage) : success(client);
+        return await SerialServiceClient.createClient(config);
     }
 
     stopClient(client: SerialServiceClient): void {
@@ -25,6 +23,7 @@ class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClie
     }
 
     removeHandlers(client: SerialServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
+        client.removeAllParserListeners();
     }
 }

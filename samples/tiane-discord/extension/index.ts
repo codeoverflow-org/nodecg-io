@@ -23,15 +23,15 @@ module.exports = function (nodecg: NodeCG) {
 
     discord?.onAvailable(async (client) => {
         nodecg.log.info("Discord client has been updated, adding handlers for messages.");
-        myChannel = (await client.getNativeClient().channels.fetch(discordChannel)) as TextChannel;
-        client.getNativeClient().on("message", (msg) => {
+        myChannel = (await client.channels.fetch(discordChannel)) as TextChannel;
+        client.on("message", (msg) => {
             if (myTiane != null && myChannel != null && myDiscord != null) {
-                if (msg.channel.id == myChannel.id && msg.author.id != myDiscord.getNativeClient().user?.id) {
+                if (msg.channel.id == myChannel.id && msg.author.id != myDiscord.user?.id) {
                     const text = msg.content;
                     const user = msg.author.username;
                     userMap[user] = `<@!${msg.author.id}>`;
-                    const explicit = msg.mentions.has(myDiscord.getNativeClient().user as User);
-                    myTiane.getNativeClient().send(text, user, tianeRoom, "USER", explicit);
+                    const explicit = msg.mentions.has(myDiscord.user as User);
+                    myTiane.send(text, user, tianeRoom, "USER", explicit);
                 }
             }
         });
@@ -47,7 +47,7 @@ module.exports = function (nodecg: NodeCG) {
 
     tiane?.onAvailable((client) => {
         nodecg.log.info("Tiane client has been updated, adding handlers for messages.");
-        client.getNativeClient().onsay(tianeRoom, (text, user) => {
+        client.onsay(tianeRoom, (text, user) => {
             if (myChannel != null && myDiscord != null) {
                 if (user == null || !(user in userMap)) {
                     myChannel.send({
@@ -60,8 +60,8 @@ module.exports = function (nodecg: NodeCG) {
                 }
             }
         });
-        client.getNativeClient().newRoom(tianeRoom, false);
-        client.getNativeClient().roomOutput(tianeRoom, "discord");
+        client.newRoom(tianeRoom, false);
+        client.roomOutput(tianeRoom, "discord");
         myTiane = client;
     });
     tiane?.onUnavailable(() => {

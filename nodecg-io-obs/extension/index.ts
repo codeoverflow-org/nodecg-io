@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import * as OBSWebSocket from "obs-websocket-js";
 
 interface OBSServiceConfig {
@@ -8,7 +8,7 @@ interface OBSServiceConfig {
     password?: string;
 }
 
-export type OBSServiceClient = ServiceClient<OBSWebSocket>;
+export type OBSServiceClient = OBSWebSocket;
 
 module.exports = (nodecg: NodeCG) => {
     new OBSService(nodecg, "obs", __dirname, "../obs-schema.json").register();
@@ -35,18 +35,14 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
             return error(e.error);
         }
 
-        return success({
-            getNativeClient() {
-                return client;
-            },
-        });
+        return success(client);
     }
 
     stopClient(client: OBSServiceClient) {
-        client.getNativeClient().disconnect();
+        client.disconnect();
     }
 
     removeHandlers(client: OBSServiceClient) {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
     }
 }

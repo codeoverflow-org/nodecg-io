@@ -8,11 +8,10 @@ module.exports = function (nodecg: NodeCG) {
     const streamdeck = requireService<StreamdeckServiceClient>(nodecg, "streamdeck");
     let timeout: NodeJS.Timeout | undefined;
 
-    streamdeck?.onAvailable((client) => {
+    streamdeck?.onAvailable((deck) => {
         nodecg.log.info("Streamdeck client has been updated, painting the Streamdeck.");
 
         try {
-            const deck = client.getNativeClient();
             const colors: Array<[number, number, number]> = [
                 [231, 60, 60],
                 [231, 128, 60],

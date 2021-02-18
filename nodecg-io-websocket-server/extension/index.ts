@@ -1,12 +1,12 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import * as WebSocket from "ws";
 
 interface WSServerServiceConfig {
     port: number;
 }
 
-export type WSServerServiceClient = ServiceClient<WebSocket.Server>;
+export type WSServerServiceClient = WebSocket.Server;
 
 module.exports = (nodecg: NodeCG) => {
     new WSServerService(nodecg, "websocket-server", __dirname, "../ws-schema.json").register();
@@ -46,22 +46,18 @@ class WSServerService extends ServiceBundle<WSServerServiceConfig, WSServerServi
             return client; // Pass the error to the framework
         }
         this.nodecg.log.info("Successfully started WebSocket server.");
-        return success({
-            getNativeClient() {
-                return client.result;
-            },
-        });
+        return success(client.result);
     }
 
     stopClient(client: WSServerServiceClient): void {
-        client.getNativeClient().close();
+        client.close();
     }
 
     removeHandlers(client: WSServerServiceClient): void {
-        client.getNativeClient().removeAllListeners();
+        client.removeAllListeners();
         // Drop all clients so that they have to reconnect and the bundles using
         // ws.on("connection", ...) handlers are re-run
-        client.getNativeClient().clients.forEach((client) => {
+        client.clients.forEach((client) => {
             client.close();
         });
     }

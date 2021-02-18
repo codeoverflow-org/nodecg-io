@@ -7,10 +7,9 @@ module.exports = function (nodecg: NodeCG) {
 
     const webSocketServer = requireService<WSServerServiceClient>(nodecg, "websocket-server");
 
-    webSocketServer?.onAvailable((client) => {
+    webSocketServer?.onAvailable((server) => {
         nodecg.log.info("WebSocket Server has been updated. Ready for connections.");
 
-        const server = client.getNativeClient();
         server.on("connection", (websocket) => {
             websocket.on("message", (message) => {
                 if (message.toString().toLowerCase() === "ping") {

@@ -7,9 +7,8 @@ module.exports = function (nodecg: NodeCG) {
 
     const twitter = requireService<TwitterServiceClient>(nodecg, "twitter");
 
-    twitter?.onAvailable((client) => {
+    twitter?.onAvailable((twitterClient) => {
         nodecg.log.info("Twitch client has been updated, adding handlers for messages.");
-        const twitterClient = client.getNativeClient();
         const params = {
             screen_name: "skate702", // eslint-disable-line camelcase
             exclude_replies: true, // eslint-disable-line camelcase

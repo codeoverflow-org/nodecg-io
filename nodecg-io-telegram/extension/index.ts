@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, ServiceBundle, ServiceClient } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import TelegramBot = require("node-telegram-bot-api");
 
 interface TelegramServiceConfig {
@@ -11,7 +11,7 @@ interface TelegramServiceConfig {
     filepath?: boolean;
 }
 
-export type TelegramServiceClient = ServiceClient<TelegramBot>;
+export type TelegramServiceClient = TelegramBot;
 
 module.exports = (nodecg: NodeCG) => {
     new TelegramService(nodecg, "telegram", __dirname, "../telegram-schema.json").register();
@@ -38,25 +38,21 @@ class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServi
 
         this.nodecg.log.info("Successfully connected to the telegram server.");
 
-        return success({
-            getNativeClient() {
-                return bot;
-            },
-        });
+        return success(bot);
     }
 
     stopClient(client: TelegramServiceClient): void {
-        if (client.getNativeClient().isPolling()) {
-            client.getNativeClient().stopPolling();
+        if (client.isPolling()) {
+            client.stopPolling();
         }
-        if (client.getNativeClient().hasOpenWebHook()) {
-            client.getNativeClient().closeWebHook();
+        if (client.hasOpenWebHook()) {
+            client.closeWebHook();
         }
     }
 
     removeHandlers(client: TelegramServiceClient): void {
-        client.getNativeClient().removeAllListeners();
-        client.getNativeClient().clearTextListeners();
-        client.getNativeClient().clearReplyListeners();
+        client.removeAllListeners();
+        client.clearTextListeners();
+        client.clearReplyListeners();
     }
 }

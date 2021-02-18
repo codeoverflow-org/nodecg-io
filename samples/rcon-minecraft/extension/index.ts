@@ -9,9 +9,9 @@ module.exports = function (nodecg: NodeCG) {
 
     rcon?.onAvailable(async (client) => {
         nodecg.log.info("RCON sample has been updated, performing /list and a /say command.");
-        const response = await client.sendMessage("list");
+        const response = await client.send("list");
         nodecg.log.info(response);
-        client.sendMessage("say nodecg-io speaking here!");
+        client.send("say nodecg-io speaking here!");
     });
 
     rcon?.onUnavailable(() => nodecg.log.info("RCON sample has been unset."));
