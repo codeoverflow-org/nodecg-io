@@ -24,20 +24,7 @@ export class TwitchPubSubServiceClient extends SingleUserPubSubClient {
         const basicClient = new BasicPubSubClient();
         const pubSubClient = new TwitchPubSubServiceClient(apiClient, basicClient, user.id);
 
-        // Checks whether the provided token is valid and has required scopes.
-        // We do this so that the framework can say that the token is wrong instead of letting it through
-        // till it will result in a exception in the bundle.
         await basicClient.connect();
-        try {
-            await basicClient.listen([], authProvider); // listen for nothing still checks token
-        } catch (err) {
-            if (err.toString().includes("http status 400")) {
-                throw "Token is invalid or has not all required scopes. (channel_subscriptions, bits:read and channel:read:redemptions)";
-            } else {
-                throw err;
-            }
-        }
-
         return pubSubClient;
     }
 
