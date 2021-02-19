@@ -24,12 +24,14 @@ class TwitchPubSubService extends ServiceBundle<TwitchPubSubServiceConfig, Twitc
         return success(client);
     }
 
-    stopClient(_: TwitchPubSubServiceClient): void {
-        // Not possible
+    stopClient(client: TwitchPubSubServiceClient): void {
+        client
+            .disconnect()
+            .then(() => this.nodecg.log.info("Stopped pubsub client successfully."))
+            .catch((err) => this.nodecg.log.error(`Couldn't stop pubsub client: ${err}`));
     }
 
-    // Pubsub has no methods to close the connection or remove the handler.
-    // It has no way to access the underlying client too, so handlers that are setup once will currently live forever.
-    // TODO: implement a way to at least stop the client, removing handlers would be nice too
+    // Pubsub has no methods to remove the handlers.
+    // At least we can disconnect the client so we must do that on any configuration change and reconnect.
     recreateClientToRemoveHandlers = true;
 }
