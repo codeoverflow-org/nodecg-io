@@ -59,7 +59,7 @@ export class TwitchPubSubServiceClient extends SingleUserPubSubClient {
         return this.userId;
     }
 
-    async disconnect(): Promise<void> {
-        this.basicClient.disconnect();
+    disconnect(): Promise<void> {
+        return this.basicClient.disconnect();
     }
 }
