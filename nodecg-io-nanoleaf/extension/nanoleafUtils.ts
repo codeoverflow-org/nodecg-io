@@ -48,7 +48,7 @@ export class NanoleafUtils {
             const response = await fetch(`http://${ipAddress}:${this.defaultPort}/api/v1/new`, { method: "POST" });
 
             const json = await response.json();
-            return json.authToken || "";
+            return json.auth_token || "";
         } catch (error) {
             nodecg.log.warn(errorMessage);
             return "";
