@@ -10,7 +10,7 @@ export function updateOptionsArr(node: HTMLSelectElement, options: string[]): vo
     // Remove all children.
     node.innerHTML = "";
 
-    options.sort().forEach((optStr, i) => {
+    options.forEach((optStr, i) => {
         const opt = document.createElement("option");
         opt.value = optStr;
         opt.innerText = optStr;
