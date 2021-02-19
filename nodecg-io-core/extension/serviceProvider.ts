@@ -11,6 +11,14 @@ export class ServiceProvider<C> {
     private currentClient: C | undefined;
     private em = new EventEmitter();
 
+    constructor() {
+        // Make service client non enumerable, that way it won't be serialized, which would cause problems.
+        Object.defineProperty(this, "currentClient", {
+            enumerable: false,
+            writable: true,
+        });
+    }
+
     /**
      * Returns the current client from the assigned service instance or undefined if it failed to create one or
      * the current bundle has no service instance assigned to it.
