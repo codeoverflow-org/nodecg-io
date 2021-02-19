@@ -8,11 +8,8 @@ export interface NanoleafServiceConfig {
     ipAddress: string;
 }
 
-// Reexporting all important classes
-export { NanoleafClient as NanoleafServiceClient } from "./nanoleafClient";
-export { NanoleafUtils } from "./nanoleafUtils";
-export { Color, ColoredPanel, PanelEffect } from "./interfaces";
-export { NanoleafQueue } from "./nanoleafQueue";
+// Reexportation of important classes and types is done in ../index.ts because we need to
+// export NanoleafUtils which is a class and this file already has a default export for nodecg.
 
 module.exports = (nodecg: NodeCG) => {
     new NanoleafService(nodecg, "nanoleaf", __dirname, "../nanoleaf-schema.json").register();
