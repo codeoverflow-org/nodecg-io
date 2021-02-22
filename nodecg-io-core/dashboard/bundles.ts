@@ -50,7 +50,7 @@ export function renderInstanceSelector(): void {
 
     // Rendering options
     const serviceType = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex]?.value;
-    const instances = ["none"];
+    const instances = [];
 
     for (const instName in config.data.instances) {
         if (!Object.prototype.hasOwnProperty.call(config.data.instances, instName)) {
@@ -62,6 +62,10 @@ export function renderInstanceSelector(): void {
         }
     }
     updateOptionsArr(selectBundleInstance, instances);
+    const noneOption = document.createElement("option");
+    noneOption.innerText = "none";
+    noneOption.value = "none";
+    selectBundleInstance.prepend(noneOption);
 
     // Selecting option of current set instance
     const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
