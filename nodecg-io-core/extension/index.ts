@@ -5,7 +5,7 @@ import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
 import { Service } from "./types";
 import { PersistenceManager } from "./persistenceManager";
-import { ServiceClientWrapper } from "./serviceClientWrapper";
+import { ServiceProvider } from "./serviceProvider";
 
 /**
  * Main type of NodeCG extension that the core bundle exposes.
@@ -13,7 +13,7 @@ import { ServiceClientWrapper } from "./serviceClientWrapper";
  */
 export interface NodeCGIOCore {
     registerService<R, C>(service: Service<R, C>): void;
-    requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined;
+    requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined;
 }
 
 module.exports = (nodecg: NodeCG): NodeCGIOCore => {
@@ -40,7 +40,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
         registerService<R, C>(service: Service<R, C>): void {
             serviceManager.registerService(service);
         },
-        requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
+        requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined {
             const bundleName = nodecg.bundleName;
             const svc = serviceManager.getService(serviceType);
 
@@ -52,12 +52,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
                 return;
             }
 
-            const wrapper = new ServiceClientWrapper<C>();
-            bundleManager.registerServiceDependency(bundleName, svc.result as Service<unknown, C>, (client) => {
-                wrapper.emit("update", client);
-            });
-
-            return wrapper;
+            return bundleManager.registerServiceDependency(bundleName, svc.result as Service<unknown, C>);
         },
     };
 };
@@ -74,7 +69,7 @@ function onExit(
         bundles[bundleName]?.forEach((bundleDependency) => {
             // Only unset a service instance if it was set previously
             if (bundleDependency.serviceInstance !== undefined) {
-                bundleDependency.clientUpdateCallback(undefined);
+                bundleDependency.provider.updateClient(undefined);
             }
         });
     }

@@ -5,4 +5,4 @@
 export type { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./extension/types";
 export * from "./extension/utils/result";
 export { ServiceBundle } from "./extension/serviceBundle";
-export { requireService } from "./extension/serviceClientWrapper";
+export { requireService, ServiceProvider } from "./extension/serviceProvider";

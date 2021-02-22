@@ -7,14 +7,15 @@ import { NodeCG } from "nodecg/types/server";
  * a function which just returns the current ServiceClient.
  * This class gets its client updates through the framework, namely using the {@link ServiceDependency.clientUpdateCallback}.
  */
-export class ServiceClientWrapper<C> extends EventEmitter {
+export class ServiceProvider<C> {
     private currentClient: C | undefined;
+    private em = new EventEmitter();
 
     constructor() {
-        super();
-        // The update event gets emitted by requireService function that is defined in NodeCGIOCore
-        this.on("update", (client: C | undefined) => {
-            this.currentClient = client;
+        // Make service client non enumerable, that way it won't be serialized, which would cause problems.
+        Object.defineProperty(this, "currentClient", {
+            enumerable: false,
+            writable: true,
         });
     }
 
@@ -33,11 +34,7 @@ export class ServiceClientWrapper<C> extends EventEmitter {
      * @param {(client: C) => void} handler a handler that gets called everytime the client gets available.
      */
     onAvailable(handler: (client: C) => void): void {
-        this.on("update", (client: C | undefined) => {
-            if (client !== undefined) {
-                handler(client);
-            }
-        });
+        this.em.on("set", handler);
     }
 
     /**
@@ -46,11 +43,18 @@ export class ServiceClientWrapper<C> extends EventEmitter {
      * @param {() => void} handler a handler that gets called everytime the client gets unavailable.
      */
     onUnavailable(handler: () => void): void {
-        this.on("update", (client: C | undefined) => {
-            if (client === undefined) {
-                handler();
-            }
-        });
+        this.em.on("unset", handler);
+    }
+
+    /**
+     * Updates the client and calls all registered handlers of {{@link onAvailable}} and {{@link onUnavailable}} depending
+     * whether the passed client parameter was undefined or not.
+     * This is only intended to be called by the framework and not by a bundle.
+     * @param client the new client
+     */
+    updateClient(client: C | undefined): void {
+        this.currentClient = client;
+        this.em.emit(client ? "set" : "unset", client);
     }
 }
 
@@ -61,7 +65,7 @@ export class ServiceClientWrapper<C> extends EventEmitter {
  * @return {ServiceClientWrapper<C> | undefined} a service client wrapper for access to the service client
  *                                               or undefined if the core wasn't loaded or the service type doesn't exist.
  */
-export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceClientWrapper<C> | undefined {
+export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined {
     const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error(
