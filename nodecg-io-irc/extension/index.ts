@@ -15,7 +15,7 @@ export class IRCServiceClient extends IRCClient {
         super(config.host, config.nick, {
             password: config.password,
             autoConnect: false,
-            retryCount: config.reconnectTries ?? 1,
+            retryCount: config.reconnectTries ?? 3,
             retryDelay: 500,
         });
     }
