@@ -13,10 +13,12 @@ nodecg-io-core/dashboard/dist
 
 # Editor configuration
 .idea/
-.vscode/
+.vscode/*
 
-# Launch configurations
+# Launch configurations and settings
 !/.vscode/launch.json
+!/.vscode/settings.json
+
 
 # Lerna temporary files
 package.json.lerna_backup
