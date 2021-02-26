@@ -4,6 +4,9 @@ node_modules/
 # compiled js files
 *.js
 
+# generated mapping files
+*.js.map
+
 # Dashboard webpack
 nodecg-io-core/dashboard/dist
 !nodecg-io-core/dashboard/webpack.config.js
