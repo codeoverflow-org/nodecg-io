@@ -12,7 +12,12 @@ interface IRCServiceConfig {
 
 export class IRCServiceClient extends IRCClient {
     constructor(config: IRCServiceConfig) {
-        super(config.host, config.nick, { password: config.password });
+        super(config.host, config.nick, {
+            password: config.password,
+            autoConnect: false,
+            retryCount: config.reconnectTries ?? 3,
+            retryDelay: 500,
+        });
     }
 
     sendMessage(target: string, message: string): void {
@@ -25,30 +30,17 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
-    async validateConfig(config: IRCServiceConfig): Promise<Result<void>> {
-        const irc = new IRCServiceClient(config);
-
-        // We need one error handler or node will exit the process on an error.
-        irc.on("error", (_err) => {});
-
-        await new Promise((res) => {
-            irc.connect(config.reconnectTries || 5, res);
-        });
-        await new Promise((res) => {
-            irc.disconnect("", () => res(undefined));
-        });
+    async validateConfig(_config: IRCServiceConfig): Promise<Result<void>> {
+        // no checks are currently done here. Server and password are checked in createClient()
+        // We could check whether the port is valid and the host/ip is valid here in the future.
         return emptySuccess();
     }
 
     async createClient(config: IRCServiceConfig): Promise<Result<IRCServiceClient>> {
         const irc = new IRCServiceClient(config);
 
-        // We need one error handler or node will exit the process on an error.
-        irc.on("error", (_err) => {});
-
-        await new Promise((res) => {
-            irc.connect(config.reconnectTries || 5, res);
-        });
+        this.nodecg.log.info("Connecting to IRC...");
+        await this.connect(irc);
         this.nodecg.log.info("Successfully connected to the IRC server.");
 
         return success(irc);
@@ -62,5 +54,17 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
 
     removeHandlers(client: IRCServiceClient): void {
         client.removeAllListeners();
+    }
+
+    private connect(client: IRCServiceClient): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            // We need one error handler or node will exit the process on an error.
+            client.on("error", (err) => reject(err));
+            client.on("abort", () => {
+                reject("Couldn't connect to IRC server! Maximum retry count reached.");
+            });
+
+            client.connect(0, () => resolve(undefined));
+        });
     }
 }
