@@ -2,7 +2,7 @@
     // Hides js and js map files in the explorer windows of vs code
     "vscode.tsc.compiler.alertTSConfigChanges": "never",
     "files.exclude": {
-        "**/*.js": true,
+        "**/*.js": { "when": "$(basename).ts" },
         "**/*.js.map": true
     }
 }
