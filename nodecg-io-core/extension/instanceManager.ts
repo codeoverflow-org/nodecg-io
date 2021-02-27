@@ -155,9 +155,12 @@ export class InstanceManager extends EventEmitter {
             try {
                 const validationRes = await service.result.validateConfig(config);
                 if (validationRes.failed) {
-                    return error("Config invalid: " + validationRes.errorMessage);
+                    throw validationRes.errorMessage;
                 }
             } catch (err) {
+                this.nodecg.log.warn(
+                    `Couldn't validate config of ${service.result.serviceType} instance "${instanceName}": ${err}`,
+                );
                 return error("Config invalid: " + err);
             }
         }
