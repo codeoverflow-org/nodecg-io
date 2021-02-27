@@ -3,6 +3,7 @@
         // Output related
         "target": "es2017",
         "importHelpers": true,
+        "sourceMap": true,
 
         // Module resolution
         "moduleResolution": "node",

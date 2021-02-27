@@ -4,16 +4,21 @@ node_modules/
 # compiled js files
 *.js
 
+# generated mapping files
+*.js.map
+
 # Dashboard webpack
 nodecg-io-core/dashboard/dist
 !nodecg-io-core/dashboard/webpack.config.js
 
 # Editor configuration
 .idea/
-.vscode/
+.vscode/*
 
-# Launch configurations
+# Launch configurations and settings
 !/.vscode/launch.json
+!/.vscode/settings.json
+
 
 # Lerna temporary files
 package.json.lerna_backup
