@@ -146,7 +146,7 @@ if __name__ == '__main__':
         ])
 
     if not os.path.isdir('docs'):
-        print('Could not create documentation files. You should clone nocg-io-docs in the directory "docs".')
+        print('Could not create documentation files. You should clone nodecg-io-docs in the directory "docs".')
     else:
         with open(f'docs/docs/samples/{sample_name}.md', mode='w') as file:
             file.writelines([
