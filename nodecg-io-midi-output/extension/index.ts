@@ -16,7 +16,7 @@ class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServi
     async validateConfig(config: MidiOutputServiceConfig): Promise<Result<void>> {
         const devices: Array<string> = new Array<string>();
 
-        easymidi.getInputs().forEach((device) => {
+        easymidi.getOutputs().forEach((device) => {
             if (device.includes(config.device)) {
                 devices.push(device);
             }
