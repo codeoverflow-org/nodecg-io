@@ -340,7 +340,7 @@ export type FFZRoom = {
     /**
      * The custom moderator badge url.
      */
-    moderatorBade: string | null;
+    moderatorBadge: string | null;
     // If anyone can tell what the next four are, please extend the type definition.
     // They were always null or empty for the channels I tested it with
     mod_urls: unknown;

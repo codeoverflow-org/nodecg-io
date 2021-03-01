@@ -49,10 +49,6 @@ class TwitchAddonsService extends ServiceBundle<TwitchAddonsConfig, TwitchAddons
         this.nodecg.log.info("Successfully stopped twitch-addons client.");
     }
 
-    removeHandlers(_: TwitchAddonsClient): void {
-        // TODO: Implement (optional)
-    }
-
     private static normalizeToken(token: string): string {
         if (token.toLowerCase().startsWith("oauth:")) {
             return token.substr(6);
