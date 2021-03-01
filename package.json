@@ -10,7 +10,7 @@
         "rebuild": "npm run clean && npm run build",
         "watch": "lerna run --parallel watch",
         "lint": "eslint . --ext ts",
-        "format": "prettier --write \"./**/*.{ts,html,css,json}\" \"!package-lock.json\""
+        "format": "prettier --write \"./**/*.{ts,html,css,json}\""
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.10.0",
@@ -27,7 +27,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json}' !package-lock.json"
+            "pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json}'"
         }
     }
 }
