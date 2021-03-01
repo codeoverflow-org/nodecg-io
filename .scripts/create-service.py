@@ -21,33 +21,19 @@ if __name__ == '__main__':
 
     service_name_c = service_name.replace("-", " ").title().replace(" ", "")
     service_name_cc = service_name_c[0].lower() + service_name_c[1:]
-    service_name_ul = service_name.replace("-", "_")
 
     with open('nodecg-io-template/package.json') as file:
-        template_package = json.loads(file.read())
+        package = json.loads(file.read())
 
-    package = {
-        'name': f'nodecg-io-{service_name}',
-        'version': template_package['version'],
-        'description': description,
-        'homepage': f'https://nodecg.io/samples/{sample_name}',
-        'author': {
-            'name': author_name,
-            'url': author_url
-        },
-        'repository': {
-            'type': 'git',
-            'url': 'https://github.com/codeoverflow-org/nodecg-io.git',
-            'directory': f'nodecg-io-{service_name}'
-        },
-        'main': 'extension',
-        'scripts': template_package['scripts'],
-        'keywords': template_package['keywords'],
-        'nodecg': template_package['nodecg'],
-        'license': template_package['license'],
-        'devDependencies': template_package['devDependencies'],
-        'dependencies': template_package['dependencies']
+    # Replace some entries from the template package.json
+    package['name'] = f'nodecg-io-{service_name}'
+    package['description'] = description
+    package['homepage'] = f'https://nodecg.io/samples/{sample_name}'
+    package['author'] = {
+        'name': author_name,
+        'url': author_url
     }
+    package['repository']['directory'] = f'nodecg-io-{service_name}'
 
     os.mkdir(f'nodecg-io-{service_name}')
     with open(f'nodecg-io-{service_name}/package.json', mode='w') as file:
@@ -114,22 +100,19 @@ if __name__ == '__main__':
         ])
 
     with open('samples/template/package.json') as file:
-        template_sample_package = json.loads(file.read())
+        sample_package = json.loads(file.read())
 
     sample_dependencies = {}
-    for dependency in template_sample_package['dependencies']:
+    for dependency in sample_package['dependencies']:
         if dependency != 'nodecg-io-template':
-            sample_dependencies[dependency] = template_sample_package['dependencies'][dependency]
+            sample_dependencies[dependency] = sample_package['dependencies'][dependency]
     sample_dependencies[f'nodecg-io-{service_name}'] = package['version']
 
-    sample_package = {
-        'name': f'{sample_name}',
-        'version': template_sample_package['version'],
-        'private': True,
-        'nodecg': template_sample_package['nodecg'],
-        'scripts': template_sample_package['scripts'],
-        'license': template_sample_package['license'],
-        'dependencies': sample_dependencies
+    # Replace some entries from the template package.json
+    sample_package['name'] = sample_name
+    sample_package['dependencies'] = sample_dependencies
+    sample_package['nodecg']['bundleDependencies'] = {
+        f'nodecg-io-{service_name}': package['version']
     }
 
     os.mkdir(f'samples/{sample_name}')
@@ -146,31 +129,33 @@ if __name__ == '__main__':
             'import { requireService } from "nodecg-io-core";\n',
             '\n',
             'module.exports = function (nodecg: NodeCG) {\n',
-            f'    nodecg.log.info("{service_name_c} bundle started.");\n',
+            f'    nodecg.log.info("Sample bundle for {service_name_c} started.");\n',
             '\n',
-            f'    const {service_name_ul} = requireService<{service_name_c}Client>(nodecg, "{service_name}");\n',
+            f'    const {service_name_cc} = requireService<{service_name_c}Client>(nodecg, "{service_name}");\n',
             '\n',
-            f'    {service_name_ul}?.onAvailable((_) => {{\n',
+            f'    {service_name_cc}?.onAvailable((_) => {{\n',
             f'        nodecg.log.info("{service_name_c} service available.");\n',
             '        // TODO: Implement\n',
             '    });\n',
             '\n',
-            f'    {service_name_ul}?.onUnavailable(() => {{\n',
+            f'    {service_name_cc}?.onUnavailable(() => {{\n',
             f'        nodecg.log.info("{service_name_c} service unavailable.");\n',
             '        // TODO: Implement\n',
             '    });\n',
             '};\n'
         ])
 
-    with open(f'docs/docs/samples/{sample_name}.md', mode='w') as file:
-        file.writelines([
-            '<!-- Marker for build.py that there\'s no sample bundle. Remove this if you created one -->\n',
-            '\n',
-            f'# Documentation for {service_name_c}-service missing.\n',
-            '\n',
-            'You can help us [create it](../contribute/sample_documentation.md).'
-
-        ])
+    if not os.path.isdir('docs'):
+        print('Could not create documentation files. You should clone nocg-io-docs in the directory "docs".')
+    else:
+        with open(f'docs/docs/samples/{sample_name}.md', mode='w') as file:
+            file.writelines([
+                '<!-- Marker for build.py that there\'s no sample bundle. Remove this if you created one -->\n',
+                '\n',
+                f'# Documentation for {service_name_c}-service missing.\n',
+                '\n',
+                'You can help us [create it](../contribute/sample_documentation.md).'
+            ])
 
     os.system('npm run bsb')
 
