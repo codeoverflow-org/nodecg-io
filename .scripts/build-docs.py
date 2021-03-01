@@ -10,9 +10,8 @@
 #  + docs repo located at ./docs and up to date
 
 import json
-import re
-import subprocess
 import os
+import re
 
 
 def genServicesMd(outFile, baseDir, docDir, outGraph):
