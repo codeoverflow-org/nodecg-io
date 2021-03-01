@@ -3,7 +3,7 @@ import { TemplateClient } from "nodecg-io-template";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Template bundle started.");
+    nodecg.log.info("Sample bundle for the template service started.");
 
     const template = requireService<TemplateClient>(nodecg, "template");
 
