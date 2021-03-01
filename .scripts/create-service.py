@@ -19,7 +19,9 @@ if __name__ == '__main__':
     author_url = input('Author url: ')
     sample_name = input('Sample name: ').lower()
 
-    service_name_c = service_name.capitalize()
+    service_name_c = service_name.replace("-", " ").title().replace(" ", "")
+    service_name_cc = service_name_c[0].lower() + service_name_c[1:]
+    service_name_ul = service_name.replace("-", "_")
 
     with open('nodecg-io-template/package.json') as file:
         template_package = json.loads(file.read())
@@ -59,13 +61,13 @@ if __name__ == '__main__':
         file.writelines([
             'import { NodeCG } from "nodecg/types/server";\n',
             'import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";\n',
-            f'import {{ {service_name_c}Client }} from "./{service_name}Client";\n',
+            f'import {{ {service_name_c}Client }} from "./{service_name_cc}Client";\n',
             '\n',
             f'export interface {service_name_c}Config {{\n',
             '    placeholder: string;\n',
             '}\n',
             '\n',
-            f'export {{ {service_name_c}Client }} from "./{service_name}Client";\n',
+            f'export {{ {service_name_c}Client }} from "./{service_name_cc}Client";\n',
             '\n',
             'module.exports = (nodecg: NodeCG) => {\n',
             f'    new {service_name_c}Service(nodecg, "{service_name}", __dirname, "../schema.json").register();\n',
@@ -95,7 +97,7 @@ if __name__ == '__main__':
             '}\n'
         ])
 
-    with open(f'nodecg-io-{service_name}/extension/{service_name}Client.ts', mode='w') as file:
+    with open(f'nodecg-io-{service_name}/extension/{service_name_cc}Client.ts', mode='w') as file:
         file.writelines([
             f'import {{ {service_name_c}Config }} from "./index";\n',
             '\n',
@@ -146,14 +148,14 @@ if __name__ == '__main__':
             'module.exports = function (nodecg: NodeCG) {\n',
             f'    nodecg.log.info("{service_name_c} bundle started.");\n',
             '\n',
-            f'    const {service_name} = requireService<{service_name_c}Client>(nodecg, "{service_name}");\n',
+            f'    const {service_name_ul} = requireService<{service_name_c}Client>(nodecg, "{service_name}");\n',
             '\n',
-            f'    {service_name}?.onAvailable((_) => {{\n',
+            f'    {service_name_ul}?.onAvailable((_) => {{\n',
             f'        nodecg.log.info("{service_name_c} service available.");\n',
             '        // TODO: Implement\n',
             '    });\n',
             '\n',
-            f'    {service_name}?.onUnavailable(() => {{\n',
+            f'    {service_name_ul}?.onUnavailable(() => {{\n',
             f'        nodecg.log.info("{service_name_c} service unavailable.");\n',
             '        // TODO: Implement\n',
             '    });\n',
