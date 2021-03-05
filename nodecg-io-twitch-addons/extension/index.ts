@@ -1,11 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 import { TwitchAddonsClient } from "./twitchAddonsClient";
-import fetch from "node-fetch";
-
-export interface TwitchAddonsConfig {
-    oauthKey: string;
-}
 
 export {
     TwitchAddonsClient,
@@ -29,47 +25,19 @@ module.exports = (nodecg: NodeCG) => {
     new TwitchAddonsService(nodecg, "twitch-addons", __dirname, "../schema.json").register();
 };
 
-class TwitchAddonsService extends ServiceBundle<TwitchAddonsConfig, TwitchAddonsClient> {
-    async validateConfig(config: TwitchAddonsConfig): Promise<Result<void>> {
-        await TwitchAddonsService.getClientId(TwitchAddonsService.normalizeToken(config.oauthKey));
+class TwitchAddonsService extends ServiceBundle<TwitchServiceConfig, TwitchAddonsClient> {
+    async validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
+        await getTokenInfo(config); // throws an error if the token is invalid.
         return emptySuccess();
     }
 
-    async createClient(config: TwitchAddonsConfig): Promise<Result<TwitchAddonsClient>> {
-        const normalizedToken = TwitchAddonsService.normalizeToken(config.oauthKey);
-        const client = TwitchAddonsClient.createClient(
-            await TwitchAddonsService.getClientId(normalizedToken),
-            normalizedToken,
-        );
+    async createClient(config: TwitchServiceConfig): Promise<Result<TwitchAddonsClient>> {
+        const client = await TwitchAddonsClient.createClient(config);
         this.nodecg.log.info("Successfully created twitch-addons client.");
         return success(client);
     }
 
     stopClient(_: TwitchAddonsClient): void {
         this.nodecg.log.info("Successfully stopped twitch-addons client.");
-    }
-
-    private static normalizeToken(token: string): string {
-        if (token.toLowerCase().startsWith("oauth:")) {
-            return token.substr(6);
-        } else {
-            return token;
-        }
-    }
-
-    private static async getClientId(token: string): Promise<string> {
-        const response = await (
-            await fetch(`https://id.twitch.tv/oauth2/validate`, {
-                headers: {
-                    Authorization: "OAuth " + token,
-                },
-            })
-        ).json();
-        if (response.client_id == undefined) {
-            throw new Error(
-                "Failed to get client id for twitch token in nodecg-io-twitch-addons. Probably invalid token.",
-            );
-        }
-        return response.client_id;
     }
 }

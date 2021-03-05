@@ -1,6 +1,5 @@
 import { ChatClient } from "twitch-chat-client";
-import { createAuthProvider } from "nodecg-io-twitch-auth";
-import { TwitchServiceConfig } from "./index";
+import { createAuthProvider, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
 export class TwitchChatServiceClient extends ChatClient {
     /**
