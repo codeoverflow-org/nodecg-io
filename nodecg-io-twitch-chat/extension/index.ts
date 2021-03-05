@@ -1,10 +1,7 @@
 import { NodeCG } from "nodecg/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { TwitchChatServiceClient } from "./twitchClient";
-
-export interface TwitchServiceConfig {
-    oauthKey: string;
-}
+import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
 export { TwitchChatServiceClient } from "./twitchClient";
 
@@ -14,7 +11,7 @@ module.exports = (nodecg: NodeCG) => {
 
 class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchChatServiceClient> {
     async validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
-        await TwitchChatServiceClient.getTokenInfo(config); // This will throw a error if the token is invalid
+        await getTokenInfo(config); // This will throw a error if the token is invalid
         return emptySuccess();
     }
 
