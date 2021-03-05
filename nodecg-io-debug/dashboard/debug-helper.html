@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <label>Enter a name:</label>
+        <input id="nameInput" type="text" />
+        <button id="submitButton">Submit</button>
+    </body>
+
+    <script>
+        const nameInput = document.querySelector("#nameInput");
+        const submitButton = document.querySelector("#submitButton");
+
+        submitButton.onclick = () => {
+            nodecg.sendMessage("printMessage", nameInput.value);
+        };
+    </script>
+</html>
