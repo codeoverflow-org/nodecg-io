@@ -1,0 +1,9 @@
+{
+    "name": "utils",
+    "version": "0.1.0",
+    "description": "",
+    "private": true,
+    "nodecg": {
+        "compatibleRange": "^1.1.1"
+    }
+}

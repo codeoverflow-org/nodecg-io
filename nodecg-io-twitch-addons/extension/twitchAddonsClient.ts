@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
+import { getTokenInfo, TwitchServiceConfig, normalizeToken } from "nodecg-io-twitch-auth";
 
 export class TwitchAddonsClient {
     private readonly clientId: string;
@@ -213,7 +213,7 @@ export class TwitchAddonsClient {
 
     static async createClient(config: TwitchServiceConfig): Promise<TwitchAddonsClient> {
         const tokenInfo = await getTokenInfo(config);
-        return new TwitchAddonsClient(tokenInfo.clientId, config.oauthKey);
+        return new TwitchAddonsClient(tokenInfo.clientId, normalizeToken(config));
     }
 }
 

@@ -19,6 +19,6 @@ export async function getTokenInfo(cfg: TwitchServiceConfig): Promise<TokenInfo>
 /**
  * Strips any "oauth:" before the token away, because the client needs the token without it.
  */
-function normalizeToken(cfg: TwitchServiceConfig): string {
+export function normalizeToken(cfg: TwitchServiceConfig): string {
     return cfg.oauthKey.replace("oauth:", "");
 }
