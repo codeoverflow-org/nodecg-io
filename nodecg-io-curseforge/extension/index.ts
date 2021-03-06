@@ -27,8 +27,4 @@ class CurseforgeService extends ServiceBundle<CurseforgeConfig, CurseForgeClient
     stopClient(_: CurseForgeClient): void {
         this.nodecg.log.info("Successfully stopped CurseForge client.");
     }
-
-    removeHandlers(_: CurseForgeClient): void {
-        // TODO: Implement (optional)
-    }
 }

@@ -48,6 +48,10 @@ export class CurseForge {
         return respone.text();
     }
 
+    async getFeaturedAddons(query: CurseFeaturedAddonsQuery): Promise<CurseFeaturedAddonsResponse> {
+        return this.rawRequest("POST", "addon/featured", query);
+    }
+
     async getDatabaseTimestamp(): Promise<Date> {
         const response = await fetch("https://addons-ecs.forgesvc.net/api/v2/addon/timestamp", {
             method: "GET",
@@ -119,8 +123,6 @@ export class CurseForge {
         return this.rawRequest("GET", `game/${gameId}`);
     }
 
-    // TODO: Get featured addons
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                       //
     //   METHODS FROM HERE ONWARDS UNTIL END OF CLASS CurseForge ARE NOT MEANT TO BE CALLED BY BUNDLES.      //
@@ -138,7 +140,8 @@ export class CurseForge {
             },
             body: data == undefined ? undefined : JSON.stringify(data),
         });
-        return await response.json();
+
+        return response.json();
     }
 }
 
@@ -159,7 +162,7 @@ export class CurseAddon {
     }
 
     async getFiles(): Promise<CurseFileInfo[]> {
-        return await this.curse.rawRequest("GET", `addon/${this.addonId}/files`);
+        return this.curse.rawRequest("GET", `addon/${this.addonId}/files`);
     }
 }
 
@@ -256,7 +259,7 @@ export type CurseAddonInfo = {
     downloadCount: number;
     latestFiles: CurseFileInfo[];
     categories: CurseCategory[];
-    status: number; // TODO: CurseProjectStatus
+    status: number;
     primaryCategoryId: number;
     categorySection: CurseCategorySection;
     slug: string;
@@ -304,7 +307,7 @@ export type CurseFileInfo = {
     fileDate: string;
     fileLength: number;
     releaseType: number;
-    fileStatus: number; // TODO: CurseFileStatus
+    fileStatus: number;
     downloadUrl: string;
     isAlternate: boolean;
     alternateFileId: number;
@@ -320,7 +323,7 @@ export type CurseFileInfo = {
     isCompatibleWithClient: boolean;
     categorySectionPackageType: number;
     restrictProjectFileAccess: number;
-    projectStatus: number; // TODO: CurseProjectStatus
+    projectStatus: number;
     renderCacheId: number;
     fileLegacyMappingId: number | null;
     projectId: number;
@@ -406,13 +409,36 @@ export type CurseFingerprintResponse = {
     unmatchedFingerprints: number[];
 };
 
-export type CurseReleaseType = "release" | "beta" | "alpha";
+export type CurseFeaturedAddonsResponse = {
+    Featured: CurseFileInfo[];
+    Popular: CurseFileInfo[];
+    RecentlyUpdated: CurseFileInfo[];
+};
 
-// export type CurseFileStatus = '' // TODO: find entries
+export type CurseReleaseType = "release" | "beta" | "alpha";
 
 export type CurseDependencyType = "embedded_library" | "optional" | "required" | "tool" | "incompatible" | "include";
 
-// export type CurseProjectStatus = '' // TODO: find entries
+export type CurseFileStatus =
+    | "status_1"
+    | "status_2"
+    | "status_3"
+    | "approved"
+    | "rejected"
+    | "status_6"
+    | "deleted"
+    | "archived";
+
+export type CurseProjectStatus =
+    | "new"
+    | "status_2"
+    | "status_3"
+    | "approved"
+    | "status_5"
+    | "status_6"
+    | "status_7"
+    | "status_8"
+    | "deleted";
 
 export type CurseSearchQuery = {
     categoryID: number | undefined;
@@ -423,6 +449,14 @@ export type CurseSearchQuery = {
     searchFilter: number | undefined;
     sectionId: number | undefined;
     sort: number | undefined;
+};
+
+export type CurseFeaturedAddonsQuery = {
+    GameId: number;
+    addonsIds: number[];
+    featuredCount: number;
+    popularCount: number;
+    updatedCount: number;
 };
 
 export class MagicValues {
@@ -447,6 +481,35 @@ export class MagicValues {
         MagicValues.DEPENDENCY,
     );
 
+    private static readonly FILE_STATUS: Record<CurseFileStatus, number> = {
+        archived: 8,
+        deleted: 7,
+        status_6: 6,
+        rejected: 5,
+        approved: 4,
+        status_3: 3,
+        status_2: 2,
+        status_1: 1,
+    };
+    private static readonly FILE_STATUS_INVERSE: Record<number, CurseFileStatus> = MagicValues.inverse(
+        MagicValues.FILE_STATUS,
+    );
+
+    private static readonly PROJECT_STATUS: Record<CurseProjectStatus, number> = {
+        deleted: 9,
+        status_8: 8,
+        status_7: 7,
+        status_6: 6,
+        status_5: 5,
+        approved: 4,
+        status_3: 3,
+        status_2: 2,
+        new: 1,
+    };
+    private static readonly PROJECT_STATUS_INVERSE: Record<number, CurseProjectStatus> = MagicValues.inverse(
+        MagicValues.PROJECT_STATUS,
+    );
+
     static releaseType(value: number): CurseReleaseType;
     static releaseType(value: CurseReleaseType): number;
     static releaseType(value: never): unknown {
@@ -457,6 +520,18 @@ export class MagicValues {
     static dependencyType(value: CurseDependencyType): number;
     static dependencyType(value: never): unknown {
         return MagicValues.mapMagicValue(value, MagicValues.DEPENDENCY, MagicValues.DEPENDENCY_INVERSE);
+    }
+
+    static fileStatus(value: number): CurseFileStatus;
+    static fileStatus(value: CurseFileStatus): number;
+    static fileStatus(value: never): unknown {
+        return MagicValues.mapMagicValue(value, MagicValues.FILE_STATUS, MagicValues.FILE_STATUS_INVERSE);
+    }
+
+    static projectStatus(value: number): CurseProjectStatus;
+    static projectStatus(value: CurseProjectStatus): number;
+    static projectStatus(value: never): unknown {
+        return MagicValues.mapMagicValue(value, MagicValues.PROJECT_STATUS, MagicValues.PROJECT_STATUS_INVERSE);
     }
 
     private static mapMagicValue(
