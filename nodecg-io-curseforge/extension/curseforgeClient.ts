@@ -112,7 +112,7 @@ export class CurseForge {
         return new Date(await response.text());
     }
 
-    async getGamesInfoList(supportsAddons: boolean): Promise<CurseGameInfo[]> {
+    async getGamesInfoList(supportsAddons?: boolean): Promise<CurseGameInfo[]> {
         let param = "game";
         if (!supportsAddons) param += "?false";
 
@@ -441,22 +441,22 @@ export type CurseProjectStatus =
     | "deleted";
 
 export type CurseSearchQuery = {
-    categoryID: number | undefined;
-    gameId: number | undefined;
-    gameVersion: string | undefined;
-    index: number | undefined;
-    pageSize: number | undefined;
-    searchFilter: number | undefined;
-    sectionId: number | undefined;
-    sort: number | undefined;
+    categoryID?: number;
+    gameId: number;
+    gameVersion?: string;
+    index?: number;
+    pageSize?: number;
+    searchFilter?: string;
+    sectionId?: number;
+    sort?: number;
 };
 
 export type CurseFeaturedAddonsQuery = {
     GameId: number;
-    addonsIds: number[];
-    featuredCount: number;
-    popularCount: number;
-    updatedCount: number;
+    addonsIds?: number[];
+    featuredCount?: number;
+    popularCount?: number;
+    updatedCount?: number;
 };
 
 export class MagicValues {

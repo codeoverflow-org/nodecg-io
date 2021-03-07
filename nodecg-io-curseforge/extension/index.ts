@@ -7,7 +7,6 @@ export type CurseforgeConfig = {
 };
 
 export type CurseForgeClient = CurseForge;
-export { SORT_TYPES } from "mc-curseforge-api";
 
 module.exports = (nodecg: NodeCG) => {
     new CurseforgeService(nodecg, "curseforge", __dirname, "../schema.json").register();
