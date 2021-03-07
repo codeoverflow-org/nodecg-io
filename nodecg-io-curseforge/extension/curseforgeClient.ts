@@ -202,7 +202,7 @@ export class CurseAddon {
      * @param curse The CurseForge instance.
      * @param addonId The id of the addon you want to create.
      */
-    static async create(curse: CurseForge, addonId: number) {
+    static async create(curse: CurseForge, addonId: number): Promise<CurseAddon> {
         const response: CurseAddonInfo = await curse.rawRequest("GET", `addon/${addonId}`);
         return new CurseAddon(curse, addonId, response);
     }
@@ -230,13 +230,11 @@ export class CurseAddon {
  * A file from an addon.
  */
 export class CurseFile {
-    private readonly curse: CurseForge;
     readonly addon: CurseAddon;
     readonly fileId: number;
     readonly info: CurseFileInfo;
 
-    constructor(curse: CurseForge, addon: CurseAddon, fileId: number, info: CurseFileInfo) {
-        this.curse = curse;
+    constructor(addon: CurseAddon, fileId: number, info: CurseFileInfo) {
         this.addon = addon;
         this.fileId = fileId;
         this.info = info;
@@ -250,7 +248,7 @@ export class CurseFile {
      */
     static async create(curse: CurseForge, addon: CurseAddon, fileId: number): Promise<CurseFile> {
         const response: CurseFileInfo = await curse.rawRequest("GET", `addon/${addon.addonId}/file/${fileId}`);
-        return new CurseFile(curse, addon, fileId, response);
+        return new CurseFile(addon, fileId, response);
     }
 
     /**
