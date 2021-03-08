@@ -435,7 +435,7 @@ export type CurseAddonInfo = {
     /**
      * The latest release, beta and alpha file
      */
-    latestFiles: CurseFileInfo[];
+    latestFiles: LatestCurseFileInfo[];
     /**
      * The categories the addon is included in
      */
@@ -653,7 +653,7 @@ export type CurseFileInfo = {
     gameVersionFlavor: unknown;
 };
 
-export type LatestCurseFile = CurseFile & {
+export type LatestCurseFileInfo = CurseFileInfo & {
     sortableGameVersion: CurseSortableGameVersion[];
     /**
      * The changelog
