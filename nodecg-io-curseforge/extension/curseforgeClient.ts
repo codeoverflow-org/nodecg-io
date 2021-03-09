@@ -926,7 +926,7 @@ export type CurseSearchQuery = {
 
 export type CurseFeaturedAddonsQuery = {
     GameId: number;
-    addonsIds?: number[];
+    addonIds?: number[];
     featuredCount?: number;
     popularCount?: number;
     updatedCount?: number;
