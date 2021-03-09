@@ -27,17 +27,13 @@ export class CurseForge {
      * @param query The CurseSearchQuery to use. See documentation of CurseSearchQuery for more info.
      */
     async searchForAddons(query: CurseSearchQuery): Promise<CurseAddon[]> {
-        let params = "";
-        if (query.categoryID != undefined) params += `&categoryId=${query.categoryID}`;
-        if (query.gameId != undefined) params += `&gameId=${query.gameId}`;
-        if (query.gameVersion != undefined) params += `&gameVersion=${query.gameVersion}`;
-        if (query.index != undefined) params += `&index=${query.index}`;
-        if (query.pageSize != undefined) params += `&pageSize=${query.pageSize}`;
-        if (query.searchFilter != undefined) params += `&searchFilter=${query.searchFilter}`;
-        if (query.sectionId != undefined) params += `&sectionId=${query.sectionId}`;
-        if (query.sort != undefined) params += `&sort=${query.sort}`;
-        if (params != "") params = "?" + params.substr(1);
-        const response = (await this.rawRequest("GET", `addon/search${params}`)) as unknown[];
+        const params = new URLSearchParams();
+        Object.entries(query)
+            .forEach(e => {
+                if (e[1]) params.append(e[0], e[1].toString())
+            });
+
+        const response = (await this.rawRequest("GET", `addon/search?${params}`)) as unknown[];
         return response.map((x: CurseAddonInfo) => new CurseAddon(this, x.id, x));
     }
 
