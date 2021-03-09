@@ -187,15 +187,7 @@ export class CurseForge {
  * A curse addon such as a Minecraft mod.
  */
 export class CurseAddon {
-    private readonly curse: CurseForge;
-    readonly addonId: number;
-    readonly info: CurseAddonInfo;
-
-    constructor(curse: CurseForge, addonId: number, info: CurseAddonInfo) {
-        this.curse = curse;
-        this.addonId = addonId;
-        this.info = info;
-    }
+    constructor(private readonly curse: CurseForge, public readonly addonId: number, public readonly info: CurseAddonInfo) {}
 
     /**
      * Creates an addon.
