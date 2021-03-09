@@ -36,8 +36,7 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.1.0",
-        "twitch": "^4.4.7",
-        "twitch-auth": "^4.4.7",
-        "twitch-chat-client": "^4.4.7"
+        "twitch-chat-client": "^4.4.7",
+        "nodecg-io-twitch-auth": "^0.1.0"
     }
 }

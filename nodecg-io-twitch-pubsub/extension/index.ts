@@ -1,24 +1,21 @@
 import { NodeCG } from "nodecg/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 import { TwitchPubSubServiceClient } from "./pubSubClient";
 
 export { TwitchPubSubServiceClient } from "./pubSubClient";
-
-export interface TwitchPubSubServiceConfig {
-    oauthKey: string;
-}
 
 module.exports = (nodecg: NodeCG) => {
     new TwitchPubSubService(nodecg, "twitch-pubsub", __dirname, "../pubsub-schema.json").register();
 };
 
-class TwitchPubSubService extends ServiceBundle<TwitchPubSubServiceConfig, TwitchPubSubServiceClient> {
-    async validateConfig(config: TwitchPubSubServiceConfig): Promise<Result<void>> {
-        await TwitchPubSubServiceClient.getTokenInfo(config); // This will throw a error if the token is invalid
+class TwitchPubSubService extends ServiceBundle<TwitchServiceConfig, TwitchPubSubServiceClient> {
+    async validateConfig(config: TwitchServiceConfig): Promise<Result<void>> {
+        await getTokenInfo(config); // This will throw a error if the token is invalid
         return emptySuccess();
     }
 
-    async createClient(config: TwitchPubSubServiceConfig): Promise<Result<TwitchPubSubServiceClient>> {
+    async createClient(config: TwitchServiceConfig): Promise<Result<TwitchPubSubServiceClient>> {
         const client = await TwitchPubSubServiceClient.createClient(config);
 
         return success(client);

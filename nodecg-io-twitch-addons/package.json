@@ -37,6 +37,7 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.1.0",
-        "node-fetch": "^2.6.1"
+        "node-fetch": "^2.6.1",
+        "nodecg-io-twitch-auth": "^0.1.0"
     }
 }
