@@ -71,7 +71,13 @@
                     <select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
 
                     <label for="selectBundleInstance">Service Instance: </label>
-                    <select id="selectBundleInstance" class="flex-fill" onchange="setServiceDependency();"></select>
+                    <select
+                        id="selectBundleInstance"
+                        class="flex-fill"
+                        onchange="setSelectedServiceDependency();"
+                    ></select>
+
+                    <button id="buttonUnassignBundleDeps" onclick="unsetAllBundleDependencies();">Unset all</button>
                 </div>
             </div>
 

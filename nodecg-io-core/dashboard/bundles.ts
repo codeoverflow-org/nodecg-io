@@ -81,15 +81,33 @@ export function renderInstanceSelector(): void {
     selectBundleInstance.selectedIndex = index;
 }
 
-export async function setServiceDependency(): Promise<void> {
+export async function setSelectedServiceDependency(): Promise<void> {
     const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
     const instance = selectBundleInstance.options[selectBundleInstance.selectedIndex]?.value;
     const type = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex]?.value;
 
+    await setServiceDependency(bundle, instance === "none" ? undefined : instance, type);
+}
+
+export function unsetAllBundleDependencies(): void {
+    const bundles = config.data?.bundles;
+    if (bundles === undefined) {
+        return;
+    }
+
+    Object.keys(bundles).forEach((bundleName) => {
+        const b = bundles[bundleName];
+        b?.forEach((dep) => {
+            setServiceDependency(bundleName, undefined, dep.serviceType);
+        });
+    });
+}
+
+async function setServiceDependency(bundle: string, instance: string | undefined, serviceType: string): Promise<void> {
     const msg: Partial<SetServiceDependencyMessage> = {
         bundleName: bundle,
-        instanceName: instance === "none" ? undefined : instance,
-        serviceType: type,
+        instanceName: instance,
+        serviceType,
     };
 
     try {

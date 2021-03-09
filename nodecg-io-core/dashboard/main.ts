@@ -7,4 +7,9 @@ export {
     saveInstanceConfig,
     deleteInstance,
 } from "./serviceInstance";
-export { renderBundleDeps, renderInstanceSelector, setServiceDependency } from "./bundles";
+export {
+    renderBundleDeps,
+    renderInstanceSelector,
+    setSelectedServiceDependency,
+    unsetAllBundleDependencies,
+} from "./bundles";
