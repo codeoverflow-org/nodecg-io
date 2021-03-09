@@ -832,10 +832,6 @@ export type CurseModule = {
      * The folder/file fingerprint
      */
     fingerprint: number;
-    /**
-     * The folder/file type
-     */
-    type: number;
 };
 
 export type CurseSortableGameVersion = {
