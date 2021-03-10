@@ -10,6 +10,8 @@ import { config, sendAuthenticatedMessage } from "./crypto";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
+const editorInvalidServiceText = "!!!!! Service of this instance couldn't be found.";
+const editorNotConfigurableText = "----- This service cannot be configured.";
 
 document.addEventListener("DOMContentLoaded", () => {
     config.onChange(() => {
@@ -59,18 +61,12 @@ export function onInstanceSelectChange(value: string): void {
     showNotice(undefined);
     switch (value) {
         case "new":
-            editor?.updateOptions({
-                readOnly: true,
-            });
-            editor?.setModel(monaco.editor.createModel(editorCreateText, "text"));
+            showInMonaco("text", true, editorCreateText);
             setCreateInputs(true, false);
             inputInstanceName.value = "";
             break;
         case "select":
-            editor?.updateOptions({
-                readOnly: true,
-            });
-            editor?.setModel(monaco.editor.createModel(editorDefaultText, "text"));
+            showInMonaco("text", true, editorDefaultText);
             setCreateInputs(false, false);
             break;
         default:
@@ -82,30 +78,15 @@ function showConfig(value: string) {
     const inst = config.data?.instances[value];
     const service = config.data?.services.find((svc) => svc.serviceType === inst?.serviceType);
 
-    editor?.updateOptions({
-        readOnly: false,
-    });
+    if (!service) {
+        showInMonaco("text", true, editorInvalidServiceText);
+    } else if (service.requiresNoConfig) {
+        showInMonaco("text", true, editorNotConfigurableText);
+    } else {
+        const jsonString = JSON.stringify(inst?.config || {}, null, 4);
+        showInMonaco("json", false, jsonString, service?.schema);
+    }
 
-    // Get rid of old models, as they have to be unique and we may add the same again
-    monaco.editor.getModels().forEach((m) => m.dispose());
-
-    // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
-    const modelUri = monaco.Uri.parse(`mem://nodecg-io/${inst?.serviceType}.json`);
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-        validate: service?.schema !== undefined,
-        schemas:
-            service?.schema !== undefined
-                ? [
-                      {
-                          uri: modelUri.toString(),
-                          fileMatch: [modelUri.toString()],
-                          schema: objectDeepCopy(service?.schema),
-                      },
-                  ]
-                : [],
-    });
-    const model = monaco.editor.createModel(JSON.stringify(inst?.config || {}, null, 4), "json", modelUri);
-    editor?.setModel(model);
     setCreateInputs(false, true);
 }
 
@@ -245,4 +226,40 @@ export function showNotice(msg: string | undefined): void {
     if (spanInstanceNotice !== null) {
         spanInstanceNotice.innerText = msg !== undefined ? msg : "";
     }
+}
+
+function showInMonaco(
+    type: "text" | "json",
+    readOnly: boolean,
+    content: string,
+    schema?: Record<string, unknown>,
+): void {
+    editor?.updateOptions({ readOnly });
+
+    // JSON Schema stuff
+    // Get rid of old models, as they have to be unique and we may add the same again
+    monaco.editor.getModels().forEach((m) => m.dispose());
+
+    // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
+    const modelUri = monaco.Uri.parse(`mem://nodecg-io/selectedServiceSchema.json`);
+
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
+        schema
+            ? {
+                  validate: true,
+                  schemas: [
+                      {
+                          uri: modelUri.toString(),
+                          fileMatch: [modelUri.toString()],
+                          schema: objectDeepCopy(schema),
+                      },
+                  ],
+              }
+            : {
+                  validate: false, // if not set we disable validation again.
+                  schemas: [],
+              },
+    );
+
+    editor?.setModel(monaco.editor.createModel(content, type));
 }
