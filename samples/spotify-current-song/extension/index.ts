@@ -9,10 +9,15 @@ module.exports = function (nodecg: NodeCG) {
     service?.onAvailable(async (client) => {
         nodecg.log.info("Spotify client has been updated, searching for current song information.");
 
-        const track = await client.getMyCurrentPlayingTrack();
-        const name = track.body.item?.name;
-        const artists = track.body.item?.artists.map((a) => a.name);
-        nodecg.log.info(`Currently playing "${name}" by "${artists}".`);
+        const trackResponse = await client.getMyCurrentPlayingTrack();
+        const track = trackResponse.body.item;
+        if (track) {
+            const name = track.name;
+            const artists = track.type === "track" ? track.artists.map((a) => a.name) : "unknown";
+            nodecg.log.info(`Currently playing "${name}" by "${artists}".`);
+        } else {
+            nodecg.log.info("Not playing anthing right now.");
+        }
     });
 
     service?.onUnavailable(() => nodecg.log.info("Spotify client has been unset."));
