@@ -22,7 +22,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     const serviceManager = new ServiceManager(nodecg);
     const bundleManager = new BundleManager(nodecg);
     const instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager);
-    const persistenceManager = new PersistenceManager(nodecg, instanceManager, bundleManager);
+    const persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
 
     new MessageManager(
         nodecg,
