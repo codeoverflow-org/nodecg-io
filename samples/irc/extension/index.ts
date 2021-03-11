@@ -1,24 +1,23 @@
 import { NodeCG } from "nodecg/types/server";
-import { requireService } from "nodecg-io-core/extension/serviceClientWrapper";
-import { IRCServiceClient } from "nodecg-io-irc/extension";
+import { requireService } from "nodecg-io-core";
+import { IRCServiceClient } from "nodecg-io-irc";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for <the-service-name> started");
+    nodecg.log.info("Sample bundle for irc started.");
 
     const service = requireService<IRCServiceClient>(nodecg, "irc");
     service?.onAvailable((client) => {
-        nodecg.log.info("IRCclient has been updated.");
-        const chat = client.getNativeClient();
-        chat.join("#skate702"); // Change this channel, if you want to connet to a different channel.
+        nodecg.log.info("IRC client has been updated.");
+        client.join("#skate702"); // Change this channel, if you want to connect to a different channel.
 
-        chat.addListener("message", (from, to, message) => {
-            console.log(from + " => " + to + ": " + message);
+        client.addListener("message", (from, to, message) => {
+            nodecg.log.info(from + " => " + to + ": " + message);
         });
 
-        chat.addListener("error", function (message) {
-            console.log("error: ", message);
+        client.addListener("error", function (message) {
+            nodecg.log.info("error: ", message);
         });
     });
 
-    service?.onUnavailable(() => nodecg.log.info("IRCclient has been unset."));
+    service?.onUnavailable(() => nodecg.log.info("IRC client has been unset."));
 };
