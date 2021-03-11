@@ -71,7 +71,11 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
             router.get("/nodecg-io-youtube/oauth2callback", async (req, res) => {
                 try {
                     const params = req.query;
-                    res.end("<script>window.close()</script>");
+
+                    const callbackWebsite =
+                        "<html><head><script>window.close();</script></head><body>YouTube connection successful! You may close this window now.</body></html>";
+                    res.send(callbackWebsite);
+
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const { tokens } = await auth.getToken(params.code!.toString());
                     resolve(tokens);

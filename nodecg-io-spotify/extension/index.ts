@@ -95,7 +95,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
                 // This little snippet closes the oauth window after the connection was successful
                 const callbackWebsite =
-                    "<http><head><script>window.close();</script></head><body>Spotify connection successful! You may close this window now.</body></http>";
+                    "<html><head><script>window.close();</script></head><body>Spotify connection successful! You may close this window now.</body></html>";
                 res.send(callbackWebsite);
             });
 
