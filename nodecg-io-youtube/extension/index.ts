@@ -29,6 +29,7 @@ class YoutubeService extends ServiceBundle<YoutubeServiceConfig, YoutubeServiceC
         const authUrl = auth.generateAuthUrl({
             access_type: "offline",
             scope: "https://www.googleapis.com/auth/youtube",
+            prompt: "consent",
         });
 
         return new Promise((resolve, reject) => {
