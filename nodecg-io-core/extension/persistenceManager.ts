@@ -208,7 +208,7 @@ export class PersistenceManager {
     /**
      * Encrypts and saves current state to the persistent replicant.
      */
-    private save() {
+    save(): void {
         // Check if we have a password to encrypt the data with.
         if (this.password === undefined) {
             return;
