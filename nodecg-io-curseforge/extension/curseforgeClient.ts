@@ -28,10 +28,9 @@ export class CurseForge {
      */
     async searchForAddons(query: CurseSearchQuery): Promise<CurseAddon[]> {
         const params = new URLSearchParams();
-        Object.entries(query)
-            .forEach(e => {
-                if (e[1]) params.append(e[0], e[1].toString())
-            });
+        Object.entries(query).forEach((e) => {
+            if (e[1]) params.append(e[0], e[1].toString());
+        });
 
         const response = (await this.rawRequest("GET", `addon/search?${params}`)) as unknown[];
         return response.map((x: CurseAddonInfo) => new CurseAddon(this, x.id, x));
@@ -183,7 +182,11 @@ export class CurseForge {
  * A curse addon such as a Minecraft mod.
  */
 export class CurseAddon {
-    constructor(private readonly curse: CurseForge, public readonly addonId: number, public readonly info: CurseAddonInfo) {}
+    constructor(
+        private readonly curse: CurseForge,
+        public readonly addonId: number,
+        public readonly info: CurseAddonInfo,
+    ) {}
 
     /**
      * Creates an addon.
