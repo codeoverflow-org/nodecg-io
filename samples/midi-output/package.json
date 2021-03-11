@@ -16,10 +16,10 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^14.14.13",
-        "nodecg": "^1.7.4",
+        "@types/node": "^14.14.33",
+        "nodecg": "^1.8.1",
         "nodecg-io-core": "^0.1.0",
         "nodecg-io-midi-output": "^0.1.0",
-        "typescript": "^4.1.3"
+        "typescript": "^4.2.3"
     }
 }

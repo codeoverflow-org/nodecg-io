@@ -30,14 +30,14 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^14.14.13",
-        "nodecg": "^1.7.4",
-        "typescript": "^4.1.3"
+        "@types/node": "^14.14.33",
+        "nodecg": "^1.8.1",
+        "typescript": "^4.2.3"
     },
     "dependencies": {
         "nodecg-io-core": "^0.1.0",
-        "twitch": "^4.4.7",
-        "twitch-pubsub-client": "^4.4.7",
-        "nodecg-io-twitch-auth": "^0.1.0"
+        "nodecg-io-twitch-auth": "^0.1.0",
+        "twitch": "^4.5.0",
+        "twitch-pubsub-client": "^4.5.0"
     }
 }
