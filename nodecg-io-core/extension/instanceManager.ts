@@ -140,19 +140,30 @@ export class InstanceManager extends EventEmitter {
      *                   Should only be false if it has been validated at a previous point in time, e.g. loading after startup.
      * @return void if everything went fine and a string describing the issue if something went wrong.
      */
-    async updateInstanceConfig(instanceName: string, config: unknown, validation = true): Promise<Result<void>> {
+    updateInstanceConfig(instanceName: string, config: unknown, validation = true): Promise<Result<void>> {
         // Check existence and get service instance.
         const inst = this.serviceInstances[instanceName];
         if (inst === undefined) {
-            return error("Service instance doesn't exist.");
+            return Promise.resolve(error("Service instance doesn't exist."));
         }
 
         const service = this.services.getService(inst.serviceType);
         if (service.failed) {
-            return error("The service of this instance couldn't be found.");
+            return Promise.resolve(error("The service of this instance couldn't be found."));
         }
 
-        if (validation || !service.result.requiresNoConfig) {
+        // If we don't need validation, because we are loading the configuration from disk, we can set it directly
+        // so that after we return the promise from updateInstanceClient the PersistenceManager can be sure that the
+        // config has been written.
+        // Can also be used when there is no configuration needed so that we don't spawn another promise.
+        if (!validation || service.result.requiresNoConfig) {
+            inst.config = config;
+            this.emit("change");
+            return this.updateInstanceClient(inst, instanceName, service.result);
+        }
+
+        // We need to do validation, spawn a Promise
+        return (async () => {
             const schemaValid = this.ajv.validate(service.result.schema, config);
             if (!schemaValid) {
                 return error("Config invalid: " + this.ajv.errorsText());
@@ -170,16 +181,16 @@ export class InstanceManager extends EventEmitter {
                 );
                 return error("Config invalid: " + err);
             }
-        }
 
-        // All checks passed. Set config.
-        inst.config = config;
+            // All checks passed. Set config and save it.
+            inst.config = config;
+            this.emit("change");
 
-        // Update client of this instance using the new config.
-        const updateResult = await this.updateInstanceClient(inst, instanceName, service.result);
+            // Update client of this instance using the new config.
+            const updateResult = await this.updateInstanceClient(inst, instanceName, service.result);
 
-        this.emit("change");
-        return updateResult;
+            return updateResult;
+        })();
     }
 
     /**
