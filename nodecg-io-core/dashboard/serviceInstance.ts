@@ -34,6 +34,7 @@ const instanceMonaco = document.getElementById("instanceMonaco");
 let editor: monaco.editor.IStandaloneCodeEditor | undefined;
 
 const spanInstanceNotice = document.getElementById("spanInstanceNotice");
+const buttonSave = document.getElementById("buttonSave");
 
 // HTML Handlers
 
@@ -62,12 +63,12 @@ export function onInstanceSelectChange(value: string): void {
     switch (value) {
         case "new":
             showInMonaco("text", true, editorCreateText);
-            setCreateInputs(true, false);
+            setCreateInputs(true, false, true);
             inputInstanceName.value = "";
             break;
         case "select":
             showInMonaco("text", true, editorDefaultText);
-            setCreateInputs(false, false);
+            setCreateInputs(false, false, true);
             break;
         default:
             showConfig(value);
@@ -87,7 +88,7 @@ function showConfig(value: string) {
         showInMonaco("json", false, jsonString, service?.schema);
     }
 
-    setCreateInputs(false, true);
+    setCreateInputs(false, true, !(service?.requiresNoConfig ?? false));
 }
 
 // Save button
@@ -207,7 +208,7 @@ function selectServiceInstance(instanceName: string) {
 }
 
 // Hides/unhides parts of the website based on the passed parameters
-function setCreateInputs(createMode: boolean, instanceSelected: boolean) {
+function setCreateInputs(createMode: boolean, instanceSelected: boolean, showSave: boolean) {
     function setVisible(node: HTMLElement | null, visible: boolean) {
         if (visible && node?.classList.contains("hidden")) {
             node?.classList.remove("hidden");
@@ -220,6 +221,7 @@ function setCreateInputs(createMode: boolean, instanceSelected: boolean) {
     setVisible(instanceCreateButton, createMode);
     setVisible(instanceNameField, createMode);
     setVisible(instanceServiceSelector, createMode);
+    setVisible(buttonSave, showSave);
 }
 
 export function showNotice(msg: string | undefined): void {
