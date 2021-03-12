@@ -172,13 +172,13 @@ export class InstanceManager extends EventEmitter {
             }
         }
 
-        // All checks passed. Set config.
+        // All checks passed. Set config and save it.
         inst.config = config;
+        this.emit("change");
 
         // Update client of this instance using the new config.
         const updateResult = await this.updateInstanceClient(inst, instanceName, service.result);
 
-        this.emit("change");
         return updateResult;
     }
 
