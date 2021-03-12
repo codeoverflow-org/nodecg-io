@@ -4,6 +4,7 @@ import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./types";
+import { ServiceManager } from "./serviceManager";
 
 /**
  * Models all the data that needs to be persistent in a plain manner.
@@ -58,6 +59,7 @@ export class PersistenceManager {
 
     constructor(
         private readonly nodecg: NodeCG,
+        private readonly services: ServiceManager,
         private readonly instances: InstanceManager,
         private readonly bundles: BundleManager,
     ) {
@@ -155,6 +157,11 @@ export class PersistenceManager {
                 this.nodecg.log.info(
                     `Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`,
                 );
+                continue;
+            }
+
+            const svc = this.services.getService(inst.serviceType);
+            if (!svc.failed && svc.result.requiresNoConfig) {
                 continue;
             }
 

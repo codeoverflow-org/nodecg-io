@@ -96,9 +96,16 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
      * It gets rid of the handlers by stopping the client and creating a new one, to which then only the
      * now wanted handlers get registered (e.g. if a bundle doesn't uses this service anymore but another still does).
      * Not ideal, but if your service can't implement removeHandlers for some reason it is still better than
-     * having dangling handlers that still fire eventho they shouldn't.
+     * having dangling handlers that still fire events eventho they shouldn't.
      */
     reCreateClientToRemoveHandlers = false;
+
+    /**
+     * This flag says that this service cannot be configured and doesn't need any config passed to {@link createClient}.
+     * If this is set {@link validateConfig} will never be called.
+     * @default false
+     */
+    requiresNoConfig = false;
 
     private readSchema(pathSegments: string[]): unknown {
         const joinedPath = path.resolve(...pathSegments);

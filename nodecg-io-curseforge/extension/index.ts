@@ -53,4 +53,6 @@ class CurseforgeService extends ServiceBundle<never, CurseForgeClient> {
     stopClient(_: CurseForgeClient): void {
         this.nodecg.log.info("Successfully stopped CurseForge client.");
     }
+
+    requiresNoConfig = true;
 }

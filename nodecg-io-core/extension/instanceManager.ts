@@ -65,16 +65,23 @@ export class InstanceManager extends EventEmitter {
         const service = svcResult.result;
 
         // Create actual instance and save it
-        this.serviceInstances[instanceName] = {
+        const inst = {
             serviceType: service.serviceType,
             config: service.defaultConfig,
             client: undefined,
         };
+        this.serviceInstances[instanceName] = inst;
         this.emit("change");
 
         this.nodecg.log.info(
             `Service instance "${instanceName}" of service "${service.serviceType}" has been successfully created.`,
         );
+
+        // Service requires no config, we can create it right now.
+        if (service.requiresNoConfig) {
+            this.updateInstanceClient(inst, instanceName, service);
+        }
+
         return emptySuccess();
     }
 
@@ -145,7 +152,7 @@ export class InstanceManager extends EventEmitter {
             return error("The service of this instance couldn't be found.");
         }
 
-        if (validation) {
+        if (validation || !service.result.requiresNoConfig) {
             const schemaValid = this.ajv.validate(service.result.schema, config);
             if (!schemaValid) {
                 return error("Config invalid: " + this.ajv.errorsText());
