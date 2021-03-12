@@ -3,7 +3,7 @@ import { ObjectMap, Service, ServiceInstance } from "./types";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
-import * as Ajv from "ajv";
+import Ajv from "ajv";
 import { EventEmitter } from "events";
 
 /**
