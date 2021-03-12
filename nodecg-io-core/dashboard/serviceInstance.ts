@@ -261,5 +261,5 @@ function showInMonaco(
               },
     );
 
-    editor?.setModel(monaco.editor.createModel(content, type));
+    editor?.setModel(monaco.editor.createModel(content, type, schema ? modelUri : undefined));
 }
