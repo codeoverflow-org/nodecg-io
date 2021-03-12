@@ -32,7 +32,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
         persistenceManager,
     ).registerMessageHandlers();
 
-    registerExitHandlers(nodecg, bundleManager, instanceManager, serviceManager, persistenceManager);
+    registerExitHandlers(nodecg, bundleManager, instanceManager, serviceManager);
 
     // We use a extra object instead of returning a object containing all the managers and so on, because
     // any loaded bundle would be able to call any (public or private) of the managers which is not intended.
@@ -62,12 +62,7 @@ function onExit(
     bundleManager: BundleManager,
     instanceManager: InstanceManager,
     serviceManager: ServiceManager,
-    persistenceManager: PersistenceManager,
 ): void {
-    // Save everything
-    // This is especially important if some services update some configs (e.g. updated tokens) and they haven't been saved yet.
-    persistenceManager.save();
-
     // Unset all service instances in all bundles
     const bundles = bundleManager.getBundleDependencies();
     for (const bundleName in bundles) {
@@ -104,10 +99,9 @@ function registerExitHandlers(
     bundleManager: BundleManager,
     instanceManager: InstanceManager,
     serviceManager: ServiceManager,
-    persistenceManager: PersistenceManager,
 ): void {
     const handler = () => {
-        onExit(nodecg, bundleManager, instanceManager, serviceManager, persistenceManager);
+        onExit(nodecg, bundleManager, instanceManager, serviceManager);
     };
 
     // Normal exit
