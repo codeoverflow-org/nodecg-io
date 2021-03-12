@@ -30,4 +30,6 @@ class DebugService extends ServiceBundle<DebugConfig, DebugHelper> {
     removeHandlers(client: DebugHelper): void {
         client.removeAllListeners();
     }
+
+    requiresNoConfig = true;
 }
