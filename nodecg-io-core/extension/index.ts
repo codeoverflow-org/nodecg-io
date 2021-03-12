@@ -85,7 +85,7 @@ function onExit(
         if (instances[key] !== undefined) {
             const client = instances[key]?.client;
             const service = serviceManager.getService(instances[key]?.serviceType as string);
-            if (!service.failed) {
+            if (!service.failed && client) {
                 nodecg.log.info(`Stopping service ${key} of type ${service.result.serviceType}.`);
                 try {
                     service.result.stopClient(client);
