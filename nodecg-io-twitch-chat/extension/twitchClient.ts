@@ -1,24 +1,17 @@
 import { ChatClient } from "twitch-chat-client";
-import { AuthProvider, getTokenInfo, StaticAuthProvider, TokenInfo } from "twitch-auth";
-import { TwitchServiceConfig } from "./index";
+import { createAuthProvider, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
 export class TwitchChatServiceClient extends ChatClient {
-    constructor(authProvider: AuthProvider) {
-        super(authProvider);
-    }
-
     /**
      * Creates a instance of TwitchServiceClient using the credentials from the passed config.
      */
     static async createClient(cfg: TwitchServiceConfig): Promise<TwitchChatServiceClient> {
         // Create a twitch authentication provider
-        const tokenInfo = await TwitchChatServiceClient.getTokenInfo(cfg);
-        const authProvider = new StaticAuthProvider(tokenInfo.clientId, this.normalizeToken(cfg), tokenInfo.scopes);
+        const authProvider = await createAuthProvider(cfg);
 
         // Create the actual chat client and connect
         const chatClient = new TwitchChatServiceClient(authProvider);
-
-        await chatClient.connect(); // Connects to twitch IRC
+        await chatClient.connect();
 
         // This also waits till it has registered itself at the IRC server, which is needed to do anything.
         await new Promise((resolve, _reject) => {
@@ -26,20 +19,6 @@ export class TwitchChatServiceClient extends ChatClient {
         });
 
         return chatClient;
-    }
-
-    /**
-     * Gets the token info for the passed config.
-     */
-    static async getTokenInfo(cfg: TwitchServiceConfig): Promise<TokenInfo> {
-        return await getTokenInfo(this.normalizeToken(cfg));
-    }
-
-    /**
-     * Strips any "oauth:" before the token away, because the client needs the token without it.
-     */
-    static normalizeToken(cfg: TwitchServiceConfig): string {
-        return cfg.oauthKey.replace("oauth:", "");
     }
 
     // In the nodecg-io environment we can't add a list of channels to the client at the time of creation because

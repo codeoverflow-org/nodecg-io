@@ -1,0 +1,42 @@
+{
+    "name": "nodecg-io-curseforge",
+    "version": "0.1.0",
+    "description": "A service to communicate with the CurseForge API.",
+    "homepage": "https://nodecg.io/samples/curseforge",
+    "author": {
+        "name": "MelanX",
+        "url": "https://www.github.com/MelanX"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-curseforge"
+    },
+    "main": "extension",
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.1.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^14.14.33",
+        "@types/node-fetch": "^2.5.8",
+        "nodecg": "^1.8.1",
+        "typescript": "^4.2.3"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.1",
+        "nodecg-io-core": "^0.1.0"
+    }
+}

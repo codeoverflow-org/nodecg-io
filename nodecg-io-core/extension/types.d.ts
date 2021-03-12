@@ -75,14 +75,22 @@ export interface Service<R, C extends ServiceClient<unknown>> {
     readonly removeHandlers?(client: C): void;
 
     /**
-     * This flag can be enabled by services if they can't implement removeHandlers but also have some handlers that
+     * This flag can be enabled by services if they can't implement {@link removeHandlers} but also have some handlers that
      * should be reset if a bundleDependency has been changed.
      * It gets rid of the handlers by stopping the client and creating a new one, to which then only the
      * now wanted handlers get registered (e.g. if a bundle doesn't uses this service anymore but another still does).
      * Not ideal, but if your service can't implement removeHandlers for some reason it is still better than
      * having dangling handlers that still fire eventho they shouldn't.
+     * @default false
      */
     reCreateClientToRemoveHandlers: boolean;
+
+    /**
+     * This flag says that this service cannot be configured and doesn't need any config passed to {@link createClient}.
+     * If this is set {@link validateConfig} will never be called.
+     * @default false
+     */
+    requiresNoConfig: boolean;
 }
 
 /**

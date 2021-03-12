@@ -10,6 +10,10 @@
         "clientSecret": {
             "type": "string",
             "description": "The oauth client secret https://console.cloud.google.com/apis/credentials/oauthclient"
+        },
+        "refreshToken": {
+            "type": "string",
+            "description": "Token that allows the client to refresh access tokens. This is set automatically after first login, you don't need to set it."
         }
     },
     "required": ["clientID", "clientSecret"]

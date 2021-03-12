@@ -22,7 +22,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     const serviceManager = new ServiceManager(nodecg);
     const bundleManager = new BundleManager(nodecg);
     const instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager);
-    const persistenceManager = new PersistenceManager(nodecg, instanceManager, bundleManager);
+    const persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
 
     new MessageManager(
         nodecg,
@@ -32,7 +32,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
         persistenceManager,
     ).registerMessageHandlers();
 
-    registerExitHandlers(nodecg, bundleManager, instanceManager, serviceManager);
+    registerExitHandlers(nodecg, bundleManager, instanceManager, serviceManager, persistenceManager);
 
     // We use a extra object instead of returning a object containing all the managers and so on, because
     // any loaded bundle would be able to call any (public or private) of the managers which is not intended.
@@ -62,7 +62,12 @@ function onExit(
     bundleManager: BundleManager,
     instanceManager: InstanceManager,
     serviceManager: ServiceManager,
+    persistenceManager: PersistenceManager,
 ): void {
+    // Save everything
+    // This is especially important if some services update some configs (e.g. updated tokens) and they haven't been saved yet.
+    persistenceManager.save();
+
     // Unset all service instances in all bundles
     const bundles = bundleManager.getBundleDependencies();
     for (const bundleName in bundles) {
@@ -99,9 +104,10 @@ function registerExitHandlers(
     bundleManager: BundleManager,
     instanceManager: InstanceManager,
     serviceManager: ServiceManager,
+    persistenceManager: PersistenceManager,
 ): void {
     const handler = () => {
-        onExit(nodecg, bundleManager, instanceManager, serviceManager);
+        onExit(nodecg, bundleManager, instanceManager, serviceManager, persistenceManager);
     };
 
     // Normal exit
