@@ -207,7 +207,7 @@ export class InstanceManager extends EventEmitter {
     ): Promise<Result<void>> {
         const oldClient = inst.client;
 
-        if (inst.config === undefined) {
+        if (inst.config === undefined && !service.requiresNoConfig) {
             // No config has been set, therefore the service isn't ready and we can't create a client.
             inst.client = undefined;
         } else {
