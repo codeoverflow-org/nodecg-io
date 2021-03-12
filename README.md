@@ -7,10 +7,7 @@
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/GEJzxBGRu6)
 
-**A NodeCG-bundle which will implement Social Media API's in the NodeCG framework**
-
-> Development status: framework mostly implemented  
-> Services implemented: see list below
+**A NodeCG-bundle which implements Social Media API's in the NodeCG framework**
 
 ## About nodecg-io
 
@@ -58,7 +55,7 @@ If that's no problem you can head over to the [installation guide](https://nodec
 
 ## How to contribute
 
-If you want to contribute to this bundle you can implement one of those services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing head over to the [How to contribute](https://nodecg.io/contribute/contribute/) - Guide.
+If you want to contribute to this bundle you can implement one of those services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing head over to the [How to contribute](https://nodecg.io/contribute/contribute/) guide.
 
 ## Code Overflow Team
 
@@ -81,4 +78,5 @@ nodecg-io/
    +--dashboard/                    GUI
 +--nodecg-io-<service name>/     Service implementations
 +--samples/                      Samplecode that shows how each service is used
++--utils/                        Utility packages for shared code between services
 ```
