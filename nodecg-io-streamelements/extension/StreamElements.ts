@@ -112,6 +112,4 @@ export class StreamElementsServiceClient extends EventEmitter {
     onHost(handler: (data: StreamElementsEvent) => void): void {
         this.on("host", handler);
     }
-
-    // TODO: Add support for sub bombs (e.g. by caching the last subs sender)
 }
