@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-intellij",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to control JetBrains IDEs via nodecg-io",
     "homepage": "https://nodecg.io/samples/intellij",
     "author": {
@@ -37,6 +37,6 @@
     },
     "dependencies": {
         "node-fetch": "^2.6.1",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.2.0"
     }
 }

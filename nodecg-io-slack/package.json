@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-slack",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to connect to your slack. This enables you to e.g. send messages and list all channel. Visit https://api.slack.com/methods to see all methods ",
     "homepage": "https://nodecg.io/samples/slack",
     "author": {
@@ -36,6 +36,6 @@
     },
     "dependencies": {
         "@slack/web-api": "^6.1.0",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.2.0"
     }
 }

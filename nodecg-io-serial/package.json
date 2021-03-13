@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-serial",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Exposes serial deivces to nodecg-io",
     "homepage": "https://nodecg.io/samples/serial",
     "author": {
@@ -38,7 +38,7 @@
     "dependencies": {
         "@serialport/parser-readline": "^9.0.7",
         "@types/serialport": "^8.0.1",
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "serialport": "^9.0.7"
     }
 }

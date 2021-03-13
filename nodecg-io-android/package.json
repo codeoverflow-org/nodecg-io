@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-android",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to connect to an android device via adb.",
     "homepage": "https://nodecg.io/samples/android",
     "author": {
@@ -37,6 +37,6 @@
     "dependencies": {
         "@rauschma/stringio": "^1.4.0",
         "get-stream": "^6.0.0",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.2.0"
     }
 }

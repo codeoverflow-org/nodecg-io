@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-youtube",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to connect and interact to youtube",
     "homepage": "https://nodecg.io/samples/youtube",
     "author": {
@@ -38,7 +38,7 @@
         "@types/gapi": "^0.0.39",
         "express": "^4.17.1",
         "googleapis": "^67.1.1",
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "open": "^8.0.2"
     }
 }

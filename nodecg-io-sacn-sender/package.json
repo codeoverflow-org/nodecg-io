@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-sacn-sender",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows you to send data via sACN to e.g professional lights.",
     "homepage": "https://nodecg.io/samples/sacn-sender",
     "author": {
@@ -35,7 +35,7 @@
         "typescript": "^4.2.3"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "sacn": "^3.2.1"
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-telegram",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows you to control a telegram bot.",
     "homepage": "https://nodecg.io/samples/telegram",
     "author": {
@@ -37,6 +37,6 @@
     "dependencies": {
         "@types/node-telegram-bot-api": "^0.51.1",
         "node-telegram-bot-api": "^0.51.0",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.2.0"
     }
 }
