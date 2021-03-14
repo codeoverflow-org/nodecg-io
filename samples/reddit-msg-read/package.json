@@ -10,7 +10,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-reddit": "^0.1.0"
+            "nodecg-io-reddit": "^0.2.0"
         }
     },
     "scripts": {

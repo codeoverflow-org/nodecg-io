@@ -5,7 +5,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-spotify": "^0.1.0"
+            "nodecg-io-spotify": "^0.2.0"
         }
     },
     "scripts": {
