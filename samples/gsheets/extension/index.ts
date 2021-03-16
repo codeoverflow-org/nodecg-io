@@ -11,8 +11,8 @@ module.exports = function (nodecg: NodeCG) {
         try {
             const data = await client.spreadsheets.values.get(
                 {
-                    spreadsheetId: "<ID>",
-                    range: "<TabellenName>",
+                    spreadsheetId: "<ID>", //Spreadsheet ID, URL is formatted https://docs.google.de/spreadsheets/d/<ID>/edit
+                    range: "<tableSheetName>", //The sheet name, witch will used to get the data.
                 },
                 undefined,
             );
