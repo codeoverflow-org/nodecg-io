@@ -19,7 +19,7 @@ module.exports = function (nodecg: NodeCG) {
             data.data.values = data.data.values?.filter((e) => !(!e[0] || 0 === e[0].length)); // filter out rows when column A is a empty String
             nodecg.log.info(data.data);
         } catch (error) {
-            nodecg.log.error("Could it be, that you hasn't secified the spreadsheetId and the range?");
+            nodecg.log.error("Could it be, that you haven't specified the spreadsheetId and the range?");
             nodecg.log.error(error);
         }
     });
