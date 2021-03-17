@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-gsheets",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allow to control Google Sheets.",
     "homepage": "https://nodecg.io",
     "author": {
