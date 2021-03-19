@@ -9,11 +9,21 @@ module.exports = function (nodecg: NodeCG) {
 
     debug?.onAvailable((debug) => {
         nodecg.log.info("Debug service available.");
-        debug.on("message", (value) => {
-            nodecg.log.info(`Received in 'on':  ${value}`);
+
+        debug.onClick(() => {
+            nodecg.log.info(`Received in 'onClick'`);
         });
-        debug.onMessage((value) => {
-            nodecg.log.info(`Received in 'onMessage':  ${value}`);
+
+        debug.onNumber((value) => {
+            nodecg.log.info(`Received in 'onNumber' with number: ${value}`);
+        });
+
+        debug.onRange0to100((value) => {
+            nodecg.log.info(`Received in 'onRange0to100' with value: ${value}`);
+        });
+
+        debug.onColor((value) => {
+            nodecg.log.info(`Received in 'onColor' with [red,green,blue]: [${value.red},${value.green},${value.blue}]`);
         });
     });
 
