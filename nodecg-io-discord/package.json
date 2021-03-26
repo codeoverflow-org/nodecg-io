@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-discord",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to connect to discord via a discord-bot.",
     "homepage": "https://nodecg.io/samples/discord",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.2.0"
         }
     },
     "license": "MIT",
@@ -36,6 +36,6 @@
     },
     "dependencies": {
         "discord.js": "^12.5.1",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.2.0"
     }
 }

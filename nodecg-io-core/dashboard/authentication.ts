@@ -21,13 +21,16 @@ inputPassword?.addEventListener("keyup", function (event) {
 
 // Handler for when the socket.io client re-connects which is usually a nodecg restart.
 nodecg.socket.on("connect", () => {
-    // If a password has been entered previously try to directly login using it.
-    if (inputPassword.value !== "") {
-        loadFramework();
-    } else {
-        updateLoadedStatus();
-        updateFirstStartupLabel();
-    }
+    // Give nodecg 200ms to fully connect so everything is usable.
+    setTimeout(() => {
+        // If a password has been entered previously try to directly login using it.
+        if (inputPassword.value !== "") {
+            loadFramework();
+        } else {
+            updateLoadedStatus();
+            updateFirstStartupLabel();
+        }
+    }, 200);
 });
 
 document.addEventListener("DOMContentLoaded", () => {

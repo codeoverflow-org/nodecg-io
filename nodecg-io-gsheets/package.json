@@ -1,16 +1,16 @@
 {
-    "name": "nodecg-io-youtube",
+    "name": "nodecg-io-gsheets",
     "version": "0.2.0",
-    "description": "Allows to connect and interact to youtube",
-    "homepage": "https://nodecg.io/samples/youtube",
+    "description": "Allow to control Google Sheets.",
+    "homepage": "https://nodecg.io",
     "author": {
-        "name": "CodeOverflow team",
-        "url": "http://codeoverflow.org"
+        "name": "ExtremTechniker",
+        "url": "https://github.com/ExtremTechniker"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
-        "directory": "nodecg-io-youtube"
+        "directory": "nodecg-io-gsheets"
     },
     "main": "extension",
     "scripts": {

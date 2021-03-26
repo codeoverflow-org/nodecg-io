@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-twitter",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to connect to twitter, send, retweet or like messages.",
     "homepage": "https://nodecg.io/samples/twitter",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.2.0"
         }
     },
     "license": "MIT",
@@ -36,7 +36,7 @@
     },
     "dependencies": {
         "@types/twitter": "^1.7.0",
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "twitter": "^1.7.1"
     }
 }

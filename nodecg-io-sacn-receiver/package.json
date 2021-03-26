@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-sacn-receiver",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows you to receive data via sACN from e.g professional lighting consoles.",
     "homepage": "https://nodecg.io/samples/sacn-receiver",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.2.0"
         }
     },
     "license": "MIT",
@@ -35,7 +35,7 @@
         "typescript": "^4.2.3"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "sacn": "^3.2.1"
     }
 }

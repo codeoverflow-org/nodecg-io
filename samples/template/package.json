@@ -1,11 +1,11 @@
 {
     "name": "template",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "private": true,
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-template": "^0.1.0"
+            "nodecg-io-template": "^0.2.0"
         }
     },
     "scripts": {
@@ -17,8 +17,8 @@
     "dependencies": {
         "@types/node": "^14.14.33",
         "nodecg": "^1.8.1",
-        "nodecg-io-core": "^0.1.0",
-        "nodecg-io-template": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-template": "^0.2.0",
         "typescript": "^4.2.3"
     }
 }

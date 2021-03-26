@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-spotify",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. ",
     "homepage": "https://nodecg.io",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.2.0"
         }
     },
     "license": "MIT",
@@ -37,7 +37,7 @@
     "dependencies": {
         "@types/spotify-web-api-node": "^5.0.1",
         "express": "^4.17.1",
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "open": "^8.0.2",
         "spotify-web-api-node": "^5.0.2"
     }

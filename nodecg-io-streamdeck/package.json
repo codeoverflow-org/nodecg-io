@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-streamdeck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Allows to interface with the elgato streamdeck.",
     "homepage": "https://nodecg.io/samples/streamdeck",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.2.0"
         }
     },
     "license": "MIT",
@@ -36,6 +36,6 @@
     },
     "dependencies": {
         "elgato-stream-deck": "^4.0.1",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.2.0"
     }
 }

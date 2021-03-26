@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-tiane",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Connect to TIANE and make her for example a discord bot. https://github.com/FerdiKr/TIANE",
     "homepage": "https://nodecg.io/samples/tiane",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.2.0"
         }
     },
     "license": "MIT",
@@ -36,7 +36,7 @@
         "typescript": "^4.2.3"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.2.0",
         "ws": "^7.4.4"
     }
 }
