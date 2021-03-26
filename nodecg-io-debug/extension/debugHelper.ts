@@ -29,8 +29,28 @@ export class DebugHelper extends EventEmitter {
         }
 
         nodecg.listenFor("onColor", (value) => {
-            //nodecg.log.info(`Received message in service: ${value}`);
             this.emit("onColor", DebugHelper.hexToRGB(value));
+        });
+
+        nodecg.listenFor("onDate", (value) => {
+            this.emit("onDate", new Date(value));
+        });
+
+        nodecg.listenFor("onBool", (value) => {
+            this.emit("onBool", value);
+        });
+
+        nodecg.listenFor("onText", (value) => {
+            this.emit("onText", value);
+        });
+
+        nodecg.listenFor("onList", (value) => {
+            const list = (value as string).split(",");
+            this.emit("onList", list);
+        });
+
+        nodecg.listenFor("onJSON", (value) => {
+            this.emit("onJSON", value);
         });
     }
 
@@ -86,5 +106,25 @@ export class DebugHelper extends EventEmitter {
 
     onColor(listener: (value: Color) => void): void {
         this.on("onColor", listener);
+    }
+
+    onDate(listener: (value: Date) => void): void {
+        this.on("onDate", listener);
+    }
+
+    onBool(listener: (value: boolean) => void): void {
+        this.on("onBool", listener);
+    }
+
+    onText(listener: (value: string) => void): void {
+        this.on("onText", listener);
+    }
+
+    onList(listener: (value: Array<string>) => void): void {
+        this.on("onList", listener);
+    }
+
+    onJSON(listener: (value: unknown) => void): void {
+        this.on("onJSON", listener);
     }
 }

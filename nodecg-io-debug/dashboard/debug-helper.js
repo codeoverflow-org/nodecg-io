@@ -36,3 +36,39 @@ document.querySelector("#color_color").addEventListener("input", (e) => {
     const color = e.target.value;
     nodecg.sendMessage(`onColor`, color);
 });
+
+// Dates
+for (const element of ["#date_date", "#date_datetime"]) {
+    document.querySelector(element).addEventListener("change", (e) => {
+        const date = e.target.value;
+        nodecg.sendMessage(`onDate`, date);
+    });
+}
+
+// Booleans
+document.querySelector("#bool_false").onclick = () => {
+    nodecg.sendMessage("onBool", false);
+};
+document.querySelector("#bool_true").onclick = () => {
+    nodecg.sendMessage("onBool", true);
+};
+
+// Text
+for (const element of ["oneline", "multiline"]) {
+    document.querySelector(`#text_${element}_send`).onclick = () => {
+        const value = document.querySelector(`#text_${element}`).value;
+        nodecg.sendMessage("onText", value);
+    };
+}
+
+// Lists
+document.querySelector("#list_list_send").onclick = () => {
+    const value = document.querySelector("#list_list").value;
+    nodecg.sendMessage("onList", value);
+};
+
+// JSON
+document.querySelector("#json_send").onclick = () => {
+    const json = window.debugMonacoEditor.getValue();
+    nodecg.sendMessage("onJSON", json);
+};

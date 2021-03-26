@@ -25,6 +25,26 @@ module.exports = function (nodecg: NodeCG) {
         debug.onColor((value) => {
             nodecg.log.info(`Received in 'onColor' with [red,green,blue]: [${value.red},${value.green},${value.blue}]`);
         });
+
+        debug.onDate((value) => {
+            nodecg.log.info(`Received in 'onDate' with date: ${value}`);
+        });
+
+        debug.onBool((value) => {
+            nodecg.log.info(`Received in 'onBool' with boolean: ${value}`);
+        });
+
+        debug.onText((value) => {
+            nodecg.log.info(`Received in 'onText' with string: ${value}`);
+        });
+
+        debug.onList((value) => {
+            nodecg.log.info(`Received in 'onList' with entries: [${value.join(",")}]`);
+        });
+
+        debug.onJSON((value) => {
+            nodecg.log.info(`Received in 'onJSON' with JSON: ${value}`);
+        });
     });
 
     debug?.onUnavailable(() => {
