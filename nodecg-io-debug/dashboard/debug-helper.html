@@ -150,10 +150,9 @@
                 <div id="instanceMonaco"></div>
                 <button id="json_send" style="margin-top: 5px">Send</button>
 
-                <!-- monaco is manually included because when including it using webpack it created formatting issues. -->
-                <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+                <script src="../monaco/monaco-editor/min/vs/loader.js"></script>
                 <script>
-                    require.config({ paths: { vs: "node_modules/monaco-editor/min/vs" } });
+                    require.config({ paths: { vs: "../monaco/monaco-editor/min/vs" } });
                     require(["vs/editor/editor.main"], onMonacoReady);
 
                     function onMonacoReady() {

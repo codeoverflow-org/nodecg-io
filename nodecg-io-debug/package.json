@@ -29,11 +29,17 @@
         },
         "dashboardPanels": [
             {
-                "name": "debug-helper",
+                "name": "nodecg-io-debug-helper",
                 "title": "Debug Helper",
                 "file": "debug-helper.html",
                 "fullbleed": true,
                 "headerColor": "#527878"
+            }
+        ],
+        "mount": [
+            {
+                "directory": "node_modules",
+                "endpoint": "monaco"
             }
         ]
     },
@@ -44,6 +50,7 @@
         "typescript": "^4.2.3"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.2.0"
+        "nodecg-io-core": "^0.2.0",
+        "monaco-editor": "^0.23.0"
     }
 }
