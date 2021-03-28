@@ -69,6 +69,11 @@ document.querySelector("#list_list_send").onclick = () => {
 
 // JSON
 document.querySelector("#json_send").onclick = () => {
-    const json = window.debugMonacoEditor.getValue();
-    nodecg.sendMessage("onJSON", json);
+    const jsonString = window.debugMonacoEditor.getValue();
+    try {
+        const json = JSON.parse(jsonString);
+        nodecg.sendMessage("onJSON", json);
+    } catch (e) {
+        nodecg.log.error(`Cannot send invalid json: ${e}`)
+    }
 };

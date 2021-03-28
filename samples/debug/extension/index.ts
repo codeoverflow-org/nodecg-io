@@ -43,7 +43,7 @@ module.exports = function (nodecg: NodeCG) {
         });
 
         debug.onJSON((value) => {
-            nodecg.log.info(`Received in 'onJSON' with JSON: ${value}`);
+            nodecg.log.info(`Received in 'onJSON' with JSON: ${JSON.stringify(value)}`);
         });
     });
 
