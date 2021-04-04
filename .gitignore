@@ -7,6 +7,9 @@ node_modules/
 # generated mapping files
 *.js.map
 
+# generated type definitions
+*.d.ts
+
 # Dashboard webpack
 nodecg-io-core/dashboard/dist
 !nodecg-io-core/dashboard/webpack.config.js
