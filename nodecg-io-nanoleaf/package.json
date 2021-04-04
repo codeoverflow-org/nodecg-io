@@ -12,6 +12,12 @@
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
         "directory": "nodecg-io-nanoleaf"
     },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",

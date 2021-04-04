@@ -7,12 +7,18 @@
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"
     },
-    "main": "extension",
+    "main": "extension/index",
     "repository": {
         "type": "git",
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
         "directory": "nodecg-io-ahk"
     },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",

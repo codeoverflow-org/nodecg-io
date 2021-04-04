@@ -7,17 +7,23 @@
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"
     },
+    "main": "extension/index",
     "repository": {
         "type": "git",
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
         "directory": "nodecg-io-android"
     },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean"
     },
-    "main": "extension",
     "keywords": [
         "nodecg-io",
         "nodecg-bundle"
