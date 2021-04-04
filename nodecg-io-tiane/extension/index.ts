@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
-import { Tiane, connectTiane } from "./tiane";
+import { Tiane } from "./tiane";
 
 interface TianeServiceConfig {
     address: string;
@@ -14,13 +14,13 @@ module.exports = (nodecg: NodeCG) => {
 
 class TianeService extends ServiceBundle<TianeServiceConfig, TianeServiceClient> {
     async validateConfig(config: TianeServiceConfig): Promise<Result<void>> {
-        (await connectTiane(config.address)).close();
+        (await Tiane.connect(config.address)).close();
         return emptySuccess();
     }
 
     async createClient(config: TianeServiceConfig): Promise<Result<TianeServiceClient>> {
         this.nodecg.log.info("Connecting to TIANE...");
-        const client = await connectTiane(config.address);
+        const client = await Tiane.connect(config.address);
         this.nodecg.log.info("Successfully connected to TIANE.");
 
         return success(client);
