@@ -32,7 +32,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.1.1"
         }
     },
     "license": "MIT",
@@ -44,7 +44,7 @@
     "dependencies": {
         "@serialport/parser-readline": "^9.0.7",
         "@types/serialport": "^8.0.1",
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.1.1",
         "serialport": "^9.0.7"
     }
 }

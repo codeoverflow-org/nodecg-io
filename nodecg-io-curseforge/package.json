@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-curseforge",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "A service to communicate with the CurseForge API.",
     "homepage": "https://nodecg.io/samples/curseforge",
     "author": {
@@ -31,7 +31,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.1.1"
         }
     },
     "license": "MIT",
@@ -43,6 +43,6 @@
     },
     "dependencies": {
         "node-fetch": "^2.6.1",
-        "nodecg-io-core": "^0.1.0"
+        "nodecg-io-core": "^0.1.1"
     }
 }

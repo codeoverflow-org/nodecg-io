@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-core",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "The core of nodecg-io. Connects everything up.",
     "homepage": "https://nodecg.io",
     "author": {

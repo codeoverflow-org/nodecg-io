@@ -31,7 +31,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.0"
+            "nodecg-io-core": "^0.1.1"
         }
     },
     "license": "MIT",
@@ -42,7 +42,7 @@
     },
     "dependencies": {
         "@types/twitter": "^1.7.0",
-        "nodecg-io-core": "^0.1.0",
+        "nodecg-io-core": "^0.1.1",
         "twitter": "^1.7.1"
     }
 }
