@@ -1,26 +1,10 @@
 import * as WebSocket from "ws";
 import { EventEmitter } from "events";
 
-export async function connectTiane(address: string): Promise<Tiane> {
-    if (!address.includes("://")) {
-        address = "ws://" + address;
-    }
-    const websocket = new WebSocket(address);
-    await new Promise((resolve, reject) => {
-        websocket.once("error", reject);
-        websocket.on("open", () => {
-            websocket.off("error", reject);
-            resolve(undefined);
-        });
-    });
-
-    return new Tiane(websocket);
-}
-
 export class Tiane extends EventEmitter {
     private readonly websocket: WebSocket;
 
-    constructor(websocket: WebSocket) {
+    private constructor(websocket: WebSocket) {
         super();
 
         this.websocket = websocket;
@@ -41,6 +25,22 @@ export class Tiane extends EventEmitter {
                 this.emit("message", json.msg, json.ping);
             }
         };
+    }
+
+    static async connect(address: string): Promise<Tiane> {
+        if (!address.includes("://")) {
+            address = "ws://" + address;
+        }
+        const websocket = new WebSocket(address);
+        await new Promise((resolve, reject) => {
+            websocket.once("error", reject);
+            websocket.on("open", () => {
+                websocket.off("error", reject);
+                resolve(undefined);
+            });
+        });
+
+        return new Tiane(websocket);
     }
 
     close(): void {

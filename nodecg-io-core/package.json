@@ -12,6 +12,15 @@
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
         "directory": "nodecg-io-core"
     },
+    "files": [
+        "extension/**/*.js",
+        "extension/**/*.js.map",
+        "extension/**/*.d.ts",
+        "index.js",
+        "index.js.map",
+        "index.d.ts",
+        "*.json"
+    ],
     "scripts": {
         "build": "tsc -b",
         "watch": "tsc -b -w",
@@ -42,6 +51,7 @@
     },
     "dependencies": {
         "ajv": "^7.2.1",
-        "crypto-js": "^4.0.0"
+        "crypto-js": "^4.0.0",
+        "tslib": "^2.1.0"
     }
 }
