@@ -3,7 +3,9 @@ name: Update docs
 
 on:
   push:
-    branches: [ master ]
+    branches:
+    - master
+    - "releases/**"
 
 jobs:
   build:
@@ -21,9 +23,10 @@ jobs:
     - name: Checkout docs
       uses: actions/checkout@v2
       with:
-        repository:  codeoverflow-org/nodecg-io-docs
+        repository: codeoverflow-org/nodecg-io-docs
         path: docs
         ssh-key: ${{ secrets.DOCS_SSH_KEY }}
+        ref: ${{ github.event.push.ref }}
 
     - name: Build docs
       run: python .scripts/build-docs.py
@@ -34,5 +37,5 @@ jobs:
         git config --global user.email "<>"
         git config --global user.name "codeoverflow-org"
         git add .
-        git diff-index --quiet HEAD || git commit --message "Update generated documentation ( codeoverflow-org/nodecg-io@${{ github.sha }})"
-        git push origin master
+        git diff-index --quiet HEAD || git commit --message "Update generated documentation (codeoverflow-org/nodecg-io@${{ github.sha }})"
+        git push origin "${GITHUB_REF#refs/heads/}"
