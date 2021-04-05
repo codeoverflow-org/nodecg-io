@@ -5,7 +5,7 @@ on:
   push:
     branches:
     - master
-    - "releases/**"
+    - "release/**"
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         repository: codeoverflow-org/nodecg-io-docs
         path: docs
         ssh-key: ${{ secrets.DOCS_SSH_KEY }}
-        ref: ${{ github.event.push.ref }}
+        ref: ${{ github.ref }}
 
     - name: Build docs
       run: python .scripts/build-docs.py
