@@ -26,7 +26,7 @@ jobs:
         repository: codeoverflow-org/nodecg-io-docs
         path: docs
         ssh-key: ${{ secrets.DOCS_SSH_KEY }}
-        ref: refs/heads/release/0.1
+        ref: ${{ github.ref }}
 
     - name: Build docs
       run: python .scripts/build-docs.py
