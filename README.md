@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=21&color=blue&style=flat-square)](https://nodecg.io/services/)
+[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=21&color=blue&style=flat-square)](https://nodecg.io/RELEASE/services/)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/GEJzxBGRu6)
 
@@ -52,11 +52,11 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 ## How to use nodecg-io
 
 If you want to use nodecg-io, you should note that it is only a framework for your bundle, so you need at least a basic knowledge of the programming language JavaScript or any other language that compiles to JavaScript like TypeScript.
-If that's no problem you can head over to the [installation guide](https://nodecg.io/getting_started/install/) and take a look at the [available nodecg-io services](https://nodecg.io/services/).
+If that's no problem you can head over to the [installation guide](https://nodecg.io/RELEASE/getting_started/install/) and take a look at the [available nodecg-io services](https://nodecg.io/RELEASE/services/).
 
 ## How to contribute
 
-If you want to contribute to this bundle you can implement one of those services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing head over to the [How to contribute](https://nodecg.io/contribute/contribute/) guide.
+If you want to contribute to this bundle you can implement one of those services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing head over to the [How to contribute](https://nodecg.io/RELEASE/contribute/contribute/) guide.
 
 ## Code Overflow Team
 

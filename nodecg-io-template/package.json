@@ -2,7 +2,7 @@
     "name": "nodecg-io-template",
     "version": "0.2.0",
     "description": "Template package.",
-    "homepage": "https://nodecg.io/samples/template",
+    "homepage": "https://nodecg.io/RELEASE/samples/template",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

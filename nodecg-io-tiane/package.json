@@ -2,7 +2,7 @@
     "name": "nodecg-io-tiane",
     "version": "0.2.0",
     "description": "Connect to TIANE and make her for example a discord bot. https://github.com/FerdiKr/TIANE",
-    "homepage": "https://nodecg.io/samples/tiane",
+    "homepage": "https://nodecg.io/RELEASE/samples/tiane",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

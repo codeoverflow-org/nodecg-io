@@ -2,7 +2,7 @@
     "name": "nodecg-io-discord",
     "version": "0.2.0",
     "description": "Allows to connect to discord via a discord-bot.",
-    "homepage": "https://nodecg.io/samples/discord",
+    "homepage": "https://nodecg.io/RELEASE/samples/discord",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

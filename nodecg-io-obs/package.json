@@ -2,7 +2,7 @@
     "name": "nodecg-io-obs",
     "version": "0.2.0",
     "description": "Allows to control your obs instance to e.g. switch scenes.",
-    "homepage": "https://nodecg.io",
+    "homepage": "https://nodecg.io/RELEASE",
     "author": {
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"

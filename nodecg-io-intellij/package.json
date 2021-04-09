@@ -2,7 +2,7 @@
     "name": "nodecg-io-intellij",
     "version": "0.2.0",
     "description": "Allows to control JetBrains IDEs via nodecg-io",
-    "homepage": "https://nodecg.io/samples/intellij",
+    "homepage": "https://nodecg.io/RELEASE/samples/intellij",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

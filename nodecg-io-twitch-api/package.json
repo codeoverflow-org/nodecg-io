@@ -2,7 +2,7 @@
     "name": "nodecg-io-twitch-api",
     "version": "0.2.0",
     "description": "Allows talking to twitch APIs like helix.",
-    "homepage": "https://nodecg.io/samples/twitch-api",
+    "homepage": "https://nodecg.io/RELEASE/samples/twitch-api",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

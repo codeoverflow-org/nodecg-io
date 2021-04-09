@@ -2,7 +2,7 @@
     "name": "nodecg-io-twitter",
     "version": "0.2.0",
     "description": "Allows to connect to twitter, send, retweet or like messages.",
-    "homepage": "https://nodecg.io/samples/twitter",
+    "homepage": "https://nodecg.io/RELEASE/samples/twitter",
     "author": {
         "name": "CodeOverflow team",
         "url": "http://codeoverflow.org"

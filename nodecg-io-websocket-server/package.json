@@ -2,7 +2,7 @@
     "name": "nodecg-io-websocket-server",
     "version": "0.2.0",
     "description": "Allows to create a custom WebSocket server.",
-    "homepage": "https://nodecg.io/samples/websocket-server/",
+    "homepage": "https://nodecg.io/RELEASE/samples/websocket-server/",
     "author": {
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"
