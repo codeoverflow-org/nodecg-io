@@ -2,7 +2,7 @@
     "name": "nodecg-io-streamelements",
     "version": "0.2.0",
     "description": "Allows to connect to streamelements to e.g. react to donations.",
-    "homepage": "https://nodecg.io",
+    "homepage": "https://nodecg.io/RELEASE",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

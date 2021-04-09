@@ -2,7 +2,7 @@
     "name": "nodecg-io-midi-output",
     "version": "0.2.0",
     "description": "Connect to MIDI devices and control the volume of your voice or music with a fader.",
-    "homepage": "https://nodecg.io/samples/midi-output",
+    "homepage": "https://nodecg.io/RELEASE/samples/midi-output",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

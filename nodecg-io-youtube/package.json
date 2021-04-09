@@ -2,7 +2,7 @@
     "name": "nodecg-io-youtube",
     "version": "0.2.0",
     "description": "Allows to connect and interact to youtube",
-    "homepage": "https://nodecg.io/samples/youtube",
+    "homepage": "https://nodecg.io/RELEASE/samples/youtube",
     "author": {
         "name": "CodeOverflow team",
         "url": "http://codeoverflow.org"

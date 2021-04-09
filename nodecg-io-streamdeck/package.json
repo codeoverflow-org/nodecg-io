@@ -2,7 +2,7 @@
     "name": "nodecg-io-streamdeck",
     "version": "0.2.0",
     "description": "Allows to interface with the elgato streamdeck.",
-    "homepage": "https://nodecg.io/samples/streamdeck",
+    "homepage": "https://nodecg.io/RELEASE/samples/streamdeck",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

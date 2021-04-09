@@ -2,7 +2,7 @@
     "name": "nodecg-io-sacn-receiver",
     "version": "0.2.0",
     "description": "Allows you to receive data via sACN from e.g professional lighting consoles.",
-    "homepage": "https://nodecg.io/samples/sacn-receiver",
+    "homepage": "https://nodecg.io/RELEASE/samples/sacn-receiver",
     "author": {
         "name": "Tim-Tech-Dev",
         "url": "https://github.com/Tim-Tech-Dev"

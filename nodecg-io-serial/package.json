@@ -2,7 +2,7 @@
     "name": "nodecg-io-serial",
     "version": "0.2.0",
     "description": "Exposes serial deivces to nodecg-io",
-    "homepage": "https://nodecg.io/samples/serial",
+    "homepage": "https://nodecg.io/RELEASE/samples/serial",
     "author": {
         "name": "Stefan Schmelz",
         "url": "https://github.com/StefanSchmelz"

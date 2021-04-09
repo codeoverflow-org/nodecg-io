@@ -2,7 +2,7 @@
     "name": "nodecg-io-reddit",
     "version": "0.2.0",
     "description": "Provides an interface to the Reddit-API.",
-    "homepage": "https://nodecg.io/samples/reddit",
+    "homepage": "https://nodecg.io/RELEASE/samples/reddit",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"
