@@ -122,8 +122,9 @@ export class PersistenceManager {
 
             // Load config into the respecting manager
             // Instances first as the bundle dependency depend upon the existing instances.
-            this.loadServiceInstances(data.result.instances);
+            const promises = this.loadServiceInstances(data.result.instances);
             this.loadBundleDependencies(data.result.bundleDependencies);
+            this.saveAfterServiceInstancesLoaded(promises);
         }
 
         // Save password, used in save() function
@@ -141,14 +142,11 @@ export class PersistenceManager {
      * and then setting the config of the passed object.
      * @param instances the service instances that should be loaded.
      */
-    private loadServiceInstances(instances: ObjectMap<string, ServiceInstance<unknown, unknown>>) {
-        for (const instanceName in instances) {
-            if (!Object.prototype.hasOwnProperty.call(instances, instanceName)) {
-                continue;
-            }
+    private loadServiceInstances(instances: ObjectMap<string, ServiceInstance<unknown, unknown>>): Promise<void>[] {
+        return Object.keys(instances).map((instanceName) => {
             const inst = instances[instanceName];
             if (inst === undefined) {
-                continue;
+                return Promise.resolve();
             }
 
             // Re-create service instance.
@@ -157,19 +155,19 @@ export class PersistenceManager {
                 this.nodecg.log.info(
                     `Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`,
                 );
-                continue;
+                return Promise.resolve();
             }
 
             const svc = this.services.getService(inst.serviceType);
             if (!svc.failed && svc.result.requiresNoConfig) {
-                continue;
+                return Promise.resolve();
             }
 
             // Re-set config of this instance.
             // We can skip the validation here because the config was already validated when it was initially set,
             // before getting saved to disk.
             // This results in faster loading when the validation takes time, e.g. makes HTTP requests.
-            this.instances
+            return this.instances
                 .updateInstanceConfig(instanceName, inst.config, false)
                 .then((result) => {
                     if (result.failed) {
@@ -183,7 +181,7 @@ export class PersistenceManager {
                         `Couldn't load config of instance "${instanceName}" from saved configuration: ${reason}.`,
                     );
                 });
-        }
+        });
     }
 
     /**
@@ -191,9 +189,9 @@ export class PersistenceManager {
      * @param bundles the bundle dependencies that should be set.
      */
     private loadBundleDependencies(bundles: ObjectMap<string, ServiceDependency<unknown>[]>): void {
-        for (const bundleName in bundles) {
+        Object.keys(bundles).forEach((bundleName) => {
             if (!Object.prototype.hasOwnProperty.call(bundles, bundleName)) {
-                continue;
+                return;
             }
 
             const deps = bundles[bundleName];
@@ -209,7 +207,7 @@ export class PersistenceManager {
                     }
                 }
             });
-        }
+        });
     }
 
     /**
@@ -256,5 +254,20 @@ export class PersistenceManager {
         }
 
         return copy;
+    }
+
+    /**
+     * Saves the current configuration after all service instances have loaded.
+     * @param promises the promises of the service instances
+     */
+    private async saveAfterServiceInstancesLoaded(promises: Promise<void>[]) {
+        // We want to ignore errors because if a client in one instance cannot be created we still want to save the current state.
+        const promisesWithoutErrs = promises.map((prom) => new Promise((resolve) => prom.then(resolve).catch(resolve)));
+
+        // Wait till all promises either are done or have failed.
+        await Promise.all(promisesWithoutErrs);
+
+        this.nodecg.log.info("Finished creating service instances from stored configuration.");
+        this.save();
     }
 }

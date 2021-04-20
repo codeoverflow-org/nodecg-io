@@ -4,7 +4,7 @@ import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-i
 import { isLoaded } from "./authentication";
 import { PasswordMessage } from "nodecg-io-core/extension/messageManager";
 
-export const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
+const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
 let services: Service<unknown, never>[] | undefined;
 let password: string | undefined;
 
