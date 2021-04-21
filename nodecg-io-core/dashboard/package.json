@@ -16,7 +16,7 @@
         "crypto-js": "^4.0.0",
         "monaco-editor": "^0.23.0",
         "nodecg": "^1.8.1",
-        "nodecg-io-core": "^0.1.1"
+        "nodecg-io-core": "^0.1.2"
     },
     "license": "MIT"
 }

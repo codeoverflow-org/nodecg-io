@@ -31,7 +31,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.1"
+            "nodecg-io-core": "^0.1.2"
         }
     },
     "license": "MIT",
@@ -43,6 +43,6 @@
     "dependencies": {
         "is-ip": "^3.1.0",
         "node-hue-api": "^4.0.9",
-        "nodecg-io-core": "^0.1.1"
+        "nodecg-io-core": "^0.1.2"
     }
 }

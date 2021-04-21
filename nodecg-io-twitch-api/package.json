@@ -31,7 +31,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.1"
+            "nodecg-io-core": "^0.1.2"
         }
     },
     "license": "MIT",
@@ -41,7 +41,7 @@
         "typescript": "^4.2.3"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.1.1",
+        "nodecg-io-core": "^0.1.2",
         "nodecg-io-twitch-auth": "^0.1.0",
         "twitch": "^4.5.0"
     }

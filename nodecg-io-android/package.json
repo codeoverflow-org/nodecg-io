@@ -31,7 +31,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.1.1"
+            "nodecg-io-core": "^0.1.2"
         }
     },
     "license": "MIT",
@@ -43,6 +43,6 @@
     "dependencies": {
         "@rauschma/stringio": "^1.4.0",
         "get-stream": "^6.0.0",
-        "nodecg-io-core": "^0.1.1"
+        "nodecg-io-core": "^0.1.2"
     }
 }
