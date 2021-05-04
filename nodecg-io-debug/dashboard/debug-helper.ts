@@ -93,8 +93,3 @@ function setHandler(querySelector: string, type: "onclick" | "onchange", fn: () 
 
     element[type] = fn;
 }
-
-function getInputValue(querySelector: string): string | undefined {
-    const input = document.querySelector<HTMLInputElement>(querySelector);
-    return input?.value;
-}
