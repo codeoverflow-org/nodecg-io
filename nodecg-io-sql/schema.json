@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "client": {
+            "type": "string",
+            "description": "The sql client, e.g., mysql or sqlite3"
+        },
+        "connection": {
+            "type": "object",
+            "description": "The connection containing all login information. Please see http://knexjs.org/",
+            "additionalProperties": true
+        }
+    },
+    "required": ["client", "connection"]
+}
