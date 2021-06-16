@@ -10,7 +10,27 @@
         "connection": {
             "type": "object",
             "description": "The connection containing all login information. Please see http://knexjs.org/",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "database": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "flags": {
+                    "type": "string"
+                }
+            }
         }
     },
     "required": ["client", "connection"]
