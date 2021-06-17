@@ -18,7 +18,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
     public core: NodeCGIOCore | undefined;
     public nodecg: NodeCG;
     public serviceType: string;
-    public schema?: ObjectMap<string, unknown>;
+    public schema?: ObjectMap<unknown>;
 
     /**
      * The default value for the config.
@@ -107,7 +107,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
      */
     requiresNoConfig = false;
 
-    private readSchema(pathSegments: string[]): ObjectMap<string, unknown> | undefined {
+    private readSchema(pathSegments: string[]): ObjectMap<unknown> | undefined {
         const joinedPath = path.resolve(...pathSegments);
         try {
             const fileContent = fs.readFileSync(joinedPath, "utf8");

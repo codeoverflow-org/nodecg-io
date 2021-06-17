@@ -15,8 +15,8 @@ let password: string | undefined;
  * b. having everything at hand using one variable is quite nice so I've added services here to complete it.
  */
 interface ConfigData {
-    instances: ObjectMap<string, ServiceInstance<unknown, unknown>>;
-    bundles: ObjectMap<string, ServiceDependency<unknown>[]>;
+    instances: ObjectMap<ServiceInstance<unknown, unknown>>;
+    bundles: ObjectMap<ServiceDependency<unknown>[]>;
     services: Service<unknown, never>[];
 }
 

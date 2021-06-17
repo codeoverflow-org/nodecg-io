@@ -10,7 +10,7 @@ import { EventEmitter } from "events";
  * Manages instances of services and their configs/clients.
  */
 export class InstanceManager extends EventEmitter {
-    private serviceInstances: ObjectMap<string, ServiceInstance<unknown, unknown>> = {};
+    private serviceInstances: ObjectMap<ServiceInstance<unknown, unknown>> = {};
     private ajv = new Ajv();
 
     constructor(
@@ -35,9 +35,9 @@ export class InstanceManager extends EventEmitter {
 
     /**
      * Returns all existing service instances.
-     * @return {ObjectMap<string, ServiceInstance<unknown, unknown>>} a map of the instance name to the instance.
+     * @return {ObjectMap<ServiceInstance<unknown, unknown>>} a map of the instance name to the instance.
      */
-    getServiceInstances(): ObjectMap<string, ServiceInstance<unknown, unknown>> {
+    getServiceInstances(): ObjectMap<ServiceInstance<unknown, unknown>> {
         return this.serviceInstances;
     }
 

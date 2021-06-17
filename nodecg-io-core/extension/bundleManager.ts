@@ -8,7 +8,7 @@ import { ServiceProvider } from "./serviceProvider";
  * Manages bundles and their dependencies on nodecg-io services.
  */
 export class BundleManager extends EventEmitter {
-    private readonly bundles: ObjectMap<string, ServiceDependency<unknown>[]> = {};
+    private readonly bundles: ObjectMap<ServiceDependency<unknown>[]> = {};
 
     constructor(private readonly nodecg: NodeCG) {
         super();
@@ -16,9 +16,9 @@ export class BundleManager extends EventEmitter {
 
     /**
      * Gets all bundle dependencies
-     * @return {ObjectMap<string, ServiceDependency<unknown>[]>} all bundle dependencies
+     * @return {ObjectMap<ServiceDependency<unknown>[]>} all bundle dependencies
      */
-    getBundleDependencies(): ObjectMap<string, ServiceDependency<unknown>[]> {
+    getBundleDependencies(): ObjectMap<ServiceDependency<unknown>[]> {
         return this.bundles;
     }
 
