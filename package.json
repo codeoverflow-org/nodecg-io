@@ -9,7 +9,7 @@
         "bsb": "npm run bootstrap && npm run build",
         "rebuild": "npm run clean && npm run build",
         "watch": "lerna run --parallel watch",
-        "lint": "eslint . --ext ts",
+        "lint": "eslint . --ext ts --ignore-pattern '**/*.d.ts'",
         "format": "prettier --write \"./**/*.{ts,html,css,json}\"",
         "format-pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json}'",
         "prepare": "husky install"
