@@ -1,4 +1,4 @@
-// Holds generic types for the whole project
+// Holds types/interfaces related to services
 
 import { Result } from "./utils/result";
 import { ServiceProvider } from "./serviceProvider";
@@ -12,7 +12,7 @@ import { ServiceProvider } from "./serviceProvider";
  * A normal es6 map would use a iterator which can't be serialized by the NodeCG Replicant and thus
  * can't be used to give the gui access to the data in this map.
  */
-export type ObjectMap<K, V> = Record<K, V | undefined>;
+export type ObjectMap<K extends string | number | symbol, V> = Record<K, V | undefined>;
 
 /**
  * Models a service that a bundle can depend upon and use to access e.g. a twitch chat or similar.
@@ -20,7 +20,7 @@ export type ObjectMap<K, V> = Record<K, V | undefined>;
  *              Intended to hold configurations and authentication information that the service needs to provide a client.
  * @typeParam C the type of a client that the service will provide to bundles using {@link createClient}.
  */
-export interface Service<R, C extends ServiceClient<unknown>> {
+export interface Service<R, C> {
     /**
      * User friendly name of the service that should explain the type of service, e.g. "twitch".
      */
@@ -30,7 +30,7 @@ export interface Service<R, C extends ServiceClient<unknown>> {
      * A json schema object of the config. The config will then be validated against this json schema.
      * Ensures that the types of the config are correct and therefore is compatible with the provided config type.
      */
-    readonly schema?: ObjectMap<unknown>;
+    readonly schema?: ObjectMap<string, unknown>;
 
     /**
      * The default value for the config.
@@ -43,7 +43,7 @@ export interface Service<R, C extends ServiceClient<unknown>> {
      * @param config the config which should be validated.
      * @return void if the config passes validation and an error string describing the issue if not.
      */
-    readonly validateConfig(config: R): Promise<Result<void>>;
+    validateConfig(config: R): Promise<Result<void>>;
 
     /**
      * Creates a client to the service using the validated config.
@@ -52,7 +52,7 @@ export interface Service<R, C extends ServiceClient<unknown>> {
      * @param config the user provided config for the service.
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
-    readonly createClient(config: R): Promise<Result<C>>;
+    createClient(config: R): Promise<Result<C>>;
 
     /**
      * Stops a client of this service that is not needed anymore.
@@ -60,7 +60,7 @@ export interface Service<R, C extends ServiceClient<unknown>> {
      *
      * @param client the client that needs to be stopped.
      */
-    readonly stopClient(client: C): void;
+    stopClient(client: C): void;
 
     /**
      * Removes all handlers from a service client.
@@ -72,7 +72,7 @@ export interface Service<R, C extends ServiceClient<unknown>> {
      * Can be left unimplemented if the serivce doesn't has any handlers e.g. a http wrapper
      * @param client the client of which all handlers should be removed
      */
-    readonly removeHandlers?(client: C): void;
+    removeHandlers?(client: C): void;
 
     /**
      * This flag can be enabled by services if they can't implement {@link removeHandlers} but also have some handlers that

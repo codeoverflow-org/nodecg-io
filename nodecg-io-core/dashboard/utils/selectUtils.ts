@@ -1,4 +1,4 @@
-import { ObjectMap } from "nodecg-io-core/extension/types";
+import { ObjectMap } from "nodecg-io-core/extension/service";
 
 export function updateOptionsMap(node: HTMLSelectElement, options: ObjectMap<string, unknown>): void {
     updateOptionsArr(node, Object.keys(options));

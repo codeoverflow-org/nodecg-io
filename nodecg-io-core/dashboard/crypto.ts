@@ -1,6 +1,6 @@
 import { PersistentData, EncryptedData, decryptData } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
-import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/types";
+import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/service";
 import { isLoaded } from "./authentication";
 import { PasswordMessage } from "nodecg-io-core/extension/messageManager";
 

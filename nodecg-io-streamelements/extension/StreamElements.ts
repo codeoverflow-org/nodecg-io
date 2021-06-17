@@ -1,6 +1,6 @@
 import io = require("socket.io-client");
 import { Result, emptySuccess, error } from "nodecg-io-core";
-import { StreamElementsEvent } from "./types";
+import { StreamElementsEvent } from "./StreamElementsEvent";
 import { EventEmitter } from "events";
 
 export class StreamElementsServiceClient extends EventEmitter {

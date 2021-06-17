@@ -3,7 +3,7 @@ import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";
 import { emptySuccess, error, Result, success } from "./utils/result";
-import { ObjectMap, ServiceDependency, ServiceInstance } from "./types";
+import { ObjectMap, ServiceDependency, ServiceInstance } from "./service";
 import { ServiceManager } from "./serviceManager";
 
 /**
