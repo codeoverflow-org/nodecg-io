@@ -1,6 +1,6 @@
 import { NodeCGIOCore } from ".";
 import { NodeCG } from "nodecg/types/server";
-import { Service } from "./types";
+import { ObjectMap, Service } from "./service";
 import { Result } from "./utils/result";
 
 import * as fs from "fs";
@@ -18,7 +18,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
     public core: NodeCGIOCore | undefined;
     public nodecg: NodeCG;
     public serviceType: string;
-    public schema: unknown;
+    public schema?: ObjectMap<unknown>;
 
     /**
      * The default value for the config.
@@ -107,7 +107,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
      */
     requiresNoConfig = false;
 
-    private readSchema(pathSegments: string[]): unknown {
+    private readSchema(pathSegments: string[]): ObjectMap<unknown> | undefined {
         const joinedPath = path.resolve(...pathSegments);
         try {
             const fileContent = fs.readFileSync(joinedPath, "utf8");

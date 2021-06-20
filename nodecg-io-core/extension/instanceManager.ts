@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ObjectMap, Service, ServiceInstance } from "./types";
+import { ObjectMap, Service, ServiceInstance } from "./service";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
@@ -10,7 +10,7 @@ import { EventEmitter } from "events";
  * Manages instances of services and their configs/clients.
  */
 export class InstanceManager extends EventEmitter {
-    private serviceInstances: ObjectMap<string, ServiceInstance<unknown, unknown>> = {};
+    private serviceInstances: ObjectMap<ServiceInstance<unknown, unknown>> = {};
     private ajv = new Ajv();
 
     constructor(
@@ -35,9 +35,9 @@ export class InstanceManager extends EventEmitter {
 
     /**
      * Returns all existing service instances.
-     * @return {ObjectMap<string, ServiceInstance<unknown, unknown>>} a map of the instance name to the instance.
+     * @return {ObjectMap<ServiceInstance<unknown, unknown>>} a map of the instance name to the instance.
      */
-    getServiceInstances(): ObjectMap<string, ServiceInstance<unknown, unknown>> {
+    getServiceInstances(): ObjectMap<ServiceInstance<unknown, unknown>> {
         return this.serviceInstances;
     }
 
@@ -164,9 +164,12 @@ export class InstanceManager extends EventEmitter {
 
         // We need to do validation, spawn a Promise
         return (async () => {
-            const schemaValid = this.ajv.validate(service.result.schema, config);
-            if (!schemaValid) {
-                return error("Config invalid: " + this.ajv.errorsText());
+            // If the service has a schema, check it.
+            if (service.result.schema) {
+                const schemaValid = this.ajv.validate(service.result.schema, config);
+                if (!schemaValid) {
+                    return error("Config invalid: " + this.ajv.errorsText());
+                }
             }
 
             // Validation by the service.

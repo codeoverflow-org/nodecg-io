@@ -3,7 +3,7 @@ import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";
 import { emptySuccess, error, Result, success } from "./utils/result";
-import { ObjectMap, ServiceDependency, ServiceInstance } from "./types";
+import { ObjectMap, ServiceDependency, ServiceInstance } from "./service";
 import { ServiceManager } from "./serviceManager";
 
 /**
@@ -13,11 +13,11 @@ export interface PersistentData {
     /**
      * All instance data that is held by the {@link InstanceManager}.
      */
-    instances: ObjectMap<string, ServiceInstance<unknown, unknown>>;
+    instances: ObjectMap<ServiceInstance<unknown, unknown>>;
     /**
      * All bundle dependency data that is held by the {@link BundleManager}.
      */
-    bundleDependencies: ObjectMap<string, ServiceDependency<unknown>[]>;
+    bundleDependencies: ObjectMap<ServiceDependency<unknown>[]>;
 }
 
 /**
@@ -142,7 +142,7 @@ export class PersistenceManager {
      * and then setting the config of the passed object.
      * @param instances the service instances that should be loaded.
      */
-    private loadServiceInstances(instances: ObjectMap<string, ServiceInstance<unknown, unknown>>): Promise<void>[] {
+    private loadServiceInstances(instances: ObjectMap<ServiceInstance<unknown, unknown>>): Promise<void>[] {
         return Object.keys(instances).map((instanceName) => {
             const inst = instances[instanceName];
             if (inst === undefined) {
@@ -188,7 +188,7 @@ export class PersistenceManager {
      * Loads all passed bundle dependencies into the framework by setting them in the bundle manager.
      * @param bundles the bundle dependencies that should be set.
      */
-    private loadBundleDependencies(bundles: ObjectMap<string, ServiceDependency<unknown>[]>): void {
+    private loadBundleDependencies(bundles: ObjectMap<ServiceDependency<unknown>[]>): void {
         Object.keys(bundles).forEach((bundleName) => {
             if (!Object.prototype.hasOwnProperty.call(bundles, bundleName)) {
                 return;
@@ -234,9 +234,9 @@ export class PersistenceManager {
      * Creates a copy of all service instances without the service clients, because those
      * shouldn't be serialized and don't need to be stored in the encrypted config file.
      */
-    private getServiceInstances(): ObjectMap<string, ServiceInstance<unknown, unknown>> {
+    private getServiceInstances(): ObjectMap<ServiceInstance<unknown, unknown>> {
         const instances = this.instances.getServiceInstances();
-        const copy: ObjectMap<string, ServiceInstance<unknown, unknown>> = {};
+        const copy: ObjectMap<ServiceInstance<unknown, unknown>> = {};
 
         for (const instName in instances) {
             if (!Object.prototype.hasOwnProperty.call(instances, instName)) {

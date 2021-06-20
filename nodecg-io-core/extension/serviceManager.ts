@@ -1,4 +1,4 @@
-import { Service } from "./types";
+import { Service } from "./service";
 import { NodeCG } from "nodecg/types/server";
 import { error, Result, success } from "./utils/result";
 

@@ -4,7 +4,8 @@
 
         "lib": ["ES2015", "dom"],
         "module": "ES2015",
-        "sourceMap": true
+        "sourceMap": true,
+        "declaration": false
     },
     "extends": "../../tsconfig.common.json"
 }
