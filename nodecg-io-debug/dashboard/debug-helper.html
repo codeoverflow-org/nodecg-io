@@ -156,7 +156,7 @@
                     require(["vs/editor/editor.main"], onMonacoReady);
 
                     function onMonacoReady() {
-                        var jsonCode = ["{", '    "data": 42,', "}"].join("\n");
+                        var jsonCode = ["{", '    "data": 42', "}"].join("\n");
 
                         var model = monaco.editor.createModel(jsonCode, "json");
 
