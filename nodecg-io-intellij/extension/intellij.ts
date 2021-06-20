@@ -32,7 +32,7 @@ export class IntelliJ {
      */
     async getActiveProject(): Promise<Project> {
         const result = await this.rawRequest("get_project", { project: null });
-        if (result != null) {
+        if (result !== null) {
             return new Project(this, result);
         } else {
             throw new Error("No project active");
@@ -45,7 +45,7 @@ export class IntelliJ {
      */
     async getProject(projectName: string): Promise<Project> {
         const result = await this.rawRequest("get_project", { project: projectName });
-        if (result != null) {
+        if (result !== null) {
             return new Project(this, result);
         } else {
             throw new Error("Project not found");
@@ -58,7 +58,7 @@ export class IntelliJ {
      */
     async getFile(url: string): Promise<VirtualFile> {
         const result = await this.rawRequest("vfs_get_by_url", { url: url });
-        if (result != null) {
+        if (result !== null) {
             return new VirtualFile(this, result);
         } else {
             throw new Error("File not found");
@@ -113,7 +113,7 @@ export class IntelliJ {
     }
 
     equals(other: IntelliJ): boolean {
-        return this.address == other.address;
+        return this.address === other.address;
     }
 }
 
@@ -136,7 +136,7 @@ export class Project {
      */
     async getOpenEditorFile(): Promise<VirtualFile> {
         const result = await this.intellij.rawRequest("get_open_editor_file", { project: this.name });
-        if (result != null) {
+        if (result !== null) {
             return new VirtualFile(this.intellij, result);
         } else {
             throw new Error("File not found");
@@ -183,7 +183,7 @@ export class Project {
     }
 
     equals(other: Project): boolean {
-        return this.intellij.equals(other.intellij) && this.name == other.name;
+        return this.intellij.equals(other.intellij) && this.name === other.name;
     }
 }
 
@@ -301,7 +301,7 @@ export class VirtualFile {
     }
 
     equals(other: VirtualFile): boolean {
-        return this.intellij.equals(other.intellij) && this.url == other.url;
+        return this.intellij.equals(other.intellij) && this.url === other.url;
     }
 }
 
@@ -323,7 +323,7 @@ export class RunManager {
             project: this.project.name,
             configuration: name,
         });
-        if (result != null) {
+        if (result !== null) {
             return new RunConfiguration(this.intellij, this, result);
         } else {
             throw new Error("Configuration not found");
@@ -345,7 +345,7 @@ export class RunManager {
      */
     async getSelected(): Promise<RunConfiguration> {
         const result = await this.intellij.rawRequest("run_get_selected", { project: this.project.name });
-        if (result != null) {
+        if (result !== null) {
             return new RunConfiguration(this.intellij, this, result);
         } else {
             throw new Error("No configuration selected");
@@ -361,7 +361,7 @@ export class RunManager {
             project: this.project.name,
             type: name,
         });
-        if (result != null) {
+        if (result !== null) {
             return new RunType(this.intellij, this, result);
         } else {
             throw new Error("Configuration-Type not found");
@@ -485,7 +485,7 @@ export class RunConfiguration {
     }
 
     equals(other: RunConfiguration): boolean {
-        return this.manager.equals(other.manager) && this.uid == other.uid;
+        return this.manager.equals(other.manager) && this.uid === other.uid;
     }
 }
 
@@ -521,7 +521,7 @@ export class RunType {
     }
 
     equals(other: RunType): boolean {
-        return this.manager.equals(other.manager) && this.name == other.name;
+        return this.manager.equals(other.manager) && this.name === other.name;
     }
 }
 
@@ -544,7 +544,7 @@ export class TaskManager {
             project: this.project.name,
             task: id,
         });
-        if (result != null) {
+        if (result !== null) {
             return new Task(this.intellij, this, result);
         } else {
             throw new Error("Task not found");
@@ -667,7 +667,7 @@ export class Task {
     }
 
     equals(other: Task): boolean {
-        return this.manager.equals(other.manager) && this.id == other.id;
+        return this.manager.equals(other.manager) && this.id === other.id;
     }
 }
 
@@ -686,7 +686,7 @@ export class PluginManager {
         const result = await this.intellij.rawRequest("plugin_get", {
             plugin_id: id,
         });
-        if (result != null) {
+        if (result !== null) {
             return new Plugin(this.intellij, this, result);
         } else {
             throw new Error("Plugin not found");
@@ -776,7 +776,7 @@ export class Plugin {
      */
     async getDescription(): Promise<string> {
         const result = await this.intellij.rawRequest("plugin_get_description", { plugin_id: this.id });
-        if (result == null) {
+        if (result === null) {
             throw new Error("No description available");
         } else {
             return result;
@@ -788,7 +788,7 @@ export class Plugin {
      */
     async getChangelog(): Promise<string> {
         const result = await this.intellij.rawRequest("plugin_get_changelog", { plugin_id: this.id });
-        if (result == null) {
+        if (result === null) {
             throw new Error("No changelog available");
         } else {
             return result;
@@ -800,7 +800,7 @@ export class Plugin {
      */
     async getVersion(): Promise<string> {
         const result = await this.intellij.rawRequest("plugin_get_version", { plugin_id: this.id });
-        if (result == null) {
+        if (result === null) {
             throw new Error("No version available");
         } else {
             return result;
@@ -808,7 +808,7 @@ export class Plugin {
     }
 
     equals(other: Plugin): boolean {
-        return this.manager.equals(other.manager) && this.id == other.id;
+        return this.manager.equals(other.manager) && this.id === other.id;
     }
 }
 
@@ -846,7 +846,7 @@ export class LocalHistory {
      * @param file If given only changes that affect this file are returned.
      */
     async getRecentChanges(file?: VirtualFile): Promise<Array<HistoryChange>> {
-        if (file == undefined) {
+        if (file === undefined) {
             const result = await this.intellij.rawRequest("lh_get_changes", { vfs_file: null });
             return result.map((value: number) => {
                 return new HistoryChange(this.intellij, this, value);
@@ -913,7 +913,7 @@ export class HistoryChange {
      * could revert things in currently closed projects and don't even notice about it.
      */
     async revert(project: Project, file?: VirtualFile): Promise<void> {
-        if (file == undefined) {
+        if (file === undefined) {
             await this.intellij.rawRequest("lh_change_revert", {
                 project: project.name,
                 change_id: this.id,
@@ -956,7 +956,7 @@ export class HistoryChange {
     }
 
     equals(other: HistoryChange): boolean {
-        return this.history.equals(other.history) && this.id == other.id;
+        return this.history.equals(other.history) && this.id === other.id;
     }
 }
 
@@ -980,6 +980,6 @@ export class HistoryLabel extends HistoryChange {
     }
 
     equals(other: HistoryChange): boolean {
-        return this.history.equals(other.history) && this.id == other.id;
+        return this.history.equals(other.history) && this.id === other.id;
     }
 }

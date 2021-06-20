@@ -16,14 +16,14 @@ module.exports = function (nodecg: NodeCG) {
     inputService?.onAvailable((client) => {
         nodecg.log.info("Midi-input client has been updated, setting listeners.");
         midiInput = client;
-        if (midiOutput != null) {
+        if (midiOutput !== null) {
             setListeners(midiInput, midiOutput);
         }
     });
     outputService?.onAvailable((client) => {
         nodecg.log.info("Midi-output client has been updated, setting listeners.");
         midiOutput = client;
-        if (midiInput != null) {
+        if (midiInput !== null) {
             setListeners(midiInput, midiOutput);
         }
     });
@@ -50,7 +50,7 @@ module.exports = function (nodecg: NodeCG) {
         });
         inp.on("noteon", (msg) => {
             printMessage(msg, "noteon");
-            if (msg.velocity != 0) {
+            if (msg.velocity !== 0) {
                 msg.velocity = Math.round(Math.random() * 127);
             }
             out.send("noteon", msg);

@@ -7,7 +7,7 @@ export class Xdotool {
     private readonly address: string | null;
 
     constructor(private nodecg: NodeCG, host: string, port: number) {
-        if ((host.startsWith("127.0.0.") || host == "localhost") && port < 0) {
+        if ((host.startsWith("127.0.0.") || host === "localhost") && port < 0) {
             this.address = null;
         } else {
             this.address = `http://${host}:${port}`;
@@ -15,7 +15,7 @@ export class Xdotool {
     }
 
     async testConnection(): Promise<boolean> {
-        if (this.address == null) {
+        if (this.address === null) {
             const childProcess = spawn("xdotool", ["version"], {
                 stdio: ["ignore", "ignore", process.stderr],
                 env: process.env,
@@ -37,7 +37,7 @@ export class Xdotool {
     }
 
     async sendCommand(command: string): Promise<void> {
-        if (this.address == null) {
+        if (this.address === null) {
             const childProcess = spawn("xdotool", ["-"], {
                 stdio: ["pipe", "ignore", process.stderr],
                 env: process.env,
