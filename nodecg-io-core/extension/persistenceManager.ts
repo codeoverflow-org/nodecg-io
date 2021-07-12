@@ -31,7 +31,7 @@ export interface EncryptedData {
 }
 
 /**
- * Decryptes the passed encrypted data using the passed password.
+ * Decrypts the passed encrypted data using the passed password.
  * If the password is wrong an error will be returned.
  *
  * @param cipherText the ciphertext that needs to be decrypted.
@@ -67,6 +67,7 @@ export class PersistenceManager {
             persistent: true, // Is ok since it is encrypted
             defaultValue: {},
         });
+        this.checkAutomaticLogin();
     }
 
     /**
@@ -269,5 +270,54 @@ export class PersistenceManager {
 
         this.nodecg.log.info("Finished creating service instances from stored configuration.");
         this.save();
+    }
+
+    /**
+     * Checks whether automatic login is setup and enabled. If yes it will do it using {@link PersistenceManager.setupAutomaticLogin}.
+     */
+    private checkAutomaticLogin(): void {
+        if (!this.nodecg.bundleConfig.automaticLogin) {
+            return; // Not configured
+        }
+
+        // If the automaticLogin object exists the JSON schema guarantees that enabled is a boolean and password is a string
+        const enabled: boolean = this.nodecg.bundleConfig.automaticLogin.enabled;
+        const password: string = this.nodecg.bundleConfig.automaticLogin.password;
+
+        if (enabled === false) {
+            this.nodecg.log.info("Automatic login is setup but disabled.");
+            return;
+        }
+
+        this.setupAutomaticLogin(password);
+    }
+
+    /**
+     * Setups everything needed to automatically login using the provided password after nodecg has loaded.
+     */
+    private setupAutomaticLogin(password: string): void {
+        // We need to do the login after all bundles have been loaded because when loading these might add bundle dependencies
+        // or even register services which we need to load nodecg-io.
+        // There is no official way to wait for nodecg to be done loading so we use more or less a hack to find that out:
+        // When we declare the replicant here we will trigger a change event with a empty array.
+        // Once nodecg is done loading all bundles it'll assign a array of bundles that were loaded to this replicant
+        // So if we want to wait for nodecg to be loaded we can watch for changes on this replicant and
+        // if we get a non-empty array it means that nodecg has finished loading.
+        this.nodecg.Replicant<unknown[]>("bundles", "nodecg").on("change", async (bundles) => {
+            if (bundles.length > 0) {
+                try {
+                    this.nodecg.log.info("Attempting to automatically login...");
+                    const loadResult = await this.load(password);
+
+                    if (!loadResult.failed) {
+                        this.nodecg.log.info("Automatic login successful.");
+                    } else {
+                        this.nodecg.log.error(`Failed to automatically login: ${loadResult.errorMessage}`);
+                    }
+                } catch (err) {
+                    this.nodecg.log.error(`An error occurred while automatically logging in: ${err}`);
+                }
+            }
+        });
     }
 }
