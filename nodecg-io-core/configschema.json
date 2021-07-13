@@ -8,11 +8,11 @@
             "properties": {
                 "enabled": {
                     "type": "boolean",
-                    "description": ""
+                    "description": "Whether automatic login should be enabled. Can be disabled using this flag for temporary testing reasons."
                 },
                 "password": {
                     "type": "string",
-                    "description": ""
+                    "description": "The password of your nodecg-io installation. Used to login once nodecg has started."
                 }
             },
             "required": ["enabled", "password"]
