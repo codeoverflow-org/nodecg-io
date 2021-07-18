@@ -33,5 +33,8 @@ package.json.lerna_backup
 # Documentation
 docs/
 
-#lerna debug
+# lerna debug
 lerna-debug.log
+
+# nodecg-io-cli install details. Created when installing development version using nodecg-io install.
+install.json
