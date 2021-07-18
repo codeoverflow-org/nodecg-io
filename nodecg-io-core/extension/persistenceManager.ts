@@ -276,11 +276,11 @@ export class PersistenceManager {
      * Checks whether automatic login is setup and enabled. If yes it will do it using {@link PersistenceManager.setupAutomaticLogin}.
      */
     private checkAutomaticLogin(): void {
-        if (!this.nodecg.bundleConfig.automaticLogin) {
+        if (this.nodecg.bundleConfig?.automaticLogin?.enabled === undefined) {
             return; // Not configured
         }
 
-        // If the automaticLogin object exists the JSON schema guarantees that enabled is a boolean and password is a string
+        // If enabled isn't undefined the JSON schema guarantees that enabled is a boolean and password is a string
         const enabled: boolean = this.nodecg.bundleConfig.automaticLogin.enabled;
         const password: string = this.nodecg.bundleConfig.automaticLogin.password;
 
