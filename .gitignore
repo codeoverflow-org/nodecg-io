@@ -22,13 +22,15 @@ nodecg-io-core/dashboard/dist
 !/.vscode/launch.json
 !/.vscode/settings.json
 
-
 # Lerna temporary files
 package.json.lerna_backup
 
 # Configuration of prettier and ESLint
 !.eslintrc.js
 !.prettierrc.js
+
+# Configuration of jest
+!jest.config.js
 
 # Documentation
 docs/
