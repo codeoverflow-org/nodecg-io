@@ -47,7 +47,7 @@ export class ServiceProvider<C> {
     }
 
     /**
-     * Updates the client and calls all registered handlers of {{@link onAvailable}} and {{@link onUnavailable}} depending
+     * Updates the client and calls all registered handlers of {@link onAvailable} and {@link onUnavailable} depending
      * whether the passed client parameter was undefined or not.
      * This is only intended to be called by the framework and not by a bundle.
      * @param client the new client

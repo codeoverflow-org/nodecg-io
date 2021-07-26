@@ -9,7 +9,11 @@ import { EventEmitter } from "events";
 // that mock-nodecg hasn't implemented yet.
 
 export class MockNodeCG implements NodeCG {
-    constructor(public bundleName: string, public bundleConfig = {}, public bundleVersion = "0.2.0") {}
+    constructor(
+        public bundleName: string = "nodecg-io-core",
+        public bundleConfig = {},
+        public bundleVersion = "0.2.0",
+    ) {}
 
     bundleGit = {
         branch: "master",
