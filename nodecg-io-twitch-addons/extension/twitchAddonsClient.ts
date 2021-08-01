@@ -23,14 +23,14 @@ export class TwitchAddonsClient {
      */
     async getBetterTTVChannel(channel: string): Promise<BetterTTVChannel | undefined> {
         const channelId = await this.getUserId(channel);
-        if (channelId == undefined) {
+        if (channelId === undefined) {
             throw new Error(`Unknown twitch channel: ${channel}`);
         }
         const response = await (await fetch(`https://api.betterttv.net/3/cached/users/twitch/${channelId}`)).json();
-        if (response.message == "user not found") {
+        if (response.message === "user not found") {
             // The user has no channel at BTTV (probably never logged in there)
             return undefined;
-        } else if (response.message != undefined) {
+        } else if (response.message !== undefined) {
             throw new Error(`Failed to get BTTV channel: ${response.message}`);
         }
         return response;
@@ -49,12 +49,12 @@ export class TwitchAddonsClient {
      */
     async getFFZChannel(channel: string): Promise<FFZChannel | undefined> {
         const channelId = await this.getUserId(channel);
-        if (channelId == undefined) {
+        if (channelId === undefined) {
             throw new Error(`Unknown twitch channel: ${channel}`);
         }
         const response = await (await fetch(`https://api.frankerfacez.com/v1/room/id/${channelId}`)).json();
-        if (response.error != undefined) {
-            if (response.message == "No such room") {
+        if (response.error !== undefined) {
+            if (response.message === "No such room") {
                 // The user has no room at FFZ (probably never logged in there)
                 return undefined;
             } else {
@@ -75,7 +75,7 @@ export class TwitchAddonsClient {
         const bttvGlobal = includeGlobal ? await this.getBetterTTVGlobalEmotes() : undefined;
         const ffzGlobal = includeGlobal ? await this.getFFZGlobalEmotes() : undefined;
         const ffzGlobalSets: FFZEmoteSet[] = [];
-        if (ffzGlobal != undefined) {
+        if (ffzGlobal !== undefined) {
             for (const set of ffzGlobal.default_sets) {
                 if (set.toString() in ffzGlobal.sets) {
                     ffzGlobalSets.push(ffzGlobal.sets[set.toString()]);
@@ -83,10 +83,10 @@ export class TwitchAddonsClient {
             }
         }
         return {
-            bttvChannel: bttv == undefined ? [] : bttv.channelEmotes,
-            bttvShared: bttv == undefined ? [] : bttv.sharedEmotes,
-            bttvGlobal: bttvGlobal == undefined ? [] : bttvGlobal,
-            ffz: ffz == undefined ? [] : Object.values(ffz.sets),
+            bttvChannel: bttv === undefined ? [] : bttv.channelEmotes,
+            bttvShared: bttv === undefined ? [] : bttv.sharedEmotes,
+            bttvGlobal: bttvGlobal === undefined ? [] : bttvGlobal,
+            ffz: ffz === undefined ? [] : Object.values(ffz.sets),
             ffzGlobal: ffzGlobalSets,
         };
     }
@@ -129,37 +129,37 @@ export class TwitchAddonsClient {
         resolution: EmoteResolution,
     ): Promise<string | undefined> {
         // BTTV has resolutions 1, 2 and 3, ffz and twitch use 1, 2, and 4
-        const bttvResolution = resolution == 4 ? "3" : resolution.toString();
+        const bttvResolution = resolution === 4 ? "3" : resolution.toString();
         for (const entry of emotes.bttvChannel) {
-            if (entry.code == emote) {
+            if (entry.code === emote) {
                 return `https://cdn.betterttv.net/emote/${entry.id}/${bttvResolution}x.${entry.imageType}`;
             }
         }
         for (const entry of emotes.bttvShared) {
-            if (entry.code == emote) {
+            if (entry.code === emote) {
                 return `https://cdn.betterttv.net/emote/${entry.id}/${bttvResolution}x.${entry.imageType}`;
             }
         }
         for (const set of emotes.ffz) {
             for (const entry of set.emoticons) {
-                if (entry.name == emote) {
+                if (entry.name === emote) {
                     const url: FFZUrl | undefined = TwitchAddonsClient.getFFZUrl(entry.urls, resolution);
-                    if (url != undefined) {
+                    if (url !== undefined) {
                         return this.getURL(url);
                     }
                 }
             }
         }
         for (const entry of emotes.bttvGlobal) {
-            if (entry.code == emote) {
+            if (entry.code === emote) {
                 return `https://cdn.betterttv.net/emote/${entry.id}/${bttvResolution}x.${entry.imageType}`;
             }
         }
         for (const set of emotes.ffzGlobal) {
             for (const entry of set.emoticons) {
-                if (entry.name == emote) {
+                if (entry.name === emote) {
                     const url: FFZUrl | undefined = TwitchAddonsClient.getFFZUrl(entry.urls, resolution);
-                    if (url != undefined) {
+                    if (url !== undefined) {
                         return this.getURL(url);
                     }
                 }

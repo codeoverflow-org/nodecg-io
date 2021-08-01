@@ -34,6 +34,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 -   [x] Serial Port (Arduino)
 -   [x] Slack WebAPI
 -   [x] Spotify
+-   [x] SQL (using [knex](https://knexjs.org/))
 -   [x] Elgato Stream Deck
 -   [x] StreamElements
 -   [x] Telegram
