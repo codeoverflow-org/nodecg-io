@@ -27,7 +27,7 @@ class SQLService extends ServiceBundle<SQLConfig, Knex> {
             ) {
                 return error("Invalid config. Either host, user, password or database is missing.");
             }
-        } else if (config.client == "sqlite3" && !config.connection.filename) {
+        } else if (config.client === "sqlite3" && !config.connection.filename) {
             return error("Invalid config. Filename is missing.");
         }
 
