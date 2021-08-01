@@ -1,7 +1,7 @@
 {
     "name": "nodecg-io-sql",
     "version": "0.2.0",
-    "description": "SQL service based on knex.js. Per default used together with mysql. Different clients are also supported but have to be installed separately.",
+    "description": "SQL service based on knex.js. Different clients like mysql are supported but have to be installed separately.",
     "homepage": "https://nodecg.io/RELEASE/samples/sql",
     "author": {
         "name": "CodeOverflow team",
@@ -42,7 +42,6 @@
     },
     "dependencies": {
         "knex": "^0.95.6",
-        "mysql": "^2.18.1",
         "nodecg-io-core": "^0.2.0"
     }
 }

@@ -15,12 +15,10 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class SQLService extends ServiceBundle<SQLConfig, Knex> {
-    private knexInstance: Knex;
-
     async validateConfig(config: SQLConfig): Promise<Result<void>> {
         // No way to validate without creating the client, thus only statically validating the configs
 
-        if (config.client == "mysql" || config.client == "pg") {
+        if (config.client === "mysql" || config.client === "pg") {
             if (
                 !config.connection.host ||
                 !config.connection.user ||
@@ -37,9 +35,9 @@ class SQLService extends ServiceBundle<SQLConfig, Knex> {
     }
 
     async createClient(config: SQLConfig): Promise<Result<Knex>> {
-        this.knexInstance = knex(config);
+        const knexInstance = knex(config);
         this.nodecg.log.info("Successfully created sql client.");
-        return success(this.knexInstance);
+        return success(knexInstance);
     }
 
     stopClient(client: Knex): void {
