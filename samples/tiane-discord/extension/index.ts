@@ -25,8 +25,8 @@ module.exports = function (nodecg: NodeCG) {
         nodecg.log.info("Discord client has been updated, adding handlers for messages.");
         myChannel = (await client.channels.fetch(discordChannel)) as TextChannel;
         client.on("message", (msg) => {
-            if (myTiane != null && myChannel != null && myDiscord != null) {
-                if (msg.channel.id == myChannel.id && msg.author.id != myDiscord.user?.id) {
+            if (myTiane !== null && myChannel !== null && myDiscord !== null) {
+                if (msg.channel.id === myChannel.id && msg.author.id !== myDiscord.user?.id) {
                     const text = msg.content;
                     const user = msg.author.username;
                     userMap[user] = `<@!${msg.author.id}>`;
@@ -48,8 +48,8 @@ module.exports = function (nodecg: NodeCG) {
     tiane?.onAvailable((client) => {
         nodecg.log.info("Tiane client has been updated, adding handlers for messages.");
         client.onsay(tianeRoom, (text, user) => {
-            if (myChannel != null && myDiscord != null) {
-                if (user == null || !(user in userMap)) {
+            if (myChannel !== null && myDiscord !== null) {
+                if (user === null || !(user in userMap)) {
                     myChannel.send({
                         content: text,
                     });

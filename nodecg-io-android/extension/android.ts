@@ -50,7 +50,7 @@ export class Android {
         }
 
         this.server = http.createServer(async (req, res) => {
-            if (req.method?.toUpperCase() == "POST" && "nodecg-io-message-id" in req.headers) {
+            if (req.method?.toUpperCase() === "POST" && "nodecg-io-message-id" in req.headers) {
                 const idStr = req.headers["nodecg-io-message-id"];
                 if (idStr !== undefined && (typeof idStr === "string" || idStr instanceof String)) {
                     const id = parseInt(idStr as string);
@@ -261,7 +261,7 @@ export class Android {
     }
 
     equals(other: Android): boolean {
-        return this == other;
+        return this === other;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -449,7 +449,7 @@ export class VolumeStream {
     }
 
     equals(other: VolumeStream): boolean {
-        return this.android.equals(other.android) && this.channel == other.channel;
+        return this.android.equals(other.android) && this.channel === other.channel;
     }
 }
 
@@ -614,11 +614,11 @@ export class Package {
     async getUsageStats(time: UsageStatsTime): Promise<UsageStats | undefined> {
         const result = await this.android.rawRequest("get_usage_statistics", {
             package: this.id,
-            start_date: time.start == undefined ? undefined : time.start.getDate(),
-            end_date: time.end == undefined ? undefined : time.end.getDate(),
+            start_date: time.start === undefined ? undefined : time.start.getDate(),
+            end_date: time.end === undefined ? undefined : time.end.getDate(),
         });
         const stats = result.stats;
-        if (stats != undefined) {
+        if (stats !== undefined) {
             return {
                 package: stats.package,
                 start: new Date(stats.start),
@@ -634,7 +634,7 @@ export class Package {
     }
 
     equals(other: Package): boolean {
-        return this.android.equals(other.android) && this.id == other.id;
+        return this.android.equals(other.android) && this.id === other.id;
     }
 }
 
@@ -670,7 +670,7 @@ export class Activity {
     }
 
     equals(other: Activity): boolean {
-        return this.pkg.equals(other.pkg) && this.id == other.id;
+        return this.pkg.equals(other.pkg) && this.id === other.id;
     }
 }
 
@@ -802,7 +802,7 @@ export class Subscription {
     }
 
     equals(other: Subscription): boolean {
-        return this.android.equals(other.android) && this.id == other.id;
+        return this.android.equals(other.android) && this.id === other.id;
     }
 }
 
@@ -1128,7 +1128,7 @@ export class TelephonyManager {
             "airplane_mode_on",
             enabled ? "1" : "0",
         ]);
-        if (result != 0) {
+        if (result !== 0) {
             throw new Error(`Could not change airplane mode state: failed to change settings: ${result}`);
         }
     }
@@ -1190,7 +1190,7 @@ export class Telephony implements SmsResolvable {
     }
 
     equals(other: Telephony): boolean {
-        return this.manager.equals(other.manager) && this.id == other.id;
+        return this.manager.equals(other.manager) && this.id === other.id;
     }
 }
 
@@ -1308,9 +1308,9 @@ export class SmsManager {
                 text: text,
             },
             (data) => {
-                if ((data as { type: string }).type == "sent" && sent != undefined) {
+                if ((data as { type: string }).type === "sent" && sent !== undefined) {
                     sent((data as { code: SmsResult }).code);
-                } else if ((data as { type: string }).type == "delivered" && delivered != undefined) {
+                } else if ((data as { type: string }).type === "delivered" && delivered !== undefined) {
                     delivered();
                 }
             },
@@ -1323,8 +1323,8 @@ export class SmsManager {
         method: string,
         factory: (data: Record<string, unknown>) => T,
     ): Promise<Array<T>> {
-        const provider = filter == undefined ? "everything" : filter.sms_provider;
-        const filter_data = filter == undefined ? {} : filter.sms_resolve_data;
+        const provider = filter === undefined ? "everything" : filter.sms_provider;
+        const filter_data = filter === undefined ? {} : filter.sms_resolve_data;
         const result = await this.android.rawRequest(method, {
             sms_category: category,
             sms_filter: provider,
@@ -1374,8 +1374,8 @@ export abstract class AbstractMessage {
         this.telephony_id = msg.telephony_id;
         this.subject = msg.subject;
         this.text = msg.text;
-        this.received = msg.received == undefined ? undefined : new Date(msg.received);
-        this.sent = msg.sent == undefined ? undefined : new Date(msg.sent);
+        this.received = msg.received === undefined ? undefined : new Date(msg.received);
+        this.sent = msg.sent === undefined ? undefined : new Date(msg.sent);
         this.read = msg.read;
         this.seen = msg.seen;
     }
@@ -1498,7 +1498,7 @@ export class Mms extends AbstractMessage {
         this.textOnly = msg.textOnly;
         this.contentType = msg.contentType;
         this.contentLocation = msg.contentLocation;
-        this.expiry = msg.expiry == undefined ? undefined : new Date(msg.expiry);
+        this.expiry = msg.expiry === undefined ? undefined : new Date(msg.expiry);
     }
 
     readonly messageType: MessageType = "mms";
@@ -1612,7 +1612,7 @@ export class Recipient {
     }
 
     equals(other: Recipient): boolean {
-        return this.android.equals(other.android) && this.id == other.id;
+        return this.android.equals(other.android) && this.id === other.id;
     }
 }
 
@@ -1716,7 +1716,7 @@ export class ContactManager {
             value: value,
         });
         const contactId: [number, string] = result.contact_id;
-        if (contactId == undefined) {
+        if (contactId === undefined) {
             return undefined;
         } else {
             return new Contact(this.android, contactId[0], contactId[1]);
@@ -1781,7 +1781,7 @@ export class Contact {
      */
     async getName(): Promise<ContactNameInfo> {
         const result = await this.getData("name");
-        if (result == undefined) {
+        if (result === undefined) {
             return {
                 display_name: "",
                 style: "unset",
@@ -1805,7 +1805,7 @@ export class Contact {
     async getData(dataId: "notes", account?: ContactDataAccount): Promise<ContactNotes | undefined>;
     async getData(dataId: "address", account?: ContactDataAccount): Promise<Array<ContactDataAddress>>;
     async getData(dataId: ContactDataId, account?: ContactDataAccount): Promise<unknown> {
-        const acc = account == undefined ? ContactManager.PHONE : account;
+        const acc = account === undefined ? ContactManager.PHONE : account;
         const result = await this.android.rawRequest("get_contact_data", {
             id: this.id,
             dataId: dataId,
@@ -1817,7 +1817,7 @@ export class Contact {
     }
 
     equals(other: Contact): boolean {
-        return this.android.equals(other.android) && this.id == other.id;
+        return this.android.equals(other.android) && this.id === other.id;
     }
 }
 
@@ -2161,7 +2161,7 @@ export class WifiManager {
             // that is allowed every 30 minutes.
             try {
                 // settingValue = 0 means the setting was disabled before so we just leave it disabled.
-                if (wifiThrottleEnabled != "null" && wifiThrottleEnabled != "0") {
+                if (wifiThrottleEnabled !== "null" && wifiThrottleEnabled !== "0") {
                     await this.android.rawAdb([
                         "shell",
                         "settings",
@@ -2214,7 +2214,7 @@ export class WifiManager {
      */
     async setEnabled(enabled: boolean): Promise<void> {
         const result = await this.android.rawAdbExitCode(["shell", "svc", "wifi", enabled ? "enable" : "disable"]);
-        if (result != 0) {
+        if (result !== 0) {
             throw new Error(`Could not change wifi state: scv returned exit code ${result}`);
         }
     }

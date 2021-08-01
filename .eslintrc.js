@@ -11,7 +11,7 @@ module.exports = {
     // Don't traverse fs up to root.
     // This caused problems when nodecg-io was cloned into a NodeCG installation as it then
     // tried to lint nodecg-io with that config.
-    root: true, 
+    root: true,
     rules: {
         // Use experimental version of unused vars, because the stable one
         // even warns about unused vars with an underscore before them, which is the typescript notation
@@ -24,5 +24,8 @@ module.exports = {
 
         // Instead of console the integrated nodecg logger should be used.
         "no-console": ["warn"],
+
+        // Enforce triple equals for comparisons
+        "eqeqeq": ["warn"]
     },
 };
