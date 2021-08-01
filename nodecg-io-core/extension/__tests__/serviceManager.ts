@@ -1,15 +1,5 @@
 import { ServiceManager } from "../serviceManager";
-import { MockNodeCG } from "./mocks";
-import { Service } from "../service";
-
-const testService: Service<never, never> = {
-    serviceType: "test",
-    validateConfig: jest.fn(),
-    createClient: jest.fn(),
-    stopClient: jest.fn(),
-    reCreateClientToRemoveHandlers: false,
-    requiresNoConfig: false,
-};
+import { MockNodeCG, testService } from "./mocks";
 
 describe("ServiceManager", () => {
     test("should start with no services", () => {

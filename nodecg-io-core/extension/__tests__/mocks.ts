@@ -1,4 +1,4 @@
-import { ObjectMap } from "../service";
+import { ObjectMap, Service, ServiceInstance } from "../service";
 import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg/types/server";
 import { EventEmitter } from "events";
 
@@ -117,3 +117,22 @@ class MockReplicant<V> extends EventEmitter implements Replicant<V> {
         return true;
     }
 }
+
+// Test objects
+
+export const testBundle = "testBundle";
+
+export const testService: Service<string, () => string> = {
+    serviceType: "test",
+    validateConfig: jest.fn(),
+    createClient: jest.fn(),
+    stopClient: jest.fn(),
+    reCreateClientToRemoveHandlers: false,
+    requiresNoConfig: false,
+};
+
+export const testServiceInstance: ServiceInstance<string, () => string> = {
+    serviceType: testService.serviceType,
+    config: "hello world",
+    client: () => "hello world",
+};
