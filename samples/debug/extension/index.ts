@@ -22,6 +22,14 @@ module.exports = function (nodecg: NodeCG) {
             nodecg.log.info(`Received in 'onRange0to100' with value: ${value}`);
         });
 
+        debug.onRange0to1((value) => {
+            nodecg.log.info(`Received in 'onRange0to1' with value: ${value}`);
+        });
+
+        debug.onRangeM1to1((value) => {
+            nodecg.log.info(`Received in 'onRangeM1to1' with value: ${value}`);
+        });
+
         debug.onColor((value) => {
             nodecg.log.info(`Received in 'onColor' with [red,green,blue]: [${value.red},${value.green},${value.blue}]`);
         });
