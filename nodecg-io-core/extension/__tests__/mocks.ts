@@ -120,15 +120,27 @@ class MockReplicant<V> extends EventEmitter implements Replicant<V> {
 
 // Test objects
 
+// These variables all contain a string of their name and are mainly
+// used to ensure that there is no typo in them because the compiler will complain
+// if you mistype them and there is no variable with the exact name.
 export const testBundle = "testBundle";
+export const testBundle2 = "testBundle2";
+export const testInstance = "testInstance";
+export const testInstance2 = "testInstance2";
 
-export const testService: Service<string, () => string> = {
+export const testService = {
     serviceType: "test",
     validateConfig: jest.fn(),
     createClient: jest.fn(),
     stopClient: jest.fn(),
     reCreateClientToRemoveHandlers: false,
     requiresNoConfig: false,
+    defaultConfig: "Default config text",
+    // Very basic schema that only checks that the config is a string
+    schema: {
+        $schema: "http://json-schema.org/draft-07/schema#",
+        type: "string",
+    },
 };
 
 export const testServiceInstance: ServiceInstance<string, () => string> = {

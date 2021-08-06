@@ -103,7 +103,7 @@ export class InstanceManager extends EventEmitter {
             if (svc.failed) {
                 this.nodecg.log.error(`Failed to stop client: ${svc.errorMessage}`);
             } else {
-                this.nodecg.log.info(`Sucessfully stopped client of service instance "${instanceName}".`);
+                this.nodecg.log.info(`Successfully stopped client of service instance "${instanceName}".`);
                 try {
                     svc.result.stopClient(instance.client);
                 } catch (e) {
@@ -203,7 +203,7 @@ export class InstanceManager extends EventEmitter {
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
      * @param service the service of the service instance, needed to stop old client
      */
-    private async updateInstanceClient<R, C>(
+    async updateInstanceClient<R, C>(
         inst: ServiceInstance<R, C>,
         instanceName: string,
         service: Service<R, C>,
@@ -257,7 +257,7 @@ export class InstanceManager extends EventEmitter {
 
     /**
      * Removes all handlers from the service client of the instance and lets bundles readd their handlers.
-     * @param instanceName the name of the instance which handlers should be re-registred
+     * @param instanceName the name of the instance which handlers should be re-registered
      */
     private reregisterHandlersOfInstance(instanceName?: string): void {
         if (!instanceName) return;
@@ -271,7 +271,7 @@ export class InstanceManager extends EventEmitter {
         const svc = this.services.getService(inst.serviceType);
         if (svc.failed) {
             this.nodecg.log.error(
-                `Can't reregister handlers of instance "${instanceName}": can't get service: ${svc.errorMessage}`,
+                `Can't re-register handlers of instance "${instanceName}": can't get service: ${svc.errorMessage}`,
             );
             return;
         }

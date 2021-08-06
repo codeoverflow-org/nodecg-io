@@ -66,7 +66,7 @@ export class ServiceProvider<C> {
  *                                               or undefined if the core wasn't loaded or the service type doesn't exist.
  */
 export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined {
-    const core = (nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
+    const core = nodecg.extensions["nodecg-io-core"] as unknown as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error(
             `nodecg-io-core isn't loaded! Can't require ${serviceType} service for bundle ${nodecg.bundleName}.`,

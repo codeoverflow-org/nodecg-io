@@ -69,8 +69,9 @@ export function renderInstanceSelector(): void {
 
     // Selecting option of current set instance
     const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
-    const currentInstance = config.data.bundles[bundle]?.find((dep) => dep.serviceType === serviceType)
-        ?.serviceInstance;
+    const currentInstance = config.data.bundles[bundle]?.find(
+        (dep) => dep.serviceType === serviceType,
+    )?.serviceInstance;
     let index = 0;
     for (let i = 0; i < selectBundleInstance.options.length; i++) {
         if (selectBundleInstance.options.item(i)?.value === currentInstance) {
