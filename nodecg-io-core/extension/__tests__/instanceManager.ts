@@ -1,7 +1,8 @@
 import { BundleManager } from "../bundleManager";
 import { InstanceManager } from "../instanceManager";
+import { ServiceInstance } from "../service";
 import { ServiceManager } from "../serviceManager";
-import { emptySuccess, error } from "../utils/result";
+import { emptySuccess, error, success } from "../utils/result";
 import {
     MockNodeCG,
     testBundle,
@@ -15,14 +16,22 @@ import {
 describe("InstanceManager", () => {
     const nodecg = new MockNodeCG();
 
+    const noConfigService = {
+        ...testService,
+        serviceType: "noConfigTest",
+        createClient: jest.fn(),
+        requiresNoConfig: true,
+    };
+
     const serviceManager = new ServiceManager(nodecg);
     serviceManager.registerService(testService);
+    serviceManager.registerService(noConfigService);
 
     const bundleManager = new BundleManager(nodecg);
     // We have over 10 tests which each create a new InstanceManager which adds a listener
     // so we need to increase the limit to prevent a EventEmitter leak warning by node.js.
-    bundleManager.setMaxListeners(20);
-    bundleManager.registerServiceDependency(testBundle, testService);
+    bundleManager.setMaxListeners(30);
+    const testBundleProvider = bundleManager.registerServiceDependency(testBundle, testService);
     bundleManager.registerServiceDependency(testBundle2, testService);
 
     let instanceManager: InstanceManager;
@@ -50,8 +59,11 @@ describe("InstanceManager", () => {
             expect(instanceManager.getServiceInstance(testInstance)?.config).toBe(testService.defaultConfig);
         });
 
-        // TODO: implement this
-        test.todo("should create a client if service requires no configuration");
+        test("should create a client if service requires no configuration", () => {
+            noConfigService.createClient.mockReset();
+            instanceManager.createServiceInstance(noConfigService.serviceType, testInstance);
+            expect(noConfigService.createClient).toHaveBeenCalledTimes(1);
+        });
 
         test("should error if name is empty", () => {
             const res = instanceManager.createServiceInstance(testService.serviceType, "");
@@ -246,6 +258,95 @@ describe("InstanceManager", () => {
         });
     });
 
-    // TODO: add tests for updateInstanceClient
+    describe("updateInstanceClient", () => {
+        let inst: ServiceInstance<string, () => string>;
+
+        beforeEach(() => {
+            testService.createClient.mockImplementation(async (cfg) => success(() => cfg));
+            instanceManager.createServiceInstance(testService.serviceType, testInstance);
+            inst = instanceManager.getServiceInstance(testInstance) as ServiceInstance<string, () => string>;
+        });
+
+        afterEach(() => {
+            testService.createClient.mockReset();
+            testService.stopClient.mockReset();
+        });
+
+        test("should create client if config is defined", async () => {
+            const res = await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            expect(res.failed).toBe(false);
+            expect(inst.client).toBeDefined();
+            expect(inst.client?.()).toBe(inst.config);
+            expect(testService.createClient).toHaveBeenCalledTimes(1);
+            expect(testService.createClient).toHaveBeenCalledWith(inst.config);
+        });
+
+        test("should create client if no config is required, even if config is undefined", async () => {
+            instanceManager.createServiceInstance(noConfigService.serviceType, "noConfigInst");
+            const inst = instanceManager.getServiceInstance("noConfigInst") as ServiceInstance<string, () => string>;
+
+            noConfigService.createClient.mockReset();
+            noConfigService.createClient.mockImplementation(async () => success(() => "hello, no config provided"));
+            inst.config = undefined;
+            const res = await instanceManager.updateInstanceClient(inst, "noConfigInst", noConfigService);
+
+            expect(res.failed).toBe(false);
+            expect(noConfigService.createClient).toHaveBeenCalledTimes(1);
+        });
+
+        test("should not create client if config is undefined", async () => {
+            inst.config = undefined;
+            const res = await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            expect(res.failed).toBe(false);
+            expect(inst.client).toBeUndefined();
+            expect(testService.createClient).not.toHaveBeenCalled();
+        });
+
+        test("should set client to undefined if createClient() errors", async () => {
+            const errorMessage = "some error message";
+            testService.createClient.mockImplementation(async () => error(errorMessage));
+            const res = await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            expect(res.failed).toBe(true);
+            if (res.failed) {
+                expect(res.errorMessage).toContain("error while creating a client");
+                expect(res.errorMessage).toContain(errorMessage);
+            }
+            expect(inst.client).toBeUndefined();
+        });
+
+        test("should trigger bundle callbacks with new client", async () => {
+            bundleManager.setServiceDependency(testBundle, testInstance, inst);
+
+            const mockCallback = jest.fn();
+            testBundleProvider?.onAvailable(mockCallback);
+
+            const newMessage = "hello, I am a message from the newly created client";
+            inst.config = newMessage;
+            await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            expect(mockCallback).toHaveBeenCalledTimes(1);
+            expect(mockCallback.mock.calls[0][0]?.()).toBe(newMessage); // Make sure new client ond not an old one was passed
+        });
+
+        test("should stop old client of the service instance, if one exists", async () => {
+            // Create the initial client with the default config
+            await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            // Change config and re-update client
+            inst.config = "some other text";
+            const res = await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            expect(res.failed).toBe(false);
+            expect(inst.client?.()).toBe(inst.config); // Current client should stem from new config
+
+            // Old client that still refers to old config has been stopped using stopClient() of the service
+            expect(testService.stopClient).toHaveBeenCalledTimes(1);
+            expect(testService.stopClient.mock.calls[0][0]?.()).toBe(testService.defaultConfig);
+        });
+    });
+
     // TODO: add tests for reregisterHandlersOfInstance?
 });
