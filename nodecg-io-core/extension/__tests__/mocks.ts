@@ -1,4 +1,4 @@
-import { ObjectMap, Service, ServiceInstance } from "../service";
+import { ObjectMap, ServiceInstance } from "../service";
 import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg/types/server";
 import { EventEmitter } from "events";
 
