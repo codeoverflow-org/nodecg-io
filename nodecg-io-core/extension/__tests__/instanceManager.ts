@@ -28,9 +28,6 @@ describe("InstanceManager", () => {
     serviceManager.registerService(noConfigService);
 
     const bundleManager = new BundleManager(nodecg);
-    // We have over 10 tests which each create a new InstanceManager which adds a listener
-    // so we need to increase the limit to prevent a EventEmitter leak warning by node.js.
-    bundleManager.setMaxListeners(30);
     const testBundleProvider = bundleManager.registerServiceDependency(testBundle, testService);
     bundleManager.registerServiceDependency(testBundle2, testService);
 
@@ -38,9 +35,13 @@ describe("InstanceManager", () => {
     const changeCb = jest.fn();
 
     beforeEach(() => {
-        changeCb.mockReset();
         instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager);
         instanceManager.on("change", changeCb);
+    });
+
+    afterEach(() => {
+        changeCb.mockReset();
+        bundleManager.removeAllListeners(); // Removes reregisterInstance callback that BundleManager adds in its constructor
     });
 
     describe("createServiceInstance", () => {
@@ -348,5 +349,86 @@ describe("InstanceManager", () => {
         });
     });
 
-    // TODO: add tests for reregisterHandlersOfInstance?
+    describe("reregisterHandlersOfInstance", () => {
+        beforeEach(async () => {
+            instanceManager.createServiceInstance(testService.serviceType, testInstance);
+            testService.createClient.mockReset();
+            testService.createClient.mockImplementation((cfg) => success(() => cfg));
+            testService.removeHandlers.mockReset();
+        });
+
+        test("should do nothing if passing undefined as instance name", () => {
+            nodecg.log.error.mockReset();
+            bundleManager.emit("reregisterInstance", undefined);
+            expect(nodecg.log.error).not.toHaveBeenCalled(); // Ensure it didn't log a error because passing undefined must be supported
+        });
+
+        test("should error if a name of a non-existent instance was passed", () => {
+            nodecg.log.error.mockReset();
+            bundleManager.emit("reregisterInstance", "nonExistentInstance");
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain("instance not found");
+        });
+
+        test("should re-create client if reCreateClientToRemoveHandlers is set", () => {
+            const svc = {
+                ...testService,
+                serviceType: "reCreateClientToRemoveHandlers",
+                reCreateClientToRemoveHandlers: true,
+            };
+            serviceManager.registerService(svc);
+            const instName = `${svc.serviceType}Inst`;
+            instanceManager.createServiceInstance(svc.serviceType, instName);
+            const inst = instanceManager.getServiceInstance(instName);
+            if (!inst) throw new Error("instance was not saved");
+
+            bundleManager.emit("reregisterInstance", instName);
+
+            expect(svc.removeHandlers).not.toHaveBeenCalled();
+            expect(svc.createClient).toHaveBeenCalledTimes(1);
+            expect(svc.createClient).toHaveBeenCalledWith(inst.config);
+        });
+
+        test("should do nothing if removeHandlers is not implemented by the service", () => {
+            const svc = {
+                ...testService,
+                serviceType: "noRemoveHandlers",
+                removeHandlers: undefined,
+            };
+            serviceManager.registerService(svc);
+            const instName = `${svc.serviceType}Inst`;
+            instanceManager.createServiceInstance(svc.serviceType, instName);
+            const inst = instanceManager.getServiceInstance(instName);
+            if (!inst) throw new Error("instance was not saved");
+
+            const provider = bundleManager.registerServiceDependency(testBundle, svc);
+            bundleManager.setServiceDependency(testBundle, "noRemoveHandlersInst", inst);
+            const availabilityCb = jest.fn();
+            provider?.onAvailable(availabilityCb);
+
+            bundleManager.emit("reregisterInstance", instName);
+
+            expect(svc.createClient).not.toHaveBeenCalled();
+            expect(availabilityCb).not.toHaveBeenCalled();
+        });
+
+        test("should call removeHandlers() with client and re-add handlers by triggering bundle callbacks", () => {
+            const inst = instanceManager.getServiceInstance(testInstance);
+            if (!inst) throw new Error("testInstance not found");
+            inst.client = testServiceInstance.client;
+
+            bundleManager.setServiceDependency(testBundle, testInstance, inst);
+            const availabilityCb = jest.fn();
+            testBundleProvider?.onAvailable(availabilityCb);
+
+            testService.removeHandlers.mockReset();
+            bundleManager.emit("reregisterInstance", testInstance);
+
+            expect(testService.removeHandlers).toHaveBeenCalledTimes(1);
+            expect(testService.removeHandlers).toHaveBeenCalledWith(inst.client);
+            expect(testService.createClient).not.toHaveBeenCalled();
+            expect(availabilityCb).toHaveBeenCalledTimes(1);
+            expect(availabilityCb).toHaveBeenCalledWith(inst.client);
+        });
+    });
 });

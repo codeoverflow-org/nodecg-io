@@ -133,6 +133,7 @@ export const testService = {
     validateConfig: jest.fn(),
     createClient: jest.fn(),
     stopClient: jest.fn(),
+    removeHandlers: jest.fn(),
     reCreateClientToRemoveHandlers: false,
     requiresNoConfig: false,
     defaultConfig: "Default config text",
