@@ -220,7 +220,7 @@ export class PersistenceManager {
             return;
         }
 
-        // Organise all data that will be encrypted into a single object.
+        // Organize all data that will be encrypted into a single object.
         const data: PersistentData = {
             instances: this.getServiceInstances(),
             bundleDependencies: this.bundles.getBundleDependencies(),
