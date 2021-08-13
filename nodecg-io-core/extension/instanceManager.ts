@@ -214,15 +214,15 @@ export class InstanceManager extends EventEmitter {
             // No config has been set, therefore the service isn't ready and we can't create a client.
             inst.client = undefined;
         } else {
-            // Create a client using the new config
-            const service = this.services.getService(inst.serviceType);
-            if (service.failed) {
-                inst.client = undefined;
-                return service;
-            }
-
             try {
-                const client = await service.result.createClient(inst.config);
+                // Create a client using the new config
+
+                // If the service requires a config we make the undefined check above which ensures that undefined doesn't
+                // get passed to the createClient function of the service.
+                // If the service does not require a config we can safely ignore the undefined error because in that case
+                // passing undefined is the intended behavior.
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const client = await service.createClient(inst.config!);
 
                 // Check if a error happened while creating the client
                 if (client.failed) {
