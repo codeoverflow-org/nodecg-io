@@ -31,29 +31,77 @@ describe("PersistenceManager", () => {
         persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
     });
 
-    describe("load", () => {
-        /**
-         * Creates a basic config and encrypts it. Used to check whether load decrypts and more importantly
-         * restores the same configuration again.
-         */
-        function defaultEncryptedConfig() {
-            const data: PersistentData = {
-                bundleDependencies: {
-                    [testBundle]: [
-                        {
-                            serviceType: testService.serviceType,
-                            serviceInstance: testInstance,
-                            provider: new ServiceProvider(),
-                        },
-                    ],
-                },
-                instances: {
-                    [testInstance]: testServiceInstance,
-                },
-            };
-            return crypto.AES.encrypt(JSON.stringify(data), validPassword).toString();
-        }
+    /**
+     * Creates a basic config and encrypts it. Used to check whether load decrypts and more importantly
+     * restores the same configuration again.
+     */
+    function defaultEncryptedConfig() {
+        const data: PersistentData = {
+            bundleDependencies: {
+                [testBundle]: [
+                    {
+                        serviceType: testService.serviceType,
+                        serviceInstance: testInstance,
+                        provider: new ServiceProvider(),
+                    },
+                ],
+            },
+            instances: {
+                [testInstance]: testServiceInstance,
+            },
+        };
+        return crypto.AES.encrypt(JSON.stringify(data), validPassword).toString();
+    }
 
+    describe("checkPassword", () => {
+        test("should return false if not loaded", () => {
+            expect(persistenceManager.checkPassword(validPassword)).toBe(false);
+        });
+
+        test("should return false if loaded but password is wrong", async () => {
+            await persistenceManager.load(validPassword);
+            expect(persistenceManager.checkPassword(invalidPassword)).toBe(false);
+        });
+
+        test("should return true if loaded and password is correct", async () => {
+            await persistenceManager.load(validPassword);
+            expect(persistenceManager.checkPassword(validPassword)).toBe(true);
+        });
+    });
+
+    describe("isLoaded", () => {
+        test("should return false if not load was not called before", async () => {
+            expect(persistenceManager.isLoaded()).toBe(false);
+        });
+
+        test("should return false if load was called but failed", async () => {
+            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
+            const res = await persistenceManager.load(invalidPassword); // Will fail because the password is invalid
+            expect(res.failed).toBe(true);
+            expect(persistenceManager.isLoaded()).toBe(false);
+        });
+
+        test("should return true if load was called and succeeded", async () => {
+            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
+            const res = await persistenceManager.load(validPassword); // password is correct, should work
+            expect(res.failed).toBe(false);
+            expect(persistenceManager.isLoaded()).toBe(true);
+        });
+    });
+
+    describe("isFirstStartup", () => {
+        test("should return true if no encrypted config exists", () => {
+            encryptedDataReplicant.value.cipherText = undefined; // no config = first startup
+            expect(persistenceManager.isFirstStartup()).toBe(true);
+        });
+
+        test("should return false if an encrypted config exists", () => {
+            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig(); // config = not a first startup
+            expect(persistenceManager.isFirstStartup()).toBe(false);
+        });
+    });
+
+    describe("load", () => {
         test("should error if called after configuration already has been loaded", async () => {
             const res1 = await persistenceManager.load(validPassword);
             expect(res1.failed).toBe(false);
@@ -140,6 +188,10 @@ describe("PersistenceManager", () => {
         });
     });
 
+    describe("automatic login", () => {
+        // TODO: test automatic login
+    });
+
     test("should automatically save if BundleManager or InstanceManager emit a change event", async () => {
         await persistenceManager.load(validPassword); // Set password so that we can save stuff
 
@@ -151,10 +203,4 @@ describe("PersistenceManager", () => {
         instanceManager.emit("change");
         expect(encryptedDataReplicant.value.cipherText).toBeDefined();
     });
-
-    describe("automatic login", () => {
-        // TODO: test automatic login
-    });
-
-    // TODO: test isLoaded(), isFirstStartup() and checkPassword()
 });
