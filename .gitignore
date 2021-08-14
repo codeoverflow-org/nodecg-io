@@ -10,6 +10,9 @@ node_modules/
 # generated type definitions
 *.d.ts
 
+# Coverage reports by jest
+coverage
+
 # Dashboard webpack
 nodecg-io-core/dashboard/dist
 !nodecg-io-core/dashboard/webpack.config.js

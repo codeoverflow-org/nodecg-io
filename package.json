@@ -8,6 +8,7 @@
         "build": "lerna run --stream build",
         "test": "jest",
         "watchTest": "jest --watch",
+        "coverage": "jest --coverage",
         "bsb": "npm run bootstrap && npm run build",
         "rebuild": "npm run clean && npm run build",
         "watch": "lerna run --parallel watch",
