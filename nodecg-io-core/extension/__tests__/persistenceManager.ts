@@ -4,6 +4,7 @@ import { InstanceManager } from "../instanceManager";
 import { decryptData, EncryptedData, PersistenceManager, PersistentData } from "../persistenceManager";
 import { ServiceManager } from "../serviceManager";
 import { ServiceProvider } from "../serviceProvider";
+import { emptySuccess, error } from "../utils/result";
 import { MockNodeCG, testBundle, testInstance, testService, testServiceInstance } from "./mocks";
 
 describe("PersistenceManager", () => {
@@ -189,7 +190,88 @@ describe("PersistenceManager", () => {
     });
 
     describe("automatic login", () => {
-        // TODO: test automatic login
+        const nodecgBundleReplicant = nodecg.Replicant("bundles", "nodecg");
+
+        async function triggerAutomaticLogin() {
+            nodecg.log.info.mockReset();
+            nodecg.log.warn.mockReset();
+            nodecg.log.error.mockReset();
+
+            persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
+            persistenceManager.load = jest.fn().mockImplementation(async (password: string) => {
+                if (password === validPassword) return emptySuccess();
+                else return error("password invalid");
+            });
+            nodecgBundleReplicant.value = [nodecg.bundleName];
+        }
+
+        afterEach(() => {
+            nodecg.bundleConfig = {};
+            nodecgBundleReplicant.removeAllListeners();
+        });
+
+        test("should be disabled when not configured in core bundle config", async () => {
+            await triggerAutomaticLogin();
+            expect(persistenceManager.load).not.toHaveBeenCalled();
+            expect(nodecg.log.info).not.toHaveBeenCalled();
+        });
+
+        test("should be disabled when configured but disabled", async () => {
+            nodecg.bundleConfig = {
+                automaticLogin: {
+                    enabled: false,
+                    password: validPassword,
+                },
+            };
+
+            await triggerAutomaticLogin();
+            expect(persistenceManager.load).not.toHaveBeenCalled();
+            // Warning that automatic login is setup.
+            // Users should remove it from the config if not automatic login is permanently not used.
+            expect(nodecg.log.warn).toHaveBeenCalled();
+        });
+
+        test("should be enabled when configured and enabled", async () => {
+            nodecg.bundleConfig = {
+                automaticLogin: {
+                    enabled: true,
+                    password: validPassword,
+                },
+            };
+
+            await triggerAutomaticLogin();
+            expect(persistenceManager.load).toHaveBeenCalled();
+            expect(nodecg.log.info).toHaveBeenCalled();
+            expect(nodecg.log.info.mock.calls[0][0]).toContain("automatically login");
+        });
+
+        test("should log success if loading worked", async () => {
+            nodecg.bundleConfig = {
+                automaticLogin: {
+                    enabled: true,
+                    password: validPassword,
+                },
+            };
+
+            await triggerAutomaticLogin();
+            expect(persistenceManager.load).toHaveBeenCalled();
+            expect(nodecg.log.info).toHaveBeenCalledTimes(2);
+            expect(nodecg.log.info.mock.calls[1][0]).toContain("login successful");
+        });
+
+        test("should log error if loading failed", async () => {
+            nodecg.bundleConfig = {
+                automaticLogin: {
+                    enabled: true,
+                    password: invalidPassword,
+                },
+            };
+
+            await triggerAutomaticLogin();
+            expect(persistenceManager.load).toHaveBeenCalled();
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain("Failed to automatically login");
+        });
     });
 
     test("should automatically save if BundleManager or InstanceManager emit a change event", async () => {

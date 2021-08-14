@@ -285,7 +285,11 @@ export class PersistenceManager {
         const password: string = this.nodecg.bundleConfig.automaticLogin.password;
 
         if (enabled === false) {
-            this.nodecg.log.info("Automatic login is setup but disabled.");
+            // We inform the user that automatic login is setup but not activated because having the ability
+            // to disable it by setting the enabled flag to false is meant for temporary cases.
+            // If automatic login is permanently not used the user should remove the password from the config
+            // to regain the advantages of data-at-rest encryption which are slashed when the password is also stored on disk.
+            this.nodecg.log.warn("Automatic login is setup but disabled.");
             return;
         }
 
