@@ -94,7 +94,7 @@ export class PersistenceManager {
      * If this returns true {{@link load}} will accept any password and use it to encrypt the configuration.
      */
     isFirstStartup(): boolean {
-        return this.encryptedData.value.cipherText !== undefined;
+        return this.encryptedData.value.cipherText === undefined;
     }
 
     /**

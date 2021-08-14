@@ -81,8 +81,8 @@ export async function loadFramework(): Promise<void> {
 async function updateFirstStartupLabel(): Promise<void> {
     const isFirstStartup: boolean = await nodecg.sendMessage("isFirstStartup");
     if (isFirstStartup) {
-        pFirstStartup?.classList.add("hidden");
-    } else {
         pFirstStartup?.classList.remove("hidden");
+    } else {
+        pFirstStartup?.classList.add("hidden");
     }
 }
