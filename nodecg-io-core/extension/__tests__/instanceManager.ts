@@ -98,19 +98,42 @@ describe("InstanceManager", () => {
     });
 
     describe("deleteServiceInstance", () => {
-        test("should delete instance from internal instance list", () => {
+        beforeEach(() => {
             instanceManager.createServiceInstance(testService.serviceType, testInstance);
             changeCb.mockReset(); // Don't track the call caused by service instance creation
+        });
 
+        afterEach(() => {
+            testService.stopClient.mockReset();
+        });
+
+        test("should delete instance from internal instance list", () => {
             expect(instanceManager.deleteServiceInstance(testInstance)).toBe(true);
             expect(instanceManager.getServiceInstance(testInstance)).toBeUndefined();
             expect(instanceManager.getServiceInstances()).toStrictEqual({});
             expect(changeCb).toHaveBeenCalledTimes(1);
         });
 
+        test("should log an error if there was an error when stopping the client", () => {
+            // Set client which needs to exist if we want to have stopClient() called
+            const instance = instanceManager.getServiceInstance(testInstance);
+            if (!instance) throw new Error("instance was not saved");
+            instance.client = testServiceInstance.client;
+
+            // Mock stopClient() to throw a error
+            nodecg.log.error.mockReset();
+            const errorMsg = "client error message";
+            testService.stopClient.mockImplementationOnce(() => {
+                throw new Error(errorMsg);
+            });
+
+            instanceManager.deleteServiceInstance(testInstance);
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain(errorMsg);
+        });
+
         test("should call stopClient() on service if a client exists", () => {
             // Case 1: the instance has no client. No call to stopClient() should happen
-            instanceManager.createServiceInstance(testService.serviceType, testInstance);
             instanceManager.deleteServiceInstance(testInstance);
 
             expect(testService.stopClient).not.toHaveBeenCalled();
@@ -126,8 +149,6 @@ describe("InstanceManager", () => {
 
             expect(testService.stopClient).toHaveBeenCalledTimes(1);
             expect(testService.stopClient).toHaveBeenCalledWith(testServiceInstance.client);
-
-            testService.stopClient.mockReset();
         });
 
         test("should unset all service dependencies that are assigned to this instance", () => {
@@ -136,7 +157,6 @@ describe("InstanceManager", () => {
             // that actually are assigned to this service instance and
             // service dependencies that are assigned to other service instances should
             // not be interfered with.
-            instanceManager.createServiceInstance(testService.serviceType, testInstance);
             instanceManager.createServiceInstance(testService.serviceType, testInstance2);
 
             const instance1 = instanceManager.getServiceInstance(testInstance);
@@ -154,8 +174,8 @@ describe("InstanceManager", () => {
         });
 
         test("should error service instance doesn't exists", () => {
-            // Note that we didn't create testInstance here, unlike in the other tests
-            const result = instanceManager.deleteServiceInstance(testInstance);
+            // Note that we didn't create testInstance2 here
+            const result = instanceManager.deleteServiceInstance(testInstance2);
             expect(result).toBe(false);
             expect(changeCb).not.toHaveBeenCalled();
         });
@@ -271,6 +291,7 @@ describe("InstanceManager", () => {
         afterEach(() => {
             testService.createClient.mockReset();
             testService.stopClient.mockReset();
+            nodecg.log.error.mockReset();
         });
 
         test("should create client if config is defined", async () => {
@@ -347,6 +368,21 @@ describe("InstanceManager", () => {
             expect(testService.stopClient).toHaveBeenCalledTimes(1);
             expect(testService.stopClient.mock.calls[0][0]?.()).toBe(testService.defaultConfig);
         });
+
+        test("should log an error if stopping the old client using stopClient() throws an error", async () => {
+            // Create initial client
+            await instanceManager.updateInstanceClient(inst, testInstance, testService);
+
+            const errorMsg = "client stop error message";
+            testService.stopClient.mockImplementationOnce(() => {
+                throw new Error(errorMsg);
+            });
+
+            // Recreate client, which will result in call to stopClient() with old client
+            await instanceManager.updateInstanceClient(inst, testInstance, testService);
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain(errorMsg);
+        });
     });
 
     describe("reregisterHandlersOfInstance", () => {
@@ -355,16 +391,15 @@ describe("InstanceManager", () => {
             testService.createClient.mockReset();
             testService.createClient.mockImplementation((cfg) => success(() => cfg));
             testService.removeHandlers.mockReset();
+            nodecg.log.error.mockReset();
         });
 
         test("should do nothing if passing undefined as instance name", () => {
-            nodecg.log.error.mockReset();
             bundleManager.emit("reregisterInstance", undefined);
             expect(nodecg.log.error).not.toHaveBeenCalled(); // Ensure it didn't log a error because passing undefined must be supported
         });
 
         test("should error if a name of a non-existent instance was passed", () => {
-            nodecg.log.error.mockReset();
             bundleManager.emit("reregisterInstance", "nonExistentInstance");
             expect(nodecg.log.error).toHaveBeenCalledTimes(1);
             expect(nodecg.log.error.mock.calls[0][0]).toContain("instance not found");
@@ -429,6 +464,21 @@ describe("InstanceManager", () => {
             expect(testService.createClient).not.toHaveBeenCalled();
             expect(availabilityCb).toHaveBeenCalledTimes(1);
             expect(availabilityCb).toHaveBeenCalledWith(inst.client);
+        });
+
+        test("should error if call to removeHandlers() throws an error", () => {
+            const inst = instanceManager.getServiceInstance(testInstance);
+            if (!inst) throw new Error("testInstance not found");
+            inst.client = testServiceInstance.client;
+
+            const errorMsg = "remove handlers error message";
+            testService.removeHandlers.mockImplementationOnce(() => {
+                throw new Error(errorMsg);
+            });
+
+            bundleManager.emit("reregisterInstance", testInstance);
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain(errorMsg);
         });
     });
 });
