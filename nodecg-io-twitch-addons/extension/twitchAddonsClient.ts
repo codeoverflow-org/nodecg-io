@@ -77,8 +77,9 @@ export class TwitchAddonsClient {
         const ffzGlobalSets: FFZEmoteSet[] = [];
         if (ffzGlobal !== undefined) {
             for (const set of ffzGlobal.default_sets) {
-                if (set.toString() in ffzGlobal.sets) {
-                    ffzGlobalSets.push(ffzGlobal.sets[set.toString()]);
+                const setObj = ffzGlobal.sets[set.toString()];
+                if (setObj !== undefined) {
+                    ffzGlobalSets.push(setObj);
                 }
             }
         }

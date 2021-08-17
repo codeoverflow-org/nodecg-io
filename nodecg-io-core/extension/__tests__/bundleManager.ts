@@ -107,7 +107,7 @@ describe("BundleManager", () => {
 
             expect(res).toBe(true);
             expect(provider?.getClient()).toBeUndefined();
-            expect(bundleManager.getBundleDependencies()[testBundle]?.[0].serviceInstance).toBeUndefined();
+            expect(bundleManager.getBundleDependencies()[testBundle]?.[0]?.serviceInstance).toBeUndefined();
             expect(changeCb).toHaveBeenCalled();
         });
 
@@ -115,6 +115,13 @@ describe("BundleManager", () => {
             registerTestServiceDep();
 
             const res = bundleManager.unsetServiceDependency(testBundle, "otherService");
+            expect(res).toBe(false);
+            expect(changeCb).not.toHaveBeenCalled();
+        });
+
+        test("should return false if bundle doesn't exists", () => {
+            // Bundle has not registered any dependencies and is unknown to BundleManager
+            const res = bundleManager.unsetServiceDependency(testBundle, testService.serviceType);
             expect(res).toBe(false);
             expect(changeCb).not.toHaveBeenCalled();
         });

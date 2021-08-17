@@ -30,6 +30,10 @@ export function renderBundleDeps(): void {
     }
 
     const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
+    if (bundle === undefined) {
+        return;
+    }
+
     const bundleDependencies = config.data.bundles[bundle];
     if (bundleDependencies === undefined) {
         return;
@@ -69,9 +73,14 @@ export function renderInstanceSelector(): void {
 
     // Selecting option of current set instance
     const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
+    if (bundle === undefined) {
+        return;
+    }
+
     const currentInstance = config.data.bundles[bundle]?.find(
         (dep) => dep.serviceType === serviceType,
     )?.serviceInstance;
+
     let index = 0;
     for (let i = 0; i < selectBundleInstance.options.length; i++) {
         if (selectBundleInstance.options.item(i)?.value === currentInstance) {
@@ -86,6 +95,9 @@ export async function setSelectedServiceDependency(): Promise<void> {
     const bundle = selectBundle.options[selectBundle.selectedIndex]?.value;
     const instance = selectBundleInstance.options[selectBundleInstance.selectedIndex]?.value;
     const type = selectBundleDepTypes.options[selectBundleDepTypes.selectedIndex]?.value;
+    if (bundle === undefined || type === undefined) {
+        return;
+    }
 
     await setServiceDependency(bundle, instance === "none" ? undefined : instance, type);
 }
@@ -96,11 +108,8 @@ export function unsetAllBundleDependencies(): void {
         return;
     }
 
-    Object.keys(bundles).forEach((bundleName) => {
-        const b = bundles[bundleName];
-        b?.forEach((dep) => {
-            setServiceDependency(bundleName, undefined, dep.serviceType);
-        });
+    Object.entries(bundles).forEach(([bundleName, dependencies]) => {
+        dependencies.forEach((dep) => setServiceDependency(bundleName, undefined, dep.serviceType));
     });
 }
 

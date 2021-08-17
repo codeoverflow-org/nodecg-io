@@ -118,11 +118,11 @@ export class InstanceManager extends EventEmitter {
 
         // Remove any assignment of a bundle to this service instance
         const deps = this.bundles.getBundleDependencies();
-        Object.keys(deps).forEach(
-            (bundle) =>
-                deps[bundle]
-                    ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
-                    .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)), // unset all these
+        Object.entries(deps).forEach(
+            ([bundleName, deps]) =>
+                deps
+                    .filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
+                    .forEach((d) => this.bundles.unsetServiceDependency(bundleName, d.serviceType)), // unset all these
         );
 
         return true;

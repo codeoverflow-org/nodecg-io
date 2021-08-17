@@ -169,8 +169,8 @@ describe("InstanceManager", () => {
             expect(instanceManager.deleteServiceInstance(testInstance)).toBe(true);
 
             const deps = bundleManager.getBundleDependencies();
-            expect(deps[testBundle]?.[0].serviceInstance).toBeUndefined();
-            expect(deps[testBundle2]?.[0].serviceInstance).toBe(testInstance2);
+            expect(deps[testBundle]?.[0]?.serviceInstance).toBeUndefined();
+            expect(deps[testBundle2]?.[0]?.serviceInstance).toBe(testInstance2);
         });
 
         test("should error service instance doesn't exists", () => {

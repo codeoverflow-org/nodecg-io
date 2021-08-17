@@ -151,8 +151,8 @@ describe("PersistenceManager", () => {
             expect(deps).toBeDefined();
             if (!deps) return;
             expect(deps).toHaveLength(1);
-            expect(deps[0].serviceType).toBe(testService.serviceType);
-            expect(deps[0].serviceInstance).toBe(testInstance);
+            expect(deps[0]?.serviceType).toBe(testService.serviceType);
+            expect(deps[0]?.serviceInstance).toBe(testInstance);
         });
     });
 
@@ -184,8 +184,8 @@ describe("PersistenceManager", () => {
 
             expect(data.result.instances[testInstance]?.serviceType).toBe(testService.serviceType);
             expect(data.result.instances[testInstance]?.config).toBe(testService.defaultConfig);
-            expect(data.result.bundleDependencies[testBundle]?.[0].serviceType).toBe(testService.serviceType);
-            expect(data.result.bundleDependencies[testBundle]?.[0].serviceInstance).toBe(testInstance);
+            expect(data.result.bundleDependencies[testBundle]?.[0]?.serviceType).toBe(testService.serviceType);
+            expect(data.result.bundleDependencies[testBundle]?.[0]?.serviceInstance).toBe(testInstance);
         });
     });
 

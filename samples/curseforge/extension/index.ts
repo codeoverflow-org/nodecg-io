@@ -14,7 +14,7 @@ module.exports = function (nodecg: NodeCG) {
         const addons: CurseAddon[] = await client.getMultipleAddons(addonIds);
         nodecg.log.info("Here are the projects which belongs to the ids:");
         addons.forEach((addon) => {
-            nodecg.log.info(`- '${addon.info.name}' (${addon.info.gameName} addon) by ${addon.info.authors[0].name}`);
+            nodecg.log.info(`- '${addon.info.name}' (${addon.info.gameName} addon) by ${addon.info.authors[0]?.name}`);
         });
 
         const query = {

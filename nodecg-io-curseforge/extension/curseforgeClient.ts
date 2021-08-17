@@ -998,7 +998,7 @@ export class MagicValues {
         value: number | string,
         map: Record<string, number>,
         inverse: Record<number, string>,
-    ): number | string {
+    ): number | string | undefined {
         if (typeof value === "number") {
             return inverse[value];
         } else {

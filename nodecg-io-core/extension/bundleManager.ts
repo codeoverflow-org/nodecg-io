@@ -133,10 +133,9 @@ export class BundleManager extends EventEmitter {
      */
     handleInstanceUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
         // Iterate over all bundles
-        Object.keys(this.bundles).forEach((bundle) => {
-            // Get their dependencies and if they have this instance set somewhere then update the bundle.
-            const svcDependencies = this.bundles[bundle];
-            svcDependencies?.forEach((dep) => {
+        Object.entries(this.bundles).forEach(([_bundleName, svcDependencies]) => {
+            // If they have this instance set somewhere in their dependencies then update the bundle.
+            svcDependencies.forEach((dep) => {
                 if (dep.serviceInstance === instName) {
                     dep.provider.updateClient(serviceInstance.client);
                 }

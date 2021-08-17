@@ -144,14 +144,9 @@ export class PersistenceManager {
      * @param instances the service instances that should be loaded.
      */
     private loadServiceInstances(instances: ObjectMap<ServiceInstance<unknown, unknown>>): Promise<void>[] {
-        return Object.keys(instances).map((instanceName) => {
-            const inst = instances[instanceName];
-            if (inst === undefined) {
-                return Promise.resolve();
-            }
-
+        return Object.entries(instances).map(([instanceName, instance]) => {
             // Re-create service instance.
-            const result = this.instances.createServiceInstance(inst.serviceType, instanceName);
+            const result = this.instances.createServiceInstance(instance.serviceType, instanceName);
             if (result.failed) {
                 this.nodecg.log.info(
                     `Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`,
@@ -159,7 +154,7 @@ export class PersistenceManager {
                 return Promise.resolve();
             }
 
-            const svc = this.services.getService(inst.serviceType);
+            const svc = this.services.getService(instance.serviceType);
             if (!svc.failed && svc.result.requiresNoConfig) {
                 return Promise.resolve();
             }
@@ -169,7 +164,7 @@ export class PersistenceManager {
             // before getting saved to disk.
             // This results in faster loading when the validation takes time, e.g. makes HTTP requests.
             return this.instances
-                .updateInstanceConfig(instanceName, inst.config, false)
+                .updateInstanceConfig(instanceName, instance.config, false)
                 .then((result) => {
                     if (result.failed) {
                         this.nodecg.log.info(
@@ -190,13 +185,8 @@ export class PersistenceManager {
      * @param bundles the bundle dependencies that should be set.
      */
     private loadBundleDependencies(bundles: ObjectMap<ServiceDependency<unknown>[]>): void {
-        Object.keys(bundles).forEach((bundleName) => {
-            if (!Object.prototype.hasOwnProperty.call(bundles, bundleName)) {
-                return;
-            }
-
-            const deps = bundles[bundleName];
-            deps?.forEach((svcDep) => {
+        Object.entries(bundles).forEach(([bundleName, deps]) => {
+            deps.forEach((svcDep) => {
                 // Re-setting bundle service dependencies.
                 // We can ignore the case of undefined, because the default is that the bundle doesn't get any service
                 // which is modeled by undefined. We are assuming that there was nobody setting it to something different.

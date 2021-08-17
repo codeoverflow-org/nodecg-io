@@ -56,13 +56,12 @@ export class DebugHelper extends EventEmitter {
 
     private static hexToRGB(hex: string): Color {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result
-            ? {
-                  red: parseInt(result[1], 16),
-                  green: parseInt(result[2], 16),
-                  blue: parseInt(result[3], 16),
-              }
-            : { red: 0, green: 0, blue: 0 };
+
+        return {
+            red: result?.[1] ? parseInt(result[1] ?? "0", 16) : 0,
+            green: result?.[2] ? parseInt(result[2] ?? "0", 16) : 0,
+            blue: result?.[3] ? parseInt(result[3] ?? "0", 16) : 0,
+        };
     }
 
     static createClient(nodecg: NodeCG): DebugHelper {

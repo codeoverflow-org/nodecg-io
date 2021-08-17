@@ -34,9 +34,9 @@ module.exports = function (nodecg: NodeCG) {
                 try {
                     deck.fillColor(
                         i % deck.NUM_KEYS,
-                        colors[i % colors.length][0],
-                        colors[i % colors.length][1],
-                        colors[i % colors.length][2],
+                        colors[i % colors.length]?.[0] ?? 0,
+                        colors[i % colors.length]?.[1] ?? 0,
+                        colors[i % colors.length]?.[2] ?? 0,
                     );
                     i += 1;
                 } catch (err) {
