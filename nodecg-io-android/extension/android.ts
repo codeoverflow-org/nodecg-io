@@ -2629,7 +2629,7 @@ export class FileManager {
     }
 
     /**
-     * Downloads a file from the device. On some platforms, this gerts incredibly slow when used on
+     * Downloads a file from the device. On some platforms, this gets incredibly slow when used on
      * files larger than 6MB.
      */
     async download(device: string, local: string): Promise<void> {
@@ -2637,7 +2637,7 @@ export class FileManager {
     }
 
     /**
-     * Uploads a file to the device. On some platforms, this gerts incredibly slow when used on
+     * Uploads a file to the device. On some platforms, this gets incredibly slow when used on
      * files larger than 6MB.
      */
     async upload(local: string, device: string): Promise<void> {
