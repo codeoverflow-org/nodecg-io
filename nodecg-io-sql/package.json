@@ -1,0 +1,47 @@
+{
+    "name": "nodecg-io-sql",
+    "version": "0.2.0",
+    "description": "SQL service based on knex.js. Different clients like mysql are supported but have to be installed separately.",
+    "homepage": "https://nodecg.io/RELEASE/samples/sql",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "https://github.com/codeoverflow-org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-sql"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg": "^1.8.1",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "knex": "^0.95.6",
+        "nodecg-io-core": "^0.2.0"
+    }
+}

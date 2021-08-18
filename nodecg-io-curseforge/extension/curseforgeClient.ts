@@ -171,7 +171,7 @@ export class CurseForge {
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
-            body: data == undefined ? undefined : JSON.stringify(data),
+            body: data === undefined ? undefined : JSON.stringify(data),
         });
 
         return response.json();
@@ -1008,7 +1008,7 @@ export class MagicValues {
         map: Record<string, number>,
         inverse: Record<number, string>,
     ): number | string {
-        if (typeof value == "number") {
+        if (typeof value === "number") {
             return inverse[value];
         } else {
             return map[value];
