@@ -105,6 +105,7 @@ describe("InstanceManager", () => {
 
         afterEach(() => {
             testService.stopClient.mockReset();
+            nodecg.log.error.mockReset();
         });
 
         test("should delete instance from internal instance list", () => {
@@ -121,7 +122,6 @@ describe("InstanceManager", () => {
             instance.client = testServiceInstance.client;
 
             // Mock stopClient() to throw a error
-            nodecg.log.error.mockReset();
             const errorMsg = "client error message";
             testService.stopClient.mockImplementationOnce(() => {
                 throw new Error(errorMsg);
@@ -151,6 +151,24 @@ describe("InstanceManager", () => {
             expect(testService.stopClient).toHaveBeenCalledWith(testServiceInstance.client);
         });
 
+        test("should log error if client cannot be stopped because the service could not be found", () => {
+            const instance = instanceManager.getServiceInstance(testInstance);
+            if (!instance) throw new Error("instance could not be found");
+            instance.client = testServiceInstance.client;
+
+            // oh no, the service just got deleted from ServiceManager. It cannot be looked up anymore.
+            const services = serviceManager.getServices().splice(0);
+
+            const res = instanceManager.deleteServiceInstance(testInstance);
+
+            // Re-add the removed services again so other tests can still use them
+            services.forEach((svc) => serviceManager.registerService(svc));
+
+            expect(res).toBe(true);
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain("Failed to stop");
+        });
+
         test("should unset all service dependencies that are assigned to this instance", () => {
             // We create two bundles and two instances to make sure that
             // deleting testInstance(1) does only unset the service dependencies of bundles
@@ -173,7 +191,7 @@ describe("InstanceManager", () => {
             expect(deps[testBundle2]?.[0]?.serviceInstance).toBe(testInstance2);
         });
 
-        test("should error service instance doesn't exists", () => {
+        test("should error when service instance doesn't exists", () => {
             // Note that we didn't create testInstance2 here
             const result = instanceManager.deleteServiceInstance(testInstance2);
             expect(result).toBe(false);
@@ -250,6 +268,19 @@ describe("InstanceManager", () => {
             expect(changeCb).not.toHaveBeenCalled();
         });
 
+        test("should ignore json schema if not provided", async () => {
+            const svc = {
+                ...testService,
+                serviceType: "noJsonSchemaSvc",
+                schema: undefined,
+            };
+            serviceManager.registerService(svc);
+            instanceManager.createServiceInstance(svc.serviceType, testInstance2);
+
+            const res = await instanceManager.updateInstanceConfig(testInstance2, validConfig);
+            expect(res.failed).toBe(false);
+        });
+
         test("should validate config using the validateConfig() function of the service", async () => {
             // Refer to the mock implementation of validateConfig up top for details
 
@@ -275,6 +306,18 @@ describe("InstanceManager", () => {
             expect(res.failed).toBe(true); // otherInstance doesn't exist, just testInstance
             if (res.failed) {
                 expect(res.errorMessage).toContain("instance doesn't exist");
+            }
+        });
+
+        test("should error if service of instance doesn't exists anymore", async () => {
+            const services = serviceManager.getServices().splice(0);
+            const res = await instanceManager.updateInstanceConfig(testInstance, validConfig);
+            services.forEach((svc) => serviceManager.registerService(svc));
+
+            expect(res.failed).toBe(true);
+            if (res.failed) {
+                expect(res.errorMessage).toContain("service");
+                expect(res.errorMessage).toContain("couldn't be found");
             }
         });
     });
@@ -403,6 +446,19 @@ describe("InstanceManager", () => {
             bundleManager.emit("reregisterInstance", "nonExistentInstance");
             expect(nodecg.log.error).toHaveBeenCalledTimes(1);
             expect(nodecg.log.error.mock.calls[0][0]).toContain("instance not found");
+        });
+
+        test("should error if service of instance cannot be found anymore", () => {
+            // Remove service from ServiceManager so it cannot be found anymore
+            const services = serviceManager.getServices().splice(0);
+
+            bundleManager.emit("reregisterInstance", testInstance);
+
+            // Re-add the removed services again
+            services.forEach((svc) => serviceManager.registerService(svc));
+
+            expect(nodecg.log.error).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.error.mock.calls[0][0]).toContain("can't get service");
         });
 
         test("should re-create client if reCreateClientToRemoveHandlers is set", () => {
