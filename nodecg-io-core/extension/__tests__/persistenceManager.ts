@@ -30,28 +30,33 @@ describe("PersistenceManager", () => {
         instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager);
 
         persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
+
+        testService.createClient.mockImplementation((cfg) => () => cfg);
+        nodecg.log.warn.mockReset();
     });
 
     /**
      * Creates a basic config and encrypts it. Used to check whether load decrypts and more importantly
      * restores the same configuration again.
      */
-    function defaultEncryptedConfig() {
-        const data: PersistentData = {
-            bundleDependencies: {
-                [testBundle]: [
-                    {
-                        serviceType: testService.serviceType,
-                        serviceInstance: testInstance,
-                        provider: new ServiceProvider(),
-                    },
-                ],
-            },
-            instances: {
-                [testInstance]: testServiceInstance,
-            },
-        };
-        return crypto.AES.encrypt(JSON.stringify(data), validPassword).toString();
+    function generateEncryptedConfig(data?: PersistentData) {
+        const d: PersistentData = data
+            ? data
+            : {
+                  bundleDependencies: {
+                      [testBundle]: [
+                          {
+                              serviceType: testService.serviceType,
+                              serviceInstance: testInstance,
+                              provider: new ServiceProvider(),
+                          },
+                      ],
+                  },
+                  instances: {
+                      [testInstance]: testServiceInstance,
+                  },
+              };
+        return crypto.AES.encrypt(JSON.stringify(d), validPassword).toString();
     }
 
     describe("checkPassword", () => {
@@ -76,14 +81,14 @@ describe("PersistenceManager", () => {
         });
 
         test("should return false if load was called but failed", async () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
+            encryptedDataReplicant.value.cipherText = generateEncryptedConfig();
             const res = await persistenceManager.load(invalidPassword); // Will fail because the password is invalid
             expect(res.failed).toBe(true);
             expect(persistenceManager.isLoaded()).toBe(false);
         });
 
         test("should return true if load was called and succeeded", async () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
+            encryptedDataReplicant.value.cipherText = generateEncryptedConfig();
             const res = await persistenceManager.load(validPassword); // password is correct, should work
             expect(res.failed).toBe(false);
             expect(persistenceManager.isLoaded()).toBe(true);
@@ -97,12 +102,16 @@ describe("PersistenceManager", () => {
         });
 
         test("should return false if an encrypted config exists", () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig(); // config = not a first startup
+            encryptedDataReplicant.value.cipherText = generateEncryptedConfig(); // config = not a first startup
             expect(persistenceManager.isFirstStartup()).toBe(false);
         });
     });
 
     describe("load", () => {
+        beforeEach(() => (encryptedDataReplicant.value.cipherText = generateEncryptedConfig()));
+
+        // General
+
         test("should error if called after configuration already has been loaded", async () => {
             const res1 = await persistenceManager.load(validPassword);
             expect(res1.failed).toBe(false);
@@ -120,7 +129,6 @@ describe("PersistenceManager", () => {
         });
 
         test("should error if password is wrong", async () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
             const res = await persistenceManager.load(invalidPassword);
             expect(res.failed).toBe(true);
             if (res.failed) {
@@ -129,13 +137,13 @@ describe("PersistenceManager", () => {
         });
 
         test("should succeed if password is correct", async () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
             const res = await persistenceManager.load(validPassword);
             expect(res.failed).toBe(false);
         });
 
+        // Service instances
+
         test("should load service instances including configuration", async () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
             await persistenceManager.load(validPassword);
             const inst = instanceManager.getServiceInstance(testInstance);
             expect(inst).toBeDefined();
@@ -144,8 +152,48 @@ describe("PersistenceManager", () => {
             expect(inst.serviceType).toBe(testService.serviceType);
         });
 
+        test("should log failures when creating service instances", async () => {
+            encryptedDataReplicant.value.cipherText = generateEncryptedConfig({
+                instances: {
+                    "": testServiceInstance, // This is invalid because the instance name is empty
+                },
+                bundleDependencies: {},
+            });
+            await persistenceManager.load(validPassword);
+            expect(nodecg.log.warn).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.warn.mock.calls[0][0]).toContain("Couldn't load instance");
+            expect(nodecg.log.warn.mock.calls[0][0]).toContain("name must not be empty");
+        });
+
+        test("should not set instance config when no config is required", async () => {
+            testService.requiresNoConfig = true;
+            await persistenceManager.load(validPassword);
+
+            const inst = instanceManager.getServiceInstance(testInstance);
+            if (!inst) throw new Error("instance was not re-created");
+
+            // Makes sure config was not copied from the encrypted data, where it was set
+            // (only because testService previously required a config).
+            expect(inst.config).toBe(testService.defaultConfig);
+            expect(inst.config).not.toBe(testServiceInstance.config);
+            testService.requiresNoConfig = false;
+        });
+
+        test("should log failures when setting service instance configs", async () => {
+            const errorMsg = "client error message";
+            testService.createClient.mockImplementationOnce(() => error(errorMsg));
+            await persistenceManager.load(validPassword);
+
+            // Wait for all previous promises created by loading to settle.
+            await new Promise((res) => setImmediate(res));
+
+            expect(nodecg.log.warn).toHaveBeenCalledTimes(1);
+            expect(nodecg.log.warn.mock.calls[0][0]).toContain("Couldn't load config");
+        });
+
+        // Service dependency assignments
+
         test("should load service dependency assignments", async () => {
-            encryptedDataReplicant.value.cipherText = defaultEncryptedConfig();
             await persistenceManager.load(validPassword);
             const deps = bundleManager.getBundleDependencies()[testBundle];
             expect(deps).toBeDefined();
@@ -153,6 +201,46 @@ describe("PersistenceManager", () => {
             expect(deps).toHaveLength(1);
             expect(deps[0]?.serviceType).toBe(testService.serviceType);
             expect(deps[0]?.serviceInstance).toBe(testInstance);
+        });
+
+        test("should unset service dependencies when the underlying instance was deleted", async () => {
+            encryptedDataReplicant.value.cipherText = generateEncryptedConfig({
+                instances: {},
+                bundleDependencies: {
+                    [testBundle]: [
+                        {
+                            serviceType: testService.serviceType,
+                            serviceInstance: testInstance,
+                            provider: new ServiceProvider(),
+                        },
+                    ],
+                },
+            });
+            await persistenceManager.load(validPassword);
+
+            const deps = bundleManager.getBundleDependencies()[testBundle];
+            expect(deps?.[0]).toBeDefined();
+            expect(deps?.[0]?.serviceInstance).toBeUndefined();
+        });
+
+        test("should support unassigned service dependencies", async () => {
+            encryptedDataReplicant.value.cipherText = generateEncryptedConfig({
+                instances: {},
+                bundleDependencies: {
+                    [testBundle]: [
+                        {
+                            serviceType: testService.serviceType,
+                            serviceInstance: undefined,
+                            provider: new ServiceProvider(),
+                        },
+                    ],
+                },
+            });
+            await persistenceManager.load(validPassword);
+
+            const deps = bundleManager.getBundleDependencies()[testBundle];
+            expect(deps?.[0]).toBeDefined();
+            expect(deps?.[0]?.serviceInstance).toBeUndefined();
         });
     });
 
@@ -192,7 +280,7 @@ describe("PersistenceManager", () => {
     describe("automatic login", () => {
         const nodecgBundleReplicant = nodecg.Replicant("bundles", "nodecg");
 
-        async function triggerAutomaticLogin() {
+        async function triggerAutomaticLogin(bundleRepValue?: Array<string>) {
             nodecg.log.info.mockReset();
             nodecg.log.warn.mockReset();
             nodecg.log.error.mockReset();
@@ -202,7 +290,7 @@ describe("PersistenceManager", () => {
                 if (password === validPassword) return emptySuccess();
                 else return error("password invalid");
             });
-            nodecgBundleReplicant.value = [nodecg.bundleName];
+            nodecgBundleReplicant.value = bundleRepValue ?? [nodecg.bundleName];
         }
 
         afterEach(() => {
@@ -271,6 +359,20 @@ describe("PersistenceManager", () => {
             expect(persistenceManager.load).toHaveBeenCalled();
             expect(nodecg.log.error).toHaveBeenCalledTimes(1);
             expect(nodecg.log.error.mock.calls[0][0]).toContain("Failed to automatically login");
+        });
+
+        test("should not trigger automatic login if nodecg is not finished with loading bundles", async () => {
+            // If the nodecg.bundles replicant has length 0 nodecg isn't done loading and we should wait till it has a non-zero length.
+            // Refer to the comment in setupAutomaticLogin for further details.
+            nodecg.bundleConfig = {
+                automaticLogin: {
+                    enabled: true,
+                    password: validPassword,
+                },
+            };
+
+            await triggerAutomaticLogin([]); // Empty array for the nodecg.bundles replicant
+            expect(persistenceManager.load).not.toHaveBeenCalled();
         });
     });
 

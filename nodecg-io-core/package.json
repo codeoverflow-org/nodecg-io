@@ -26,7 +26,8 @@
         "watch": "tsc -b -w",
         "clean": "tsc -b --clean",
         "test": "jest",
-        "watchTest": "jest --watch"
+        "watchTest": "jest --watch",
+        "coverage": "jest --coverage"
     },
     "keywords": [
         "nodecg-io",

@@ -148,7 +148,7 @@ export class PersistenceManager {
             // Re-create service instance.
             const result = this.instances.createServiceInstance(instance.serviceType, instanceName);
             if (result.failed) {
-                this.nodecg.log.info(
+                this.nodecg.log.warn(
                     `Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`,
                 );
                 return Promise.resolve();
@@ -165,15 +165,13 @@ export class PersistenceManager {
             // This results in faster loading when the validation takes time, e.g. makes HTTP requests.
             return this.instances
                 .updateInstanceConfig(instanceName, instance.config, false)
-                .then((result) => {
+                .then(async (result) => {
                     if (result.failed) {
-                        this.nodecg.log.info(
-                            `Couldn't load config of instance "${instanceName}" from saved configuration: ${result.errorMessage}.`,
-                        );
+                        throw result.errorMessage;
                     }
                 })
                 .catch((reason) => {
-                    this.nodecg.log.info(
+                    this.nodecg.log.warn(
                         `Couldn't load config of instance "${instanceName}" from saved configuration: ${reason}.`,
                     );
                 });
@@ -229,20 +227,13 @@ export class PersistenceManager {
         const instances = this.instances.getServiceInstances();
         const copy: ObjectMap<ServiceInstance<unknown, unknown>> = {};
 
-        for (const instName in instances) {
-            if (!Object.prototype.hasOwnProperty.call(instances, instName)) {
-                continue;
-            }
-
-            const instance = instances[instName];
-            if (instance) {
-                copy[instName] = {
-                    serviceType: instance?.serviceType,
-                    config: instance?.config,
-                    client: undefined,
-                };
-            }
-        }
+        Object.entries(instances).forEach(([instName, instance]) => {
+            copy[instName] = {
+                serviceType: instance.serviceType,
+                config: instance.config,
+                client: undefined,
+            };
+        });
 
         return copy;
     }
@@ -266,7 +257,7 @@ export class PersistenceManager {
      * Checks whether automatic login is setup and enabled. If yes it will do it using {@link PersistenceManager.setupAutomaticLogin}.
      */
     private checkAutomaticLogin(): void {
-        if (this.nodecg.bundleConfig?.automaticLogin?.enabled === undefined) {
+        if (this.nodecg.bundleConfig.automaticLogin?.enabled === undefined) {
             return; // Not configured
         }
 
@@ -306,10 +297,10 @@ export class PersistenceManager {
                     if (!loadResult.failed) {
                         this.nodecg.log.info("Automatic login successful.");
                     } else {
-                        this.nodecg.log.error(`Failed to automatically login: ${loadResult.errorMessage}`);
+                        throw loadResult.errorMessage;
                     }
                 } catch (err) {
-                    this.nodecg.log.error(`An error occurred while automatically logging in: ${err}`);
+                    this.nodecg.log.error(`Failed to automatically login: ${err}`);
                 }
             }
         });
