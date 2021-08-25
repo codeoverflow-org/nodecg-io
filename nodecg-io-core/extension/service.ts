@@ -12,7 +12,7 @@ import { ServiceProvider } from "./serviceProvider";
  * A normal es6 map would use a iterator which can't be serialized by the NodeCG Replicant and thus
  * can't be used to give the gui access to the data in this map.
  */
-export type ObjectMap<V> = Record<string, V | undefined>;
+export type ObjectMap<V> = Record<string, V>;
 
 /**
  * Models a service that a bundle can depend upon and use to access e.g. a twitch chat or similar.

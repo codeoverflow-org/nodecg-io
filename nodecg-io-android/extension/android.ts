@@ -1299,7 +1299,7 @@ export class SmsManager {
             addressStr = address.address;
         } else if (address instanceof Contact) {
             const phone_numbers = await address.getData("phone");
-            if (phone_numbers.length <= 0) {
+            if (phone_numbers.length <= 0 || phone_numbers[0] === undefined) {
                 throw new Error(
                     `Can't use contact as sms receiver: No phone number available for contact ${address.displayName}`,
                 );

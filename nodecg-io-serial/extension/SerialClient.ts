@@ -66,7 +66,7 @@ export class SerialServiceClient extends SerialPort {
         }
 
         // Check if result isn't empty or ambiguous
-        if (result.length < 1) {
+        if (result[0] === undefined) {
             return error("No device matched the provided criteria!");
         } else if (result.length > 1) {
             return error("The provided criteria were ambiguous!");

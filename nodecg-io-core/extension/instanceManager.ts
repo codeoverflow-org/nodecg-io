@@ -103,7 +103,7 @@ export class InstanceManager extends EventEmitter {
             if (svc.failed) {
                 this.nodecg.log.error(`Failed to stop client: ${svc.errorMessage}`);
             } else {
-                this.nodecg.log.info(`Sucessfully stopped client of service instance "${instanceName}".`);
+                this.nodecg.log.info(`Successfully stopped client of service instance "${instanceName}".`);
                 try {
                     svc.result.stopClient(instance.client);
                 } catch (e) {
@@ -118,15 +118,13 @@ export class InstanceManager extends EventEmitter {
 
         // Remove any assignment of a bundle to this service instance
         const deps = this.bundles.getBundleDependencies();
-        for (const bundle in deps) {
-            if (!Object.prototype.hasOwnProperty.call(deps, bundle)) {
-                continue;
-            }
+        Object.entries(deps).forEach(
+            ([bundleName, deps]) =>
+                deps
+                    .filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
+                    .forEach((d) => this.bundles.unsetServiceDependency(bundleName, d.serviceType)), // unset all these
+        );
 
-            deps[bundle]
-                ?.filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
-                .forEach((d) => this.bundles.unsetServiceDependency(bundle, d.serviceType)); // unset all these
-        }
         return true;
     }
 
@@ -203,7 +201,7 @@ export class InstanceManager extends EventEmitter {
      * @param instanceName the name of the service instance, used for letting all bundles know of the new client.
      * @param service the service of the service instance, needed to stop old client
      */
-    private async updateInstanceClient<R, C>(
+    async updateInstanceClient<R, C>(
         inst: ServiceInstance<R, C>,
         instanceName: string,
         service: Service<R, C>,
@@ -214,15 +212,15 @@ export class InstanceManager extends EventEmitter {
             // No config has been set, therefore the service isn't ready and we can't create a client.
             inst.client = undefined;
         } else {
-            // Create a client using the new config
-            const service = this.services.getService(inst.serviceType);
-            if (service.failed) {
-                inst.client = undefined;
-                return service;
-            }
-
             try {
-                const client = await service.result.createClient(inst.config);
+                // Create a client using the new config
+
+                // If the service requires a config we make the undefined check above which ensures that undefined doesn't
+                // get passed to the createClient function of the service.
+                // If the service does not require a config we can safely ignore the undefined error because in that case
+                // passing undefined is the intended behavior.
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const client = await service.createClient(inst.config!);
 
                 // Check if a error happened while creating the client
                 if (client.failed) {
@@ -257,7 +255,7 @@ export class InstanceManager extends EventEmitter {
 
     /**
      * Removes all handlers from the service client of the instance and lets bundles readd their handlers.
-     * @param instanceName the name of the instance which handlers should be re-registred
+     * @param instanceName the name of the instance which handlers should be re-registered
      */
     private reregisterHandlersOfInstance(instanceName?: string): void {
         if (!instanceName) return;
@@ -271,7 +269,7 @@ export class InstanceManager extends EventEmitter {
         const svc = this.services.getService(inst.serviceType);
         if (svc.failed) {
             this.nodecg.log.error(
-                `Can't reregister handlers of instance "${instanceName}": can't get service: ${svc.errorMessage}`,
+                `Can't re-register handlers of instance "${instanceName}": can't get service: ${svc.errorMessage}`,
             );
             return;
         }

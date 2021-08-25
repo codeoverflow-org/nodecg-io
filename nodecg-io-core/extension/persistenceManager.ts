@@ -94,7 +94,7 @@ export class PersistenceManager {
      * If this returns true {{@link load}} will accept any password and use it to encrypt the configuration.
      */
     isFirstStartup(): boolean {
-        return this.encryptedData.value.cipherText !== undefined;
+        return this.encryptedData.value.cipherText === undefined;
     }
 
     /**
@@ -144,22 +144,17 @@ export class PersistenceManager {
      * @param instances the service instances that should be loaded.
      */
     private loadServiceInstances(instances: ObjectMap<ServiceInstance<unknown, unknown>>): Promise<void>[] {
-        return Object.keys(instances).map((instanceName) => {
-            const inst = instances[instanceName];
-            if (inst === undefined) {
-                return Promise.resolve();
-            }
-
+        return Object.entries(instances).map(([instanceName, instance]) => {
             // Re-create service instance.
-            const result = this.instances.createServiceInstance(inst.serviceType, instanceName);
+            const result = this.instances.createServiceInstance(instance.serviceType, instanceName);
             if (result.failed) {
-                this.nodecg.log.info(
+                this.nodecg.log.warn(
                     `Couldn't load instance "${instanceName}" from saved configuration: ${result.errorMessage}`,
                 );
                 return Promise.resolve();
             }
 
-            const svc = this.services.getService(inst.serviceType);
+            const svc = this.services.getService(instance.serviceType);
             if (!svc.failed && svc.result.requiresNoConfig) {
                 return Promise.resolve();
             }
@@ -169,16 +164,14 @@ export class PersistenceManager {
             // before getting saved to disk.
             // This results in faster loading when the validation takes time, e.g. makes HTTP requests.
             return this.instances
-                .updateInstanceConfig(instanceName, inst.config, false)
-                .then((result) => {
+                .updateInstanceConfig(instanceName, instance.config, false)
+                .then(async (result) => {
                     if (result.failed) {
-                        this.nodecg.log.info(
-                            `Couldn't load config of instance "${instanceName}" from saved configuration: ${result.errorMessage}.`,
-                        );
+                        throw result.errorMessage;
                     }
                 })
                 .catch((reason) => {
-                    this.nodecg.log.info(
+                    this.nodecg.log.warn(
                         `Couldn't load config of instance "${instanceName}" from saved configuration: ${reason}.`,
                     );
                 });
@@ -190,13 +183,8 @@ export class PersistenceManager {
      * @param bundles the bundle dependencies that should be set.
      */
     private loadBundleDependencies(bundles: ObjectMap<ServiceDependency<unknown>[]>): void {
-        Object.keys(bundles).forEach((bundleName) => {
-            if (!Object.prototype.hasOwnProperty.call(bundles, bundleName)) {
-                return;
-            }
-
-            const deps = bundles[bundleName];
-            deps?.forEach((svcDep) => {
+        Object.entries(bundles).forEach(([bundleName, deps]) => {
+            deps.forEach((svcDep) => {
                 // Re-setting bundle service dependencies.
                 // We can ignore the case of undefined, because the default is that the bundle doesn't get any service
                 // which is modeled by undefined. We are assuming that there was nobody setting it to something different.
@@ -220,7 +208,7 @@ export class PersistenceManager {
             return;
         }
 
-        // Organise all data that will be encrypted into a single object.
+        // Organize all data that will be encrypted into a single object.
         const data: PersistentData = {
             instances: this.getServiceInstances(),
             bundleDependencies: this.bundles.getBundleDependencies(),
@@ -239,20 +227,13 @@ export class PersistenceManager {
         const instances = this.instances.getServiceInstances();
         const copy: ObjectMap<ServiceInstance<unknown, unknown>> = {};
 
-        for (const instName in instances) {
-            if (!Object.prototype.hasOwnProperty.call(instances, instName)) {
-                continue;
-            }
-
-            const instance = instances[instName];
-            if (instance) {
-                copy[instName] = {
-                    serviceType: instance?.serviceType,
-                    config: instance?.config,
-                    client: undefined,
-                };
-            }
-        }
+        Object.entries(instances).forEach(([instName, instance]) => {
+            copy[instName] = {
+                serviceType: instance.serviceType,
+                config: instance.config,
+                client: undefined,
+            };
+        });
 
         return copy;
     }
@@ -276,7 +257,7 @@ export class PersistenceManager {
      * Checks whether automatic login is setup and enabled. If yes it will do it using {@link PersistenceManager.setupAutomaticLogin}.
      */
     private checkAutomaticLogin(): void {
-        if (this.nodecg.bundleConfig?.automaticLogin?.enabled === undefined) {
+        if (this.nodecg.bundleConfig.automaticLogin?.enabled === undefined) {
             return; // Not configured
         }
 
@@ -285,7 +266,11 @@ export class PersistenceManager {
         const password: string = this.nodecg.bundleConfig.automaticLogin.password;
 
         if (enabled === false) {
-            this.nodecg.log.info("Automatic login is setup but disabled.");
+            // We inform the user that automatic login is setup but not activated because having the ability
+            // to disable it by setting the enabled flag to false is meant for temporary cases.
+            // If automatic login is permanently not used the user should remove the password from the config
+            // to regain the advantages of data-at-rest encryption which are slashed when the password is also stored on disk.
+            this.nodecg.log.warn("Automatic login is setup but disabled.");
             return;
         }
 
@@ -312,10 +297,10 @@ export class PersistenceManager {
                     if (!loadResult.failed) {
                         this.nodecg.log.info("Automatic login successful.");
                     } else {
-                        this.nodecg.log.error(`Failed to automatically login: ${loadResult.errorMessage}`);
+                        throw loadResult.errorMessage;
                     }
                 } catch (err) {
-                    this.nodecg.log.error(`An error occurred while automatically logging in: ${err}`);
+                    this.nodecg.log.error(`Failed to automatically login: ${err}`);
                 }
             }
         });

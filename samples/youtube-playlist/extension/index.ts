@@ -15,7 +15,7 @@ module.exports = function (nodecg: NodeCG) {
             id: ["PL9oBXB6tQnlX013V1v20WkfzI9R2zamHi"],
         });
         const items = resp.data.items;
-        if (items) {
+        if (items && items[0]) {
             const { title, channelTitle, publishedAt, description } = items[0]
                 .snippet as youtube_v3.Schema$PlaylistItemSnippet;
             nodecg.log.info(
