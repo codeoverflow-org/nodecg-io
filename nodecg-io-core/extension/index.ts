@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import { MessageManager } from "./messageManager";

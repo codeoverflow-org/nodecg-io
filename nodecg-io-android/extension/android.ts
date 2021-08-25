@@ -4,7 +4,7 @@ import { spawn } from "child_process";
 import { onExit, readableToString } from "@rauschma/stringio";
 import { AddressInfo } from "net";
 import { buffer as readableToBuffer } from "get-stream";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 
 /**
  * Represents an android device that is connected via ADB.

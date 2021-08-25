@@ -1,5 +1,5 @@
 import { ObjectMap, ServiceInstance } from "../service";
-import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg/types/server";
+import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg-types/types/server";
 import { EventEmitter } from "events";
 
 // The mock-nodecg package has a few problems like no typings and some un-implemented functions that are a dealbreaker for us.

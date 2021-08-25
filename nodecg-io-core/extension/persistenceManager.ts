@@ -1,4 +1,4 @@
-import { NodeCG, ReplicantServer } from "nodecg/types/server";
+import { NodeCG, ReplicantServer } from "nodecg-types/types/server";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";

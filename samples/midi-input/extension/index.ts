@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { requireService } from "nodecg-io-core";
 import { MidiInputServiceClient } from "nodecg-io-midi-input";
 

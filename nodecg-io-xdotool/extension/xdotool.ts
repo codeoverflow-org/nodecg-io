@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { spawn } from "child_process";
 import { onExit } from "@rauschma/stringio";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 
 export class Xdotool {
     private readonly address: string | null;

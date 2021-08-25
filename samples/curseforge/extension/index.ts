@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { CurseForgeClient } from "nodecg-io-curseforge";
 import { requireService } from "nodecg-io-core";
 import { CurseAddon } from "nodecg-io-curseforge/extension/curseforgeClient";

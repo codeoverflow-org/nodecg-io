@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { StreamdeckServiceClient } from "nodecg-io-streamdeck";
 import { requireService } from "nodecg-io-core";
 

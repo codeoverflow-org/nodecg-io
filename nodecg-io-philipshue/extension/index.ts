@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
