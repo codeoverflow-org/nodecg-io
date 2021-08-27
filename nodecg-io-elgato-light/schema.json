@@ -3,10 +3,25 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-        "placeholder": {
-            "type": "string",
-            "description": "A template placeholder."
+        "lights": {
+            "type": "array",
+            "description": "A list of elgato lights you want to control.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ipAddress": {
+                        "type": "string",
+                        "description": "The IP-Address of a elgato light in your local network."
+                    },
+                    "lightType": {
+                        "type": "string",
+                        "enum": ["KeyLight", "LightStrip"],
+                        "description": "The type of light. Available types: 'KeyLight', 'LightStrip'."
+                    }
+                },
+                "required": ["ipAddress", "lightType"]
+            }
         }
     },
-    "required": ["placeholder"]
+    "required": ["lights"]
 }

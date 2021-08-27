@@ -5,15 +5,16 @@ import { requireService } from "nodecg-io-core";
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for the Elgato light service started.");
 
-    const elgatoLightClient = requireService<ElgatoLightClient>(nodecg, "elgato-light");
+    const elgatoLightClient = requireService<Array<ElgatoLightClient>>(nodecg, "elgato-light");
 
-    elgatoLightClient?.onAvailable((_) => {
+    elgatoLightClient?.onAvailable((clients) => {
         nodecg.log.info("Elgato light service available.");
-        // TODO: Implement
+
+        // TODO: Create a more comprehensive example
+        clients.forEach((client) => client.toggleLight());
     });
 
     elgatoLightClient?.onUnavailable(() => {
         nodecg.log.info("Elgato light service unavailable.");
-        // TODO: Implement
     });
 };
