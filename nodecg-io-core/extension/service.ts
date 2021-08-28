@@ -38,6 +38,13 @@ export interface Service<R, C> {
     readonly defaultConfig?: R;
 
     /**
+     * Config presets that the user can choose to load as their config.
+     * Useful for e.g. detected devices with everything already filled in for that specific device.
+     * Can also be used to show the user multiple different authentication methods or similar.
+     */
+    presets?: ObjectMap<R>;
+
+    /**
      * This function validates the passed config after it has been validated against the json schema (if applicable).
      * Should make deeper checks like checking validity of auth tokens.
      * @param config the config which should be validated.

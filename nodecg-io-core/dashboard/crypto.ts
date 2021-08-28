@@ -39,11 +39,11 @@ class Config extends EventEmitter {
 export const config = new Config();
 
 // Update the decrypted copy of the data once the encrypted version changes (if pw available).
-// This ensures that the decrypted data is kept uptodate.
+// This ensures that the decrypted data is kept up-to-date.
 encryptedData.on("change", updateDecryptedData);
 
 /**
- * Sets the passed passwort to be used by the crypto module.
+ * Sets the passed password to be used by the crypto module.
  * Will try to decrypt decrypted data to tell whether the password is correct,
  * if it is wrong the internal password will be set to undefined.
  * Returns whether the password is correct.

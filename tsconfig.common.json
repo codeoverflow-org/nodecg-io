@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         // Output related
-        "target": "es2017",
+        "target": "es2019",
         "importHelpers": true,
         "sourceMap": true,
         "declaration": true,
@@ -10,7 +10,7 @@
         "moduleResolution": "node",
 
         // Type checking
-        "lib": ["es2017"],
+        "lib": ["es2019"],
         "alwaysStrict": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,

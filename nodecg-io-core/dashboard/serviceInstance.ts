@@ -7,6 +7,7 @@ import {
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { objectDeepCopy } from "./utils/deepCopy";
 import { config, sendAuthenticatedMessage } from "./crypto";
+import { ObjectMap } from "../extension/service";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
@@ -23,10 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // Inputs
 const selectInstance = document.getElementById("selectInstance") as HTMLSelectElement;
 const selectService = document.getElementById("selectService") as HTMLSelectElement;
+const selectPreset = document.getElementById("selectPreset") as HTMLSelectElement;
 const inputInstanceName = document.getElementById("inputInstanceName") as HTMLInputElement;
 
 // Website areas
 const instanceServiceSelector = document.getElementById("instanceServiceSelector");
+const instancePreset = document.getElementById("instancePreset");
 const instanceNameField = document.getElementById("instanceNameField");
 const instanceEditButtons = document.getElementById("instanceEditButtons");
 const instanceCreateButton = document.getElementById("instanceCreateButton");
@@ -62,33 +65,59 @@ export function onInstanceSelectChange(value: string): void {
     showNotice(undefined);
     switch (value) {
         case "new":
-            showInMonaco("text", true, editorCreateText);
-            setCreateInputs(true, false, true);
+            showInMonaco(true, editorCreateText);
+            setCreateInputs(true, false, true, false);
             inputInstanceName.value = "";
             break;
         case "select":
-            showInMonaco("text", true, editorDefaultText);
-            setCreateInputs(false, false, true);
+            showInMonaco(true, editorDefaultText);
+            setCreateInputs(false, false, true, false);
             break;
         default:
             showConfig(value);
     }
 }
 
-function showConfig(value: string) {
-    const inst = config.data?.instances[value];
+function showConfig(instName: string) {
+    const inst = config.data?.instances[instName];
     const service = config.data?.services.find((svc) => svc.serviceType === inst?.serviceType);
 
     if (!service) {
-        showInMonaco("text", true, editorInvalidServiceText);
+        showInMonaco(true, editorInvalidServiceText);
     } else if (service.requiresNoConfig) {
-        showInMonaco("text", true, editorNotConfigurableText);
+        showInMonaco(true, editorNotConfigurableText);
     } else {
-        const jsonString = JSON.stringify(inst?.config || {}, null, 4);
-        showInMonaco("json", false, jsonString, service?.schema);
+        showInMonaco(false, inst?.config ?? {}, service?.schema);
     }
 
-    setCreateInputs(false, true, !(service?.requiresNoConfig ?? false));
+    setCreateInputs(false, true, !(service?.requiresNoConfig ?? false), service?.presets !== undefined);
+
+    if (service?.presets) {
+        renderPresets(service.presets);
+    }
+}
+
+// Preset drop-down
+export function selectInstanceConfigPreset(): void {
+    const selectedPresetName = selectPreset.options[selectPreset.selectedIndex]?.value;
+    if (!selectedPresetName) {
+        return;
+    }
+
+    const instName = selectInstance.options[selectInstance.selectedIndex]?.value;
+    if (!instName) {
+        return;
+    }
+
+    const instance = config.data?.instances[instName];
+    if (!instance) {
+        return;
+    }
+
+    const service = config.data?.services.find((svc) => svc.serviceType === instance.serviceType);
+    const presetValue = service?.presets?.[selectedPresetName] ?? {};
+
+    showInMonaco(false, presetValue, service?.schema);
 }
 
 // Save button
@@ -191,6 +220,17 @@ function renderInstances() {
     selectServiceInstance(previousSelected);
 }
 
+function renderPresets(presets: ObjectMap<unknown>) {
+    updateOptionsMap(selectPreset, presets);
+
+    // Add "Select..." element that hints the user that he can use this select box
+    // to choose a preset
+    const selectHintOption = document.createElement("option");
+    selectHintOption.innerText = "Select...";
+    selectPreset.prepend(selectHintOption);
+    selectPreset.selectedIndex = 0; // Select newly added hint
+}
+
 // Util functions
 
 function selectServiceInstance(instanceName: string) {
@@ -208,7 +248,12 @@ function selectServiceInstance(instanceName: string) {
 }
 
 // Hides/unhides parts of the website based on the passed parameters
-function setCreateInputs(createMode: boolean, instanceSelected: boolean, showSave: boolean) {
+function setCreateInputs(
+    createMode: boolean,
+    instanceSelected: boolean,
+    showSave: boolean,
+    serviceHasPresets: boolean,
+) {
     function setVisible(node: HTMLElement | null, visible: boolean) {
         if (visible && node?.classList.contains("hidden")) {
             node?.classList.remove("hidden");
@@ -218,6 +263,7 @@ function setCreateInputs(createMode: boolean, instanceSelected: boolean, showSav
     }
 
     setVisible(instanceEditButtons, !createMode && instanceSelected);
+    setVisible(instancePreset, !createMode && instanceSelected && serviceHasPresets);
     setVisible(instanceCreateButton, createMode);
     setVisible(instanceNameField, createMode);
     setVisible(instanceServiceSelector, createMode);
@@ -231,12 +277,14 @@ export function showNotice(msg: string | undefined): void {
 }
 
 function showInMonaco(
-    type: "text" | "json",
     readOnly: boolean,
-    content: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    content: any,
     schema?: Record<string, unknown>,
 ): void {
     editor?.updateOptions({ readOnly });
+    const type = typeof content === "object" ? "json" : "text";
+    const contentStr = typeof content === "object" ? JSON.stringify(content, null, 4) : content;
 
     // JSON Schema stuff
     // Get rid of old models, as they have to be unique and we may add the same again
@@ -263,5 +311,5 @@ function showInMonaco(
               },
     );
 
-    editor?.setModel(monaco.editor.createModel(content, type, schema ? modelUri : undefined));
+    editor?.setModel(monaco.editor.createModel(contentStr, type, schema ? modelUri : undefined));
 }

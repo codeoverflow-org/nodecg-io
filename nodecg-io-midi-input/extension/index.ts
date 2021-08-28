@@ -13,6 +13,8 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputServiceClient> {
+    presets = Object.fromEntries(easymidi.getInputs().map((device) => [device, { device }]));
+
     async validateConfig(config: MidiInputServiceConfig): Promise<Result<void>> {
         const devices: Array<string> = new Array<string>();
 
