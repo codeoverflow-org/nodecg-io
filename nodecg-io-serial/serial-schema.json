@@ -12,20 +12,20 @@
                     "title": "The name of the serial port you want to connect to.",
                     "description": "This is a specific name for a serial port. The device connected to this port may change on reboot, if multiple devices are connected to the system. It is the simplest option, so it should be prefeered if only one device is connected."
                 },
-                "maufacturer": {
+                "manufacturer": {
                     "type": "string",
                     "title": "Name of the manufacturer of the desired device.",
-                    "description": "This name sould in most cases be the name of the manufacturer of the device. This may change and is mainly for human reference."
+                    "description": "This name should in most cases be the name of the manufacturer of the device. This may change and is mainly for human reference."
                 },
                 "serialNumber": {
                     "type": "string",
                     "pattern": "[0-9A-F]+",
                     "title": "The serial number of your device.",
-                    "description": "This is a Hexadecimal number that should be unique for every device of this make and model. These originate from the usb serial controller and may not be programmed. You can spot if this is the case if it is only 4 - 5 characters lonng and has many zeros."
+                    "description": "This is a Hexadecimal number that should be unique for every device of this make and model. These originate from the usb serial controller and may not be programmed. You can spot if this is the case if it is only 4 - 5 characters long and has many zeros."
                 },
                 "pnpId": {
                     "type": "string",
-                    "title": "The Pug'N'Play Id of your device.",
+                    "title": "The Plug'N'Play Id of your device.",
                     "description": "This originates from pre usb times and was for Plug and Play driver support. This will work with usb serial devices as well as with original serial ports."
                 }
             },
@@ -56,15 +56,15 @@
                     "type": "integer",
                     "default": 9600,
                     "enum": [110, 300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200],
-                    "title": "Speed of transmition",
-                    "description": "This signifies how many bits are transmitted per second. Beware that there are dedicated values that are commonly used. Non-standard baud rates have to be supported by devices, converters and operatig systems so please avoid them if possible."
+                    "title": "Speed of transmission",
+                    "description": "This signifies how many bits are transmitted per second. Beware that there are dedicated values that are commonly used. Non-standard baud rates have to be supported by devices, converters and operating systems so please avoid them if possible."
                 },
                 "dataBits": {
                     "type": "integer",
                     "default": 8,
                     "enum": [5, 6, 7, 8],
                     "title": "The number of bits carrying data per packet.",
-                    "description": "As Stated this signifies how many bits fo data are transported per packet. Most microcontroller based devices use 8 bits so 8 might a reasonable guess. 5 was standard in teletypes for a long time and also was commonly used to transpot data via punched tape."
+                    "description": "As Stated this signifies how many bits fo data are transported per packet. Most microcontroller based devices use 8 bits so 8 might a reasonable guess. 5 was standard in teletypes for a long time and also was commonly used to transport data via punched tape."
                 },
                 "lock": {
                     "type": "boolean",
@@ -84,7 +84,7 @@
                     "default": "none",
                     "enum": ["none", "even", "odd", "mark", "space"],
                     "title": "Mode of parity checking",
-                    "description": "Parity checking is a way to detect simple transmittion errors. There are multiple modes of operation. This will most likely be given in the manual but most microcontroller boards dont use ist, so it defaults to 'none'"
+                    "description": "Parity checking is a way to detect simple transmission errors. There are multiple modes of operation. This will most likely be given in the manual but most microcontroller boards don't use it, so it defaults to 'none'"
                 },
                 "rtscts": {
                     "type": "boolean",
@@ -102,25 +102,25 @@
                     "type": "boolean",
                     "default": false,
                     "title": "Use XOFF software flow control.",
-                    "description": "This enables software flow control on the side going to the computer. This is most often used in conjuction with xon. The Sender transmits a special character after the tranmission ended."
+                    "description": "This enables software flow control on the side going to the computer. This is most often used in conjunction with xon. The Sender transmits a special character after the transmission ended."
                 },
                 "xany": {
                     "type": "boolean",
                     "default": false,
                     "title": "Use XANY software flow control",
-                    "description": "A special form of Software flow control. It uses XON/XOFF but if transmition is stopped every character will resume operation. On the other ones will only resume on a special character."
+                    "description": "A special form of Software flow control. It uses XON/XOFF but if transmission is stopped every character will resume operation. On the other ones will only resume on a special character."
                 }
             },
 
             "title": "Information about the serial communication.",
-            "description": "You can specify how the data should be transfered. With exception of the baud rate you will most likely not have to change any settings in this section if you only are using common microcontroller boards."
+            "description": "You can specify how the data should be transferred. With exception of the baud rate you will most likely not have to change any settings in this section if you only are using common microcontroller boards."
         },
         "protocol": {
             "type": "object",
             "properties": {
                 "delimiter": {
                     "type": "string",
-                    "default": "\r\n",
+                    "default": "\n",
                     "enum": ["\r\n", "\n"],
                     "title": "Line ending delimiter",
                     "description": "This sequence is placed to signify the end of a line."
@@ -130,10 +130,10 @@
                     "default": "utf8",
                     "enum": ["ascii", "utf8", "utf16le", "ucs2", "base64", "binary", "hex"],
                     "title": "Character encoding used to transmit or receive",
-                    "description": "The characterencoding specified which bit sequence results in what character."
+                    "description": "The character encoding specified which bit sequence results in what character."
                 }
             },
-            "title": "Information about the protocoll",
+            "title": "Information about the protocol",
             "description": "At the moment only complete lines will be interpreted as data. This might expand in the future."
         }
     },
