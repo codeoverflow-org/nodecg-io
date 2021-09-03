@@ -17,6 +17,10 @@
                         "type": "string",
                         "enum": ["KeyLight", "LightStrip"],
                         "description": "The type of light. Available types: 'KeyLight', 'LightStrip'."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "An optional name for the light that can be used to identify it."
                     }
                 },
                 "required": ["ipAddress", "lightType"]

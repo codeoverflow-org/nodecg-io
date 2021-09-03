@@ -1,50 +1,32 @@
 import { NodeCG } from "nodecg/types/server";
 import { Result, emptySuccess, success, ServiceBundle, error } from "nodecg-io-core";
-import { ElgatoKeyLightClient, ElgatoLightClient, ElgatoLightStripClient, LightType } from "./elgatoLightClient";
+import { ElgatoLightClient, ElgatoLightConfig } from "./elgatoLightClient";
 
-export interface ElgatoLightConfig {
-    lights: [
-        {
-            ipAddress: string;
-            lightType: LightType;
-        },
-    ];
-}
-
-export { ElgatoLightClient, ElgatoKeyLightClient, ElgatoLightStripClient, LightType } from "./elgatoLightClient";
+export { ElgatoLight, ElgatoKeyLight, ElgatoLightStrip, LightType } from "./elgatoLight";
+export { ElgatoLightClient, ElgatoLightConfig } from "./elgatoLightClient";
 
 module.exports = (nodecg: NodeCG) => {
     new ElgatoLightService(nodecg, "elgato-light", __dirname, "../schema.json").register();
 };
 
-// TODO: Change signature again, should be one ElgatoLightClient with multiple lights (KeyLight|LightStrip)
-class ElgatoLightService extends ServiceBundle<ElgatoLightConfig, Array<ElgatoLightClient>> {
+class ElgatoLightService extends ServiceBundle<ElgatoLightConfig, ElgatoLightClient> {
     async validateConfig(config: ElgatoLightConfig): Promise<Result<void>> {
-        for (const light of config.lights) {
-            const client = this.createLightClient(light.ipAddress, light.lightType);
-            const valid = await client.validate();
-            if (!valid) {
-                return error(`Unable to connect to elgato light with ip address: ${light.ipAddress}`);
-            }
+        const notReachableLights = await new ElgatoLightClient(config).identifyNotReachableLights();
+        if (notReachableLights.length === 0) {
+            return emptySuccess();
         }
-        return emptySuccess();
-    }
-
-    async createClient(config: ElgatoLightConfig): Promise<Result<Array<ElgatoLightClient>>> {
-        const lights = config.lights.map((light) => this.createLightClient(light.ipAddress, light.lightType));
-        this.nodecg.log.info("Successfully created Elgato light client(s).");
-        return success(lights);
-    }
-
-    stopClient(_: Array<ElgatoLightClient>): void {
-        this.nodecg.log.info("Successfully stopped Elgato light client(s).");
-    }
-
-    private createLightClient(ipAddress: string, lightType: LightType) {
-        if (lightType === "KeyLight") {
-            return new ElgatoKeyLightClient(ipAddress);
-        } else {
-            return new ElgatoLightStripClient(ipAddress);
+        {
+            return error(`Unable to connect to the lights with the following IPs: ${notReachableLights.join(", ")}`);
         }
+    }
+
+    async createClient(config: ElgatoLightConfig): Promise<Result<ElgatoLightClient>> {
+        const client = new ElgatoLightClient(config);
+        this.nodecg.log.info("Successfully created Elgato light clients.");
+        return success(client);
+    }
+
+    stopClient(_: ElgatoLightClient): void {
+        this.nodecg.log.info("Successfully stopped Elgato light clients.");
     }
 }

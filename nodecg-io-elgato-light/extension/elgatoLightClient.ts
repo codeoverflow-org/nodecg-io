@@ -1,91 +1,52 @@
-import fetch from "node-fetch";
-import { LightData } from "./lightData";
+import { ElgatoLight } from ".";
+import { ElgatoKeyLight, ElgatoLightStrip, LightType } from "./elgatoLight";
 
-export type LightType = "KeyLight" | "LightStrip";
+export interface ElgatoLightConfig {
+    lights: [
+        {
+            ipAddress: string;
+            lightType: LightType;
+            name?: string;
+        },
+    ];
+}
 
 export class ElgatoLightClient {
-    constructor(private ipAddress: string) {}
+    private lights: ElgatoLight[] = [];
 
-    public async validate(): Promise<boolean> {
-        const response = await this.callGET();
-        return response.status === 200;
+    constructor(private config: ElgatoLightConfig) {
+        this.lights = this.config.lights.map((light) => this.createLight(light.ipAddress, light.lightType));
     }
 
-    private buildPath(): string {
-        return `http://${this.ipAddress}:9123/elgato/lights`;
+    private createLight(ipAddress: string, lightType: LightType) {
+        if (lightType === "KeyLight") {
+            return new ElgatoKeyLight(ipAddress);
+        } else {
+            return new ElgatoLightStrip(ipAddress);
+        }
     }
 
-    private async callGET() {
-        return fetch(this.buildPath(), {
-            method: "GET",
-        });
-    }
+    async identifyNotReachableLights(): Promise<Array<string>> {
+        const notReachableLights = [];
 
-    private async callPUT(body: LightData) {
-        return fetch(this.buildPath(), {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-        });
-    }
-
-    async isLightOn(): Promise<boolean> {
-        const response = await this.callGET();
-
-        if (response.status !== 200) {
-            return false;
+        for (const light of this.lights) {
+            if (!(await light.validate())) {
+                notReachableLights.push(light.ipAddress);
+            }
         }
 
-        const json = (await response.json()) as LightData;
-        return json.lights[0]?.on === 1;
+        return notReachableLights;
     }
 
-    async turnLightOn(): Promise<void> {
-        const lightData = ElgatoLightClient.createLightData(1);
-        await this.callPUT(lightData);
+    getAllLights(): ElgatoLight[] {
+        return [...this.lights];
     }
 
-    async turnLightOff(): Promise<void> {
-        const lightData = ElgatoLightClient.createLightData(0);
-        await this.callPUT(lightData);
+    getLightByName(name: string): ElgatoLight | undefined {
+        return this.lights.find((light) => light.name === name);
     }
 
-    async toggleLight(): Promise<void> {
-        const state = await this.isLightOn();
-        const lightData = ElgatoLightClient.createLightData(state ? 0 : 1);
-        await this.callPUT(lightData);
+    getLightByAddress(ipAddress: string): ElgatoLight | undefined {
+        return this.lights.find((light) => light.ipAddress === ipAddress);
     }
-
-    // TODO: Implement brightness getter and setter
-
-    protected static createLightData(
-        on?: number,
-        hue?: number,
-        saturation?: number,
-        brightness?: number,
-        temperature?: number,
-    ): LightData {
-        return {
-            numberOfLights: 1,
-            lights: [
-                {
-                    on: on,
-                    hue: hue,
-                    saturation: saturation,
-                    brightness: brightness,
-                    temperature: temperature,
-                },
-            ],
-        };
-    }
-}
-
-export class ElgatoKeyLightClient extends ElgatoLightClient {
-    // TODO: Implement temperature getter and setter
-}
-
-export class ElgatoLightStripClient extends ElgatoLightClient {
-    // TODO: Implement hue and saturation getter and setter
 }
