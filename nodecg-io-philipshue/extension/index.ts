@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, ObjectMap } from "nodecg-io-core";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
 // Only needed for type because of that it is "unused" but still needed
@@ -11,9 +11,8 @@ const deviceName = "nodecg-io";
 const name = "philipshue";
 
 interface PhilipsHueServiceConfig {
-    discover: boolean;
     ipAddr: string;
-    port: number;
+    port?: number;
     username?: string;
     apiKey?: string;
 }
@@ -25,20 +24,20 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHueServiceClient> {
+    presets = {};
+
+    constructor(nodecg: NodeCG, name: string, ...pathSegments: string[]) {
+        super(nodecg, name, ...pathSegments);
+        this.discoverBridges()
+            .then((bridgePresets) => (this.presets = bridgePresets))
+            .catch((err) => this.nodecg.log.error(`Failed to discover local bridges: ${err}`));
+    }
+
     async validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
-        const { discover, port, ipAddr } = config;
+        const { port, ipAddr } = config;
 
-        if (!config) {
-            // config could not be found
-            return error("No config found!");
-        } else if (!discover) {
-            // check the ip address if its there
-            if (ipAddr && !ipv4(ipAddr)) {
-                return error("Invalid IP address, can handle only IPv4 at the moment!");
-            }
-
-            // discover is not set but there is no ip address
-            return error("Discover isn't true there is no IP address!");
+        if (!ipv4(ipAddr)) {
+            return error("Invalid IP address, can handle only IPv4 at the moment!");
         } else if (port && !(0 <= port && port <= 65535)) {
             // the port is there but the port is wrong
             return error("Your port is not between 0 and 65535!");
@@ -49,16 +48,6 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
     }
 
     async createClient(config: PhilipsHueServiceConfig): Promise<Result<PhilipsHueServiceClient>> {
-        if (config.discover) {
-            const discIP = await this.discoverBridge();
-            if (discIP) {
-                config.ipAddr = discIP;
-                config.discover = false;
-            } else {
-                return error("Could not discover your Hue Bridge, maybe try specifying a specific IP!");
-            }
-        }
-
         const { port, username, apiKey, ipAddr } = config;
 
         // check if there is one thing missing
@@ -97,15 +86,15 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
         // Not supported from the client
     }
 
-    private async discoverBridge() {
-        const discoveryResults = await discovery.nupnpSearch();
+    private async discoverBridges(): Promise<ObjectMap<PhilipsHueServiceConfig>> {
+        const results: { ipaddress: string }[] = await discovery.nupnpSearch();
 
-        if (discoveryResults.length === 0) {
-            this.nodecg.log.error("Failed to resolve any Hue Bridges");
-            return null;
-        } else {
-            // Ignoring that you could have more than one Hue Bridge on a network as this is unlikely in 99.9% of users situations
-            return discoveryResults[0].ipaddress as string;
-        }
+        return Object.fromEntries(
+            results.map((bridge) => {
+                const ipAddr = bridge.ipaddress;
+                const config: PhilipsHueServiceConfig = { ipAddr };
+                return [ipAddr, config];
+            }),
+        );
     }
 }
