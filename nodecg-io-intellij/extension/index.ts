@@ -3,7 +3,7 @@ import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { IntelliJ } from "./intellij";
 
 interface IntelliJServiceConfig {
-    address: string;
+    address?: string;
 }
 
 export type IntelliJServiceClient = IntelliJ;
@@ -14,8 +14,7 @@ module.exports = (nodecg: NodeCG) => {
 
 class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServiceClient> {
     async validateConfig(config: IntelliJServiceConfig): Promise<Result<void>> {
-        const address = config.address;
-        const ij = new IntelliJ(address);
+        const ij = new IntelliJ(config.address);
         await ij.rawRequest("available_methods", {});
         return emptySuccess();
     }
