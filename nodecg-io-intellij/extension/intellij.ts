@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 
 export class IntelliJ {
-    private readonly address: string;
+    readonly address: string;
 
     readonly pluginManager: PluginManager;
     readonly localHistory: LocalHistory;

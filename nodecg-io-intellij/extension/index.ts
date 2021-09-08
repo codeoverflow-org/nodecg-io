@@ -22,7 +22,7 @@ class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServi
     async createClient(config: IntelliJServiceConfig): Promise<Result<IntelliJServiceClient>> {
         const ij = new IntelliJ(config.address);
         await ij.rawRequest("available_methods", {});
-        this.nodecg.log.info(`Successfully connected to IntelliJ at ${config.address}.`);
+        this.nodecg.log.info(`Successfully connected to IntelliJ at ${ij.address}.`);
         return success(ij);
     }
 
