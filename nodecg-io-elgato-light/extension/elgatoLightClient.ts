@@ -15,14 +15,14 @@ export class ElgatoLightClient {
     private lights: ElgatoLight[] = [];
 
     constructor(private config: ElgatoLightConfig) {
-        this.lights = this.config.lights.map((light) => this.createLight(light.ipAddress, light.lightType));
+        this.lights = this.config.lights.map((light) => this.createLight(light.ipAddress, light.lightType, light.name));
     }
 
-    private createLight(ipAddress: string, lightType: LightType) {
+    private createLight(ipAddress: string, lightType: LightType, name?: string) {
         if (lightType === "KeyLight") {
-            return new ElgatoKeyLight(ipAddress);
+            return new ElgatoKeyLight(ipAddress, name);
         } else {
-            return new ElgatoLightStrip(ipAddress);
+            return new ElgatoLightStrip(ipAddress, name);
         }
     }
 
