@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg/types/server";
-import { ElgatoKeyLight, ElgatoLightClient, ElgatoLightStrip } from "nodecg-io-elgato-light";
+import { ElgatoLightClient } from "nodecg-io-elgato-light";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
@@ -10,16 +10,15 @@ module.exports = function (nodecg: NodeCG) {
     elgatoLightClient?.onAvailable(async (client) => {
         nodecg.log.info("Elgato light service available.");
 
-        //client.getAllLights().forEach((light) => light.toggleLight());
-        //const brightness = await((client.getLightByName("ShelfStrip")) as ElgatoLightStrip).getHue();
-        //nodecg.log.info(brightness);
+        // Blinky Blinky
+        const interval = setInterval(() => client.getAllLights().forEach((light) => light.toggleLight()), 500);
+        setTimeout(() => clearInterval(interval), 3100);
 
-        //(client.getLightByName("ShelfStrip") as ElgatoLightStrip).setHue(69);
-        //(client.getLightByName("ShelfStrip") as ElgatoLightStrip).setSaturation(50);
-
-        // TODO: Add 10^6/kelvin calculation
-        // TODO: Add typescript doc
-        // TODO: Create a more comprehensive example
+        // Get some data
+        client.getAllLights().forEach(async (light) => {
+            const brightness = await light.getBrightness();
+            nodecg.log.info(`Elgato light (${light.ipAddress}), brightness: ${brightness}`);
+        });
     });
 
     elgatoLightClient?.onUnavailable(() => {
