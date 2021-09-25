@@ -112,10 +112,6 @@ export class InstanceManager extends EventEmitter {
             }
         }
 
-        delete this.serviceInstances[instanceName];
-        // Save deletion
-        this.emit("change");
-
         // Remove any assignment of a bundle to this service instance
         const deps = this.bundles.getBundleDependencies();
         Object.entries(deps).forEach(
@@ -124,6 +120,10 @@ export class InstanceManager extends EventEmitter {
                     .filter((d) => d.serviceInstance === instanceName) // Search for bundle dependencies using this instance
                     .forEach((d) => this.bundles.unsetServiceDependency(bundleName, d.serviceType)), // unset all these
         );
+
+        // Delete and save
+        delete this.serviceInstances[instanceName];
+        this.emit("change");
 
         return true;
     }

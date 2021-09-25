@@ -1,0 +1,48 @@
+{
+    "name": "nodecg-io-elgato-light",
+    "version": "0.2.0",
+    "description": "Control your Elgato lights, e.g. key lights and light stripes.",
+    "homepage": "https://nodecg.io/RELEASE/samples/elgato-light",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "https://github.com/codeoverflow-org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-elgato-light"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg": "^1.8.1",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "@types/node-fetch": "^2.5.10",
+        "node-fetch": "^2.6.1",
+        "nodecg-io-core": "^0.2.0"
+    }
+}

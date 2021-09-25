@@ -1,17 +1,17 @@
 import fetch from "node-fetch";
 
 export class IntelliJ {
-    private readonly address: string;
+    readonly address: string;
 
     readonly pluginManager: PluginManager;
     readonly localHistory: LocalHistory;
 
-    public constructor(address: string) {
-        this.address = address;
-        if (address.includes("://")) {
+    constructor(address?: string) {
+        // Check if protocol is defined and default to http if missing
+        if (address?.includes("://")) {
             this.address = address;
         } else {
-            this.address = "http://" + address;
+            this.address = `http://${address ?? "127.0.0.1:19524"}`;
         }
 
         this.pluginManager = new PluginManager(this);
