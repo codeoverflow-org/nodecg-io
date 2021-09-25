@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { TwitchChatServiceClient } from "nodecg-io-twitch-chat";
 import { requireService } from "nodecg-io-core";
 

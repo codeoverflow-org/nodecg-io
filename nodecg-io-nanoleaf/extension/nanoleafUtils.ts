@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { Color } from "./interfaces";
 
 /**

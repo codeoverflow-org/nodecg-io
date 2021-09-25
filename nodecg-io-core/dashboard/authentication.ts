@@ -1,4 +1,4 @@
-/// <reference types="nodecg/types/browser" />
+/// <reference types="nodecg-types/types/browser" />
 
 import { updateMonacoLayout } from "./serviceInstance";
 import { setPassword, isPasswordSet } from "./crypto";

@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { IntelliJServiceClient } from "nodecg-io-intellij";
 import { Plugin } from "nodecg-io-intellij/extension/intellij";
 import { requireService } from "nodecg-io-core";

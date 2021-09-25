@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./service";
 import { emptySuccess, error, Result } from "./utils/result";
 import { EventEmitter } from "events";

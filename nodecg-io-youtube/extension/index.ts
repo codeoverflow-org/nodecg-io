@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import { google, youtube_v3 } from "googleapis";
 import type { Credentials } from "google-auth-library/build/src/auth/credentials";

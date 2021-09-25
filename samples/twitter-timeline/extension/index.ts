@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { TwitterServiceClient } from "nodecg-io-twitter";
 import { requireService } from "nodecg-io-core";
 

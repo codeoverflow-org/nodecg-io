@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";

@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { DebugHelper } from "nodecg-io-debug";
 import { requireService } from "nodecg-io-core";
 
