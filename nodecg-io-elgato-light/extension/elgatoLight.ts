@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { LightData } from "./lightData";
+import { LightData, LightValues } from "./lightData";
 import { Response } from "node-fetch";
 
 export type LightType = "KeyLight" | "LightStrip";
@@ -48,16 +48,7 @@ export abstract class ElgatoLight {
      * Helper method to call HTTP GET on the elgato light and ease the interpretation of the response.
      * @returns the response of the elgato light or undefined
      */
-    protected async getLightData(): Promise<
-        | {
-              on?: number | undefined;
-              hue?: number | undefined;
-              saturation?: number | undefined;
-              brightness?: number | undefined;
-              temperature?: number | undefined;
-          }
-        | undefined
-    > {
+    protected async getLightData(): Promise<LightValues | undefined> {
         const response = await this.callGET();
 
         if (response.status !== 200) {
@@ -79,7 +70,7 @@ export abstract class ElgatoLight {
      * Switches the elgato light on.
      */
     async turnLightOn(): Promise<void> {
-        const lightData = ElgatoLight.createLightData(1);
+        const lightData = ElgatoLight.createLightData({ on: 1 });
         await this.callPUT(lightData);
     }
 
@@ -87,7 +78,7 @@ export abstract class ElgatoLight {
      * Switches the elgato light off.
      */
     async turnLightOff(): Promise<void> {
-        const lightData = ElgatoLight.createLightData(0);
+        const lightData = ElgatoLight.createLightData({ on: 0 });
         await this.callPUT(lightData);
     }
 
@@ -96,7 +87,7 @@ export abstract class ElgatoLight {
      */
     async toggleLight(): Promise<void> {
         const state = await this.isLightOn();
-        const lightData = ElgatoLight.createLightData(state ? 0 : 1);
+        const lightData = ElgatoLight.createLightData({ on: state ? 0 : 1 });
         await this.callPUT(lightData);
     }
 
@@ -106,7 +97,7 @@ export abstract class ElgatoLight {
      */
     async setBrightness(brightness: number): Promise<void> {
         const sanitizedValue = Math.max(0, Math.min(100, brightness));
-        const lightData = ElgatoLight.createLightData(undefined, undefined, undefined, sanitizedValue);
+        const lightData = ElgatoLight.createLightData({ brightness: sanitizedValue });
         await this.callPUT(lightData);
     }
 
@@ -118,24 +109,10 @@ export abstract class ElgatoLight {
         return (await this.getLightData())?.brightness ?? -1;
     }
 
-    protected static createLightData(
-        on?: number,
-        hue?: number,
-        saturation?: number,
-        brightness?: number,
-        temperature?: number,
-    ): LightData {
+    protected static createLightData(data: LightValues): LightData {
         return {
             numberOfLights: 1,
-            lights: [
-                {
-                    on: on,
-                    hue: hue,
-                    saturation: saturation,
-                    brightness: brightness,
-                    temperature: temperature,
-                },
-            ],
+            lights: [data],
         };
     }
 }
@@ -152,7 +129,7 @@ export class ElgatoKeyLight extends ElgatoLight {
      */
     async setTemperature(temperature: number): Promise<void> {
         const sanitizedValue = Math.max(143, Math.min(344, ElgatoKeyLight.temperatureFactor / temperature));
-        const lightData = ElgatoLight.createLightData(undefined, undefined, undefined, undefined, sanitizedValue);
+        const lightData = ElgatoLight.createLightData({ temperature: sanitizedValue });
         await this.callPUT(lightData);
     }
 
@@ -181,7 +158,7 @@ export class ElgatoLightStrip extends ElgatoLight {
      */
     async setHue(hue: number): Promise<void> {
         const sanitizedValue = Math.max(0, Math.min(360, hue));
-        const lightData = ElgatoLight.createLightData(undefined, sanitizedValue);
+        const lightData = ElgatoLight.createLightData({ hue: sanitizedValue });
         await this.callPUT(lightData);
     }
 
@@ -199,7 +176,7 @@ export class ElgatoLightStrip extends ElgatoLight {
      */
     async setSaturation(saturation: number): Promise<void> {
         const sanitizedValue = Math.max(0, Math.min(100, saturation));
-        const lightData = ElgatoLight.createLightData(undefined, undefined, sanitizedValue);
+        const lightData = ElgatoLight.createLightData({ saturation: sanitizedValue });
         await this.callPUT(lightData);
     }
 

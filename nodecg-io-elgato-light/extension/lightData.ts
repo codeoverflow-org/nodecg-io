@@ -3,13 +3,13 @@
  */
 export interface LightData {
     numberOfLights: 1;
-    lights: [
-        {
-            on?: number;
-            hue?: number;
-            saturation?: number;
-            brightness?: number;
-            temperature?: number;
-        },
-    ];
+    lights: LightValues[];
+}
+
+export interface LightValues {
+    on?: number;
+    hue?: number;
+    saturation?: number;
+    brightness?: number;
+    temperature?: number;
 }

@@ -15,9 +15,8 @@ class ElgatoLightService extends ServiceBundle<ElgatoLightConfig, ElgatoLightCli
         if (notReachableLights.length === 0) {
             return emptySuccess();
         }
-        {
-            return error(`Unable to connect to the lights with the following IPs: ${notReachableLights.join(", ")}`);
-        }
+
+        return error(`Unable to connect to the lights with the following IPs: ${notReachableLights.join(", ")}`);
     }
 
     async createClient(config: ElgatoLightConfig): Promise<Result<ElgatoLightClient>> {

@@ -31,7 +31,7 @@ export class ElgatoLightClient {
 
     /**
      * Tries to reach all elgato lights contained in the config provided in the constructor.
-     * @returns  an array of IP addresses of elgato lights that where configured but not reachable
+     * @returns an array of IP addresses of elgato lights that where configured but not reachable
      */
     async identifyNotReachableLights(): Promise<Array<string>> {
         const notReachableLights = [];
