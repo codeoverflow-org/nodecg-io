@@ -1,5 +1,5 @@
 import { Service } from "./service";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { error, Result, success } from "./utils/result";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

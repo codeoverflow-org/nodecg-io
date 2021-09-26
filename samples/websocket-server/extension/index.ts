@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { WSServerServiceClient } from "nodecg-io-websocket-server";
 import { requireService } from "nodecg-io-core";
 

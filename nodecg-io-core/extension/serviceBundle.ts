@@ -1,5 +1,5 @@
 import { NodeCGIOCore } from ".";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { ObjectMap, Service } from "./service";
 import { Result } from "./utils/result";
 

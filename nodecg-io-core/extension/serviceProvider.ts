@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { NodeCGIOCore } from "./index";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 
 /**
  * A wrapper around a ServiceClient that has helper functions for setting up callbacks and

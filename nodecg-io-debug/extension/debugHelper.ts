@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 
 export interface Color {
     red: number;

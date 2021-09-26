@@ -45,7 +45,7 @@ if __name__ == '__main__':
     os.mkdir(f'nodecg-io-{service_name}/extension')
     with open(f'nodecg-io-{service_name}/extension/index.ts', mode='w') as file:
         file.writelines([
-            'import { NodeCG } from "nodecg/types/server";\n',
+            'import { NodeCG } from "nodecg-types/types/server";\n',
             'import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";\n',
             f'import {{ {service_name_c}Client }} from "./{service_name_cc}Client";\n',
             '\n',
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     os.mkdir(f'samples/{sample_name}/extension')
     with open(f'samples/{sample_name}/extension/index.ts', mode='w') as file:
         file.writelines([
-            'import { NodeCG } from "nodecg/types/server";\n',
+            'import { NodeCG } from "nodecg-types/types/server";\n',
             f'import {{ {service_name_c}Client }} from "nodecg-io-{service_name}";\n',
             'import { requireService } from "nodecg-io-core";\n',
             '\n',

@@ -1,4 +1,4 @@
-/// <reference types="nodecg/types/browser" />
+/// <reference types="nodecg-types/types/browser" />
 /// <reference types="monaco-editor/monaco" />
 
 // Buttons
