@@ -36,11 +36,11 @@ export {
 } from "./curseforgeClient";
 
 module.exports = (nodecg: NodeCG) => {
-    new CurseforgeService(nodecg, "curseforge", __dirname, "../schema.json").register();
+    new CurseforgeService(nodecg, "curseforge").register();
 };
 
 class CurseforgeService extends ServiceBundle<never, CurseForgeClient> {
-    async validateConfig(_: never): Promise<Result<void>> {
+    async validateConfig(): Promise<Result<void>> {
         return emptySuccess();
     }
 

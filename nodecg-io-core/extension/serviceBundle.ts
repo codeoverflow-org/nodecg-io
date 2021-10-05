@@ -108,6 +108,8 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
     requiresNoConfig = false;
 
     private readSchema(pathSegments: string[]): ObjectMap<unknown> | undefined {
+        if (pathSegments.length === 0) return undefined;
+
         const joinedPath = path.resolve(...pathSegments);
         try {
             const fileContent = fs.readFileSync(joinedPath, "utf8");
