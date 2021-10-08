@@ -1,0 +1,50 @@
+{
+    "name": "nodecg-io-googleapis",
+    "version": "0.2.0",
+    "description": "Allows to connect to and interact with many google-apis",
+    "homepage": "https://nodecg.io/RELEASE/samples/youtube",
+    "author": {
+        "name": "LarsVomMars",
+        "url": "https://github.com/LarsVomMars"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-youtube"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg-types": "^1.8.2",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "@types/gapi": "^0.0.39",
+        "express": "^4.17.1",
+        "googleapis": "^73.0.0",
+        "nodecg-io-core": "^0.2.0",
+        "open": "^8.0.8"
+    }
+}

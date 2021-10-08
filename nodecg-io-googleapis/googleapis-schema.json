@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "clientID": {
+            "type": "string",
+            "description": "The oauth client id https://console.cloud.google.com/apis/credentials/oauthclient"
+        },
+        "clientSecret": {
+            "type": "string",
+            "description": "The oauth client secret https://console.cloud.google.com/apis/credentials/oauthclient"
+        },
+        "refreshToken": {
+            "type": "string",
+            "description": "Token that allows the client to refresh access tokens. This is set automatically after first login, you don't need to set it."
+        },
+        "scope": {
+            "type": "array",
+            "description": "Scope URLs for all used services."
+        }
+    },
+    "required": ["clientID", "clientSecret"]
+}
