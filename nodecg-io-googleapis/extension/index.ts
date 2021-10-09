@@ -31,7 +31,7 @@ class GoogleApisService extends ServiceBundle<GoogleApisServiceConfig, GoogleApi
             redirectUri: "http://localhost:9090/nodecg-io-googleapis/oauth2callback",
         });
 
-        this.refreshTokens(config, auth);
+        await this.refreshTokens(config, auth);
 
         const client = new GoogleApis({ auth });
         return success(client);
@@ -53,7 +53,7 @@ class GoogleApisService extends ServiceBundle<GoogleApisServiceConfig, GoogleApi
 
             router.get("/nodecg-io-googleapis/oauth2callback", async (req, res) => {
                 try {
-                    const response = `<html><head><script>window.close();</script></head><body>YouTube connection successful! You may close this window now.</body></html>`;
+                    const response = `<html><head><script>window.close();</script></head><body>Google Api connection successful! You may close this window now.</body></html>`;
                     res.send(response);
 
                     const { tokens } = await auth.getToken(req.query.code as string);

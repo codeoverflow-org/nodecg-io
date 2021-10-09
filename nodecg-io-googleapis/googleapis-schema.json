@@ -15,7 +15,7 @@
             "type": "string",
             "description": "Token that allows the client to refresh access tokens. This is set automatically after first login, you don't need to set it."
         },
-        "scope": {
+        "scopes": {
             "type": "array",
             "description": "Scope URLs for all used services."
         }
