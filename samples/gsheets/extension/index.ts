@@ -1,15 +1,16 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { GSheetsServiceClient } from "nodecg-io-gsheets";
+import { GoogleApisServiceClient } from "nodecg-io-googleapis";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for Google Sheets started");
 
-    const gsheets = requireService<GSheetsServiceClient>(nodecg, "gsheets");
+    const googleApis = requireService<GoogleApisServiceClient>(nodecg, "googleapis");
 
-    gsheets?.onAvailable(async (client) => {
+    googleApis?.onAvailable(async (client) => {
+        const gsheets = client.sheets("v4");
         try {
-            const data = await client.spreadsheets.values.get(
+            const data = await gsheets.spreadsheets.values.get(
                 {
                     spreadsheetId: "<ID>", //Spreadsheet ID, URL is formatted https://docs.google.de/spreadsheets/d/<ID>/edit
                     range: "<tableSheetName>", //The sheet name, witch will used to get the data.
@@ -24,5 +25,5 @@ module.exports = function (nodecg: NodeCG) {
         }
     });
 
-    gsheets?.onUnavailable(() => nodecg.log.info("GSheets client has been unset."));
+    googleApis?.onUnavailable(() => nodecg.log.info("GSheets client has been unset."));
 };

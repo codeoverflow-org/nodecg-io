@@ -1,16 +1,16 @@
 {
-    "name": "nodecg-io-gsheets",
+    "name": "nodecg-io-googleapis",
     "version": "0.2.0",
-    "description": "Allow to control Google Sheets.",
-    "homepage": "https://nodecg.io/RELEASE",
+    "description": "Allows to connect to and interact with many google-apis",
+    "homepage": "https://nodecg.io/RELEASE/samples/youtube",
     "author": {
-        "name": "ExtremTechniker",
-        "url": "https://github.com/ExtremTechniker"
+        "name": "LarsVomMars",
+        "url": "https://github.com/LarsVomMars"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
-        "directory": "nodecg-io-gsheets"
+        "directory": "nodecg-io-youtube"
     },
     "files": [
         "**/*.js",

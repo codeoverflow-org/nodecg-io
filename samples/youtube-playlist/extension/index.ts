@@ -1,16 +1,18 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { YoutubeServiceClient } from "nodecg-io-youtube";
-import { youtube_v3 } from "googleapis";
+import { GoogleApisServiceClient } from "nodecg-io-googleapis";
 import { requireService } from "nodecg-io-core";
+import type { youtube_v3 } from "googleapis";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = (nodecg: NodeCG) => {
     nodecg.log.info("Sample bundle for youtube started");
 
-    const youtube = requireService<YoutubeServiceClient>(nodecg, "youtube");
+    const googleApis = requireService<GoogleApisServiceClient>(nodecg, "googleapis");
 
-    youtube?.onAvailable(async (client) => {
+    googleApis?.onAvailable(async (client) => {
+        const youtube = client.youtube("v3");
+
         nodecg.log.info("Youtube client has been updated, listing videos from playlist.");
-        const resp = await client.playlists.list({
+        const resp = await youtube.playlists.list({
             part: ["id", "snippet"],
             id: ["PL9oBXB6tQnlX013V1v20WkfzI9R2zamHi"],
         });
@@ -24,5 +26,5 @@ module.exports = function (nodecg: NodeCG) {
         }
     });
 
-    youtube?.onUnavailable(() => nodecg.log.info("Youtube client has been unset."));
+    googleApis?.onUnavailable(() => nodecg.log.info("Youtube client has been unset."));
 };
