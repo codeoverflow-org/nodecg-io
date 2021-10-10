@@ -15,40 +15,39 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
--   [x] AutoHotkey
--   [x] Android (using adb)
--   [x] CurseForge
--   [x] Discord
--   [x] Google Sheets (gsheets)
--   [x] IntelliJ IDEs
--   [x] IRC (Internet Relay Chat)
--   [x] MIDI Input
--   [x] MIDI Output
--   [x] Nanoleafs
--   [x] OBS
--   [x] Philips Hue
--   [x] RCON
--   [x] Reddit
--   [x] sACN Receiver
--   [x] sACN Sender
--   [x] Serial Port (Arduino)
--   [x] Slack WebAPI
--   [x] Spotify
--   [x] SQL (using [knex](https://knexjs.org/))
--   [x] Elgato Stream Deck
--   [x] StreamElements
--   [x] Telegram
--   [x] TIANE
--   [ ] TipeeeStream
--   [x] Twitch Addons
--   [x] Twitch API
--   [x] Twitch Chat
--   [x] Twitch PubSub
--   [x] Twitter
--   [x] WebSocket Client
--   [x] WebSocket Server
--   [x] Xdotool
--   [x] YouTube
+- AutoHotkey
+- Android (using adb)
+- CurseForge
+- Discord
+- Elgato lights
+- Google Apis
+- IntelliJ IDEs
+- IRC (Internet Relay Chat)
+- MIDI Input
+- MIDI Output
+- Nanoleafs
+- OBS
+- Philips Hue
+- RCON
+- Reddit
+- sACN Receiver
+- sACN Sender
+- Serial Port (Arduino)
+- Slack WebAPI
+- Spotify
+- SQL (using [knex](https://knexjs.org/))
+- Elgato Stream Deck
+- StreamElements
+- Telegram
+- TIANE
+- Twitch Addons
+- Twitch API
+- Twitch Chat
+- Twitch PubSub
+- Twitter
+- WebSocket Client
+- WebSocket Server
+- Xdotool
 
 ## How to use nodecg-io
 
