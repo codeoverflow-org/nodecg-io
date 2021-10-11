@@ -1,0 +1,34 @@
+{
+    "name": "artnet-console",
+    "homepage": "https://nodecg.io/RELEASE/samples/artnet",
+    "author": {
+        "name": "Tim-Tech-Dev",
+        "url": "https://github.com/Tim-Tech-Dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "samples/artnet-console"
+    },
+    "version": "0.2.0",
+    "private": true,
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-artnet": "^0.2.0"
+        }
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg": "^1.8.1",
+        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-artnet": "^0.2.0",
+        "typescript": "^4.2.4"
+    }
+}

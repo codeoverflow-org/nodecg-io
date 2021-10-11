@@ -3,7 +3,7 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=21&color=blue&style=flat-square)](https://nodecg.io/RELEASE/services/)
+[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=37&color=blue&style=flat-square)](https://nodecg.io/RELEASE/services/)
 [![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/GEJzxBGRu6)
 
@@ -15,8 +15,9 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
--   [x] AutoHotkey
 -   [x] Android (using adb)
+-   [x] ArtNet
+-   [x] AutoHotkey
 -   [x] CurseForge
 -   [x] Discord
 -   [x] Google Sheets (gsheets)

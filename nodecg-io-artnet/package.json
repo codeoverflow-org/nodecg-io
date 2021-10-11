@@ -1,0 +1,47 @@
+{
+    "name": "nodecg-io-artnet",
+    "version": "0.2.0",
+    "description": "Allows you to send DMX512 data over Art-Net™ to to Art-Net nodes i.e. professional lighting fixtures.",
+    "homepage": "https://nodecg.io/RELEASE/samples/artnet",
+    "author": {
+        "name": "Tim-Tech-Dev",
+        "url": "https://github.com/Tim-Tech-Dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-artnet"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "tsc -b --clean"
+    },
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg": "^1.8.1",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "nodecg-io-core": "^0.2.0",
+        "artnet-protocol": "^0.2.1"
+    }
+}
