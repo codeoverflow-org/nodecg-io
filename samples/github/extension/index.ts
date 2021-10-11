@@ -1,14 +1,14 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { GithubClient } from "nodecg-io-github";
+import { GitHubClient } from "nodecg-io-github";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for Github started.");
+    nodecg.log.info("Sample bundle for GitHub started.");
 
-    const github = requireService<GithubClient>(nodecg, "github");
+    const github = requireService<GitHubClient>(nodecg, "github");
 
     github?.onAvailable(async (github) => {
-        nodecg.log.info("Github service available.");
+        nodecg.log.info("GitHub service available.");
         nodecg.log.info(
             "GitHub repositories: " +
                 (
@@ -22,6 +22,6 @@ module.exports = function (nodecg: NodeCG) {
     });
 
     github?.onUnavailable(() => {
-        nodecg.log.info("Github service unavailable.");
+        nodecg.log.info("GitHub service unavailable.");
     });
 };

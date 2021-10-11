@@ -2,18 +2,18 @@ import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { Octokit } from "@octokit/rest";
 
-export interface GithubConfig {
+export interface GitHubConfig {
     token: string;
 }
 
-export type GithubClient = Octokit;
+export type GitHubClient = Octokit;
 
 module.exports = (nodecg: NodeCG) => {
-    new GithubService(nodecg, "github", __dirname, "../schema.json").register();
+    new GitHubService(nodecg, "github", __dirname, "../schema.json").register();
 };
 
-class GithubService extends ServiceBundle<GithubConfig, GithubClient> {
-    async validateConfig(config: GithubConfig): Promise<Result<void>> {
+class GitHubService extends ServiceBundle<GitHubConfig, GitHubClient> {
+    async validateConfig(config: GitHubConfig): Promise<Result<void>> {
         const octokit = new Octokit({
             auth: config.token,
         });
@@ -24,7 +24,7 @@ class GithubService extends ServiceBundle<GithubConfig, GithubClient> {
         return emptySuccess();
     }
 
-    async createClient(config: GithubConfig): Promise<Result<GithubClient>> {
+    async createClient(config: GitHubConfig): Promise<Result<GitHubClient>> {
         const client = new Octokit({
             auth: config.token,
         });
@@ -32,11 +32,11 @@ class GithubService extends ServiceBundle<GithubConfig, GithubClient> {
         return success(client);
     }
 
-    stopClient(_: GithubClient): void {
+    stopClient(_: GitHubClient): void {
         //
     }
 
-    removeHandlers(_: GithubClient): void {
+    removeHandlers(_: GitHubClient): void {
         //
     }
 }
