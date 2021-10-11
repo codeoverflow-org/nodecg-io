@@ -327,6 +327,103 @@ export class RatBagLed extends DBusObject {
     constructor(client: DBusClient, proxy: ProxyObject) {
         super(client, proxy);
     }
+
+    public async index(): Promise<number> {
+        return (await this.getProperty("org.freedesktop.ratbag1.Led", "Index")).value;
+    }
+
+    public async mode(): Promise<LedMode> {
+        const modeId: number = (await this.getProperty("org.freedesktop.ratbag1.Led", "Mode")).value;
+        switch (modeId) {
+            case 1:
+                return "on";
+            case 2:
+                return "cycle";
+            case 3:
+                return "breath";
+            default:
+                return "off";
+        }
+    }
+
+    public async setMode(mode: LedMode): Promise<void> {
+        let modeId = 0;
+        if (mode === "on") {
+            modeId = 1;
+        } else if (mode === "cycle") {
+            modeId = 2;
+        } else if (mode === "breath") {
+            modeId = 3;
+        }
+        await this.setProperty("org.freedesktop.ratbag1.Led", "Mode", new Variant<number>("u", modeId));
+    }
+
+    public async supportedModes(): Promise<LedMode[]> {
+        const modeIds: number[] = (await this.getProperty("org.freedesktop.ratbag1.Led", "Mode")).value;
+        const modes: LedMode[] = [];
+        for (const modeId of modeIds) {
+            switch (modeId) {
+                case 0:
+                    modes.push("off");
+                    break;
+                case 1:
+                    modes.push("on");
+                    break;
+                case 2:
+                    modes.push("cycle");
+                    break;
+                case 3:
+                    modes.push("breath");
+                    break;
+            }
+        }
+        return modes;
+    }
+
+    public async color(): Promise<RatBagColorObj & RatBagColorValue> {
+        const color: [number, number, number] = (await this.getProperty("org.freedesktop.ratbag1.Led", "Color")).value;
+        return {
+            color: ((color[0] & 0xff) << 16) | ((color[1] & 0xff) << 8) | (color[2] & 0xff),
+            red: color[0] & 0xff,
+            green: color[0] & 0xff,
+            blue: color[0] & 0xff,
+        };
+    }
+
+    public async setColor(color: RatBagColorObj | RatBagColorValue): Promise<void> {
+        let value: [number, number, number];
+        if ("color" in color) {
+            value = [(color.color >> 16) & 0xff, (color.color >> 8) & 0xff, color.color & 0xff];
+        } else {
+            value = [color.red, color.green, color.blue];
+        }
+        await this.setProperty(
+            "org.freedesktop.ratbag1.Led",
+            "Color",
+            new Variant<[number, number, number]>("(uuu)", value),
+        );
+    }
+
+    // millis
+    public async effectDuration(): Promise<number> {
+        return (await this.getProperty("org.freedesktop.ratbag1.Led", "EffectDuration")).value;
+    }
+
+    public async setEffectDuration(duration: number): Promise<void> {
+        await this.setProperty("org.freedesktop.ratbag1.Led", "EffectDuration", new Variant<number>("u", duration));
+    }
+
+    public async brightness(): Promise<number> {
+        return (await this.getProperty("org.freedesktop.ratbag1.Led", "Brightness")).value & 0xff;
+    }
+
+    public async setBrightness(brightness: number): Promise<void> {
+        await this.setProperty(
+            "org.freedesktop.ratbag1.Led",
+            "Brightness",
+            new Variant<number>("u", brightness & 0xff),
+        );
+    }
 }
 
 export type RatBagModelUnknown = {
@@ -381,6 +478,16 @@ export type RatBagMacroAction = {
     keyCode: number;
 };
 
+export type RatBagColorObj = {
+    red: number;
+    green: number;
+    blue: number;
+};
+
+export type RatBagColorValue = {
+    color: number;
+};
+
 export type RatBagSpecialAction =
     | "unknown"
     | "doubleclick"
@@ -401,6 +508,8 @@ export type RatBagSpecialAction =
     | "profile down"
     | "second mode"
     | "battery level";
+
+export type LedMode = "off" | "on" | "cycle" | "breath";
 
 type RatBagDeviceInterface = ClientInterface & {
     Commit(): Promise<void>;
