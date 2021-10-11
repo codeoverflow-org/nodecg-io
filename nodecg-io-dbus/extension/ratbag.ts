@@ -1,6 +1,9 @@
 import { DBusClient, DBusProxyConfig, DBusObject } from "./dbusClient";
 import { ProxyObject, ClientInterface, Variant } from "dbus-next";
 
+/**
+ * Access to ratbagd.
+ */
 export class RatBagManager extends DBusObject {
     static readonly PROXY: DBusProxyConfig<RatBagManager> = {
         iface: "org.freedesktop.ratbag1",
@@ -15,10 +18,16 @@ export class RatBagManager extends DBusObject {
         super(client, proxy);
     }
 
+    /**
+     * Gets the API version of ratbagd. This is built for API 1. Everything else might not work as intended.
+     */
     public async api(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Manager", "APIVersion")).value;
     }
 
+    /**
+     * Gets a list of all currently connected devices.
+     */
     public async devices(): Promise<RatBagDevice[]> {
         const variant = await this.getProperty("org.freedesktop.ratbag1.Manager", "Devices");
         const paths: string[] = variant.value;
@@ -31,6 +40,9 @@ export class RatBagManager extends DBusObject {
     }
 }
 
+/**
+ * A device, ratbagd can control.
+ */
 export class RatBagDevice extends DBusObject {
     private readonly device: RatBagDeviceInterface;
 
@@ -39,10 +51,16 @@ export class RatBagDevice extends DBusObject {
         this.device = proxy.getInterface("org.freedesktop.ratbag1.Device") as RatBagDeviceInterface;
     }
 
+    /**
+     * Gets the device name.
+     */
     public async name(): Promise<string> {
         return (await this.getProperty("org.freedesktop.ratbag1.Device", "Name")).value;
     }
 
+    /**
+     * Gets the device model
+     */
     public async model(): Promise<RatBagModel> {
         let modelString: string = (await this.getProperty("org.freedesktop.ratbag1.Device", "Model")).value;
         try {
@@ -75,6 +93,10 @@ export class RatBagDevice extends DBusObject {
         }
     }
 
+    /**
+     * Gets a list of profiles for that device. If a device does not support multiple profiles,
+     * there'll be just one profile in the list that can be used.
+     */
     public async profiles(): Promise<RatBagProfile[]> {
         const variant = await this.getProperty("org.freedesktop.ratbag1.Device", "Profiles");
         const paths: string[] = variant.value;
@@ -86,10 +108,16 @@ export class RatBagDevice extends DBusObject {
         return profiles;
     }
 
+    /**
+     * Writes all changes that were made to the device.
+     */
     public async commit(): Promise<void> {
         await this.device.Commit();
     }
 
+    /**
+     * Adds a listener for an event, when committing to the device fails.
+     */
     public on(event: "Resync", handler: () => void): void {
         this.device.on(event, handler);
     }
@@ -103,6 +131,9 @@ export class RatBagDevice extends DBusObject {
     }
 }
 
+/**
+ * A profile for a ratbagd device.
+ */
 export class RatBagProfile extends DBusObject {
     private readonly profile: RatBagProfileInterface;
 
@@ -111,39 +142,68 @@ export class RatBagProfile extends DBusObject {
         this.profile = proxy.getInterface("org.freedesktop.ratbag1.Profile") as RatBagProfileInterface;
     }
 
+    /**
+     * Gets the index of the profile.
+     */
     public async index(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Profile", "Index")).value;
     }
 
+    /**
+     * Gets the name of the profile, if the device supports profile naming.
+     */
     public async name(): Promise<string | undefined> {
         const name = (await this.getProperty("org.freedesktop.ratbag1.Profile", "Name")).value;
         return name === "" ? undefined : name;
     }
 
+    /**
+     * Sets the name of a profile. This must not be called if the device does not support profile naming.
+     * Use {@link name()} first, to find out whether you can use this.
+     */
     public async setName(name: string): Promise<void> {
         await this.setProperty("org.freedesktop.ratbag1.Profile", "Name", new Variant<string>("s", name));
     }
 
+    /**
+     * Gets whether the profile is enabled. A disabled profile may have invalid values set, so you should
+     * check these values before enabling a profile.
+     */
     public async enabled(): Promise<boolean> {
         return (await this.getProperty("org.freedesktop.ratbag1.Profile", "Enabled")).value;
     }
 
+    /**
+     * Enables this profile.
+     */
     public async enable(): Promise<void> {
         await this.setProperty("org.freedesktop.ratbag1.Profile", "Enabled", new Variant<boolean>("b", true));
     }
 
+    /**
+     * Disables this profile.
+     */
     public async disable(): Promise<void> {
         await this.setProperty("org.freedesktop.ratbag1.Profile", "Enabled", new Variant<boolean>("b", false));
     }
 
+    /**
+     * Gets whether this profile is currently active. There is always only one active profile.
+     */
     public async active(): Promise<boolean> {
         return (await this.getProperty("org.freedesktop.ratbag1.Profile", "IsActive")).value;
     }
 
+    /**
+     * Activates this profile. The currently active profile will be deactivated.
+     */
     public async activate(): Promise<void> {
         return await this.profile.SetActive();
     }
 
+    /**
+     * Gets a list of display resolutions, that can be switched through.
+     */
     public async resolutions(): Promise<RatBagResolution[]> {
         const variant = await this.getProperty("org.freedesktop.ratbag1.Profile", "Resolutions");
         const paths: string[] = variant.value;
@@ -155,6 +215,9 @@ export class RatBagProfile extends DBusObject {
         return resolutions;
     }
 
+    /**
+     * Gets a list of buttons on the device for this profile.
+     */
     public async buttons(): Promise<RatBagButton[]> {
         const variant = await this.getProperty("org.freedesktop.ratbag1.Profile", "Buttons");
         const paths: string[] = variant.value;
@@ -166,6 +229,9 @@ export class RatBagProfile extends DBusObject {
         return buttons;
     }
 
+    /**
+     * Gets a list of leds on the device for this profile.
+     */
     public async leds(): Promise<RatBagLed[]> {
         const variant = await this.getProperty("org.freedesktop.ratbag1.Profile", "Leds");
         const paths: string[] = variant.value;
@@ -178,6 +244,9 @@ export class RatBagProfile extends DBusObject {
     }
 }
 
+/**
+ * A resolution profile for a device profile.
+ */
 export class RatBagResolution extends DBusObject {
     private readonly resolution: RatBagResolutionInterface;
 
@@ -186,26 +255,44 @@ export class RatBagResolution extends DBusObject {
         this.resolution = proxy.getInterface("org.freedesktop.ratbag1.Resolution") as RatBagResolutionInterface;
     }
 
+    /**
+     * Gets the index of this resolution profile.
+     */
     public async index(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Resolution", "Index")).value;
     }
 
+    /**
+     * Gets whether this resolution profile is the currently active resolution.
+     */
     public async active(): Promise<boolean> {
         return (await this.getProperty("org.freedesktop.ratbag1.Resolution", "IsActive")).value;
     }
 
+    /**
+     * Gets whether this resolution profile is the default.
+     */
     public async default(): Promise<boolean> {
         return (await this.getProperty("org.freedesktop.ratbag1.Resolution", "IsDefault")).value;
     }
 
+    /**
+     * Sets this resolution profile as the currently active resolution.
+     */
     public async activate(): Promise<void> {
         await this.resolution.SetActive();
     }
 
+    /**
+     * Sets this resolution profile as default.
+     */
     public async setDefault(): Promise<void> {
         await this.resolution.SetDefault();
     }
 
+    /**
+     * Gets the dpi values for this profile.
+     */
     public async dpi(): Promise<RatBagDpi> {
         const dpi: number | [number, number] = (
             await this.getProperty("org.freedesktop.ratbag1.Resolution", "Resolution")
@@ -220,6 +307,10 @@ export class RatBagResolution extends DBusObject {
         }
     }
 
+    /**
+     * Sets the dpi for this profile. If {@link dpi()} returns a single value, this must also be set to a single value.
+     * If {@link dpi()} returns separate x and y values, this must be set to separate x and y values.
+     */
     public async setDpi(dpi: RatBagDpi): Promise<void> {
         const variant =
             typeof dpi === "number"
@@ -228,11 +319,17 @@ export class RatBagResolution extends DBusObject {
         await this.setProperty("org.freedesktop.ratbag1.Resolution", "Resolution", variant);
     }
 
+    /**
+     * Gets a list of numbers that can be used as dpi values.
+     */
     public async allowedDpiValues(): Promise<number[]> {
         return (await this.getProperty("org.freedesktop.ratbag1.Resolution", "Resolutions")).value;
     }
 }
 
+/**
+ * A button on a device for a specific profile
+ */
 export class RatBagButton extends DBusObject {
     private static readonly SPECIAL_ACTION_MAP: Record<RatBagSpecialAction, number> = {
         unknown: 0x40000000,
@@ -260,10 +357,16 @@ export class RatBagButton extends DBusObject {
         super(client, proxy);
     }
 
+    /**
+     * Gets the index of this button.
+     */
     public async index(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Button", "Index")).value;
     }
 
+    /**
+     * Gets the action currently bound to this button.
+     */
     public async mapping(): Promise<RatBagMapping> {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const raw: [number, any] = (await this.getProperty("org.freedesktop.ratbag1.Button", "Mapping")).value;
@@ -303,6 +406,9 @@ export class RatBagButton extends DBusObject {
         }
     }
 
+    /**
+     * Binds this button to the given action.
+     */
     public async setMapping(mapping: RatBagMapping): Promise<void> {
         let variant: Variant = new Variant<[number, number]>("(uu)", [1000, 0]);
         if (mapping.type === "none") {
@@ -323,15 +429,24 @@ export class RatBagButton extends DBusObject {
     }
 }
 
+/**
+ * A led on a device for a specific profile
+ */
 export class RatBagLed extends DBusObject {
     constructor(client: DBusClient, proxy: ProxyObject) {
         super(client, proxy);
     }
 
+    /**
+     * Gets the index for this led.
+     */
     public async index(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Led", "Index")).value;
     }
 
+    /**
+     * Gets the current mode of the led.
+     */
     public async mode(): Promise<LedMode> {
         const modeId: number = (await this.getProperty("org.freedesktop.ratbag1.Led", "Mode")).value;
         switch (modeId) {
@@ -346,6 +461,9 @@ export class RatBagLed extends DBusObject {
         }
     }
 
+    /**
+     * Sets the mode of the led.
+     */
     public async setMode(mode: LedMode): Promise<void> {
         let modeId = 0;
         if (mode === "on") {
@@ -358,6 +476,9 @@ export class RatBagLed extends DBusObject {
         await this.setProperty("org.freedesktop.ratbag1.Led", "Mode", new Variant<number>("u", modeId));
     }
 
+    /**
+     * Gets a list of supported led modes.
+     */
     public async supportedModes(): Promise<LedMode[]> {
         const modeIds: number[] = (await this.getProperty("org.freedesktop.ratbag1.Led", "Mode")).value;
         const modes: LedMode[] = [];
@@ -380,6 +501,9 @@ export class RatBagLed extends DBusObject {
         return modes;
     }
 
+    /**
+     * Gets the color, the led is currently in.
+     */
     public async color(): Promise<RatBagColorObj & RatBagColorValue> {
         const color: [number, number, number] = (await this.getProperty("org.freedesktop.ratbag1.Led", "Color")).value;
         return {
@@ -390,6 +514,9 @@ export class RatBagLed extends DBusObject {
         };
     }
 
+    /**
+     * Sets the color for the led.
+     */
     public async setColor(color: RatBagColorObj | RatBagColorValue): Promise<void> {
         let value: [number, number, number];
         if ("color" in color) {
@@ -404,19 +531,30 @@ export class RatBagLed extends DBusObject {
         );
     }
 
-    // millis
+    /**
+     * Gets the current effect duration in milliseconds. What exactly this means depends on the led mode.
+     */
     public async effectDuration(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Led", "EffectDuration")).value;
     }
 
-    public async setEffectDuration(duration: number): Promise<void> {
-        await this.setProperty("org.freedesktop.ratbag1.Led", "EffectDuration", new Variant<number>("u", duration));
+    /**
+     * Sets the current effect duration in milliseconds.
+     */
+    public async setEffectDuration(millis: number): Promise<void> {
+        await this.setProperty("org.freedesktop.ratbag1.Led", "EffectDuration", new Variant<number>("u", millis));
     }
 
+    /**
+     * Gets the current led brightness [0;255]
+     */
     public async brightness(): Promise<number> {
         return (await this.getProperty("org.freedesktop.ratbag1.Led", "Brightness")).value & 0xff;
     }
 
+    /**
+     * Sets the current led brightness [0;255]
+     */
     public async setBrightness(brightness: number): Promise<void> {
         await this.setProperty(
             "org.freedesktop.ratbag1.Led",
@@ -426,23 +564,63 @@ export class RatBagLed extends DBusObject {
     }
 }
 
+/**
+ * A model of a ratbagd device.
+ */
+export type RatBagModel = RatBagModelUnknown | RatBagModelCommon;
+
+/**
+ * An unknown device model.
+ */
 export type RatBagModelUnknown = {
     busType: "unknown";
 };
 
+/**
+ * A known device model.
+ */
 export type RatBagModelCommon = {
+    /**
+     * How the device id connected.
+     */
     busType: "usb" | "bluetooth";
+
+    /**
+     * The vendor id of the device as a hex string.
+     */
     vendorHex: string;
+
+    /**
+     * The vendor id of the device as a number.
+     */
     vendorId: number;
+
+    /**
+     * The product id of the device as a hex string.
+     */
     productHex: string;
+
+    /**
+     * The product id of the device as a number.
+     */
     productId: number;
+
+    /**
+     * The version of the device. This number is only used internally to distinguish multiple
+     * devices of the same type.
+     */
     version: number;
 };
 
-export type RatBagModel = RatBagModelUnknown | RatBagModelCommon;
-
+/**
+ * A resolution in DPI. This can either be a single value or separate values for x and y depending on the device.
+ * When setting a DPI value, it must be exactly the kind of value, the device supports.
+ */
 export type RatBagDpi = number | { x: number; y: number };
 
+/**
+ * A mapping for a button.
+ */
 export type RatBagMapping =
     | RatBagMappingNone
     | RatBagMappingUnknown
@@ -450,44 +628,79 @@ export type RatBagMapping =
     | RatBagMappingSpecial
     | RatBagMappingMacro;
 
+/**
+ * A button mapping that does nothing.
+ */
 export type RatBagMappingNone = {
     type: "none";
 };
 
+/**
+ * An unknown button mapping.
+ */
 export type RatBagMappingUnknown = {
     type: "unknown";
 };
 
+/**
+ * A button mapping that maps a physical button to a logical button.
+ */
 export type RatBagMappingButton = {
     type: "button";
+
+    /**
+     * The logical mouse button to map to.
+     */
     button: number;
 };
 
+/**
+ * A mapping that triggers a special action.
+ */
 export type RatBagMappingSpecial = {
     type: "special";
+
+    /**
+     * The action to trigger.
+     */
     action: RatBagSpecialAction;
 };
 
+/**
+ * A mapping that triggers a macro.
+ */
 export type RatBagMappingMacro = {
     type: "macro";
     macro: RatBagMacroAction[];
 };
 
+/**
+ * An action in a macro.
+ */
 export type RatBagMacroAction = {
     type: "press" | "release";
     keyCode: number;
 };
 
+/**
+ * A color represented by red, green and blue values in range [0;255]
+ */
 export type RatBagColorObj = {
     red: number;
     green: number;
     blue: number;
 };
 
+/**
+ * A color represented as 0xRRGGBB
+ */
 export type RatBagColorValue = {
     color: number;
 };
 
+/**
+ * A special button action.
+ */
 export type RatBagSpecialAction =
     | "unknown"
     | "doubleclick"
@@ -509,6 +722,9 @@ export type RatBagSpecialAction =
     | "second mode"
     | "battery level";
 
+/**
+ * A mode for a led.
+ */
 export type LedMode = "off" | "on" | "cycle" | "breath";
 
 type RatBagDeviceInterface = ClientInterface & {
