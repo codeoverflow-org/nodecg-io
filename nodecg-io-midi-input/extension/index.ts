@@ -4,6 +4,7 @@ import * as easymidi from "easymidi";
 
 interface MidiInputServiceConfig {
     device: string;
+    virtual?: boolean;
 }
 
 export type MidiInputServiceClient = easymidi.Input;
@@ -16,37 +17,49 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
     async validateConfig(config: MidiInputServiceConfig): Promise<Result<void>> {
         const devices: Array<string> = new Array<string>();
 
-        easymidi.getInputs().forEach((device) => {
-            if (device.includes(config.device)) {
-                devices.push(device);
+        // Virtual devices can always be created, easymidi will find a
+        // free name for the matching output
+        if (!config.virtual) {
+            easymidi.getInputs().forEach((device) => {
+                if (device.includes(config.device)) {
+                    devices.push(device);
+                }
+            });
+            if (devices.length === 0) {
+                return error("No device matched the configured pattern!");
             }
-        });
+            if (devices.length > 1) {
+                return error("The configured pattern is ambiguous!");
+            }
+        }
 
-        if (devices.length === 0) {
-            return error("No device matched the configured pattern!");
-        }
-        if (devices.length > 1) {
-            return error("The configured pattern is ambiguous!");
-        }
         return emptySuccess();
     }
 
     async createClient(config: MidiInputServiceConfig): Promise<Result<MidiInputServiceClient>> {
-        this.nodecg.log.info(`Checking device name "${config.device}".`);
-        let deviceName: string | null = null;
-        easymidi.getInputs().forEach((device) => {
-            if (device.includes(config.device) && deviceName === null) {
-                deviceName = device;
-            }
-        });
-
-        this.nodecg.log.info(`Connecting to MIDI input device ${deviceName}.`);
-        if (deviceName !== null) {
-            const client = new easymidi.Input(deviceName);
-            this.nodecg.log.info(`Successfully connected to MIDI input device ${deviceName}.`);
+        if (config.virtual) {
+            this.nodecg.log.info(`Creating virtual MIDI input device ${config.device}.`);
+            const client = new easymidi.Input(config.device, true);
+            this.nodecg.log.info(`Successfully created virtual MIDI input device ${config.device}.`);
             return success(client);
         } else {
-            return error("Could not connect to the configured device!");
+            this.nodecg.log.info(`Checking device name "${config.device}".`);
+
+            let deviceName: string | null = null;
+            easymidi.getInputs().forEach((device) => {
+                if (device.includes(config.device) && deviceName === null) {
+                    deviceName = device;
+                }
+            });
+
+            this.nodecg.log.info(`Connecting to MIDI input device ${deviceName}.`);
+            if (deviceName !== null) {
+                const client = new easymidi.Input(deviceName);
+                this.nodecg.log.info(`Successfully connected to MIDI input device ${deviceName}.`);
+                return success(client);
+            } else {
+                return error("Could not connect to the configured device!");
+            }
         }
     }
 
