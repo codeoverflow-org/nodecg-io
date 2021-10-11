@@ -514,8 +514,8 @@ export class RatBagLed extends DBusObject {
         return {
             color: ((color[0] & 0xff) << 16) | ((color[1] & 0xff) << 8) | (color[2] & 0xff),
             red: color[0] & 0xff,
-            green: color[0] & 0xff,
-            blue: color[0] & 0xff,
+            green: color[1] & 0xff,
+            blue: color[2] & 0xff,
         };
     }
 
