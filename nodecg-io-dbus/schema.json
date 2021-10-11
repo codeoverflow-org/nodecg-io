@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "busAddress": {
+            "type": "string",
+            "description": "The bus address for the session bus to use"
+        }
+    },
+    "required": []
+}
