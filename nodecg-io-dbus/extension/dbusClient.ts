@@ -32,23 +32,24 @@ export interface DBusProxyConfig<T> {
 export class DBusObject {
     protected readonly client: DBusClient;
     protected readonly proxy: ProxyObject;
-    private readonly properties: ClientInterface;
+    private readonly properties: RatBagPropertyInterface;
 
     protected constructor(client: DBusClient, proxy: ProxyObject) {
         this.client = client;
         this.proxy = proxy;
-        this.properties = proxy.getInterface("org.freedesktop.DBus.Properties");
+        this.properties = proxy.getInterface("org.freedesktop.DBus.Properties") as RatBagPropertyInterface;
     }
 
     async getProperty(iface: string, name: string): Promise<Variant> {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         return await this.properties.Get(iface, name);
     }
 
     async setProperty(iface: string, name: string, value: Variant): Promise<void> {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         return await this.properties.Set(iface, name, value);
     }
 }
+
+type RatBagPropertyInterface = ClientInterface & {
+    Get(iface: string, path: string): Promise<Variant>;
+    Set(iface: string, path: string, value: Variant): Promise<void>;
+};

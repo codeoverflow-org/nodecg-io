@@ -1,5 +1,5 @@
 import { DBusClient, DBusProxyConfig, DBusObject } from "./dbusClient";
-import { ProxyObject } from "dbus-next";
+import { ProxyObject, ClientInterface, Variant } from "dbus-next";
 
 export class RatBagManager extends DBusObject {
     static readonly PROXY: DBusProxyConfig<RatBagManager> = {
@@ -32,8 +32,11 @@ export class RatBagManager extends DBusObject {
 }
 
 export class RatBagDevice extends DBusObject {
+    private readonly device: RatBagDeviceInterface;
+
     constructor(client: DBusClient, proxy: ProxyObject) {
         super(client, proxy);
+        this.device = proxy.getInterface("org.freedesktop.ratbag1.Device") as RatBagDeviceInterface;
     }
 
     public async name(): Promise<string> {
@@ -71,6 +74,64 @@ export class RatBagDevice extends DBusObject {
             return { busType: "unknown" };
         }
     }
+
+    public async commit(): Promise<void> {
+        await this.device.Commit();
+    }
+
+    public on(event: "Resync", handler: () => void): void {
+        this.device.on(event, handler);
+    }
+
+    public once(event: "Resync", handler: () => void): void {
+        this.device.once(event, handler);
+    }
+
+    public off(event: "Resync", handler: () => void): void {
+        this.device.off(event, handler);
+    }
+}
+
+export class RatBagProfile extends DBusObject {
+    private readonly profile: RatBagProfileInterface;
+
+    constructor(client: DBusClient, proxy: ProxyObject) {
+        super(client, proxy);
+        this.profile = proxy.getInterface("org.freedesktop.ratbag1.Profile") as RatBagProfileInterface;
+    }
+
+    public async index(): Promise<number> {
+        return (await this.getProperty("org.freedesktop.ratbag1.Profile", "Index")).value;
+    }
+
+    public async name(): Promise<string | undefined> {
+        const name = (await this.getProperty("org.freedesktop.ratbag1.Profile", "Name")).value;
+        return name === "" ? undefined : name;
+    }
+
+    public async setName(name: string): Promise<void> {
+        await this.setProperty("org.freedesktop.ratbag1.Profile", "Name", new Variant<string>("s", name));
+    }
+
+    public async enabled(): Promise<boolean> {
+        return (await this.getProperty("org.freedesktop.ratbag1.Profile", "Enabled")).value;
+    }
+
+    public async enable(): Promise<void> {
+        await this.setProperty("org.freedesktop.ratbag1.Profile", "Enabled", new Variant<boolean>("b", true));
+    }
+
+    public async disable(): Promise<void> {
+        await this.setProperty("org.freedesktop.ratbag1.Profile", "Enabled", new Variant<boolean>("b", false));
+    }
+
+    public async active(): Promise<boolean> {
+        return (await this.getProperty("org.freedesktop.ratbag1.Profile", "IsActive")).value;
+    }
+
+    public async activate(): Promise<void> {
+        return await this.profile.SetActive();
+    }
 }
 
 export type RatBagModelUnknown = {
@@ -87,3 +148,11 @@ export type RatBagModelCommon = {
 };
 
 export type RatBagModel = RatBagModelUnknown | RatBagModelCommon;
+
+type RatBagDeviceInterface = ClientInterface & {
+    Commit(): Promise<void>;
+};
+
+type RatBagProfileInterface = ClientInterface & {
+    SetActive(): Promise<void>;
+};
