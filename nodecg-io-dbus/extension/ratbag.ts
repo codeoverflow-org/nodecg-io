@@ -369,7 +369,7 @@ export class RatBagButton extends DBusObject {
      */
     public async mapping(): Promise<RatBagMapping> {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const raw: [number, any] = (await this.getProperty("org.freedesktop.ratbag1.Button", "Mapping")).value;
+        const raw: [number, Variant] = (await this.getProperty("org.freedesktop.ratbag1.Button", "Mapping")).value;
         if (raw[0] === 0) {
             return {
                 type: "none",
@@ -377,11 +377,11 @@ export class RatBagButton extends DBusObject {
         } else if (raw[0] === 1) {
             return {
                 type: "button",
-                button: raw[1],
+                button: raw[1].value,
             };
         } else if (raw[0] === 2) {
             const id = Object.keys(RatBagButton.SPECIAL_ACTION_MAP).find(
-                (key) => RatBagButton.SPECIAL_ACTION_MAP[key as RatBagSpecialAction] === raw[1],
+                (key) => RatBagButton.SPECIAL_ACTION_MAP[key as RatBagSpecialAction] === raw[1].value,
             ) as RatBagSpecialAction | undefined;
             return {
                 type: "special",
@@ -389,7 +389,7 @@ export class RatBagButton extends DBusObject {
             };
         } else if (raw[0] === 3) {
             const macro: RatBagMacroAction[] = [];
-            for (const entry of raw[1] as [number, number][]) {
+            for (const entry of raw[1].value as [number, number][]) {
                 macro.push({
                     type: entry[0] === 0 ? "release" : "press",
                     keyCode: entry[1],
@@ -410,22 +410,27 @@ export class RatBagButton extends DBusObject {
      * Binds this button to the given action.
      */
     public async setMapping(mapping: RatBagMapping): Promise<void> {
-        let variant: Variant = new Variant<[number, number]>("(uu)", [1000, 0]);
+        let id = 1000;
+        let variant: Variant = new Variant<number>("u", 0);
         if (mapping.type === "none") {
-            variant = new Variant<[number, number]>("(uu)", [0, 0]);
+            id = 1000;
+            variant = new Variant<number>("u", 0);
         } else if (mapping.type === "button") {
-            variant = new Variant<[number, number]>("(uu)", [1, mapping.button]);
+            id = 1;
+            variant = new Variant<number>("u", mapping.button);
         } else if (mapping.type === "special") {
+            id = 2;
             const func = RatBagButton.SPECIAL_ACTION_MAP[mapping.action];
-            variant = new Variant<[number, number]>("(uu)", [2, func === undefined ? 0x40000000 : func]);
+            variant = new Variant<number>("u", func === undefined ? 0x40000000 : func);
         } else if (mapping.type === "macro") {
+            id = 3;
             const actions: [number, number][] = [];
             for (const action of mapping.macro) {
                 actions.push([action.type === "press" ? 1 : 0, action.keyCode]);
             }
-            variant = new Variant<[number, [number, number][]]>("(ua(uu))", [3, actions]);
+            variant = new Variant<[number, number][]>("a(uu)", actions);
         }
-        await this.setProperty("org.freedesktop.ratbag1.Button", "Mapping", variant);
+        await this.setProperty("org.freedesktop.ratbag1.Button", "Mapping", new Variant("(uv)", [id, variant]));
     }
 }
 
