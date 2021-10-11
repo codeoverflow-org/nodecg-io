@@ -33,10 +33,6 @@ class GitHubService extends ServiceBundle<GitHubConfig, GitHubClient> {
     }
 
     stopClient(_: GitHubClient): void {
-        //
-    }
-
-    removeHandlers(_: GitHubClient): void {
-        //
+        // Does not need to be stopped as it has no state or permanent connection.
     }
 }
