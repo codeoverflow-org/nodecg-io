@@ -6,6 +6,10 @@
         "device": {
             "type": "string",
             "description": "The MIDI device id"
+        },
+        "virtual": {
+            "type": "boolean",
+            "description": "true to create a virtual device."
         }
     },
     "required": ["device"]
