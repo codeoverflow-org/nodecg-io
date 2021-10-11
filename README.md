@@ -18,8 +18,10 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - AutoHotkey
 - Android (using adb)
 - CurseForge
+- DBus
 - Discord
 - Elgato lights
+- GitHub
 - Google Apis
 - IntelliJ IDEs
 - IRC (Internet Relay Chat)
