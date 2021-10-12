@@ -9,5 +9,5 @@
             "default": "0.0.0.0"
         }
     },
-    "required": ["host"]
+    "required": []
 }

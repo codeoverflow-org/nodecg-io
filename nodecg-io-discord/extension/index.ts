@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { Client as DiscordClient } from "discord.js";
 

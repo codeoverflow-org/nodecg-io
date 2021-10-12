@@ -11,14 +11,14 @@ export class ArtNetServiceClient extends ArtNetController {
     }
 
     /**
-     * Little simplifiaction to receive `dmx` data.
+     * Little simplification to receive `dmx` data.
      */
     onDMX(listener: (packet: ArtDmx) => void): ArtNetServiceClient {
         return this.on("dmx", listener);
     }
 
     /**
-     * Little simplifiaction to send `dmx` data.
+     * Little simplification to send `dmx` data.
      */
     public send(universe: number, data: number[]): void {
         this.sendBroadcastPacket(new ArtDmx(0, 0, universe, data));
