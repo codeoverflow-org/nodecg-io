@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 export { ArtNetServiceClient } from "./artnetServiceClient";
 import { ArtNetServiceClient } from "./artnetServiceClient";

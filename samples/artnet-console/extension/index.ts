@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types";
+import { NodeCG } from "nodecg-types/types/server";
 import { requireService } from "nodecg-io-core";
 import { ArtNetServiceClient } from "nodecg-io-artnet";
 
