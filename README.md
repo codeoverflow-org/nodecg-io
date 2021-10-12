@@ -20,6 +20,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - CurseForge
 - DBus
 - Discord
+- Discord RPC
 - Elgato lights
 - GitHub
 - Google Apis
