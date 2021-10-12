@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "url": {
+            "type": "string",
+            "description": "The url to the Shlink server"
+        },
+        "apiKey": {
+            "type": "string",
+            "description": "The API key of the Shlink server"
+        }
+    },
+    "required": ["url", "apiKey"]
+}
