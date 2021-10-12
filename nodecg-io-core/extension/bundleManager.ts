@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./service";
 import { emptySuccess, error, Result } from "./utils/result";
 import { EventEmitter } from "events";
@@ -8,6 +8,7 @@ import { ServiceProvider } from "./serviceProvider";
  * Manages bundles and their dependencies on nodecg-io services.
  */
 export class BundleManager extends EventEmitter {
+    // Object that maps a bundle name to the array that contains all services that this bundle depends upon
     private readonly bundles: ObjectMap<ServiceDependency<unknown>[]> = {};
 
     constructor(private readonly nodecg: NodeCG) {
@@ -27,10 +28,12 @@ export class BundleManager extends EventEmitter {
      * @param bundleName the name of the bundle that registers its dependency.
      * @param service the service that the bundle depends upon.
      * @param clientUpdate the callback that should be called if a client becomes available or gets updated.
+     * @return a {@link ServiceProvider} that allows the bundle to access the service client, if a service instance is set
+     * and there were no errors in the client creation.
      */
     registerServiceDependency<C>(bundleName: string, service: Service<unknown, C>): ServiceProvider<C> | undefined {
         // Get current service dependencies or an empty array if none
-        const serviceDependencies = this.bundles[bundleName] || [];
+        const serviceDependencies = this.bundles[bundleName] ?? [];
 
         // Check if the same type of dependency is already registered
         if (serviceDependencies.find((sd) => sd.serviceType === service.serviceType)) {
@@ -45,11 +48,11 @@ export class BundleManager extends EventEmitter {
         // Create and add dependency on this service
         serviceDependencies.push({
             serviceType: service.serviceType,
-            serviceInstance: undefined, // User has to create a service instance and then set it in the gui
+            serviceInstance: undefined,
             provider,
         });
 
-        // Save new dependencies.
+        // Save update dependencies array.
         this.bundles[bundleName] = serviceDependencies;
         this.emit("change");
         this.nodecg.log.info(
@@ -59,35 +62,34 @@ export class BundleManager extends EventEmitter {
     }
 
     /**
-     * Satisfies a service dependency by providing a service instance of the type and connects the bundle and service together.
+     * Assigns a service instance to the service dependency of a bundle and gives the bundle access to the current
+     * service client. Future client updates will be handled through {@link BundleManager.handleInstanceUpdate}.
      * @param bundleName the name of the bundle that has the dependency on the service.
      * @param instanceName the name of the service instance that should be used to satisfy the dependency of the bundle.
      * @param instance the service instance object that should be used to satisfy the dependency of the bundle.
-     * @return void if successful and a string explain what went wrong otherwise
      */
     setServiceDependency(
         bundleName: string,
         instanceName: string,
         instance: ServiceInstance<unknown, unknown>,
     ): Result<void> {
-        // Check that bundle exists and get service dependencies
+        // Check that bundle exists and get its service dependencies
         const bundle = this.bundles[bundleName];
         if (bundle === undefined) {
             return error(`Bundle "${bundleName}" couldn't be found.`);
         }
 
-        // Check that the bundle actually depends on this type of service
+        // Get the service dependency that manages dependance for this service type
         const svcDependency = bundle.find((svcDep) => svcDep.serviceType === instance.serviceType);
         if (svcDependency === undefined) {
             return error(`Bundle "${bundleName} doesn't depend on the "${instance.serviceType}" service.`);
         }
         const oldInstance = svcDependency.serviceInstance;
 
-        // Update service instance of service dependency, remove client update callback from old service instance (if applicable)
-        // and add the callback to the new instance.
+        // Assign service instance to the service dependency of this bundle
         svcDependency.serviceInstance = instanceName;
 
-        // Let the bundle update his reference to the client
+        // Let the bundle update its reference to the client
         svcDependency.provider.updateClient(instance.client);
 
         this.emit("change");
@@ -131,17 +133,13 @@ export class BundleManager extends EventEmitter {
      */
     handleInstanceUpdate(serviceInstance: ServiceInstance<unknown, unknown>, instName: string): void {
         // Iterate over all bundles
-        for (const bundle in this.bundles) {
-            if (!Object.prototype.hasOwnProperty.call(this.bundles, bundle)) {
-                continue;
-            }
-            // Get their dependencies and if they have this instance set somewhere then update the bundle.
-            const dependencies = this.bundles[bundle];
-            dependencies?.forEach((dep) => {
+        Object.entries(this.bundles).forEach(([_bundleName, svcDependencies]) => {
+            // If they have this instance set somewhere in their dependencies then update the bundle.
+            svcDependencies.forEach((dep) => {
                 if (dep.serviceInstance === instName) {
                     dep.provider.updateClient(serviceInstance.client);
                 }
             });
-        }
+        });
     }
 }

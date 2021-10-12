@@ -4,7 +4,7 @@ import { spawn } from "child_process";
 import { onExit, readableToString } from "@rauschma/stringio";
 import { AddressInfo } from "net";
 import { buffer as readableToBuffer } from "get-stream";
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 
 /**
  * Represents an android device that is connected via ADB.
@@ -27,6 +27,7 @@ export class Android {
 
     public readonly packageManager: PackageManager;
     public readonly contactManager: ContactManager;
+    public readonly fileManager: FileManager;
 
     constructor(private nodecg: NodeCG, device: string) {
         this.device = device;
@@ -34,6 +35,7 @@ export class Android {
 
         this.packageManager = new PackageManager(this);
         this.contactManager = new ContactManager(this);
+        this.fileManager = new FileManager(this);
     }
 
     /**
@@ -341,6 +343,9 @@ export class Android {
         });
         const output = await readableToString(childProcess.stdout, "utf-8");
         await onExit(childProcess);
+        if (childProcess.exitCode !== null && childProcess.exitCode !== 0) {
+            throw new Error("adb exit code: " + childProcess.exitCode);
+        }
         return output;
     }
 
@@ -351,6 +356,9 @@ export class Android {
         });
         const output = await readableToBuffer(childProcess.stdout);
         await onExit(childProcess);
+        if (childProcess.exitCode !== null && childProcess.exitCode !== 0) {
+            throw new Error("adb exit code: " + childProcess.exitCode);
+        }
         return output;
     }
 
@@ -1291,7 +1299,7 @@ export class SmsManager {
             addressStr = address.address;
         } else if (address instanceof Contact) {
             const phone_numbers = await address.getData("phone");
-            if (phone_numbers.length <= 0) {
+            if (phone_numbers.length <= 0 || phone_numbers[0] === undefined) {
                 throw new Error(
                     `Can't use contact as sms receiver: No phone number available for contact ${address.displayName}`,
                 );
@@ -2582,6 +2590,138 @@ export type UsageStats = {
     totalTimeVisible: number;
 };
 
+/**
+ * Can be used to access files on the device. This mostly depends on parsing the output of
+ * shell commands because that gives access to more parts of the file system on a non-rooted
+ * device. It seems to be stable between versions and devices. Let's hope...
+ *
+ * Important: This only works with absolute paths. Using non-absolute paths can lead to
+ * unpredictable results.
+ */
+export class FileManager {
+    private readonly android: Android;
+
+    public readonly path: PathManager;
+
+    constructor(android: Android) {
+        this.android = android;
+        this.path = new PathManager(android);
+    }
+
+    /**
+     * Gets the file names of all entries in a directory. Using non-directory paths may
+     * produce unpredictable results.
+     */
+    async list(path: string): Promise<Array<string>> {
+        return (await this.android.rawAdb(["shell", "ls", "-1", quote(path)]))
+            .split("\n")
+            .map(unquoteShell)
+            .map((e) => e.trim())
+            .filter((e) => e !== "")
+            .map((e) => (e.endsWith("/") ? e.substring(0, e.length - 1) : e));
+    }
+
+    /**
+     * Gets some information about a file.
+     */
+    async file(path: string): Promise<string> {
+        return await this.android.rawAdb(["shell", "-b", path]);
+    }
+
+    /**
+     * Downloads a file from the device. On some platforms, this gets incredibly slow when used on
+     * files larger than 6MB.
+     */
+    async download(device: string, local: string): Promise<void> {
+        await this.android.rawAdb(["shell", "pull", quote(device), quote(local)]);
+    }
+
+    /**
+     * Uploads a file to the device. On some platforms, this gets incredibly slow when used on
+     * files larger than 6MB.
+     */
+    async upload(local: string, device: string): Promise<void> {
+        await this.android.rawAdb(["shell", "push", quote(local), quote(device)]);
+    }
+}
+
+/**
+ * See FileManager
+ */
+export class PathManager {
+    private readonly android: Android;
+
+    constructor(android: Android) {
+        this.android = android;
+    }
+
+    /**
+     * Normalizes a path. For example this will turn `/a/b/../c` into `/a/c`.
+     * This method may but doesn't need to resolve symbolic links.
+     */
+    async normalize(path: string): Promise<string> {
+        return await this.android.rawAdb(["shell", "readlink", "-fm", quote(path)]);
+    }
+
+    /**
+     * Gets whether a path exists.
+     */
+    async exists(path: string): Promise<boolean> {
+        return (await this.android.rawAdbExitCode(["shell", "test", "-e", quote(path)])) === 0;
+    }
+
+    /**
+     * Gets whether a path is a regular file.
+     */
+    async isfile(path: string): Promise<boolean> {
+        return (await this.android.rawAdbExitCode(["shell", "test", "-f", quote(path)])) === 0;
+    }
+
+    /**
+     * Gets whether a path is a directory.
+     */
+    async isdir(path: string): Promise<boolean> {
+        return (await this.android.rawAdbExitCode(["shell", "test", "-d", quote(path)])) === 0;
+    }
+
+    /**
+     * Gets whether a path is a symbolic link.
+     */
+    async islink(path: string): Promise<boolean> {
+        return (await this.android.rawAdbExitCode(["shell", "test", "-L", quote(path)])) === 0;
+    }
+
+    /**
+     * Gets whether a path is readable by you.
+     */
+    async readable(path: string): Promise<boolean> {
+        return (await this.android.rawAdbExitCode(["shell", "test", "-r", quote(path)])) === 0;
+    }
+
+    /**
+     * Gets whether a path is writable by you.
+     */
+    async writable(path: string): Promise<boolean> {
+        return (await this.android.rawAdbExitCode(["shell", "test", "-w", quote(path)])) === 0;
+    }
+
+    /**
+     * Gets the link target if a path is a symbolic link or a path that points to the same file if not.
+     */
+    async target(path: string): Promise<string> {
+        return await this.android.rawAdb(["shell", "readlink", "-f", quote(path)]);
+    }
+}
+
 function quote(arg: string): string {
     return '"' + arg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\$/g, "\\$") + '"';
+}
+
+function unquoteShell(arg: string): string {
+    return arg
+        .replace(/\\\$/g, "$")
+        .replace(/\\'/g, "'")
+        .replace(/\\"/g, '"')
+        .replace(/\\ /g, " ")
+        .replace(/\\\\/g, "\\");
 }

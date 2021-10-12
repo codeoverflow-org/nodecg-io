@@ -8,5 +8,5 @@
             "description": "The address where the nodecg-io-intellij server runs. This defaults to 127.0.0.1:19524"
         }
     },
-    "required": ["address"]
+    "required": []
 }

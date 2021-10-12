@@ -5,7 +5,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-youtube": "^0.2.0"
+            "nodecg-io-googleapis": "^0.2.0"
         }
     },
     "scripts": {
@@ -16,9 +16,9 @@
     "license": "MIT",
     "dependencies": {
         "@types/node": "^15.0.2",
-        "nodecg": "^1.8.1",
+        "nodecg-types": "^1.8.2",
         "nodecg-io-core": "^0.2.0",
-        "nodecg-io-youtube": "^0.2.0",
+        "nodecg-io-googleapis": "^0.2.0",
         "typescript": "^4.2.4"
     }
 }

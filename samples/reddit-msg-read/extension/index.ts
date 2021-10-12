@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { RedditServiceClient } from "nodecg-io-reddit";
 import { requireService } from "nodecg-io-core";
 

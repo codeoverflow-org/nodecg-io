@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { DiscordServiceClient } from "nodecg-io-discord";
 import { requireService } from "nodecg-io-core";
 

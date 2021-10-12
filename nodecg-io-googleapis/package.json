@@ -1,11 +1,11 @@
 {
-    "name": "nodecg-io-youtube",
+    "name": "nodecg-io-googleapis",
     "version": "0.2.0",
-    "description": "Allows to connect and interact to youtube",
+    "description": "Allows to connect to and interact with many google-apis",
     "homepage": "https://nodecg.io/RELEASE/samples/youtube",
     "author": {
-        "name": "CodeOverflow team",
-        "url": "http://codeoverflow.org"
+        "name": "LarsVomMars",
+        "url": "https://github.com/LarsVomMars"
     },
     "repository": {
         "type": "git",
@@ -37,7 +37,7 @@
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^15.0.2",
-        "nodecg": "^1.8.1",
+        "nodecg-types": "^1.8.2",
         "typescript": "^4.2.4"
     },
     "dependencies": {

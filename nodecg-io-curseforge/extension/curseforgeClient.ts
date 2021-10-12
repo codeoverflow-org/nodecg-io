@@ -763,7 +763,8 @@ export type CurseCategorySection = {
     initialInclusionPattern: string;
     extraIncludePattern: unknown;
     /**
-     * The game category id
+     * The game category id. This value can be used for `sectionId` in
+     * a search query.
      */
     gameCategoryId: number;
 };
@@ -792,11 +793,11 @@ export type CurseCategoryInfo = {
     /**
      * The parent game category id
      */
-    parentGameCategoryId: number;
+    parentGameCategoryId: number | null;
     /**
-     * The root game category id
+     * The root game category id. For root categories, this is null.
      */
-    rootGameCategoryId: number;
+    rootGameCategoryId: number | null;
     /**
      * The game id the category belongs to
      */
@@ -901,12 +902,20 @@ export type CurseProjectStatus =
     | "deleted";
 
 export type CurseSearchQuery = {
+    /**
+     * Id of a category to search in. This is not for root categories.
+     * Root categories should use sectionId instead.
+     */
     categoryID?: number;
     gameId: number;
     gameVersion?: string;
     index?: number;
     pageSize?: number;
     searchFilter?: string;
+    /**
+     * Id of a category to search in. This is only for root categories.
+     * Other categories should use categoryID instead.
+     */
     sectionId?: number;
     sort?: number;
 };
@@ -998,7 +1007,7 @@ export class MagicValues {
         value: number | string,
         map: Record<string, number>,
         inverse: Record<number, string>,
-    ): number | string {
+    ): number | string | undefined {
         if (typeof value === "number") {
             return inverse[value];
         } else {

@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import * as WebSocket from "ws";
 

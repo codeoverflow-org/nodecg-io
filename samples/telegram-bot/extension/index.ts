@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { TelegramServiceClient } from "nodecg-io-telegram";
 import { requireService } from "nodecg-io-core";
 

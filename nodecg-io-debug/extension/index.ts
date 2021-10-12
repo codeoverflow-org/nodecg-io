@@ -1,23 +1,19 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { DebugHelper } from "./debugHelper";
-
-export type DebugConfig = {
-    // Nothing to configure
-};
 
 export { DebugHelper } from "./debugHelper";
 
 module.exports = (nodecg: NodeCG) => {
-    new DebugService(nodecg, "debug", __dirname, "../schema.json").register();
+    new DebugService(nodecg, "debug").register();
 };
 
-class DebugService extends ServiceBundle<DebugConfig, DebugHelper> {
-    async validateConfig(_: DebugConfig): Promise<Result<void>> {
+class DebugService extends ServiceBundle<never, DebugHelper> {
+    async validateConfig(): Promise<Result<void>> {
         return emptySuccess();
     }
 
-    async createClient(_: DebugConfig): Promise<Result<DebugHelper>> {
+    async createClient(): Promise<Result<DebugHelper>> {
         const client = DebugHelper.createClient(this.nodecg);
         this.nodecg.log.info("Successfully created debug helper.");
         return success(client);

@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg/types/server";
+import { NodeCG } from "nodecg-types/types/server";
 import { SacnReceiverServiceClient } from "nodecg-io-sacn-receiver";
 import { requireService } from "nodecg-io-core";
 
