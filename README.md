@@ -15,9 +15,9 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
+- AutoHotkey
 - Android (using adb)
 - ArtNet
-- AutoHotkey
 - CurseForge
 - DBus
 - Discord
@@ -37,6 +37,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - sACN Receiver
 - sACN Sender
 - Serial Port (Arduino)
+- [Shlink](https://shlink.io/)
 - Slack WebAPI
 - Spotify
 - SQL (using [knex](https://knexjs.org/))
