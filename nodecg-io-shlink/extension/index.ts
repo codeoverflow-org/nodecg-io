@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, error, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
 import { ShlinkClient } from "shlink-client";
 
 interface ShlinkServiceConfig {
@@ -26,7 +26,7 @@ class ShlinkService extends ServiceBundle<ShlinkServiceConfig, ShlinkServiceClie
         return success(client);
     }
 
-    stopClient(client: ShlinkServiceClient): void {
+    stopClient(_client: ShlinkServiceClient): void {
         // not needed or possible
     }
 }
