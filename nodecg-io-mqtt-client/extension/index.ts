@@ -11,10 +11,10 @@ interface MQTTClientServiceConfig {
 
 export class MQTTClientServiceClient {
     client: MqttClient;
-    once: (event: string, cb: any) => void;
+    once: (event: string, cb: () => void) => void;
     close: () => void;
-    on: (event: string, cb: any) => void;
-    off: (event: string | symbol, listener: (...args: any[]) => void) => void;
+    on: (event: string, cb: () => void) => void;
+    off: (event: string | symbol, listener: (...args: unknown[]) => void) => void;
 
     connect(url: string, username: string | undefined, password: string | undefined): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ export class MQTTClientServiceClient {
         });
     }
 
-    onMessage(func: (topic: string, message: any) => void): void {
+    onMessage(func: (topic: string, message: Buffer) => void): void {
         this.client.on("message", (topic, message) => {
             return func(topic, message);
         });

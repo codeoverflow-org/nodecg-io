@@ -11,7 +11,7 @@ module.exports = function (nodecg: NodeCG) {
     service?.onAvailable((client) => {
         nodecg.log.info("Client has been updated, waiting for messages.");
 
-        client.onMessage((topic: string, message: any) => {
+        client.onMessage((topic: string, message: Buffer) => {
             nodecg.log.info(`recieved message "${message.toString()}" "${topic}"`);
         });
     });
