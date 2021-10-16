@@ -4,8 +4,8 @@
     "description": "Allows you to connect with your Philips Hue bridge. This allows you to control your lights etc.",
     "homepage": "https://nodecg.io/RELEASE",
     "author": {
-        "name": "TheCrether",
-        "url": "https://thecrether.at"
+        "name": "Nils Witt",
+        "url": "https://github.com/Nils-witt"
     },
     "repository": {
         "type": "git",
