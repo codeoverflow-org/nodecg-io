@@ -5,19 +5,15 @@
     "properties": {
         "address": {
             "type": "string",
-            "description": "The IP address of the bridge that you want to connect to, not required/used if you specify discover as true"
-        },
-        "port": {
-            "type": "number",
-            "description": "The port that you want to use for connecting to your Hue bridge, not required/used if you specify discover as true"
+            "description": "The address of the server"
         },
         "password": {
             "type": "string",
-            "description": "The api key you want to use for the client"
+            "description": "The password to connect to the server"
         },
         "username": {
             "type": "string",
-            "description": "The username that you want to use"
+            "description": "The username to connect to the server"
         },
         "topics": {
             "type": "array",
