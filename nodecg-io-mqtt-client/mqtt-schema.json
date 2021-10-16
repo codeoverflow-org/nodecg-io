@@ -19,10 +19,10 @@
             "type": "string",
             "description": "The username that you want to use"
         },
-        "channels": {
+        "topics": {
             "type": "array",
-            "description": ""
+            "description": "Array of topic you want to subscribe to"
         }
     },
-    "required": ["address", "channels"]
+    "required": ["address", "topics"]
 }

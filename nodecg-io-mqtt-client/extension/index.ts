@@ -4,7 +4,7 @@ import { MqttClient, connect } from "mqtt";
 
 interface MQTTClientServiceConfig {
     address: string;
-    channels: [string];
+    topics: [string];
     username?: string;
     password?: string;
 }
@@ -37,9 +37,9 @@ export class MQTTClientServiceClient {
         });
     }
 
-    subscribe(channels: string[]): void {
-        channels.forEach((channel: string) => {
-            this.client.subscribe(channel);
+    subscribe(topics: string[]): void {
+        topics.forEach((topic: string) => {
+            this.client.subscribe(topic);
         });
     }
 
@@ -81,7 +81,7 @@ class MQTTClientService extends ServiceBundle<MQTTClientServiceConfig, MQTTClien
     async createClient(config: MQTTClientServiceConfig): Promise<Result<MQTTClientServiceClient>> {
         const client = new MQTTClientServiceClient();
         await client.connect(config.address, config.username, config.password);
-        client.subscribe(config.channels);
+        client.subscribe(config.topics);
         this.nodecg.log.info("Successfully connected to the MQTT server.");
         return success(client);
     }
