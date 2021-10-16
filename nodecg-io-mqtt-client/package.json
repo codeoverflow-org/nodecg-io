@@ -1,7 +1,7 @@
 {
     "name": "nodecg-io-mqtt-client",
     "version": "0.2.0",
-    "description": "Allows you to connect with your Philips Hue bridge. This allows you to control your lights etc.",
+    "description": "Allows you to connect with an MQTT server.",
     "homepage": "https://nodecg.io/RELEASE",
     "author": {
         "name": "Nils Witt",
