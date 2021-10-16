@@ -55,11 +55,12 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
             this.nodecg.log.info(`Connecting to MIDI input device ${deviceName}.`);
             if (deviceName !== null) {
                 const client = new easymidi.Input(deviceName);
-                this.nodecg.log.info(`Successfully connected to MIDI input device ${deviceName}.`);
-                return success(client);
-            } else {
-                return error("Could not connect to the configured device!");
+                if (client.isPortOpen()) {
+                    this.nodecg.log.info(`Successfully connected to MIDI input device ${deviceName}.`);
+                    return success(client);
+                }
             }
+            return error("Could not connect to the configured device!");
         }
     }
 
