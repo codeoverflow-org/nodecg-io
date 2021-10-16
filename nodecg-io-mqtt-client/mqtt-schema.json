@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "address": {
+            "type": "string",
+            "description": "The IP address of the bridge that you want to connect to, not required/used if you specify discover as true"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port that you want to use for connecting to your Hue bridge, not required/used if you specify discover as true"
+        },
+        "password": {
+            "type": "string",
+            "description": "The api key you want to use for the client"
+        },
+        "username": {
+            "type": "string",
+            "description": "The username that you want to use"
+        },
+        "channels": {
+            "type": "array",
+            "description": ""
+        }
+    },
+    "required": ["address", "channels"]
+}
