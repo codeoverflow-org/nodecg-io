@@ -72,6 +72,7 @@ class MQTTClientService extends ServiceBundle<MQTTClientServiceConfig, MQTTClien
         const client = new MQTTClientServiceClient();
         try {
             await client.connect(config.address, config.username, config.password);
+            client.close();
             return emptySuccess();
         } catch (e) {
             return error(e);
