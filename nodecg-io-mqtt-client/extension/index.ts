@@ -41,18 +41,16 @@ export class MQTTClientServiceClient {
         });
     }
 
-    onClose(func: () => void): void {
-        this.client.on("close", func);
+    onClose(func: () => void): MqttClient {
+        return this.client.on("close", func);
     }
 
     onMessage(func: (topic: string, message: Buffer) => void): MqttClient {
         return this.client.on("message", func);
     }
 
-    onError(func: (error: Error) => void): void {
-        this.client.on("error", (error: Error) => {
-            return func(error);
-        });
+    onError(func: (error: Error) => void): MqttClient {
+        return this.client.on("error", func);
     }
 }
 
