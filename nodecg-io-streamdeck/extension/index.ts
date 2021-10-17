@@ -14,6 +14,17 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, StreamdeckServiceClient> {
+    presets = Object.fromEntries(this.buildPresets());
+
+    private buildPresets(): Array<[string, StreamdeckServiceConfig]> {
+        const decks = streamdeck.listStreamDecks();
+        return decks.map((deck) => {
+            const presetName = `${deck.model}@${deck.path}`;
+            const presetConfig = { device: deck.path };
+            return [presetName, presetConfig];
+        });
+    }
+
     async validateConfig(config: StreamdeckServiceConfig): Promise<Result<void>> {
         try {
             let device: string | undefined = config.device;

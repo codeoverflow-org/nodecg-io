@@ -1,16 +1,16 @@
 import { success, error, Result, emptySuccess } from "nodecg-io-core";
-import * as SerialPort from "serialport"; // This is neccesary, because serialport only likes require!
+import * as SerialPort from "serialport";
 
 export interface DeviceInfo {
-    port: string;
-    manucaturer: string;
-    serialNumber: string;
-    pnpId: string;
+    port?: string;
+    manufacturer?: string;
+    serialNumber?: string;
+    pnpId?: string;
 }
 
 interface Protocol {
     delimiter: "\n\r" | "\n";
-    encoding: "ascii" | "utf8" | "utf16le" | "ucs2" | "base64" | "binary" | "hex" | undefined;
+    encoding?: "ascii" | "utf8" | "utf16le" | "ucs2" | "base64" | "binary" | "hex";
 }
 
 export interface SerialServiceConfig {
@@ -55,9 +55,9 @@ export class SerialServiceClient extends SerialPort {
                 if (deviceInfo.pnpId && element.pnpId && element.pnpId === deviceInfo.pnpId) {
                     result.push(element.path);
                 } else if (
-                    deviceInfo.manucaturer &&
+                    deviceInfo.manufacturer &&
                     deviceInfo.serialNumber &&
-                    element.manufacturer === deviceInfo.manucaturer &&
+                    element.manufacturer === deviceInfo.manufacturer &&
                     element.serialNumber === deviceInfo.serialNumber
                 ) {
                     result.push(element.path);
@@ -73,6 +73,25 @@ export class SerialServiceClient extends SerialPort {
         } else {
             return success(result[0]);
         }
+    }
+
+    static async getConnectedDevices(): Promise<Array<SerialServiceConfig>> {
+        const list = await SerialPort.list();
+        return list.map<SerialServiceConfig>((dev) => {
+            return {
+                device: {
+                    // If we know the manufacturer and serial number we prefer them over the port
+                    // because reboots or replugging devices may change the port number.
+                    // Only use the raw port number if we have.
+                    port: dev.manufacturer && dev.serialNumber ? undefined : dev.path,
+                    manufacturer: dev.manufacturer,
+                    serialNumber: dev.serialNumber,
+                    pnpId: dev.pnpId,
+                },
+                connection: {},
+                protocol: { delimiter: "\n" },
+            };
+        });
     }
 
     async send(payload: string): Promise<Result<void>> {

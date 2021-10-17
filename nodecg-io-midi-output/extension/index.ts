@@ -14,6 +14,8 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class MidiService extends ServiceBundle<MidiOutputServiceConfig, MidiOutputServiceClient> {
+    presets = Object.fromEntries(easymidi.getOutputs().map((device) => [device, { device }]));
+
     async validateConfig(config: MidiOutputServiceConfig): Promise<Result<void>> {
         const devices: Array<string> = new Array<string>();
 

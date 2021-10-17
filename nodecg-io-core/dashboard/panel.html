@@ -42,6 +42,11 @@
                         <select id="selectService" class="flex-fill"></select>
                     </div>
 
+                    <div id="instancePreset" class="margins flex hidden">
+                        <label for="selectPreset">Load config preset: </label>
+                        <select id="selectPreset" class="flex-fill" onchange="selectInstanceConfigPreset();"></select>
+                    </div>
+
                     <div id="instanceNameField" class="margins flex hidden">
                         <label for="inputInstanceName">Instance Name: </label>
                         <input id="inputInstanceName" class="flex-fill" type="text" />

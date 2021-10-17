@@ -26,6 +26,13 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
     public defaultConfig?: R;
 
     /**
+     * Config presets that the user can choose to load as their config.
+     * Useful for e.g. detected devices with everything already filled in for that specific device.
+     * Can also be used to show the user multiple different authentication methods or similar.
+     */
+    public presets?: ObjectMap<R>;
+
+    /**
      * This constructor creates the service and gets the nodecg-io-core
      * @param nodecg the current NodeCG instance
      * @param serviceName the name of the service in all-lowercase-and-with-hyphen

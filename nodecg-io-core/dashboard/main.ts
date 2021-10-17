@@ -6,6 +6,7 @@ export {
     createInstance,
     saveInstanceConfig,
     deleteInstance,
+    selectInstanceConfigPreset,
 } from "./serviceInstance";
 export {
     renderBundleDeps,
