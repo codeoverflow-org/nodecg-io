@@ -3,10 +3,9 @@ import { requireService } from "nodecg-io-core";
 import { MQTTClientServiceClient } from "nodecg-io-mqtt-client";
 
 module.exports = function (nodecg: NodeCG) {
-    nodecg.log.info("Sample bundle for websocket-client started");
+    nodecg.log.info("Sample bundle for mqtt-client started");
 
     const service = requireService<MQTTClientServiceClient>(nodecg, "mqtt-client");
-    let interval: NodeJS.Timeout | undefined;
 
     service?.onAvailable((client) => {
         nodecg.log.info("Client has been updated, waiting for messages.");
@@ -18,8 +17,5 @@ module.exports = function (nodecg: NodeCG) {
 
     service?.onUnavailable(() => {
         nodecg.log.info("Client has been unset.");
-        if (interval) {
-            clearInterval(interval);
-        }
     });
 };
