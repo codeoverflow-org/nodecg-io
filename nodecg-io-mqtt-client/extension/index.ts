@@ -26,9 +26,7 @@ export class MQTTClientServiceClient {
                 this.client.end();
                 reject(err.message);
             });
-            this.client.on("connect", () => {
-                resolve();
-            });
+            this.client.on("connect", resolve);
 
             this.once = this.client.once;
             this.on = this.client.on;
@@ -47,10 +45,8 @@ export class MQTTClientServiceClient {
         this.client.on("close", func);
     }
 
-    onMessage(func: (topic: string, message: Buffer) => void): void {
-        this.client.on("message", (topic, message) => {
-            return func(topic, message);
-        });
+    onMessage(func: (topic: string, message: Buffer) => void): MqttClient {
+        return this.client.on("message", func);
     }
 
     onError(func: (error: Error) => void): void {
@@ -66,15 +62,11 @@ module.exports = (nodecg: NodeCG) => {
 
 class MQTTClientService extends ServiceBundle<MQTTClientServiceConfig, MQTTClientServiceClient> {
     async validateConfig(config: MQTTClientServiceConfig): Promise<Result<void>> {
-        this.nodecg.log.info("validation");
         const client = new MQTTClientServiceClient();
-        try {
-            await client.connect(config.address, config.username, config.password);
-            client.close();
-            return emptySuccess();
-        } catch (e) {
-            return error(e);
-        }
+
+        await client.connect(config.address, config.username, config.password);
+        client.close();
+        return emptySuccess();
     }
 
     async createClient(config: MQTTClientServiceConfig): Promise<Result<MQTTClientServiceClient>> {
