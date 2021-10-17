@@ -2,7 +2,7 @@
     "name": "nodecg-io-mqtt-client",
     "version": "0.2.0",
     "description": "Allows you to connect with an MQTT server.",
-    "homepage": "https://nodecg.io/RELEASE",
+    "homepage": "https://nodecg.io/RELEASE/samples/mqtt-client",
     "author": {
         "name": "Nils Witt",
         "url": "https://github.com/Nils-witt"

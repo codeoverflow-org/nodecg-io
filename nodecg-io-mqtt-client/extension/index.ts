@@ -44,9 +44,7 @@ export class MQTTClientServiceClient {
     }
 
     onClose(func: () => void): void {
-        this.client.on("close", () => {
-            return func();
-        });
+        this.client.on("close", func);
     }
 
     onMessage(func: (topic: string, message: Buffer) => void): void {
