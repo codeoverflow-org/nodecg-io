@@ -1,3 +1,17 @@
 {
-    "extends": "../../tsconfig.common.json"
+    "extends": "../../tsconfig.common.json",
+    "compilerOptions": {
+        "paths": {
+            "nodecg-io-core": ["../../nodecg-io-core"],
+            "nodecg-io-midi-output": ["../../services/nodecg-io-midi-output"]
+        }
+    },
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        },
+        {
+            "path": "../../services/nodecg-io-midi-output"
+        }
+    ]
 }

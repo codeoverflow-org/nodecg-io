@@ -1,8 +1,8 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
-const ROOT = path.resolve( __dirname);
-const DESTINATION = path.resolve( __dirname, 'dist');
+const ROOT = path.resolve(__dirname);
+const DESTINATION = path.resolve(__dirname, 'dist');
 
 module.exports = {
     context: ROOT,
@@ -20,25 +20,13 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.js'],
         modules: [
             ROOT,
             'node_modules'
         ]
     },
 
-    module: {
-        rules: [
-            /****************
-             * LOADERS
-             *****************/
-            {
-                test: /\.ts$/,
-                exclude: [ /node_modules/ ],
-                use: 'ts-loader'
-            }
-        ]
-    },
 
     plugins: [
         new CleanWebpackPlugin()

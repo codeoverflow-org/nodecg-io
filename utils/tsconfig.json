@@ -1,0 +1,5 @@
+// This file will be overwritten automatically! Do not store options here.
+{
+    "files": [],
+    "references": [{ "path": "./nodecg-io-twitch-auth" }]
+}

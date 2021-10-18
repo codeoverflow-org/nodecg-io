@@ -1,3 +1,13 @@
 {
-    "extends": "../tsconfig.common.json"
+    "extends": "../../tsconfig.common.json",
+    "compilerOptions": {
+        "paths": {
+            "nodecg-io-core": ["../../nodecg-io-core"]
+        }
+    },
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        }
+    ]
 }

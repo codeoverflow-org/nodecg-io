@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
-import * as OBSWebSocket from "obs-websocket-js";
+import OBSWebSocket from "obs-websocket-js";
 
 interface OBSServiceConfig {
     host: string;

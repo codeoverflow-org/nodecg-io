@@ -19,11 +19,6 @@
         "**/*.d.ts",
         "*.json"
     ],
-    "scripts": {
-        "build": "tsc -b",
-        "watch": "tsc -b -w",
-        "clean": "tsc -b --clean"
-    },
     "keywords": [
         "nodecg-io",
         "nodecg-bundle"

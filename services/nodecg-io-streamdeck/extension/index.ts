@@ -34,7 +34,7 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
             streamdeck.openStreamDeck(device).close(); // Throws an error if the streamdeck is not found
             return emptySuccess();
         } catch (err) {
-            return error(err.toString());
+            return error(String(err));
         }
     }
 
@@ -51,7 +51,7 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
 
             return success(deck);
         } catch (err) {
-            return error(err.toString());
+            return error(String(err));
         }
     }
 

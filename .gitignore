@@ -10,6 +10,12 @@ node_modules/
 # generated type definitions
 *.d.ts
 
+# generated source mapping files
+*.d.ts.map
+
+# generated build info
+*.tsbuildinfo
+
 # Coverage reports by jest
 coverage
 

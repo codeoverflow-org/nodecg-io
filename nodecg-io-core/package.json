@@ -22,9 +22,6 @@
         "*.json"
     ],
     "scripts": {
-        "build": "tsc -b",
-        "watch": "tsc -b -w",
-        "clean": "tsc -b --clean",
         "test": "jest",
         "watchTest": "jest --watch",
         "coverage": "jest --coverage"

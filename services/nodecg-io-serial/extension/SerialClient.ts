@@ -1,5 +1,5 @@
 import { success, error, Result, emptySuccess } from "nodecg-io-core";
-import * as SerialPort from "serialport";
+import SerialPort from "serialport";
 
 export interface DeviceInfo {
     port?: string;

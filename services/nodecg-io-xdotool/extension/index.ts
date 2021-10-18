@@ -20,7 +20,7 @@ class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolSe
             await xd.testConnection();
             return emptySuccess();
         } catch (err) {
-            return error(err.toString());
+            return error(String(err));
         }
     }
 
@@ -29,7 +29,7 @@ class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolSe
             const xd = new Xdotool(this.nodecg, config.host, config.port);
             return success(xd);
         } catch (err) {
-            return error(err.toString());
+            return error(String(err));
         }
     }
 

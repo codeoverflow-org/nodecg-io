@@ -287,7 +287,9 @@ export class InstanceManager extends EventEmitter {
             svc.result.removeHandlers(inst.client);
         } catch (err) {
             this.nodecg.log.error(
-                `Can't re-register handlers of instance "${instanceName}": error while removing handlers: ${err.toString()}`,
+                `Can't re-register handlers of instance "${instanceName}": error while removing handlers: ${String(
+                    err,
+                )}`,
             );
         }
         // Readd handlers by running the `onAvailable` function of all bundles

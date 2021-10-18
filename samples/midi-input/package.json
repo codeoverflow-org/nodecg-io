@@ -9,9 +9,6 @@
         }
     },
     "scripts": {
-        "build": "tsc -b",
-        "watch": "tsc -b -w",
-        "clean": "tsc -b --clean",
         "list": "node helperscripts/listDevices.js"
     },
     "license": "MIT",

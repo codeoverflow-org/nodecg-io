@@ -8,11 +8,6 @@
             "nodecg-io-telegram": "^0.2.0"
         }
     },
-    "scripts": {
-        "build": "tsc -b",
-        "watch": "tsc -b -w",
-        "clean": "tsc -b --clean"
-    },
     "license": "MIT",
     "dependencies": {
         "@types/node": "^15.0.2",

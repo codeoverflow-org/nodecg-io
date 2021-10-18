@@ -44,7 +44,7 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
         this.schema = this.readSchema(pathSegments);
 
         this.nodecg.log.info(this.serviceType + " bundle started.");
-        this.core = (this.nodecg.extensions["nodecg-io-core"] as unknown) as NodeCGIOCore | undefined;
+        this.core = this.nodecg.extensions["nodecg-io-core"] as unknown as NodeCGIOCore | undefined;
         if (this.core === undefined) {
             this.nodecg.log.error(
                 "nodecg-io-core isn't loaded! " + this.serviceType + " bundle won't function without it.",
