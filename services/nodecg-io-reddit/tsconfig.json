@@ -1,9 +1,6 @@
 {
     "extends": "../../tsconfig.common.json",
     "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"]
-        },
         // reddit-ts uses unchecked index accesses and we need to disable it here
         // to be able to use reddit-ts.
         "noUncheckedIndexedAccess": false

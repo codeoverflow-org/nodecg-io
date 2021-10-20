@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-philipshue": ["../../services/nodecg-io-philipshue"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-sacn-sender": ["../../services/nodecg-io-sacn-sender"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-spotify": ["../../services/nodecg-io-spotify"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

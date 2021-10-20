@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-twitch-pubsub": ["../../services/nodecg-io-twitch-pubsub"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

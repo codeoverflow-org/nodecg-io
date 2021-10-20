@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-shlink": ["../../services/nodecg-io-shlink"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

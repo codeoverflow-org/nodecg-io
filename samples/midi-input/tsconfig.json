@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-midi-input": ["../../services/nodecg-io-midi-input"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

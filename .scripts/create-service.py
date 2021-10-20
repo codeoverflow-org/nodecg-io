@@ -2,7 +2,7 @@
 
 # What this file does:
 #  + It creates all required files for a new nodecg-io service
-#  + It copies version and dependency information (e.q fpr typescript) from noodecg-io-template
+#  + It copies version and dependency information (e.g., for typescript) from noodecg-io-template
 #  + It'll also create a sample and the files for the docs
 #
 # Requirements:
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     service_name_c = service_name.replace("-", " ").title().replace(" ", "")
     service_name_cc = service_name_c[0].lower() + service_name_c[1:]
 
-    with open('nodecg-io-template/package.json') as file:
+    with open('services/nodecg-io-template/package.json') as file:
         package = json.loads(file.read())
 
     # Replace some entries from the template package.json
@@ -33,17 +33,19 @@ if __name__ == '__main__':
         'name': author_name,
         'url': author_url
     }
-    package['repository']['directory'] = f'nodecg-io-{service_name}'
+    package['repository']['directory'] = f'services/nodecg-io-{service_name}'
 
-    os.mkdir(f'nodecg-io-{service_name}')
-    with open(f'nodecg-io-{service_name}/package.json', mode='w') as file:
+    os.mkdir(f'services/nodecg-io-{service_name}')
+    with open(f'services/nodecg-io-{service_name}/package.json', mode='w') as file:
         file.write(json.dumps(package, indent=4))
 
-    shutil.copy('nodecg-io-template/schema.json', f'nodecg-io-{service_name}/schema.json')
-    shutil.copy('nodecg-io-template/tsconfig.json', f'nodecg-io-{service_name}/tsconfig.json')
+    shutil.copy('services/nodecg-io-template/schema.json',
+                f'services/nodecg-io-{service_name}/schema.json')
+    shutil.copy('services/nodecg-io-template/tsconfig.json',
+                f'services/nodecg-io-{service_name}/tsconfig.json')
 
-    os.mkdir(f'nodecg-io-{service_name}/extension')
-    with open(f'nodecg-io-{service_name}/extension/index.ts', mode='w') as file:
+    os.mkdir(f'services/nodecg-io-{service_name}/extension')
+    with open(f'services/nodecg-io-{service_name}/extension/index.ts', mode='w') as file:
         file.writelines([
             'import { NodeCG } from "nodecg-types/types/server";\n',
             'import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";\n',
@@ -83,7 +85,7 @@ if __name__ == '__main__':
             '}\n'
         ])
 
-    with open(f'nodecg-io-{service_name}/extension/{service_name_cc}Client.ts', mode='w') as file:
+    with open(f'services/nodecg-io-{service_name}/extension/{service_name_cc}Client.ts', mode='w') as file:
         file.writelines([
             f'import {{ {service_name_c}Config }} from "./index";\n',
             '\n',
@@ -119,7 +121,16 @@ if __name__ == '__main__':
     with open(f'samples/{sample_name}/package.json', mode='w') as file:
         file.write(json.dumps(sample_package, indent=4))
 
-    shutil.copy('samples/template/tsconfig.json', f'samples/{sample_name}/tsconfig.json')
+    with open('samples/template/tsconfig.json') as file:
+        sample_tsconfig = json.loads(file.read())
+
+    # Replace reference in template tsconfig.json
+
+    sample_tsconfig['references'] = sample_tsconfig['references'][1]["path"].replace(
+        'template', service_name)
+
+    with open(f'samples/{sample_name}/tsconfig.json', mode='w') as file:
+        file.write(json.dumps(sample_tsconfig, indent=4))
 
     os.mkdir(f'samples/{sample_name}/extension')
     with open(f'samples/{sample_name}/extension/index.ts', mode='w') as file:
@@ -157,6 +168,6 @@ if __name__ == '__main__':
                 'You can help us [create it](../contribute/sample_documentation.md).'
             ])
 
-    os.system('npm run bsb')
+    os.system('npm run rebuild')
 
     print(f"\n\nService {service_name_c} created. Please add it to mkdocs.yml")

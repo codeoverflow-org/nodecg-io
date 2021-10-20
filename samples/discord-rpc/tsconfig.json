@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-discord-rpc": ["../../services/nodecg-io-discord-rpc"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"

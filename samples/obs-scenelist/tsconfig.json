@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.common.json",
-    "compilerOptions": {
-        "paths": {
-            "nodecg-io-core": ["../../nodecg-io-core"],
-            "nodecg-io-obs": ["../../services/nodecg-io-obs"]
-        }
-    },
     "references": [
         {
             "path": "../../nodecg-io-core"
