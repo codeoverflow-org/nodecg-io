@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     # Replace reference in template tsconfig.json
 
-    sample_tsconfig['references'] = sample_tsconfig['references'][1]["path"].replace(
+    sample_tsconfig['references'][1]["path"] = sample_tsconfig['references'][1]["path"].replace(
         'template', service_name)
 
     with open(f'samples/{sample_name}/tsconfig.json', mode='w') as file:
@@ -168,6 +168,7 @@ if __name__ == '__main__':
                 'You can help us [create it](../contribute/sample_documentation.md).'
             ])
 
+    os.system('npm install')
     os.system('npm run rebuild')
 
     print(f"\n\nService {service_name_c} created. Please add it to mkdocs.yml")
