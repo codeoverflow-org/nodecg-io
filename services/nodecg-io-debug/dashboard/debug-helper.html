@@ -166,9 +166,9 @@
                     <button id="json_send">Send</button>
                 </div>
 
-                <script src="../monaco/monaco-editor/min/vs/loader.js"></script>
+                <script src="../modules/monaco-editor/min/vs/loader.js"></script>
                 <script>
-                    require.config({ paths: { vs: "../monaco/monaco-editor/min/vs" } });
+                    require.config({ paths: { vs: "../modules/monaco-editor/min/vs" } });
                     require(["vs/editor/editor.main"], onMonacoReady);
 
                     function onMonacoReady() {

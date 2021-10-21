@@ -2,16 +2,20 @@ name: Linter
 
 on: pull_request
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
-      with: 
-        node-version: "15"
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "15"
 
-    - name: Install nodejs dependencies
-      run: npm i
-    - name: Run ESLint
-      run: npm run lint
+            - name: Install system dependencies
+              run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+
+            - name: Install nodejs dependencies
+              run: npm i
+
+            - name: Run ESLint
+              run: npm run lint

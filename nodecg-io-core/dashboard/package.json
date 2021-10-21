@@ -17,5 +17,10 @@
         "nodecg-types": "^1.8.2",
         "nodecg-io-core": "^0.2.0"
     },
-    "license": "MIT"
+    "license": "MIT",
+    "workspaces": {
+        "nohoist": [
+            "monaco-editor"
+        ]
+    }
 }

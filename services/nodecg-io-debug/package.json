@@ -40,8 +40,8 @@
         ],
         "mount": [
             {
-                "directory": "node_modules",
-                "endpoint": "monaco"
+                "directory": "../../node_modules",
+                "endpoint": "modules"
             }
         ]
     },
