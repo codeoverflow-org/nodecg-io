@@ -4,7 +4,6 @@
     "scripts": {
         "clean": "tsc -b --clean",
         "update": "node .scripts/update-paths.mjs",
-        "postupdate": "prettier -w --loglevel silent \"./**/*.json\"",
         "prebuild": "npm run update",
         "build": "tsc -b",
         "postbuild": "npm run build --workspaces --if-present",
@@ -13,8 +12,9 @@
         "coverage": "jest --coverage",
         "rebuild": "npm run clean && npm run build",
         "prewatch": "npm run update",
-        "watch": "tsc -b -w",
-        "postwatch": "npm run watch --workspaces --if-present",
+        "watch": "concurrently npm:watch-*",
+        "watch-index": "tsc -b -w --pretty",
+        "watch-workspaces": "npm run watch --workspaces --if-present",
         "lint": "eslint . --ext ts --ignore-pattern '**/*.d.ts'",
         "format": "prettier --write \"./**/*.{ts,html,css,json}\"",
         "format-pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json}'",
@@ -23,6 +23,7 @@
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.22.1",
         "@typescript-eslint/parser": "^4.22.1",
+        "concurrently": "^6.3.0",
         "eslint": "^7.25.0",
         "husky": "^6.0.0",
         "nodemon": "^2.0.7",
