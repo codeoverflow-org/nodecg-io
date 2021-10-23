@@ -11,11 +11,6 @@
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
         "directory": "utils/nodecg-io-twitch-chat"
     },
-    "scripts": {
-        "build": "tsc -b",
-        "watch": "tsc -b -w",
-        "clean": "tsc -b --clean"
-    },
     "keywords": [
         "nodecg-io"
     ],

@@ -1,0 +1,58 @@
+{
+    "name": "nodecg-io-debug",
+    "version": "0.2.0",
+    "description": "Debug helper service that helps to easily trigger your code for debugging purposes.",
+    "homepage": "https://nodecg.io/RELEASE/samples/debug",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "https://github.com/codeoverflow-org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-debug"
+    },
+    "files": [
+        "dashboard",
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        },
+        "dashboardPanels": [
+            {
+                "name": "nodecg-io-debug-helper",
+                "title": "Debug Helper",
+                "file": "debug-helper.html",
+                "fullbleed": true,
+                "headerColor": "#527878"
+            }
+        ],
+        "mount": [
+            {
+                "directory": "../../node_modules",
+                "endpoint": "modules"
+            }
+        ]
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg-types": "^1.8.2",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "nodecg-io-core": "^0.2.0",
+        "monaco-editor": "^0.23.0"
+    }
+}

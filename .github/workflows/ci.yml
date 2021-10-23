@@ -2,36 +2,36 @@ name: CI
 
 on: [push, pull_request]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with: 
-        node-version: "15"
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "15"
 
-    - name: Install system dependencies
-      run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+            - name: Install system dependencies
+              run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
 
-    - name: Install nodejs dependencies
-      run: npm ci && npm run bootstrap
+            - name: Install nodejs dependencies
+              run: npm ci
 
-    - name: Build TS
-      run: npm run build
+            - name: Build TS
+              run: npm run build
 
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with: 
-        node-version: "15"
+    tests:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "15"
 
-    - name: Install system dependencies
-      run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+            - name: Install system dependencies
+              run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
 
-    - name: Install nodejs dependencies
-      run: npm ci && npm run bootstrap
+            - name: Install nodejs dependencies
+              run: npm ci
 
-    - name: Run tests
-      run: npm run coverage -- --verbose
+            - name: Run tests
+              run: npm run coverage -- --verbose

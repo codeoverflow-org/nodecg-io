@@ -139,7 +139,7 @@ export async function saveInstanceConfig(): Promise<void> {
         showNotice("Successfully saved.");
     } catch (err) {
         nodecg.log.error(`Couldn't save instance config: ${err}`);
-        showNotice(err);
+        showNotice(String(err));
     }
 }
 
@@ -173,7 +173,7 @@ export async function createInstance(): Promise<void> {
     try {
         await sendAuthenticatedMessage("createServiceInstance", msg);
     } catch (e) {
-        showNotice(e);
+        showNotice(String(e));
         return;
     }
 

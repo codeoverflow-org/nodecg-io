@@ -1,11 +1,13 @@
 {
+    "extends": "../../tsconfig.common.json",
     "compilerOptions": {
         "target": "ES2015",
-
         "lib": ["ES2015", "dom"],
-        "module": "ES2015",
-        "sourceMap": true,
-        "declaration": false
+        "module": "ES2015"
     },
-    "extends": "../../tsconfig.common.json"
+    "references": [
+        {
+            "path": "../"
+        }
+    ]
 }

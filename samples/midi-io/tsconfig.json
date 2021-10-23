@@ -1,3 +1,14 @@
 {
-    "extends": "../../tsconfig.common.json"
+    "extends": "../../tsconfig.common.json",
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        },
+        {
+            "path": "../../services/nodecg-io-midi-input"
+        },
+        {
+            "path": "../../services/nodecg-io-midi-output"
+        }
+    ]
 }
