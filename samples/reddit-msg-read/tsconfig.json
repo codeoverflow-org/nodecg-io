@@ -4,5 +4,13 @@
         // reddit-ts, which is the underlying library of nodecg-io-reddit doesn't support compiling with
         // this option. We need to disable it to make this sample bundle compile.
         "noUncheckedIndexedAccess": false
-    }
+    },
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        },
+        {
+            "path": "../../services/nodecg-io-reddit"
+        }
+    ]
 }

@@ -1,0 +1,42 @@
+{
+    "name": "nodecg-io-midi-input",
+    "version": "0.2.0",
+    "description": "Connect to MIDI devices and control the volume of your voice or music with a fader.",
+    "homepage": "https://nodecg.io/RELEASE/samples/midi-input",
+    "author": {
+        "name": "noeppi_noeppi",
+        "url": "https://github.com/noeppi-noeppi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-midi-input"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg-types": "^1.8.2",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "easymidi": "^2.1.0",
+        "nodecg-io-core": "^0.2.0"
+    }
+}

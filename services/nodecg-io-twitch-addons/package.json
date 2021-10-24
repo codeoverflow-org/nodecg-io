@@ -1,0 +1,44 @@
+{
+    "name": "nodecg-io-twitch-addons",
+    "version": "0.2.0",
+    "description": "Support for the API's of BetterTTV and FrankerFaceZ",
+    "homepage": "https://nodecg.io/RELEASE/samples/twitch-addons",
+    "author": {
+        "name": "noeppi_noeppi",
+        "url": "https://github.com/noeppi-noeppi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-twitch-addons"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "@types/node-fetch": "^2.5.10",
+        "nodecg-types": "^1.8.2",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.1",
+        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-twitch-auth": "^0.2.0"
+    }
+}

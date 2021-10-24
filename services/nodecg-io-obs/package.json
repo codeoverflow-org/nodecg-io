@@ -1,0 +1,42 @@
+{
+    "name": "nodecg-io-obs",
+    "version": "0.2.0",
+    "description": "Allows to control your obs instance to e.g. switch scenes.",
+    "homepage": "https://nodecg.io/RELEASE",
+    "author": {
+        "name": "derNiklaas",
+        "url": "https://github.com/derNiklaas"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-obs"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.2.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^15.0.2",
+        "nodecg-types": "^1.8.2",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "nodecg-io-core": "^0.2.0",
+        "obs-websocket-js": "^4.0.2"
+    }
+}

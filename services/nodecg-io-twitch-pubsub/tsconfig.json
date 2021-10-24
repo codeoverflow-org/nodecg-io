@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.common.json",
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        },
+        {
+            "path": "../../utils/nodecg-io-twitch-auth"
+        }
+    ]
+}
