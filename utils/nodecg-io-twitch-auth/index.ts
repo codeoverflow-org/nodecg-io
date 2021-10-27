@@ -1,4 +1,4 @@
-import { AuthProvider, getTokenInfo as twitchGetTokenInfo, StaticAuthProvider, TokenInfo } from "twitch-auth";
+import { AuthProvider, getTokenInfo as twitchGetTokenInfo, StaticAuthProvider, TokenInfo } from "@twurple/auth";
 
 export interface TwitchServiceConfig {
     oauthKey: string;

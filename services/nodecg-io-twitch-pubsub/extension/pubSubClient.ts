@@ -1,11 +1,11 @@
-import { BasicPubSubClient, SingleUserPubSubClient } from "twitch-pubsub-client";
+import { BasicPubSubClient, SingleUserPubSubClient } from "@twurple/pubsub";
 import { createAuthProvider, TwitchServiceConfig } from "nodecg-io-twitch-auth";
-import { ApiClient } from "twitch";
+import { AuthProvider } from "@twurple/auth";
 
 export class TwitchPubSubServiceClient extends SingleUserPubSubClient {
     private basicClient: BasicPubSubClient;
-    constructor(apiClient: ApiClient, basicClient: BasicPubSubClient, private readonly userId: string) {
-        super({ twitchClient: apiClient, pubSubClient: basicClient });
+    constructor(auth: AuthProvider, basicClient: BasicPubSubClient) {
+        super({ authProvider: auth, pubSubClient: basicClient });
         this.basicClient = basicClient;
     }
 
@@ -17,17 +17,11 @@ export class TwitchPubSubServiceClient extends SingleUserPubSubClient {
         const authProvider = await createAuthProvider(cfg);
 
         // Create the actual pubsub client and connect
-        const apiClient = new ApiClient({ authProvider });
-        const user = await apiClient.helix.users.getMe();
         const basicClient = new BasicPubSubClient();
-        const pubSubClient = new TwitchPubSubServiceClient(apiClient, basicClient, user.id);
+        const pubSubClient = new TwitchPubSubServiceClient(authProvider, basicClient);
 
         await basicClient.connect();
         return pubSubClient;
-    }
-
-    getUserID(): string {
-        return this.userId;
     }
 
     disconnect(): Promise<void> {
