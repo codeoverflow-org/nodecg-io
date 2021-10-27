@@ -19,10 +19,10 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^15.0.2",
-        "typescript": "^4.2.4"
+        "@types/node": "^16.11.6",
+        "typescript": "^4.4.4"
     },
     "dependencies": {
-        "twitch-auth": "^4.5.5"
+        "@twurple/auth": "^5.0.7"
     }
 }
