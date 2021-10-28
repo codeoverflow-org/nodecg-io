@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { TemplateClient } from "./templateClient";
 
 export interface TemplateConfig {
@@ -18,16 +18,16 @@ class TemplateService extends ServiceBundle<TemplateConfig, TemplateClient> {
         return emptySuccess();
     }
 
-    async createClient(config: TemplateConfig): Promise<Result<TemplateClient>> {
+    async createClient(config: TemplateConfig, logger: Logger): Promise<Result<TemplateClient>> {
         // TODO: Implement
-        const client = TemplateClient.createClient(config);
-        this.nodecg.log.info("Successfully created template client.");
+        const client = TemplateClient.createClient(config, logger);
+        logger.info("Successfully created template client.");
         return success(client);
     }
 
-    stopClient(_: TemplateClient): void {
+    stopClient(_: TemplateClient, logger: Logger): void {
         // TODO: Implement
-        this.nodecg.log.info("Successfully stopped template client.");
+        logger.info("Successfully stopped template client.");
     }
 
     removeHandlers(_: TemplateClient): void {

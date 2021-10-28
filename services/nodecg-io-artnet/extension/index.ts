@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 export { ArtNetServiceClient } from "./artnetServiceClient";
 import { ArtNetServiceClient } from "./artnetServiceClient";
 
@@ -26,9 +26,9 @@ class ArtNetService extends ServiceBundle<ArtNetServiceConfig, ArtNetServiceClie
         return success(client);
     }
 
-    stopClient(client: ArtNetServiceClient): void {
+    stopClient(client: ArtNetServiceClient, logger: Logger): void {
         client.close();
-        this.nodecg.log.info("Successfully stopped the Art-Net service.");
+        logger.info("Successfully stopped the Art-Net service.");
     }
 
     removeHandlers(client: ArtNetServiceClient): void {

@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { DiscordRpcConfig, createLoginData } from "./discordRpcAuth";
 import * as rpc from "discord-rpc";
 
@@ -18,16 +18,16 @@ class DiscordRpcService extends ServiceBundle<DiscordRpcConfig, DiscordRpcClient
         return emptySuccess();
     }
 
-    async createClient(config: DiscordRpcConfig): Promise<Result<DiscordRpcClient>> {
+    async createClient(config: DiscordRpcConfig, logger: Logger): Promise<Result<DiscordRpcClient>> {
         const client = new rpc.Client({ transport: "ipc" });
         const login = await createLoginData(client, config, ["identify", "rpc"]);
         await client.login(login);
-        this.nodecg.log.info("Successfully created discord-rpc client.");
+        logger.info("Successfully created discord-rpc client.");
         return success(client);
     }
 
-    stopClient(client: DiscordRpcClient): void {
-        client.destroy().then((_) => this.nodecg.log.info("Successfully stopped discord-rpc client."));
+    stopClient(client: DiscordRpcClient, logger: Logger): void {
+        client.destroy().then((_) => logger.info("Successfully stopped discord-rpc client."));
     }
 
     removeHandlers(client: DiscordRpcClient): void {

@@ -1,10 +1,10 @@
 import fetch from "node-fetch";
-import { NodeCG } from "nodecg-types/types/server";
+import { Logger } from "nodecg-io-core";
 
 export class AHK {
     private readonly address: string;
 
-    public constructor(private nodecg: NodeCG, host: string, port: number) {
+    public constructor(private logger: Logger, host: string, port: number) {
         this.address = `http://${host}:${port}`;
     }
 
@@ -17,7 +17,7 @@ export class AHK {
         try {
             await fetch(`${this.address}/send/${command}`, { method: "GET" });
         } catch (err) {
-            this.nodecg.log.error(`Error while using the AHK Connector: ${err}`);
+            this.logger.error(`Error while using the AHK Connector: ${err}`);
         }
     }
 }

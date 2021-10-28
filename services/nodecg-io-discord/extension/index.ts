@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Client as DiscordClient } from "discord.js";
 
 interface DiscordServiceConfig {
@@ -21,10 +21,10 @@ class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceC
         return emptySuccess();
     }
 
-    async createClient(config: DiscordServiceConfig): Promise<Result<DiscordServiceClient>> {
+    async createClient(config: DiscordServiceConfig, logger: Logger): Promise<Result<DiscordServiceClient>> {
         const client = new DiscordClient({ partials: ["CHANNEL", "MESSAGE", "REACTION", "GUILD_MEMBER", "USER"] });
         await client.login(config.botToken);
-        this.nodecg.log.info("Successfully connected to Discord.");
+        logger.info("Successfully connected to Discord.");
         return success(client);
     }
 

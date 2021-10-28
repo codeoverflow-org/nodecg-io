@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { DebugHelper } from "./debugHelper";
 
 export { DebugHelper } from "./debugHelper";
@@ -13,14 +13,14 @@ class DebugService extends ServiceBundle<never, DebugHelper> {
         return emptySuccess();
     }
 
-    async createClient(): Promise<Result<DebugHelper>> {
-        const client = DebugHelper.createClient(this.nodecg);
-        this.nodecg.log.info("Successfully created debug helper.");
+    async createClient(_: never, logger: Logger): Promise<Result<DebugHelper>> {
+        const client = DebugHelper.createClient(this.nodecg, logger);
+        logger.info("Successfully created debug helper.");
         return success(client);
     }
 
-    stopClient(_: DebugHelper): void {
-        this.nodecg.log.info("Successfully stopped debug client.");
+    stopClient(_: DebugHelper, logger: Logger): void {
+        logger.info("Successfully stopped debug client.");
     }
 
     removeHandlers(client: DebugHelper): void {

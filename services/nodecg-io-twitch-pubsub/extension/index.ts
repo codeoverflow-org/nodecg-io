@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 import { TwitchPubSubServiceClient } from "./pubSubClient";
 
@@ -21,11 +21,11 @@ class TwitchPubSubService extends ServiceBundle<TwitchServiceConfig, TwitchPubSu
         return success(client);
     }
 
-    stopClient(client: TwitchPubSubServiceClient): void {
+    stopClient(client: TwitchPubSubServiceClient, logger: Logger): void {
         client
             .disconnect()
-            .then(() => this.nodecg.log.info("Stopped pubsub client successfully."))
-            .catch((err) => this.nodecg.log.error(`Couldn't stop pubsub client: ${err}`));
+            .then(() => logger.info("Stopped pubsub client successfully."))
+            .catch((err) => logger.error(`Couldn't stop pubsub client: ${err}`));
     }
 
     // Pubsub has no methods to remove the handlers.

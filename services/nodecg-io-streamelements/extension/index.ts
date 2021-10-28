@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { success, ServiceBundle } from "nodecg-io-core";
+import { success, ServiceBundle, Logger } from "nodecg-io-core";
 import { StreamElementsServiceClient } from "./StreamElements";
 
 interface StreamElementsServiceConfig {
@@ -18,11 +18,11 @@ class StreamElementsService extends ServiceBundle<StreamElementsServiceConfig, S
         return new StreamElementsServiceClient(config.jwtToken).testConnection();
     }
 
-    async createClient(config: StreamElementsServiceConfig) {
-        this.nodecg.log.info("Connecting to StreamElements socket server...");
+    async createClient(config: StreamElementsServiceConfig, logger: Logger) {
+        logger.info("Connecting to StreamElements socket server...");
         const client = new StreamElementsServiceClient(config.jwtToken);
         await client.connect();
-        this.nodecg.log.info("Successfully connected to StreamElements socket server.");
+        logger.info("Successfully connected to StreamElements socket server.");
 
         return success(client);
     }

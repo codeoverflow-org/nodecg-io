@@ -2,6 +2,7 @@
 
 import { Result } from "./utils/result";
 import { ServiceProvider } from "./serviceProvider";
+import { Logger } from "./utils/logger";
 
 /**
  * Models a map using a object, instead of a iterator like the javascript es6 map.
@@ -48,26 +49,29 @@ export interface Service<R, C> {
      * This function validates the passed config after it has been validated against the json schema (if applicable).
      * Should make deeper checks like checking validity of auth tokens.
      * @param config the config which should be validated.
+     * @param logger the logger which logs with the instance.name as prefix
      * @return void if the config passes validation and an error string describing the issue if not.
      */
-    validateConfig(config: R): Promise<Result<void>>;
+    validateConfig(config: R, logger: Logger): Promise<Result<void>>;
 
     /**
      * Creates a client to the service using the validated config.
      * The returned result will be passed to bundles and they should be able to use the service with this returned client.
      *
      * @param config the user provided config for the service.
+     * @param logger the logger which logs with the instance.name as prefix
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
-    createClient(config: R): Promise<Result<C>>;
+    createClient(config: R, logger: Logger): Promise<Result<C>>;
 
     /**
      * Stops a client of this service that is not needed anymore.
      * Services should close any connections that might exist here.
      *
      * @param client the client that needs to be stopped.
+     * @param logger the logger which logs with the instance.name as prefix
      */
-    stopClient(client: C): void;
+    stopClient(client: C, logger: Logger): void;
 
     /**
      * Removes all handlers from a service client.

@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import OBSWebSocket from "obs-websocket-js";
 
 interface OBSServiceConfig {
@@ -27,10 +27,11 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
         return emptySuccess();
     }
 
-    async createClient(config: OBSServiceConfig): Promise<Result<OBSServiceClient>> {
+    async createClient(config: OBSServiceConfig, logger: Logger): Promise<Result<OBSServiceClient>> {
         const client = new OBSWebSocket();
         try {
             await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+            logger.info("Connected to OBS successfully.");
         } catch (e) {
             return error(e.error);
         }

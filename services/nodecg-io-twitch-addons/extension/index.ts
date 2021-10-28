@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 import { TwitchAddonsClient } from "./twitchAddonsClient";
 
@@ -31,13 +31,13 @@ class TwitchAddonsService extends ServiceBundle<TwitchServiceConfig, TwitchAddon
         return emptySuccess();
     }
 
-    async createClient(config: TwitchServiceConfig): Promise<Result<TwitchAddonsClient>> {
+    async createClient(config: TwitchServiceConfig, logger: Logger): Promise<Result<TwitchAddonsClient>> {
         const client = await TwitchAddonsClient.createClient(config);
-        this.nodecg.log.info("Successfully created twitch-addons client.");
+        logger.info("Successfully created twitch-addons client.");
         return success(client);
     }
 
-    stopClient(_: TwitchAddonsClient): void {
-        this.nodecg.log.info("Successfully stopped twitch-addons client.");
+    stopClient(_: TwitchAddonsClient, logger: Logger): void {
+        logger.info("Successfully stopped twitch-addons client.");
     }
 }

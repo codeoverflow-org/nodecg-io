@@ -5,6 +5,7 @@ import { Result } from "./utils/result";
 
 import * as fs from "fs";
 import * as path from "path";
+import { Logger } from "./utils/logger";
 
 /**
  * Class helping to create a nodecg-io service
@@ -42,7 +43,6 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
         this.nodecg = nodecg;
         this.serviceType = serviceName;
         this.schema = this.readSchema(pathSegments);
-
         this.nodecg.log.info(this.serviceType + " bundle started.");
         this.core = this.nodecg.extensions["nodecg-io-core"] as unknown as NodeCGIOCore | undefined;
         if (this.core === undefined) {
@@ -64,26 +64,29 @@ export abstract class ServiceBundle<R, C> implements Service<R, C> {
      * This function validates the passed config after it has been validated against the json schema (if applicable).
      * Should make deeper checks like checking validity of auth tokens.
      * @param config the config which should be validated.
+     * @param logger the logger which logs with the instance.name as prefix
      * @return void if the config passes validation and an error string describing the issue if not.
      */
-    abstract validateConfig(config: R): Promise<Result<void>>;
+    abstract validateConfig(config: R, logger: Logger): Promise<Result<void>>;
 
     /**
      * Creates a client to the service using the validated config.
      * The returned result will be passed to bundles and they should be able to use the service with this returned client.
      *
      * @param config the user provided config for the service.
+     * @param logger the logger which logs with the instance.name as prefix
      * @return the client if everything went well and an error string describing the issue if a error occured.
      */
-    abstract createClient(config: R): Promise<Result<C>>;
+    abstract createClient(config: R, logger: Logger): Promise<Result<C>>;
 
     /**
      * Stops a client of this service that is not needed anymore.
      * Services should close any connections that might exist here.
      *
      * @param client the client that needs to be stopped.
+     * @param logger the logger which logs with the instance.name as prefix
      */
-    abstract stopClient(client: C): void;
+    abstract stopClient(client: C, logger: Logger): void;
 
     /**
      * Removes all handlers from a service client.

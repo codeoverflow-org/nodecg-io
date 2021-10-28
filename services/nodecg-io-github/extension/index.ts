@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Octokit } from "@octokit/rest";
 
 export interface GitHubConfig {
@@ -24,11 +24,11 @@ class GitHubService extends ServiceBundle<GitHubConfig, GitHubClient> {
         return emptySuccess();
     }
 
-    async createClient(config: GitHubConfig): Promise<Result<GitHubClient>> {
+    async createClient(config: GitHubConfig, logger: Logger): Promise<Result<GitHubClient>> {
         const client = new Octokit({
             auth: config.token,
         });
-        this.nodecg.log.info("Successfully created github client.");
+        logger.info("Successfully created github client.");
         return success(client);
     }
 

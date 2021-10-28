@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle, error } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, error, Logger } from "nodecg-io-core";
 import { NanoleafClient } from "./nanoleafClient";
 import { NanoleafUtils } from "./nanoleafUtils";
 
@@ -16,11 +16,11 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class NanoleafService extends ServiceBundle<NanoleafServiceConfig, NanoleafClient> {
-    async validateConfig(config: NanoleafServiceConfig): Promise<Result<void>> {
+    async validateConfig(config: NanoleafServiceConfig, logger: Logger): Promise<Result<void>> {
         // checks for valid IP Adress or valid IP Adress + Auth Key separately
         if (!config.authKey) {
             if (await NanoleafUtils.verifyIpAddress(config.ipAddress)) {
-                this.nodecg.log.info("Successfully verified ip address. Now trying to retrieve an auth key for you...");
+                logger.info("Successfully verified ip address. Now trying to retrieve an auth key for you...");
 
                 // Automatically retrieves and saves the auth key for user's convenience
                 const authKey = await NanoleafUtils.retrieveAuthKey(config.ipAddress, this.nodecg);
@@ -35,7 +35,7 @@ class NanoleafService extends ServiceBundle<NanoleafServiceConfig, NanoleafClien
             }
         } else {
             if (await NanoleafUtils.verifyAuthKey(config.ipAddress, config.authKey)) {
-                this.nodecg.log.info("Successfully verified auth key.");
+                logger.info("Successfully verified auth key.");
                 return emptySuccess();
             } else {
                 return error("Unable to verify auth key! Invalid key?");
@@ -43,19 +43,19 @@ class NanoleafService extends ServiceBundle<NanoleafServiceConfig, NanoleafClien
         }
     }
 
-    async createClient(config: NanoleafServiceConfig): Promise<Result<NanoleafClient>> {
-        this.nodecg.log.info("Connecting to nanoleaf controller...");
+    async createClient(config: NanoleafServiceConfig, logger: Logger): Promise<Result<NanoleafClient>> {
+        logger.info("Connecting to nanoleaf controller...");
         if (await NanoleafUtils.verifyAuthKey(config.ipAddress, config.authKey || "")) {
             const client = new NanoleafClient(config.ipAddress, config.authKey || "");
-            this.nodecg.log.info("Connected to Nanoleafs successfully.");
+            logger.info("Connected to Nanoleafs successfully.");
             return success(client);
         } else {
             return error("Unable to connect to Nanoleafs! Please check your credentials!");
         }
     }
 
-    stopClient(): void {
+    stopClient(_: NanoleafClient, logger: Logger): void {
         // There is really nothing to do here
-        this.nodecg.log.info("Successfully stopped nanoleaf client.");
+        logger.info("Successfully stopped nanoleaf client.");
     }
 }

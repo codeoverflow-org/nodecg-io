@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import { google, GoogleApis } from "googleapis";
 import type { Credentials } from "google-auth-library/build/src/auth/credentials";
 import type { OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
@@ -24,14 +24,14 @@ class GoogleApisService extends ServiceBundle<GoogleApisServiceConfig, GoogleApi
         return emptySuccess();
     }
 
-    async createClient(config: GoogleApisServiceConfig): Promise<Result<GoogleApisServiceClient>> {
+    async createClient(config: GoogleApisServiceConfig, logger: Logger): Promise<Result<GoogleApisServiceClient>> {
         const auth = new google.auth.OAuth2({
             clientId: config.clientID,
             clientSecret: config.clientSecret,
             redirectUri: "http://localhost:9090/nodecg-io-googleapis/oauth2callback",
         });
 
-        await this.refreshTokens(config, auth);
+        await this.refreshTokens(config, auth, logger);
 
         const client = new GoogleApis({ auth });
         return success(client);
@@ -68,12 +68,12 @@ class GoogleApisService extends ServiceBundle<GoogleApisServiceConfig, GoogleApi
         });
     }
 
-    private async refreshTokens(config: GoogleApisServiceConfig, auth: OAuth2Client) {
+    private async refreshTokens(config: GoogleApisServiceConfig, auth: OAuth2Client, logger: Logger) {
         if (config.refreshToken) {
-            this.nodecg.log.info("Re-using saved refresh token.");
+            logger.info("Re-using saved refresh token.");
             auth.setCredentials({ refresh_token: config.refreshToken });
         } else {
-            this.nodecg.log.info("No refresh token found. Starting auth flow to get one ...");
+            logger.info("No refresh token found. Starting auth flow to get one ...");
             auth.setCredentials(await this.initialAuth(config, auth));
             if (auth.credentials.refresh_token) {
                 config.refreshToken = auth.credentials.refresh_token;

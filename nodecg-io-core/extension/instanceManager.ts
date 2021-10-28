@@ -5,7 +5,7 @@ import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import Ajv from "ajv";
 import { EventEmitter } from "events";
-
+import { Logger } from "./utils/logger";
 /**
  * Manages instances of services and their configs/clients.
  */
@@ -105,7 +105,7 @@ export class InstanceManager extends EventEmitter {
             } else {
                 this.nodecg.log.info(`Successfully stopped client of service instance "${instanceName}".`);
                 try {
-                    svc.result.stopClient(instance.client);
+                    svc.result.stopClient(instance.client, new Logger(instanceName, this.nodecg));
                 } catch (e) {
                     this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
                 }
@@ -172,7 +172,10 @@ export class InstanceManager extends EventEmitter {
 
             // Validation by the service.
             try {
-                const validationRes = await service.result.validateConfig(config);
+                const validationRes = await service.result.validateConfig(
+                    config,
+                    new Logger(instanceName, this.nodecg),
+                );
                 if (validationRes.failed) {
                     throw validationRes.errorMessage;
                 }
@@ -220,7 +223,7 @@ export class InstanceManager extends EventEmitter {
                 // If the service does not require a config we can safely ignore the undefined error because in that case
                 // passing undefined is the intended behavior.
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const client = await service.createClient(inst.config!);
+                const client = await service.createClient(inst.config!, new Logger(instanceName, this.nodecg));
 
                 // Check if a error happened while creating the client
                 if (client.failed) {
@@ -230,7 +233,7 @@ export class InstanceManager extends EventEmitter {
                     inst.client = client.result;
                 }
             } catch (err) {
-                const msg = `The "${inst.serviceType}" service produced an error while creating a client: ${err}`;
+                const msg = `The "${inst.serviceType}" service with the name "${instanceName}" produced an error while creating a client: ${err}`;
                 this.nodecg.log.error(msg);
                 inst.client = undefined;
                 return error(msg);
@@ -244,7 +247,7 @@ export class InstanceManager extends EventEmitter {
         if (oldClient !== undefined) {
             this.nodecg.log.info(`Stopping old unused ${inst.serviceType} client...`);
             try {
-                service.stopClient(oldClient);
+                service.stopClient(oldClient, new Logger(instanceName, this.nodecg));
             } catch (e) {
                 this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
             }
