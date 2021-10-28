@@ -4,9 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-###   Issues with lerna stop us from auto-updating npm dependencies
-###   See: https://github.com/codeoverflow-org/nodecg-io/issues/263
-# - package-ecosystem: "npm"
-#   directory: "/"
-#   schedule:
-#     interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
