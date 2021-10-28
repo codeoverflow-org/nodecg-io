@@ -88,7 +88,7 @@ function onExit(
             if (!service.failed && client) {
                 nodecg.log.info(`Stopping service ${key} of type ${service.result.serviceType}.`);
                 try {
-                    service.result.stopClient(client, new Logger("nodecg-io-core-shutdown", nodecg));
+                    service.result.stopClient(client, new Logger(key, nodecg));
                 } catch (err) {
                     nodecg.log.info(
                         `Could not stop service ${key} of type ${service.result.serviceType}: ${String(err)}`,
