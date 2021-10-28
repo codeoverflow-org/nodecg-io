@@ -16,7 +16,7 @@
     "license": "MIT",
     "dependencies": {
         "@types/node": "^16.11.6",
-        "nodecg-types": "^1.8.2",
+        "nodecg-types": "^1.8.3",
         "nodecg-io-core": "^0.2.0",
         "nodecg-io-reddit": "^0.2.0",
         "typescript": "^4.4.4"
