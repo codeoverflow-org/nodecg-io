@@ -1,4 +1,4 @@
-import { ChatClient } from "twitch-chat-client";
+import { ChatClient } from "@twurple/chat";
 import { createAuthProvider, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
 export class TwitchChatServiceClient extends ChatClient {
@@ -10,7 +10,7 @@ export class TwitchChatServiceClient extends ChatClient {
         const authProvider = await createAuthProvider(cfg);
 
         // Create the actual chat client and connect
-        const chatClient = new TwitchChatServiceClient(authProvider);
+        const chatClient = new TwitchChatServiceClient({ authProvider });
         await chatClient.connect();
 
         // This also waits till it has registered itself at the IRC server, which is needed to do anything.

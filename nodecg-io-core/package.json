@@ -50,17 +50,17 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/crypto-js": "^4.0.1",
-        "@types/jest": "^27.0.1",
-        "@types/node": "^15.0.2",
-        "jest": "^27.0.6",
-        "nodecg-types": "^1.8.2",
-        "typescript": "^4.2.4",
-        "ts-jest": "^27.0.3"
+        "@types/crypto-js": "^4.0.2",
+        "@types/jest": "^27.0.2",
+        "@types/node": "^16.11.6",
+        "jest": "^27.3.1",
+        "nodecg-types": "^1.8.3",
+        "typescript": "^4.4.4",
+        "ts-jest": "^27.0.7"
     },
     "dependencies": {
-        "ajv": "^8.2.0",
-        "crypto-js": "^4.0.0",
-        "tslib": "^2.2.0"
+        "ajv": "^8.6.3",
+        "crypto-js": "^4.1.1",
+        "tslib": "^2.3.1"
     }
 }

@@ -1,7 +1,7 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
-import * as streamdeck from "elgato-stream-deck";
-import { StreamDeck } from "elgato-stream-deck";
+import * as streamdeck from "@elgato-stream-deck/node";
+import { StreamDeck } from "@elgato-stream-deck/node";
 
 interface StreamdeckServiceConfig {
     device: string;

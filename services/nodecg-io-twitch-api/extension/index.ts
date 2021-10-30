@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
-import { ApiClient } from "twitch";
+import { ApiClient } from "@twurple/api";
 import { createAuthProvider, getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
 export type TwitchApiServiceClient = ApiClient;

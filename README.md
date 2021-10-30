@@ -15,6 +15,9 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
+<details>
+  <summary>Click to see more!</summary>
+
 - AutoHotkey
 - Android (using adb)
 - Art-Net
@@ -55,6 +58,8 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - WebSocket Server
 - Xdotool
 
+</details>
+
 ## How to use nodecg-io
 
 If you want to use nodecg-io, you should note that it is only a framework for your bundle, so you need at least a basic knowledge of the programming language JavaScript or any other language that compiles to JavaScript like TypeScript.
@@ -80,10 +85,11 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 
 ```
 nodecg-io/
-+--docs/                         Documentation repo (you have to clone this separately)
-+--nodecg-io-core/               Core framework
-   +--dashboard/                    GUI
-+--nodecg-io-<service name>/     Service implementations
-+--samples/                      Samplecode that shows how each service is used
-+--utils/                        Utility packages for shared code between services
++--docs/                          Documentation repo (you have to clone this separately)
++--nodecg-io-core/                Core framework
+   +--dashboard/                  GUI
++--services/
+   +--nodecg-io-<service name>/   Service implementations
++--samples/                       Samplecode that shows how each service is used
++--utils/                         Utility packages for shared code between services
 ```
