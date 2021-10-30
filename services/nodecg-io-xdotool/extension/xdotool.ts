@@ -1,12 +1,12 @@
 import fetch from "node-fetch";
 import { spawn } from "child_process";
 import { onExit } from "@rauschma/stringio";
-import { NodeCG } from "nodecg-types/types/server";
+import { Logger } from "nodecg-io-core";
 
 export class Xdotool {
     private readonly address: string | null;
 
-    constructor(private nodecg: NodeCG, host: string, port: number) {
+    constructor(private logger: Logger, host: string, port: number) {
         if ((host.startsWith("127.0.0.") || host === "localhost") && port < 0) {
             this.address = null;
         } else {
@@ -51,7 +51,7 @@ export class Xdotool {
             try {
                 await fetch(`${this.address}/send/${command}`, { method: "GET" });
             } catch (err) {
-                this.nodecg.log.error(`Error while using the xdotool Connector: ${err}`);
+                this.logger.error(`Error while using the xdotool Connector: ${err}`);
             }
         }
     }

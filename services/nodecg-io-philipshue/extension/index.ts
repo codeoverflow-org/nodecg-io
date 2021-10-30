@@ -28,7 +28,7 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
         super(nodecg, name, ...pathSegments);
         this.discoverBridges()
             .then((bridgePresets) => (this.presets = bridgePresets))
-            .catch((err) => this.nodecg.log.error(`Failed to discover local bridges: ${err}`));
+            .catch((err) => nodecg.log.error(`Failed to discover local bridges: ${err}`));
     }
 
     async validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {

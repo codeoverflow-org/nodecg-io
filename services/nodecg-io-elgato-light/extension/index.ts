@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle, error } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, error, Logger } from "nodecg-io-core";
 import { ElgatoLightClient, ElgatoLightConfig } from "./elgatoLightClient";
 
 export { ElgatoLight, ElgatoKeyLight, ElgatoLightStrip, LightType } from "./elgatoLight";
@@ -19,13 +19,13 @@ class ElgatoLightService extends ServiceBundle<ElgatoLightConfig, ElgatoLightCli
         return error(`Unable to connect to the lights with the following IPs: ${notReachableLights.join(", ")}`);
     }
 
-    async createClient(config: ElgatoLightConfig): Promise<Result<ElgatoLightClient>> {
+    async createClient(config: ElgatoLightConfig, logger: Logger): Promise<Result<ElgatoLightClient>> {
         const client = new ElgatoLightClient(config);
-        this.nodecg.log.info("Successfully created Elgato light clients.");
+        logger.info("Successfully created Elgato light clients.");
         return success(client);
     }
 
-    stopClient(_: ElgatoLightClient): void {
-        this.nodecg.log.info("Successfully stopped Elgato light clients.");
+    stopClient(_: ElgatoLightClient, logger: Logger): void {
+        logger.info("Successfully stopped Elgato light clients.");
     }
 }

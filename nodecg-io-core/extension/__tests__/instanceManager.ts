@@ -148,7 +148,7 @@ describe("InstanceManager", () => {
             expect(instanceManager.deleteServiceInstance(testInstance)).toBe(true);
 
             expect(testService.stopClient).toHaveBeenCalledTimes(1);
-            expect(testService.stopClient).toHaveBeenCalledWith(testServiceInstance.client);
+            expect(testService.stopClient.mock.calls[0][0]).toBe(testServiceInstance.client);
         });
 
         test("should log error if client cannot be stopped because the service could not be found", () => {
@@ -344,7 +344,7 @@ describe("InstanceManager", () => {
             expect(inst.client).toBeDefined();
             expect(inst.client?.()).toBe(inst.config);
             expect(testService.createClient).toHaveBeenCalledTimes(1);
-            expect(testService.createClient).toHaveBeenCalledWith(inst.config);
+            expect(testService.createClient.mock.calls[0][0]).toBe(inst.config);
         });
 
         test("should create client if no config is required, even if config is undefined", async () => {
@@ -477,7 +477,7 @@ describe("InstanceManager", () => {
 
             expect(svc.removeHandlers).not.toHaveBeenCalled();
             expect(svc.createClient).toHaveBeenCalledTimes(1);
-            expect(svc.createClient).toHaveBeenCalledWith(inst.config);
+            expect(svc.createClient.mock.calls[0][0]).toBe(inst.config);
         });
 
         test("should do nothing if removeHandlers is not implemented by the service", () => {

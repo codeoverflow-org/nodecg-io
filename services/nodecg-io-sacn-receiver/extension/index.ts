@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { SacnReceiverServiceClient } from "./sacnReceiverClient";
 
 export interface SacnReceiverServiceConfig {
@@ -25,9 +25,9 @@ class SacnReceiverService extends ServiceBundle<SacnReceiverServiceConfig, SacnR
         return success(sacn);
     }
 
-    stopClient(client: SacnReceiverServiceClient): void {
+    stopClient(client: SacnReceiverServiceClient, logger: Logger): void {
         client.close();
-        this.nodecg.log.info("Successfully stopped sACN Receiver.");
+        logger.info("Successfully stopped sACN Receiver.");
     }
 
     removeHandlers(client: SacnReceiverServiceClient): void {

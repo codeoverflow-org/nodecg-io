@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { CurseForge } from "./curseforgeClient";
 
 export type CurseForgeClient = CurseForge;
@@ -44,14 +44,14 @@ class CurseforgeService extends ServiceBundle<never, CurseForgeClient> {
         return emptySuccess();
     }
 
-    async createClient(): Promise<Result<CurseForgeClient>> {
+    async createClient(_: never, logger: Logger): Promise<Result<CurseForgeClient>> {
         const client = new CurseForge();
-        this.nodecg.log.info("Successfully created CurseForge client.");
+        logger.info("Successfully created CurseForge client.");
         return success(client);
     }
 
-    stopClient(_: CurseForgeClient): void {
-        this.nodecg.log.info("Successfully stopped CurseForge client.");
+    stopClient(_: CurseForgeClient, logger: Logger): void {
+        logger.info("Successfully stopped CurseForge client.");
     }
 
     requiresNoConfig = true;

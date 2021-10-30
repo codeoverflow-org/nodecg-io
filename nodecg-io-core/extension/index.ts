@@ -6,7 +6,7 @@ import { InstanceManager } from "./instanceManager";
 import { Service } from "./service";
 import { PersistenceManager } from "./persistenceManager";
 import { ServiceProvider } from "./serviceProvider";
-
+import { Logger } from "./utils/logger";
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.
@@ -88,7 +88,7 @@ function onExit(
             if (!service.failed && client) {
                 nodecg.log.info(`Stopping service ${key} of type ${service.result.serviceType}.`);
                 try {
-                    service.result.stopClient(client);
+                    service.result.stopClient(client, new Logger(key, nodecg));
                 } catch (err) {
                     nodecg.log.info(
                         `Could not stop service ${key} of type ${service.result.serviceType}: ${String(err)}`,

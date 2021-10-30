@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Tiane } from "./tiane";
 
 interface TianeServiceConfig {
@@ -18,17 +18,17 @@ class TianeService extends ServiceBundle<TianeServiceConfig, TianeServiceClient>
         return emptySuccess();
     }
 
-    async createClient(config: TianeServiceConfig): Promise<Result<TianeServiceClient>> {
-        this.nodecg.log.info("Connecting to TIANE...");
+    async createClient(config: TianeServiceConfig, logger: Logger): Promise<Result<TianeServiceClient>> {
+        logger.info("Connecting to TIANE...");
         const client = await Tiane.connect(config.address);
-        this.nodecg.log.info("Successfully connected to TIANE.");
+        logger.info("Successfully connected to TIANE.");
 
         return success(client);
     }
 
-    stopClient(client: TianeServiceClient): void {
+    stopClient(client: TianeServiceClient, logger: Logger): void {
         client.close();
-        this.nodecg.log.info("Disconnected from TIANE.");
+        logger.info("Disconnected from TIANE.");
     }
 
     removeHandlers(client: TianeServiceClient): void {

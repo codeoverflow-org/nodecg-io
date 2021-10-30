@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { Logger } from "nodecg-io-core";
 import { NodeCG } from "nodecg-types/types/server";
 
 export interface Color {
@@ -8,9 +9,9 @@ export interface Color {
 }
 
 export class DebugHelper extends EventEmitter {
-    constructor(nodecg: NodeCG) {
+    constructor(nodecg: NodeCG, logger: Logger) {
         super();
-        nodecg.log.info("DebugHelper is ready to help debugging.");
+        logger.info("DebugHelper is ready to help debugging.");
 
         // Registering all listeners and defining redirection
         nodecg.listenFor("onClick", (value) => {
@@ -64,8 +65,8 @@ export class DebugHelper extends EventEmitter {
         };
     }
 
-    static createClient(nodecg: NodeCG): DebugHelper {
-        return new DebugHelper(nodecg);
+    static createClient(nodecg: NodeCG, logger: Logger): DebugHelper {
+        return new DebugHelper(nodecg, logger);
     }
 
     // Custom register handler functions

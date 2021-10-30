@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { TwitchChatServiceClient } from "./twitchClient";
 import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
@@ -15,16 +15,16 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchChatService
         return emptySuccess();
     }
 
-    async createClient(config: TwitchServiceConfig): Promise<Result<TwitchChatServiceClient>> {
-        this.nodecg.log.info("Connecting to twitch chat...");
+    async createClient(config: TwitchServiceConfig, logger: Logger): Promise<Result<TwitchChatServiceClient>> {
+        logger.info("Connecting to twitch chat...");
         const client = await TwitchChatServiceClient.createClient(config);
-        this.nodecg.log.info("Successfully connected to twitch.");
+        logger.info("Successfully connected to twitch.");
 
         return success(client);
     }
 
-    stopClient(client: TwitchChatServiceClient): void {
-        client.quit().then(() => this.nodecg.log.info("Successfully stopped twitch client."));
+    stopClient(client: TwitchChatServiceClient, logger: Logger): void {
+        client.quit().then(() => logger.info("Successfully stopped twitch client."));
     }
 
     removeHandlers(client: TwitchChatServiceClient): void {

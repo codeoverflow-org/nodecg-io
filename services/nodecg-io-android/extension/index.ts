@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Android } from "./android";
 
 interface AndroidServiceConfig {
@@ -13,25 +13,25 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class AndroidService extends ServiceBundle<AndroidServiceConfig, AndroidServiceClient> {
-    async validateConfig(config: AndroidServiceConfig): Promise<Result<void>> {
-        const client = new Android(this.nodecg, config.device);
+    async validateConfig(config: AndroidServiceConfig, logger: Logger): Promise<Result<void>> {
+        const client = new Android(logger, config.device);
         await client.connect();
         await client.disconnect();
         return emptySuccess();
     }
 
-    async createClient(config: AndroidServiceConfig): Promise<Result<AndroidServiceClient>> {
-        const client = new Android(this.nodecg, config.device);
+    async createClient(config: AndroidServiceConfig, logger: Logger): Promise<Result<AndroidServiceClient>> {
+        const client = new Android(logger, config.device);
         await client.connect();
-        this.nodecg.log.info("Successfully connected to adb.");
+        logger.info("Successfully connected to adb.");
         return success(client);
     }
 
-    async stopClient(client: AndroidServiceClient): Promise<void> {
+    async stopClient(client: AndroidServiceClient, logger: Logger): Promise<void> {
         try {
             await client.disconnect();
         } catch (err) {
-            this.nodecg.log.error(err);
+            logger.error(err);
             // Do nothing. If we did not catch it it'd cause an infinite loop.
         }
     }

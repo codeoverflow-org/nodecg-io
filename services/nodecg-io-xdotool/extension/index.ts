@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import { Xdotool } from "./xdotool";
 
 interface XdotoolServiceConfig {
@@ -14,9 +14,9 @@ module.exports = (nodecg: NodeCG) => {
 };
 
 class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolServiceClient> {
-    async validateConfig(config: XdotoolServiceConfig): Promise<Result<void>> {
+    async validateConfig(config: XdotoolServiceConfig, logger: Logger): Promise<Result<void>> {
         try {
-            const xd = new Xdotool(this.nodecg, config.host, config.port);
+            const xd = new Xdotool(logger, config.host, config.port);
             await xd.testConnection();
             return emptySuccess();
         } catch (err) {
@@ -24,9 +24,9 @@ class XdotoolServiceBundle extends ServiceBundle<XdotoolServiceConfig, XdotoolSe
         }
     }
 
-    async createClient(config: XdotoolServiceConfig): Promise<Result<XdotoolServiceClient>> {
+    async createClient(config: XdotoolServiceConfig, logger: Logger): Promise<Result<XdotoolServiceClient>> {
         try {
-            const xd = new Xdotool(this.nodecg, config.host, config.port);
+            const xd = new Xdotool(logger, config.host, config.port);
             return success(xd);
         } catch (err) {
             return error(String(err));

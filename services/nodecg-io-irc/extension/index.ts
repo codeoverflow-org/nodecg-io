@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Client as IRCClient } from "irc";
 
 interface IRCServiceConfig {
@@ -36,19 +36,19 @@ class IRCService extends ServiceBundle<IRCServiceConfig, IRCServiceClient> {
         return emptySuccess();
     }
 
-    async createClient(config: IRCServiceConfig): Promise<Result<IRCServiceClient>> {
+    async createClient(config: IRCServiceConfig, logger: Logger): Promise<Result<IRCServiceClient>> {
         const irc = new IRCServiceClient(config);
 
-        this.nodecg.log.info("Connecting to IRC...");
+        logger.info("Connecting to IRC...");
         await this.connect(irc);
-        this.nodecg.log.info("Successfully connected to the IRC server.");
+        logger.info("Successfully connected to the IRC server.");
 
         return success(irc);
     }
 
-    stopClient(client: IRCServiceClient): void {
+    stopClient(client: IRCServiceClient, logger: Logger): void {
         client.disconnect("", () => {
-            this.nodecg.log.info("Stopped IRC client successfully.");
+            logger.info("Stopped IRC client successfully.");
         });
     }
 

@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import * as streamdeck from "@elgato-stream-deck/node";
 import { StreamDeck } from "@elgato-stream-deck/node";
 
@@ -38,16 +38,16 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
         }
     }
 
-    async createClient(config: StreamdeckServiceConfig): Promise<Result<StreamdeckServiceClient>> {
+    async createClient(config: StreamdeckServiceConfig, logger: Logger): Promise<Result<StreamdeckServiceClient>> {
         try {
             let device: string | undefined = config.device;
             if (device === "default") {
                 device = undefined;
             }
 
-            this.nodecg.log.info(`Connecting to the streamdeck ${config.device}.`);
+            logger.info(`Connecting to the streamdeck ${config.device}.`);
             const deck = streamdeck.openStreamDeck(device);
-            this.nodecg.log.info(`Successfully connected to the streamdeck ${config.device}.`);
+            logger.info(`Successfully connected to the streamdeck ${config.device}.`);
 
             return success(deck);
         } catch (err) {

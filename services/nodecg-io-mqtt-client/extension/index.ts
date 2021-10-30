@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { MqttClient, connect } from "mqtt";
 
 interface MQTTClientServiceConfig {
@@ -67,11 +67,11 @@ class MQTTClientService extends ServiceBundle<MQTTClientServiceConfig, MQTTClien
         return emptySuccess();
     }
 
-    async createClient(config: MQTTClientServiceConfig): Promise<Result<MQTTClientServiceClient>> {
+    async createClient(config: MQTTClientServiceConfig, logger: Logger): Promise<Result<MQTTClientServiceClient>> {
         const client = new MQTTClientServiceClient();
         await client.connect(config.address, config.username, config.password);
         client.subscribe(config.topics);
-        this.nodecg.log.info("Successfully connected to the MQTT server.");
+        logger.info("Successfully connected to the MQTT server.");
         return success(client);
     }
 

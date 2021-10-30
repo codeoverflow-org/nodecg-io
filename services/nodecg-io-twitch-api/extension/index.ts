@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { ApiClient } from "@twurple/api";
 import { createAuthProvider, getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
@@ -15,10 +15,10 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchApiServiceC
         return emptySuccess();
     }
 
-    async createClient(config: TwitchServiceConfig): Promise<Result<TwitchApiServiceClient>> {
+    async createClient(config: TwitchServiceConfig, logger: Logger): Promise<Result<TwitchApiServiceClient>> {
         const authProvider = await createAuthProvider(config);
         const client = new ApiClient({ authProvider });
-        this.nodecg.log.info("Successfully created twitch-api client.");
+        logger.info("Successfully created twitch-api client.");
 
         return success(client);
     }

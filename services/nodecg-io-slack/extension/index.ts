@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import { WebClient } from "@slack/web-api";
 
 interface SlackServiceConfig {
@@ -24,9 +24,9 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
         }
     }
 
-    async createClient(config: SlackServiceConfig): Promise<Result<SlackServiceClient>> {
+    async createClient(config: SlackServiceConfig, logger: Logger): Promise<Result<SlackServiceClient>> {
         const client = new WebClient(config.token);
-        this.nodecg.log.info("Successfully created Web Client for Slack WebAPI.");
+        logger.info("Successfully created Web Client for Slack WebAPI.");
         const res = await client.auth.test();
         if (res.ok) {
             return success(client);

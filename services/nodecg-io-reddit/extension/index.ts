@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import RedditAPI from "reddit-ts";
 
 interface RedditServiceConfig {
@@ -34,10 +34,10 @@ class RedditService extends ServiceBundle<RedditServiceConfig, RedditServiceClie
         return emptySuccess();
     }
 
-    async createClient(config: RedditServiceConfig): Promise<Result<RedditServiceClient>> {
+    async createClient(config: RedditServiceConfig, logger: Logger): Promise<Result<RedditServiceClient>> {
         const client = new RedditAPI(this.buildCredentials(config));
         await client.me();
-        this.nodecg.log.info("Successfully connected to reddit.");
+        logger.info("Successfully connected to reddit.");
         return success(client);
     }
 

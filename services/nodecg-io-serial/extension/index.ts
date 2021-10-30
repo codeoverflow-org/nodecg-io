@@ -27,7 +27,7 @@ class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClie
                 );
             })
             .catch((err) => {
-                this.nodecg.log.error(`Failed to get connected devices for presets: ${err}`);
+                nodecg.log.error(`Failed to get connected devices for presets: ${err}`);
             });
     }
 

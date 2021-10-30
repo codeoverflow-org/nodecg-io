@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import * as WebSocket from "ws";
 
 interface WSServerServiceConfig {
@@ -40,12 +40,12 @@ class WSServerService extends ServiceBundle<WSServerServiceConfig, WSServerServi
         }
     }
 
-    async createClient(config: WSServerServiceConfig): Promise<Result<WSServerServiceClient>> {
+    async createClient(config: WSServerServiceConfig, logger: Logger): Promise<Result<WSServerServiceClient>> {
         const client = await this.getServer(config);
         if (client.failed) {
             return client; // Pass the error to the framework
         }
-        this.nodecg.log.info("Successfully started WebSocket server.");
+        logger.info("Successfully started WebSocket server.");
         return success(client.result);
     }
 

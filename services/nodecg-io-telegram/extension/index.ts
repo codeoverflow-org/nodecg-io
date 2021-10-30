@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import TelegramBot = require("node-telegram-bot-api");
 
 interface TelegramServiceConfig {
@@ -25,7 +25,7 @@ class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServi
         return emptySuccess();
     }
 
-    async createClient(config: TelegramServiceConfig): Promise<Result<TelegramServiceClient>> {
+    async createClient(config: TelegramServiceConfig, logger: Logger): Promise<Result<TelegramServiceClient>> {
         const options: TelegramBot.ConstructorOptions = {
             baseApiUrl: config.baseApiUrl,
             filepath: config.filepath,
@@ -36,7 +36,7 @@ class TelegramService extends ServiceBundle<TelegramServiceConfig, TelegramServi
 
         const bot = new TelegramBot(config.token, options);
 
-        this.nodecg.log.info("Successfully connected to the telegram server.");
+        logger.info("Successfully connected to the telegram server.");
 
         return success(bot);
     }

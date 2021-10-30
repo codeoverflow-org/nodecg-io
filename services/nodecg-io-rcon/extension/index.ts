@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Rcon } from "rcon-client";
 
 interface RconServiceConfig {
@@ -30,7 +30,7 @@ class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
         return emptySuccess();
     }
 
-    async createClient(config: RconServiceConfig): Promise<Result<RconServiceClient>> {
+    async createClient(config: RconServiceConfig, logger: Logger): Promise<Result<RconServiceClient>> {
         const rcon = new Rcon({
             host: config.host,
             port: config.port,
@@ -41,14 +41,14 @@ class RconService extends ServiceBundle<RconServiceConfig, RconServiceClient> {
         rcon.on("error", (_err) => {});
 
         await rcon.connect(); // This will throw an exception if there is an error.
-        this.nodecg.log.info("Successfully connected to the RCON server.");
+        logger.info("Successfully connected to the RCON server.");
 
         return success(rcon);
     }
 
-    stopClient(client: RconServiceClient): void {
+    stopClient(client: RconServiceClient, logger: Logger): void {
         client.end().then(() => {
-            this.nodecg.log.info("Successfully stopped RCON client.");
+            logger.info("Successfully stopped RCON client.");
         });
     }
 }

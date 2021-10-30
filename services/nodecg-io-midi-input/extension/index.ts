@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import * as easymidi from "easymidi";
 
 interface MidiInputServiceConfig {
@@ -38,14 +38,14 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
         return emptySuccess();
     }
 
-    async createClient(config: MidiInputServiceConfig): Promise<Result<MidiInputServiceClient>> {
+    async createClient(config: MidiInputServiceConfig, logger: Logger): Promise<Result<MidiInputServiceClient>> {
         if (config.virtual) {
-            this.nodecg.log.info(`Creating virtual MIDI input device ${config.device}.`);
+            logger.info(`Creating virtual MIDI input device ${config.device}.`);
             const client = new easymidi.Input(config.device, true);
-            this.nodecg.log.info(`Successfully created virtual MIDI input device ${config.device}.`);
+            logger.info(`Successfully created virtual MIDI input device ${config.device}.`);
             return success(client);
         } else {
-            this.nodecg.log.info(`Checking device name "${config.device}".`);
+            logger.info(`Checking device name "${config.device}".`);
 
             let deviceName: string | null = null;
             easymidi.getInputs().forEach((device) => {
@@ -54,11 +54,11 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
                 }
             });
 
-            this.nodecg.log.info(`Connecting to MIDI input device ${deviceName}.`);
+            logger.info(`Connecting to MIDI input device ${deviceName}.`);
             if (deviceName !== null) {
                 const client = new easymidi.Input(deviceName);
                 if (client.isPortOpen()) {
-                    this.nodecg.log.info(`Successfully connected to MIDI input device ${deviceName}.`);
+                    logger.info(`Successfully connected to MIDI input device ${deviceName}.`);
                     return success(client);
                 }
             }

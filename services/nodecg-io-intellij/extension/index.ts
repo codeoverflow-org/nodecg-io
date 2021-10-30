@@ -1,5 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";
+import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { IntelliJ } from "./intellij";
 
 interface IntelliJServiceConfig {
@@ -19,10 +19,10 @@ class IntellijService extends ServiceBundle<IntelliJServiceConfig, IntelliJServi
         return emptySuccess();
     }
 
-    async createClient(config: IntelliJServiceConfig): Promise<Result<IntelliJServiceClient>> {
+    async createClient(config: IntelliJServiceConfig, logger: Logger): Promise<Result<IntelliJServiceClient>> {
         const ij = new IntelliJ(config.address);
         await ij.rawRequest("available_methods", {});
-        this.nodecg.log.info(`Successfully connected to IntelliJ at ${ij.address}.`);
+        logger.info(`Successfully connected to IntelliJ at ${ij.address}.`);
         return success(ij);
     }
 
