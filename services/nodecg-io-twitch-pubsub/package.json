@@ -39,6 +39,6 @@
         "nodecg-io-core": "^0.2.0",
         "nodecg-io-twitch-auth": "^0.2.0",
         "@twurple/api": "^5.0.7",
-        "@twurple/pubsub": "^5.0.7"
+        "@twurple/pubsub": "^5.0.8"
     }
 }
