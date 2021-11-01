@@ -1,8 +1,8 @@
 {
     "name": "nodecg-io-atem",
     "version": "0.2.0",
-    "description": "Allows you to send commands to AutoHotkey.",
-    "homepage": "https://nodecg.io/RELEASE/samples/ahk",
+    "description": "Allows to connect via the Atem Protocol.",
+    "homepage": "https://nodecg.io/RELEASE/samples/atem",
     "author": {
         "name": "Extrem Techniker",
         "url": "https://github.com/ExtremTechniker"

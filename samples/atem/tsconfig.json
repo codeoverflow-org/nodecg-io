@@ -5,7 +5,7 @@
             "path": "../../nodecg-io-core"
         },
         {
-            "path": "../../services/nodecg-io-artnet"
+            "path": "../../services/nodecg-io-atem"
         }
     ]
 }

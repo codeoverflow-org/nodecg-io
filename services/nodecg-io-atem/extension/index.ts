@@ -27,9 +27,11 @@ class AtemService extends ServiceBundle<AtemServiceConfig, AtemServiceClient> {
     }
 
     async createClient(config: AtemServiceConfig): Promise<Result<AtemServiceClient>> {
-        const atem = new Atem(config);
-        atem.connect(config.address, config.port);
-        return success(atem);
+        return new Promise((resolve, _) => {
+            const atem = new Atem(config);
+            atem.connect(config.address, config.port);
+            atem.on("connected", () => resolve(success(atem)));
+        });
     }
 
     stopClient(client: AtemServiceClient) {
