@@ -6,7 +6,7 @@ import { EventEmitter } from "events";
 export class StreamElementsServiceClient extends EventEmitter {
     private socket: SocketIOClient.Socket;
 
-    constructor(private jwtToken: string) {
+    constructor(private jwtToken: string, private handleTestEvents: boolean) {
         super();
     }
 
@@ -29,6 +29,11 @@ export class StreamElementsServiceClient extends EventEmitter {
                 }
             }
             this.emit(data.type, data);
+        });
+        this.onTestEvent((data: StreamElementsEvent) => {
+            if (data.listener) {
+                this.emit("test", data);
+            }
         });
     }
 
@@ -77,7 +82,7 @@ export class StreamElementsServiceClient extends EventEmitter {
         this.socket.on("connect_error", handler);
     }
 
-    onEvent(handler: (data: StreamElementsEvent) => void): void {
+    private onEvent(handler: (data: StreamElementsEvent) => void): void {
         this.socket.on("event", (data: StreamElementsEvent) => {
             if (data) {
                 handler(data);
@@ -85,31 +90,43 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    onSubscriber(handler: (data: StreamElementsEvent) => void): void {
+    private onTestEvent(handler: (data: StreamElementsEvent) => void): void {
+        this.socket.on("event:test", (data: StreamElementsEvent) => {
+            if (data) {
+                handler(data);
+            }
+        });
+    }
+
+    public onSubscriber(handler: (data: StreamElementsEvent) => void): void {
         this.on("subscriber", handler);
     }
 
-    onTip(handler: (data: StreamElementsEvent) => void): void {
+    public onTip(handler: (data: StreamElementsEvent) => void): void {
         this.on("tip", handler);
     }
 
-    onCheer(handler: (data: StreamElementsEvent) => void): void {
+    public onCheer(handler: (data: StreamElementsEvent) => void): void {
         this.on("cheer", handler);
     }
 
-    onGift(handler: (data: StreamElementsEvent) => void): void {
+    public onGift(handler: (data: StreamElementsEvent) => void): void {
         this.on("gift", handler);
     }
 
-    onFollow(handler: (data: StreamElementsEvent) => void): void {
+    public onFollow(handler: (data: StreamElementsEvent) => void): void {
         this.on("follow", handler);
     }
 
-    onRaid(handler: (data: StreamElementsEvent) => void): void {
+    public onRaid(handler: (data: StreamElementsEvent) => void): void {
         this.on("raid", handler);
     }
 
-    onHost(handler: (data: StreamElementsEvent) => void): void {
+    public onHost(handler: (data: StreamElementsEvent) => void): void {
         this.on("host", handler);
+    }
+
+    public onTest(handler: (data: StreamElementsEvent) => void): void {
+        this.on("test", handler);
     }
 }
