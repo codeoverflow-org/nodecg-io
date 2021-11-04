@@ -30,11 +30,13 @@ export class StreamElementsServiceClient extends EventEmitter {
             }
             this.emit(data.type, data);
         });
-        this.onTestEvent((data: StreamElementsEvent) => {
-            if (data.listener) {
-                this.emit("test", data);
-            }
-        });
+        if (this.handleTestEvents) {
+            this.onTestEvent((data: StreamElementsEvent) => {
+                if (data.listener) {
+                    this.emit("test", data);
+                }
+            });
+        }
     }
 
     async connect(): Promise<void> {
