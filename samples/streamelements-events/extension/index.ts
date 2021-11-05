@@ -58,6 +58,10 @@ module.exports = function (nodecg: NodeCG) {
                 );
             }
         });
+
+        client.onTest((data) => {
+            nodecg.log.info(JSON.stringify(data));
+        });
     });
 
     streamElements?.onUnavailable(() => nodecg.log.info("SE client has been unset."));

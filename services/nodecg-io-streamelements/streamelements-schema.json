@@ -6,6 +6,11 @@
         "jwtToken": {
             "type": "string",
             "description": "Your JWT token for streamelments."
+        },
+        "handleTestEvents": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether test events should be handled."
         }
     },
     "required": ["jwtToken"]

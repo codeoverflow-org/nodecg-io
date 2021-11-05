@@ -85,5 +85,15 @@ export interface StreamElementsEvent {
      * Event update date and time
      */
     updatedAt: string;
+    /**
+     * Listener property for test events
+     */
+    listener?: string;
+    /**
+     * Event property for test events
+     */
+    event?: {
+        [k: string]: unknown;
+    };
     [k: string]: unknown;
 }
