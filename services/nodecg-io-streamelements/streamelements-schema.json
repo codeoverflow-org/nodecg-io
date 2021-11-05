@@ -9,8 +9,9 @@
         },
         "handleTestEvents": {
             "type": "boolean",
+            "default": false,
             "description": "Whether test events should be handled."
         }
     },
-    "required": ["jwtToken", "handleTestEvents"]
+    "required": ["jwtToken"]
 }
