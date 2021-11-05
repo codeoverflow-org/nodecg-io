@@ -21,62 +21,7 @@ export interface StreamElementsEvent {
      */
     provider: "twitch" | "youtube" | "facebook";
     flagged: boolean;
-    data: {
-        /**
-         * StreamElements hexadecimal tip ID
-         */
-        tipId?: string;
-        /**
-         * Twitch username
-         */
-        username: string;
-        /**
-         * Twitch channel ID
-         */
-        providerId?: string;
-        /**
-         * Twitch username case sensitive plus regional characters if provided
-         */
-        displayName: string;
-        /**
-         * Amount of currency in tip, months in subs, hosting/raiding viewers, bits in cheer
-         */
-        amount: number;
-        /**
-         * Current months streak (subs only)
-         */
-        streak?: number;
-        /**
-         * Subscriber tier (subs only)
-         */
-        tier?: "1000" | "2000" | "3000" | "prime";
-        /**
-         * true if the sub was a gift (subs only)
-         */
-        gifted: boolean;
-        /**
-         * The sender of a gifted sub (subs only)
-         */
-        sender?: string;
-        /**
-         * Currency symbol (tips)
-         */
-        currency?: string;
-        /**
-         * User provided message
-         */
-        message: string;
-        quantity?: number;
-        /**
-         * Redeemed items
-         */
-        items: unknown[];
-        /**
-         * URI of user avatar
-         */
-        avatar: string;
-        [k: string]: unknown;
-    };
+    data: StreamElementsEventData;
     /**
      * Event creation date and time
      */
@@ -92,8 +37,63 @@ export interface StreamElementsEvent {
     /**
      * Event property for test events
      */
-    event?: {
-        [k: string]: unknown;
-    };
+    event?: StreamElementsEventData;
+    [k: string]: unknown;
+}
+
+export interface StreamElementsEventData {
+    /**
+     * StreamElements hexadecimal tip ID
+     */
+    tipId?: string;
+    /**
+     * Twitch username
+     */
+    username: string;
+    /**
+     * Twitch channel ID
+     */
+    providerId?: string;
+    /**
+     * Twitch username case sensitive plus regional characters if provided
+     */
+    displayName: string;
+    /**
+     * Amount of currency in tip, months in subs, hosting/raiding viewers, bits in cheer
+     */
+    amount: number;
+    /**
+     * Current months streak (subs only)
+     */
+    streak?: number;
+    /**
+     * Subscriber tier (subs only)
+     */
+    tier?: "1000" | "2000" | "3000" | "prime";
+    /**
+     * true if the sub was a gift (subs only)
+     */
+    gifted: boolean;
+    /**
+     * The sender of a gifted sub (subs only)
+     */
+    sender?: string;
+    /**
+     * Currency symbol (tips)
+     */
+    currency?: string;
+    /**
+     * User provided message
+     */
+    message: string;
+    quantity?: number;
+    /**
+     * Redeemed items
+     */
+    items: unknown[];
+    /**
+     * URI of user avatar
+     */
+    avatar: string;
     [k: string]: unknown;
 }
