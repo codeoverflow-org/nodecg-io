@@ -9,7 +9,9 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-        if: startsWith(github.repository, 'codeoverflow-org') # don't run this in forks
+        # don't run this in forks, because contributors maybe don't have forked the docs repository
+        # also don't run when this run is caused by dependabot because then we won't have access to the ssh key secret
+        if: startsWith(github.repository, 'codeoverflow-org') && github.actor != 'dependabot[bot]'
         steps:
             - name: Setup Python
               uses: actions/setup-python@v2
