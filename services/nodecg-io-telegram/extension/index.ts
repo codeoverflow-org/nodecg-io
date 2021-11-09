@@ -1,5 +1,9 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
+
+// Disable automatic promise cancellation
+// Check https://github.com/yagop/node-telegram-bot-api/issues/319 for more information about this
+process.env.NTBA_FIX_319 = "1";
 import TelegramBot = require("node-telegram-bot-api");
 
 interface TelegramServiceConfig {
