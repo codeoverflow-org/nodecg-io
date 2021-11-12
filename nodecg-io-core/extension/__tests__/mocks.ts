@@ -16,7 +16,7 @@ export class MockNodeCG implements NodeCG {
     ) {}
 
     bundleGit = {
-        branch: "master",
+        branch: "main",
         hash: "e3dbf8d7233ca3fdb895e7b2be934cebc7494173",
         shortHash: "e3dbf8d",
     };

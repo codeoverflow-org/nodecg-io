@@ -58,7 +58,7 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
     with open(dir + os.path.sep + 'package.json') as r:
         data = json.load(r)
         if (data['name'] != 'nodecg-io-core' or is_core) and 'keywords' in data and 'nodecg-bundle' in data['keywords']:
-            out.write(f'## [{data["name"]}](https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir})\n')
+            out.write(f'## [{data["name"]}](https://github.com/codeoverflow-org/nodecg-io/tree/main/{reldir})\n')
             out.write('\n')
 
             if 'description' in data and data['description'].strip() != '':
@@ -82,14 +82,14 @@ def appendBundle(out, dir, reldir, baseDepDir, baseDocDir, outGraph, depList, re
             if 'dependencies' in data:
                 if not data['name'] in depList:
                     if data['name'] == 'nodecg-io-core':
-                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<core>> [[https://github.com/codeoverflow-org/nodecg-io/tree/main/{reldir}]]\n')
                     else:
-                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[https://github.com/codeoverflow-org/nodecg-io/tree/master/{reldir}]]\n')
+                        outGraph.write(f'[<u>{data["name"]}] as {reldir.replace(os.path.sep, "_").replace(".", "_").replace("-", "_").replace("/", "_").replace("@", "")} <<service>> [[https://github.com/codeoverflow-org/nodecg-io/tree/main/{reldir}]]\n')
                 depList.append(data['name'])
 
                 for dependency in data['dependencies']:
                     if os.path.exists(baseDepDir + os.path.sep + dependency):
-                        depurl = f'https://github.com/codeoverflow-org/nodecg-io/tree/master/{dependency.replace(os.path.sep, "/")}'
+                        depurl = f'https://github.com/codeoverflow-org/nodecg-io/tree/main/{dependency.replace(os.path.sep, "/")}'
                         lineStyle = '-->'
                     else:
                         depurl = f'https://www.npmjs.com/package/{dependency.replace(os.path.sep, "/")}'
