@@ -91,12 +91,5 @@
 
         <!-- Scripts -->
         <script src="./dist/main.bundle.js"></script>
-
-        <!-- monaco is manually included because when including it using webpack it created formatting issues. -->
-        <script src="../modules/monaco-editor/min/vs/loader.js"></script>
-        <script>
-            require.config({ paths: { vs: "../modules/monaco-editor/min/vs" } });
-            require(["vs/editor/editor.main"], onMonacoReady);
-        </script>
     </body>
 </html>

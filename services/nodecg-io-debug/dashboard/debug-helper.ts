@@ -1,5 +1,5 @@
 /// <reference types="nodecg-types/types/browser" />
-/// <reference types="monaco-editor/monaco" />
+import * as monaco from "monaco-editor";
 
 // Buttons
 for (let i = 1; i <= 5; i++) {
@@ -71,8 +71,13 @@ setHandler("#list_list_send", "onclick", () => {
 });
 
 // JSON
-// defined in debug-helper.html
-declare const debugMonacoEditor: monaco.editor.IStandaloneCodeEditor;
+const jsonCode = JSON.stringify({ data: 42 }, null, 4);
+const model = monaco.editor.createModel(jsonCode, "json");
+const debugMonacoEditor = monaco.editor.create(document.getElementById("instanceMonaco")!, {
+    model: model,
+    theme: "vs-dark",
+});
+
 setHandler("#json_send", "onclick", () => {
     const jsonString = debugMonacoEditor.getValue();
     try {

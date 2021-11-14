@@ -1,4 +1,4 @@
-/// <reference types="monaco-editor/monaco" />
+import * as monaco from "monaco-editor";
 import {
     CreateServiceInstanceMessage,
     DeleteServiceInstanceMessage,
@@ -33,8 +33,10 @@ const instancePreset = document.getElementById("instancePreset");
 const instanceNameField = document.getElementById("instanceNameField");
 const instanceEditButtons = document.getElementById("instanceEditButtons");
 const instanceCreateButton = document.getElementById("instanceCreateButton");
-const instanceMonaco = document.getElementById("instanceMonaco");
-let editor: monaco.editor.IStandaloneCodeEditor | undefined;
+const instanceMonaco = document.getElementById("instanceMonaco")!;
+const editor = monaco.editor.create(instanceMonaco, {
+    theme: "vs-dark",
+});
 
 const spanInstanceNotice = document.getElementById("spanInstanceNotice");
 const buttonSave = document.getElementById("buttonSave");
@@ -46,18 +48,6 @@ window.addEventListener("resize", () => {
 });
 export function updateMonacoLayout(): void {
     editor?.layout();
-}
-
-export function onMonacoReady(): void {
-    if (instanceMonaco) {
-        editor = monaco.editor.create(instanceMonaco, {
-            theme: "vs-dark",
-        });
-
-        // Virtually selects the same instance option again to show the json/text in the editor.
-        const selected = selectInstance.options[selectInstance.selectedIndex]?.value || "select";
-        selectServiceInstance(selected);
-    }
 }
 
 // Instance drop-down
