@@ -22,6 +22,8 @@ coverage
 # Dashboard webpack
 nodecg-io-core/dashboard/dist
 !nodecg-io-core/dashboard/webpack.config.js
+services/nodecg-io-debug/dashboard/dist
+!services/nodecg-io-debug/webpack.config.js
 
 # Editor configuration
 .idea/

@@ -165,26 +165,9 @@
                 <div>
                     <button id="json_send">Send</button>
                 </div>
-
-                <script src="../modules/monaco-editor/min/vs/loader.js"></script>
-                <script>
-                    require.config({ paths: { vs: "../modules/monaco-editor/min/vs" } });
-                    require(["vs/editor/editor.main"], onMonacoReady);
-
-                    function onMonacoReady() {
-                        var jsonCode = ["{", '    "data": 42', "}"].join("\n");
-
-                        var model = monaco.editor.createModel(jsonCode, "json");
-
-                        window.debugMonacoEditor = monaco.editor.create(document.getElementById("instanceMonaco"), {
-                            model: model,
-                            theme: "vs-dark",
-                        });
-                    }
-                </script>
             </div>
         </div>
 
-        <script src="debug-helper.js"></script>
+        <script src="dist/main.bundle.js"></script>
     </body>
 </html>

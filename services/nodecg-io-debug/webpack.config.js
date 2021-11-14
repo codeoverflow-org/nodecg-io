@@ -3,14 +3,14 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const ROOT = path.resolve(__dirname);
-const DESTINATION = path.resolve(__dirname, 'dist');
+const DESTINATION = path.resolve(__dirname, 'dashboard', 'dist');
 
 module.exports = {
     context: ROOT,
 
     mode: "none",
     entry: {
-        'main': './main.ts'
+        'main': 'dashboard/debug-helper.js'
     },
 
     output: {
@@ -32,7 +32,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new MonacoWebpackPlugin({
-            languages: ['text', 'json']
+            languages: ['json']
         })
     ],
 

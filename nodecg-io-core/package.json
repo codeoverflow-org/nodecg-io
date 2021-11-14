@@ -32,12 +32,6 @@
     ],
     "nodecg": {
         "compatibleRange": "^1.1.1",
-        "mount": [
-            {
-                "directory": "../node_modules",
-                "endpoint": "modules"
-            }
-        ],
         "dashboardPanels": [
             {
                 "name": "nodecg-io",
