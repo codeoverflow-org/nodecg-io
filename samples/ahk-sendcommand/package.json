@@ -10,7 +10,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^16.11.6",
+        "@types/node": "^16.11.7",
         "nodecg-types": "^1.8.3",
         "nodecg-io-ahk": "^0.2.0",
         "nodecg-io-core": "^0.2.0",
