@@ -65,15 +65,50 @@ export class TwitchAddonsClient {
     }
 
     /**
+     * Gets the 7TV global emotes
+     */
+    async getSevenTVGlobalEmotes(): Promise<SevenTVGlobalEmotes> {
+        return await (await fetch("https://api.7tv.app/v2/emotes/global")).json();
+    }
+
+    /**
+     * Gets the 7tv channel data associated with a twitch channel or undefined if that twitch user has
+     * not registered for 7tv.
+     */
+    async getSevenTVChannel(channel: string): Promise<SevenTVChannelEmotes | undefined> {
+        const channelId = await this.getUserId(channel);
+        if (channelId === undefined) {
+            throw new Error(`Unknown twitch channel: ${channel}`);
+        }
+        const response = await (await fetch(`https://api.7tv.app/v2/users/${channelId}/emotes`)).json();
+        if (response.status == 404) {
+            if (response.message.startsWith("Unknown User")) {
+                // The user has no room at 7TV (probably never logged in there)
+                return undefined;
+            } else {
+                throw new Error(`Failed to get 7TV channel: ${response.message}`);
+            }
+        }
+        return response;
+    }
+
+    /**
      * Gets an emote collection for a channel. Here all emotes are stored so you can access all of them
      * without always sending requests to the APIs and caring about undefined values. (If someone is not
      * registered somewhere, there'll just be empty lists here).
+     * @param
      */
-    async getEmoteCollection(channel: string, includeGlobal: boolean): Promise<EmoteCollection> {
+    async getEmoteCollection(
+        channel: string,
+        options: EmoteCollectionOptions = { includeGlobal: true, include7tv: false },
+    ): Promise<EmoteCollection> {
+        const { includeGlobal = true, include7tv = false } = options;
         const bttv = await this.getBetterTTVChannel(channel);
         const ffz = await this.getFFZChannel(channel);
+        const stv = include7tv ? await this.getSevenTVChannel(channel) : undefined;
         const bttvGlobal = includeGlobal ? await this.getBetterTTVGlobalEmotes() : undefined;
         const ffzGlobal = includeGlobal ? await this.getFFZGlobalEmotes() : undefined;
+        const stvGlobal = includeGlobal ? await this.getSevenTVGlobalEmotes() : undefined;
         const ffzGlobalSets: FFZEmoteSet[] = [];
         if (ffzGlobal !== undefined) {
             for (const set of ffzGlobal.default_sets) {
@@ -89,6 +124,8 @@ export class TwitchAddonsClient {
             bttvGlobal: bttvGlobal === undefined ? [] : bttvGlobal,
             ffz: ffz === undefined ? [] : Object.values(ffz.sets),
             ffzGlobal: ffzGlobalSets,
+            stv: stv === undefined ? [] : stv,
+            stvGlobal: stvGlobal === undefined ? [] : stvGlobal,
         };
     }
 
@@ -108,6 +145,9 @@ export class TwitchAddonsClient {
                 emotes_list.add(emote.name);
             }
         }
+        for (const emote of emotes.stv) {
+            emotes_list.add(emote.name);
+        }
         for (const emote of emotes.bttvGlobal) {
             emotes_list.add(emote.code);
         }
@@ -115,6 +155,9 @@ export class TwitchAddonsClient {
             for (const emote of set.emoticons) {
                 emotes_list.add(emote.name);
             }
+        }
+        for (const emote of emotes.stvGlobal) {
+            emotes_list.add(emote.name);
         }
         return [...emotes_list];
     }
@@ -151,6 +194,11 @@ export class TwitchAddonsClient {
                 }
             }
         }
+        for (const entry of emotes.stv) {
+            if (entry.name === emote) {
+                return `https://cdn.7tv.app/emote/${entry.id}/${resolution}x`;
+            }
+        }
         for (const entry of emotes.bttvGlobal) {
             if (entry.code === emote) {
                 return `https://cdn.betterttv.net/emote/${entry.id}/${bttvResolution}x.${entry.imageType}`;
@@ -164,6 +212,11 @@ export class TwitchAddonsClient {
                         return this.getURL(url);
                     }
                 }
+            }
+        }
+        for (const entry of emotes.stvGlobal) {
+            if (entry.name === emote) {
+                return `https://cdn.7tv.app/emote/${entry.id}/${resolution}x`;
             }
         }
 
@@ -431,6 +484,173 @@ export type FFZGlobalEmotes = {
 };
 
 /**
+ * A badge object in 7TV. Contains image URLs and a list of all users who have the badge.
+ *
+ * The list of users depends on the query:
+ * > `user_identifier: "object_id" | "twitch_id" | "login"`
+ */
+export type SevenTVBadge = {
+    /**
+     * 7TV Badge ID
+     */
+    id: string;
+    /**
+     * 7TV Badge Name
+     * @example "Admin"
+     */
+    name: string;
+    /**
+     * 7TV Tooltip in case of Rendering for UI
+     * @example "7TV Admin"
+     */
+    tooltip: string;
+    /**
+     * 7TV Badge URLs to grab the image url.
+     * Url will always be at index [2].
+     * @example [["1", "https://cdn.7tv.app/badge/60cd6255a4531e54f76d4bd4/1x", ""], ...]
+     */
+    urls: [string, string, string][];
+    /**
+     * A list of all userIds. The format of the IDs are determined by the query sent to obtain the data.
+     *
+     * @example
+     * ```
+     * // user_identifier = "twitch_id" (Twitch User ID)
+     * ["24377667", "12345678", ...]
+     * ```
+     * @example
+     * ```
+     * //user_identifier = "login" (Twitch Usernames)
+     * ["anatoleam", "mizkif", "devjimmyboy", ...]
+     * ```
+     * @example
+     * ```
+     * // user_identifier = "object_id" (7tv User ID)
+     * ["60c5600515668c9de42e6d69", "3bc5437b814a67920f3dde4b", ...]
+     * ```
+     */
+    users: string[];
+};
+
+/**
+ * 7TV Emote Object
+ */
+export type SevenTVEmote = {
+    /**
+     * Unique ID of 7TV Emote.
+     */
+    id: string;
+    /**
+     * Name of emote. What users type to display an emote.
+     * @example "FeelsDankMan"
+     */
+    name: string;
+    /**
+     * Owner of the emote.
+     */
+    owner: SevenTVUser;
+    /**
+     * Number corresponding to the global visibility
+     */
+    visibility: number;
+    /**
+     * API Docs don't say what this is,
+     * most likely a list of strings corresponding to `visibility` property.
+     */
+    visibility_simple: unknown[];
+    /**
+     * MIME Type of Emote Asset.
+     * Most are served as `image/gif` or `image/png`
+     * @example "image/webp"
+     */
+    mime: string;
+    /**
+     * Status of emote.
+     * Whether emote is approved or not by 7TV Moderators.
+     * @example 3
+     */
+    status: number;
+    /**
+     * Docs don't say the type of this. I'd guess it's a creator-defined list of strings used for search purposes.
+     * @example []
+     */
+    tags: unknown[];
+    /**
+     * List of widths with length/index corresponding to urls in #urls.
+     * @example [27,41,65,110]
+     */
+    width: number[];
+    /**
+     * List of heights with length/index corresponding to urls in #urls.
+     * @example [32,48,76,128]
+     */
+    height: number[];
+    /**
+     * List of tuples with type `[${Resolution}, ${URL of Emote}]`
+     */
+    urls: [string, string][];
+};
+/**
+ * List of emotes for a specified Channel
+ */
+export type SevenTVChannelEmotes = SevenTVEmote[];
+/**
+ * List of Global Emotes for 7TV.
+ */
+export type SevenTVGlobalEmotes = SevenTVEmote[];
+
+/**
+ * 7TV User Object.
+ */
+export type SevenTVUser = {
+    /**
+     * ID of the User in 7TV API.
+     */
+    id: string;
+    /**
+     * Twitch ID of the User.
+     */
+    twitch_id: string;
+    /**
+     * Twitch Login of the User.
+     */
+    login: string;
+    /**
+     * Twitch Display Name of the User.
+     */
+    display_name: string;
+    /**
+     * 7TV object describing permissions for this user.
+     */
+    role: {
+        /**
+         * Role ID
+         */
+        id: string;
+        /**
+         * Role Name.
+         */
+        name: string;
+        /**
+         * Position in Role's Userlist
+         */
+        position: number;
+        /**
+         * Color of Role.
+         */
+        color: number;
+        /**
+         * Number that describes allowed perms of User.
+         */
+        allowed: number;
+        /**
+         * Number that describes denied perms of User.
+         */
+        denied: number;
+    };
+};
+
+/**
  * Contains a list of emote sets from BTTV and / or FFZ
  */
 export type EmoteCollection = {
@@ -439,9 +659,27 @@ export type EmoteCollection = {
     bttvGlobal: BetterTTVEmote[];
     ffz: FFZEmoteSet[];
     ffzGlobal: FFZEmoteSet[];
+    stv: SevenTVChannelEmotes;
+    stvGlobal: SevenTVGlobalEmotes;
+};
+
+/**
+ * Options for method getEmoteCollection.
+ */
+export type EmoteCollectionOptions = {
+    /**
+     * Include each providers' global emotes in the returned collection.
+     * @default true
+     */
+    includeGlobal?: boolean;
+    /**
+     * Include [7TV](https://7tv.app) emotes in the returned collection.
+     * @default false
+     */
+    include7tv?: boolean;
 };
 
 /**
  * Resolution of an emote image
  */
-export type EmoteResolution = 1 | 2 | 4;
+export type EmoteResolution = 1 | 2 | 3 | 4;
