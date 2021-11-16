@@ -81,7 +81,7 @@ export class TwitchAddonsClient {
             throw new Error(`Unknown twitch channel: ${channel}`);
         }
         const response = await (await fetch(`https://api.7tv.app/v2/users/${channelId}/emotes`)).json();
-        if (response.status == 404) {
+        if (response.status === 404) {
             if (response.message.startsWith("Unknown User")) {
                 // The user has no room at 7TV (probably never logged in there)
                 return undefined;
