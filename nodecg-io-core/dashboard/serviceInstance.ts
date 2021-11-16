@@ -33,7 +33,10 @@ const instancePreset = document.getElementById("instancePreset");
 const instanceNameField = document.getElementById("instanceNameField");
 const instanceEditButtons = document.getElementById("instanceEditButtons");
 const instanceCreateButton = document.getElementById("instanceCreateButton");
-const instanceMonaco = document.getElementById("instanceMonaco")!;
+const instanceMonaco = document.getElementById("instanceMonaco");
+if (instanceMonaco === null) {
+    throw new Error("Couldn't find instanceMonaco");
+}
 const editor = monaco.editor.create(instanceMonaco, {
     theme: "vs-dark",
 });

@@ -71,9 +71,14 @@ setHandler("#list_list_send", "onclick", () => {
 });
 
 // JSON
+const instanceMonaco = document.getElementById("instanceMonaco");
+if (instanceMonaco === null) {
+    throw new Error("Could not find instanceMonaco");
+}
+
 const jsonCode = JSON.stringify({ data: 42 }, null, 4);
 const model = monaco.editor.createModel(jsonCode, "json");
-const debugMonacoEditor = monaco.editor.create(document.getElementById("instanceMonaco")!, {
+const debugMonacoEditor = monaco.editor.create(instanceMonaco, {
     model: model,
     theme: "vs-dark",
 });
