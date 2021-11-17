@@ -46,7 +46,6 @@
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^16.11.7",
-        "nodecg-types": "^1.8.3",
         "typescript": "^4.4.4",
         "webpack": "^5.64.0",
         "webpack-cli": "^4.9.1",
@@ -56,6 +55,7 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.2.0",
+        "nodecg-types": "^1.8.3",
         "monaco-editor": "^0.30.1"
     }
 }
