@@ -82,6 +82,7 @@ const debugMonacoEditor = monaco.editor.create(instanceMonaco, {
     model: model,
     theme: "vs-dark",
 });
+window.addEventListener("resize", () => debugMonacoEditor.layout());
 
 setHandler("#json_send", "onclick", () => {
     const jsonString = debugMonacoEditor.getValue();
