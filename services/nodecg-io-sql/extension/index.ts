@@ -9,7 +9,7 @@ export interface SQLConfig {
     connection: Record<string, unknown>;
 }
 
-export type SQLCLient = Knex;
+export type SQLClient = Knex;
 
 module.exports = (nodecg: NodeCG) => {
     new SQLService(nodecg, "sql", __dirname, "../schema.json").register();
