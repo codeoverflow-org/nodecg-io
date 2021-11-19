@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-dashboard",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Dashboard that is used to manage your nodecg-io configuration.",
     "homepage": "https://nodecg.io/RELEASE",
     "author": {
@@ -29,7 +29,7 @@
     "dependencies": {
         "crypto-js": "^4.1.1",
         "monaco-editor": "^0.30.1",
-        "nodecg-io-core": "^0.2.0"
+        "nodecg-io-core": "^0.3.0"
     },
     "license": "MIT"
 }

@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-elgato-light",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Control your Elgato lights, e.g. key lights and light stripes.",
     "homepage": "https://nodecg.io/RELEASE/samples/elgato-light",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -38,6 +38,6 @@
     "dependencies": {
         "@types/node-fetch": "^2.5.10",
         "node-fetch": "^2.6.5",
-        "nodecg-io-core": "^0.2.0"
+        "nodecg-io-core": "^0.3.0"
     }
 }

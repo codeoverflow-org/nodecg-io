@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-twitch-pubsub",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows access to the Twitch PubSub API.",
     "homepage": "https://nodecg.io/RELEASE/samples/twitch-pubsub",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -36,8 +36,8 @@
         "typescript": "^4.4.4"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.2.0",
-        "nodecg-io-twitch-auth": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-io-twitch-auth": "^0.3.0",
         "@twurple/api": "^5.0.9",
         "@twurple/pubsub": "^5.0.9"
     }

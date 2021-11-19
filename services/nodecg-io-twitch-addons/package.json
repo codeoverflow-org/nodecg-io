@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-twitch-addons",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Support for the API's of BetterTTV and FrankerFaceZ",
     "homepage": "https://nodecg.io/RELEASE/samples/twitch-addons",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -38,7 +38,7 @@
     },
     "dependencies": {
         "node-fetch": "^2.6.5",
-        "nodecg-io-core": "^0.2.0",
-        "nodecg-io-twitch-auth": "^0.2.0"
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-io-twitch-auth": "^0.3.0"
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-ahk",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows you to send commands to AutoHotkey.",
     "homepage": "https://nodecg.io/RELEASE/samples/ahk",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -38,6 +38,6 @@
     },
     "dependencies": {
         "node-fetch": "^2.6.5",
-        "nodecg-io-core": "^0.2.0"
+        "nodecg-io-core": "^0.3.0"
     }
 }
