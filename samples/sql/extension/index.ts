@@ -1,11 +1,11 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { requireService } from "nodecg-io-core";
-import { SQLCLient } from "nodecg-io-sql";
+import { SQLClient } from "nodecg-io-sql";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for the template service started.");
 
-    const sql = requireService<SQLCLient>(nodecg, "sql");
+    const sql = requireService<SQLClient>(nodecg, "sql");
 
     sql?.onAvailable(async (sql) => {
         // In the following, we demonstrate some simple examples on how to use knex.js
