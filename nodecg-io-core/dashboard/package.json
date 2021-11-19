@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-dashboard",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Dashboard that is used to manage your nodecg-io configuration.",
     "homepage": "https://nodecg.io/RELEASE",
     "author": {
