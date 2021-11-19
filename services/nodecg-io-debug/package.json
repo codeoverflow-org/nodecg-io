@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-debug",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Debug helper service that helps to easily trigger your code for debugging purposes.",
     "homepage": "https://nodecg.io/RELEASE/samples/debug",
     "author": {
@@ -31,7 +31,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         },
         "dashboardPanels": [
             {
@@ -55,7 +55,7 @@
         "monaco-editor": "^0.30.1"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
         "nodecg-types": "^1.8.3"
     }
 }

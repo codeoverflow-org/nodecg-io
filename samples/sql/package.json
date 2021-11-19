@@ -1,19 +1,19 @@
 {
     "name": "sql",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "private": true,
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-sql": "^0.2.0"
+            "nodecg-io-sql": "^0.3.0"
         }
     },
     "license": "MIT",
     "dependencies": {
         "@types/node": "^16.11.7",
         "nodecg-types": "^1.8.3",
-        "nodecg-io-core": "^0.2.0",
-        "nodecg-io-sql": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-io-sql": "^0.3.0",
         "typescript": "^4.4.4",
         "mysql": "^2.18.1"
     }

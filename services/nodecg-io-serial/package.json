@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-serial",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Exposes serial deivces to nodecg-io",
     "homepage": "https://nodecg.io/RELEASE/samples/serial",
     "author": {
@@ -29,7 +29,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -41,7 +41,7 @@
     "dependencies": {
         "@serialport/parser-readline": "^9.2.4",
         "@types/serialport": "^8.0.2",
-        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
         "serialport": "^9.2.5"
     }
 }

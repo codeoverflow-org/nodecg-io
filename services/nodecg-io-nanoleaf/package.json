@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-nanoleaf",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows to connect to a nanoleaf controller and trigger custom lighting effects.",
     "homepage": "https://nodecg.io/RELEASE/samples/nanoleaf",
     "author": {
@@ -25,7 +25,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -36,7 +36,7 @@
     "dependencies": {
         "@types/node-fetch": "^2.5.10",
         "node-fetch": "^2.6.5",
-        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
         "nodecg-types": "^1.8.3"
     }
 }

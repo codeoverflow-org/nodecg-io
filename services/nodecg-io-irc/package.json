@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-irc",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allow to connect to IRC Servers.",
     "homepage": "https://nodecg.io/RELEASE",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -38,6 +38,6 @@
     "dependencies": {
         "@types/irc": "^0.5.1",
         "irc": "^0.5.2",
-        "nodecg-io-core": "^0.2.0"
+        "nodecg-io-core": "^0.3.0"
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-twitch-chat",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows to connect to the twitch chat with your account, send and receive messages and much more. It can be used to create Twitch-Bots.",
     "homepage": "https://nodecg.io/RELEASE/samples/twitch-chat",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -36,8 +36,8 @@
         "typescript": "^4.4.4"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.2.0",
-        "nodecg-io-twitch-auth": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-io-twitch-auth": "^0.3.0",
         "@twurple/chat": "^5.0.8"
     }
 }

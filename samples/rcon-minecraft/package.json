@@ -1,6 +1,6 @@
 {
     "name": "rcon-minecraft",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Example nodecg-io-rcon Bundle. Sends simple commands to a server",
     "private": true,
     "author": {
@@ -10,15 +10,15 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-rcon": "^0.2.0"
+            "nodecg-io-rcon": "^0.3.0"
         }
     },
     "license": "MIT",
     "dependencies": {
         "@types/node": "^16.11.7",
         "nodecg-types": "^1.8.3",
-        "nodecg-io-core": "^0.2.0",
-        "nodecg-io-rcon": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-io-rcon": "^0.3.0",
         "typescript": "^4.4.4"
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-rcon",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows you to send commands to a minecraft server via RCON.",
     "homepage": "https://nodecg.io/RELEASE/samples/rcon",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -36,7 +36,7 @@
         "typescript": "^4.4.4"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
         "rcon-client": "^4.2.3"
     }
 }

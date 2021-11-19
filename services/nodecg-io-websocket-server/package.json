@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-websocket-server",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows to create a custom WebSocket server.",
     "homepage": "https://nodecg.io/RELEASE/samples/websocket-server/",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -37,7 +37,7 @@
     },
     "dependencies": {
         "@types/ws": "^8.2.0",
-        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
         "ws": "^8.2.3"
     }
 }

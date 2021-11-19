@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-telegram",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows you to control a telegram bot.",
     "homepage": "https://nodecg.io/RELEASE/samples/telegram",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -38,6 +38,6 @@
     "dependencies": {
         "@types/node-telegram-bot-api": "^0.53.1",
         "node-telegram-bot-api": "^0.54.0",
-        "nodecg-io-core": "^0.2.0"
+        "nodecg-io-core": "^0.3.0"
     }
 }

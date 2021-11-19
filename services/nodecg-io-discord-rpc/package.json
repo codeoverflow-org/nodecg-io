@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-discord-rpc",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Allows to interface with a locally running discord client via RPC",
     "homepage": "https://nodecg.io/RELEASE/samples/discord-rpc",
     "author": {
@@ -26,7 +26,7 @@
     "nodecg": {
         "compatibleRange": "^1.1.1",
         "bundleDependencies": {
-            "nodecg-io-core": "^0.2.0"
+            "nodecg-io-core": "^0.3.0"
         }
     },
     "license": "MIT",
@@ -37,7 +37,7 @@
         "typescript": "^4.4.4"
     },
     "dependencies": {
-        "nodecg-io-core": "^0.2.0",
+        "nodecg-io-core": "^0.3.0",
         "discord-rpc": "^4.0.1",
         "@types/discord-rpc": "^4.0.0",
         "node-fetch": "^2.6.5"
