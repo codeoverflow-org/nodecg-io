@@ -26,13 +26,16 @@ if (!nodecgiodir) {
 const npm = JSON.parse(child_process.execSync("npm ls --json"));
 
 // Filter out any dependencies whitch are not resolved locally in samples or services because the other npm packages wil not be loaded by NodeCG
-let bundles = Object.entries(npm.dependencies).filter((i) =>
-    Object.entries(i[1]).some(
-        (j) =>
-            j[0] === "resolved" &&
-            (`${j[1]}`.startsWith("file:../samples/") || `${j[1]}`.startsWith("file:../services/" || `${j[1]}` === "file:../nodecg-io-core")),
-    ),
-).map((v) => v[0]);
+let bundles = Object.entries(npm.dependencies)
+    .filter((i) =>
+        Object.entries(i[1]).some(
+            (j) =>
+                j[0] === "resolved" &&
+                (`${j[1]}`.startsWith("file:../samples/") ||
+                    `${j[1]}`.startsWith("file:../services/" || `${j[1]}` === "file:../nodecg-io-core")),
+        ),
+    )
+    .map((v) => v[0]);
 
 console.log(`Found ${bundles.length} bundles in this install.`);
 
@@ -42,7 +45,7 @@ console.log("-------------------------------------------------------------------
 
 // expectes a NodeCG folder be the parent of the cwd needs timeout
 const log = child_process
-    .execSync("timeout --preserve-status 15s node " + cwd.dir + path.sep + "index.js")
+    .execSync("timeout --preserve-status 15s node " + cwd.dir + path.sep + "index.js", { cwd: cwd.dir })
     .toString("utf8");
 
 const lines = log.split("\n");
