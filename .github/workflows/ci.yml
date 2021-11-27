@@ -47,6 +47,49 @@ jobs:
             - name: Run tests
               run: npm run coverage -- --verbose
 
+    nodecg:
+        # This test runs with the current version of NodeCG as defined by the
+        # nodecg-cli. It checks if all bundles (only core, services, samples)
+        # are mounted by NodeCG. It will fail if one of them is not mounted.
+        # You may check for other NodeCG runtime errors in the output (these
+        # may not fail the run).
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "16"
+
+            - name: Install nodecg-cli
+              run: npm install --global nodecg-cli
+
+            - name: Setup NodeCG
+              run: nodecg setup
+
+            - name: Setup NodeCG config
+              run: |
+                  mkdir cfg
+                  echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE}'/nodecg-io","'${GITHUB_WORKSPACE}'/nodecg-io/services","'${GITHUB_WORKSPACE}'/nodecg-io/samples"]}}' > ./cfg/nodecg.json
+
+            # nodecg-io needs to be cloned after NodeCG setup because the nodecg-cli requires an empty directory.
+            - uses: actions/checkout@v2
+              with:
+                  path: "nodecg-io"
+
+            - name: Install system dependencies
+              run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+
+            - name: Install nodejs dependencies
+              run: npm ci
+              working-directory: ./nodecg-io
+
+            - name: Build Typescript
+              run: npm run build
+              working-directory: ./nodecg-io
+
+            - name: Run test
+              run: node .scripts/ci-nodecg-integration.mjs
+              working-directory: ./nodecg-io
+
     publish:
         runs-on: ubuntu-latest
         name: Publish compilation results
@@ -57,6 +100,7 @@ jobs:
         needs:
         - build
         - tests
+        - nodecg
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@v2
