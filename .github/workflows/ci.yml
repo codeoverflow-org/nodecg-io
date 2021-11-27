@@ -88,8 +88,7 @@ jobs:
               # if not we push the branch and set the upstream to it as well.
               run: |
                   git fetch
-                  git switch -c ${GITHUB_REF##refs/heads/}
-                  (git branch -u origin/${GITHUB_REF##refs/heads/} && git pull) || git push -u origin ${GITHUB_REF##refs/heads/}
+                  git switch ${GITHUB_REF##refs/heads/} || git switch -c -t ${GITHUB_REF##refs/heads/}
 
             - name: Clear publish directory
               run: rm -rf publish/*
