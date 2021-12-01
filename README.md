@@ -74,7 +74,7 @@ If you want to contribute to this bundle you can implement one of those services
 
 > <img src="https://avatars.githubusercontent.com/daniel0611"   height="50px" title="Daniel Huber"/> | [`@daniel0611`](https://github.com/daniel0611)
 
-> <img src="https://avatars.githubusercontent.com/joblo2213"    height="50px" title="Jonas"/> | [`@joblo2213`](https://github.com/joblo2213)
+> <img src="https://avatars.githubusercontent.com/J0B10"    height="50px" title="Jonas"/> | [`@J0B10`](https://github.com/J0B10)
 
 > <img src="https://avatars.githubusercontent.com/sebinside"    height="50px" title="Sebastian"/> | [`@sebinside`](https://github.com/sebinside)
 
