@@ -36,7 +36,7 @@
         "typescript": "^4.4.4"
     },
     "dependencies": {
-        "@elgato-stream-deck/node": "^5.1.1",
+        "@elgato-stream-deck/node": "^5.1.2",
         "nodecg-io-core": "^0.3.0"
     }
 }
