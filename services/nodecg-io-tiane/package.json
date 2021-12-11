@@ -34,7 +34,7 @@
         "@types/node": "^16.11.12",
         "@types/ws": "^8.2.2",
         "nodecg-types": "^1.8.3",
-        "typescript": "^4.4.4"
+        "typescript": "^4.5.3"
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
