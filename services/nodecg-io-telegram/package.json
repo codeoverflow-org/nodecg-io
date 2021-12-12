@@ -37,7 +37,7 @@
     },
     "dependencies": {
         "@types/node-telegram-bot-api": "^0.53.1",
-        "node-telegram-bot-api": "^0.54.0",
+        "node-telegram-bot-api": "^0.56.0",
         "nodecg-io-core": "^0.3.0"
     }
 }
