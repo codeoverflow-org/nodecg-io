@@ -37,7 +37,7 @@
     },
     "dependencies": {
         "@types/spotify-web-api-node": "^5.0.3",
-        "express": "^4.17.1",
+        "express": "^4.17.2",
         "nodecg-io-core": "^0.3.0",
         "open": "^8.4.0",
         "spotify-web-api-node": "^5.0.2"
