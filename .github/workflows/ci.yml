@@ -1,6 +1,12 @@
 name: CI
 
-on: [push, pull_request]
+on:
+    push:
+    pull_request:
+    schedule:
+        # https://crontab.guru/#3_21_*_*_6
+        - cron: "3 21 * * 6"
+
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -132,7 +138,7 @@ jobs:
               # if not we push the branch and set the upstream to it as well.
               run: |
                   git fetch
-                  git switch ${GITHUB_REF##refs/heads/} || git checkout -b ${GITHUB_REF##refs/heads/}
+                  git switch ${GITHUB_REF##refs/heads/} || (git checkout -b ${GITHUB_REF##refs/heads/} && git push -u origin ${GITHUB_REF##refs/heads/})
 
             - name: Clear publish directory
               run: rm -rf publish/*
