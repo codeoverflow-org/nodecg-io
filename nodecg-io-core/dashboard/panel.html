@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="./dist/main.bundle.css" />
     </head>
     <body>
         <p>Minzig!</p>
@@ -18,7 +19,7 @@
             <div class="margins">
                 <label for="inputPassword">Password: </label>
                 <input type="password" id="inputPassword" />
-                <button onclick="loadFramework()">Login</button>
+                <button onclick="nodecgio.loadFramework()">Login</button>
                 <span id="spanPasswordNotice"></span>
             </div>
             <br />
@@ -33,7 +34,7 @@
                         <select
                             id="selectInstance"
                             class="flex-fill"
-                            onchange="onInstanceSelectChange(value);"
+                            onchange="nodecgio.onInstanceSelectChange(value);"
                         ></select>
                     </div>
 
@@ -44,7 +45,11 @@
 
                     <div id="instancePreset" class="margins flex hidden">
                         <label for="selectPreset">Load config preset: </label>
-                        <select id="selectPreset" class="flex-fill" onchange="selectInstanceConfigPreset();"></select>
+                        <select
+                            id="selectPreset"
+                            class="flex-fill"
+                            onchange="nodecgio.selectInstanceConfigPreset();"
+                        ></select>
                     </div>
 
                     <div id="instanceNameField" class="margins flex hidden">
@@ -53,12 +58,12 @@
                     </div>
 
                     <div id="instanceCreateButton" class="margins hidden">
-                        <button id="buttonCreate" onclick="createInstance();">Create</button>
+                        <button id="buttonCreate" onclick="nodecgio.createInstance();">Create</button>
                     </div>
 
                     <div id="instanceEditButtons" class="margins hidden">
-                        <button id="buttonSave" onclick="saveInstanceConfig();">Save</button>
-                        <button id="buttonDelete" onclick="deleteInstance();">Delete Instance</button>
+                        <button id="buttonSave" onclick="nodecgio.saveInstanceConfig();">Save</button>
+                        <button id="buttonDelete" onclick="nodecgio.deleteInstance();">Delete Instance</button>
                     </div>
 
                     <div>
@@ -70,19 +75,25 @@
                 <p>Managing Bundles</p>
                 <div id="bundleControlDiv" class="margins">
                     <label for="selectBundle">Bundle: </label>
-                    <select id="selectBundle" class="flex-fill" onchange="renderBundleDeps();"></select>
+                    <select id="selectBundle" class="flex-fill" onchange="nodecgio.renderBundleDeps();"></select>
 
                     <label for="selectBundleDepType">Service: </label>
-                    <select id="selectBundleDepType" class="flex-fill" onchange="renderInstanceSelector();"></select>
+                    <select
+                        id="selectBundleDepType"
+                        class="flex-fill"
+                        onchange="nodecgio.renderInstanceSelector();"
+                    ></select>
 
                     <label for="selectBundleInstance">Service Instance: </label>
                     <select
                         id="selectBundleInstance"
                         class="flex-fill"
-                        onchange="setSelectedServiceDependency();"
+                        onchange="nodecgio.setSelectedServiceDependency();"
                     ></select>
 
-                    <button id="buttonUnassignBundleDeps" onclick="unsetAllBundleDependencies();">Unset all</button>
+                    <button id="buttonUnassignBundleDeps" onclick="nodecgio.unsetAllBundleDependencies();">
+                        Unset all
+                    </button>
                 </div>
             </div>
 
