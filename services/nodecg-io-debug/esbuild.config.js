@@ -22,6 +22,7 @@ const BuildOptions = {
     format: "iife",
     minify: false,
     sourcemap: true,
+    platform: "browser",
     target: "ES2015",
     entryNames: "[name].bundle",
     outdir: path.join(__dirname, "dashboard", "dist"),
