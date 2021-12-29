@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.common.json",
+    "extends": "nodecg-io-tsconfig",
     "compilerOptions": {
         // reddit-ts, which is the underlying library of nodecg-io-reddit doesn't support compiling with
         // this option. We need to disable it to make this sample bundle compile.

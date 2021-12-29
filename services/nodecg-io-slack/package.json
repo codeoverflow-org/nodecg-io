@@ -33,7 +33,8 @@
     "devDependencies": {
         "@types/node": "^17.0.4",
         "nodecg-types": "^1.8.3",
-        "typescript": "^4.5.4"
+        "typescript": "^4.5.4",
+        "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
         "@slack/web-api": "^6.5.1",
