@@ -13,8 +13,10 @@
         "directory": "services/nodecg-io-debug"
     },
     "scripts": {
-        "build": "rm -rf dashboard/dist && node esbuild.config.js",
-        "watch": ""
+        "clean": "node esbuild.config.js --clean",
+        "build": "node esbuild.config.js",
+        "rebuild": "node esbuild.config.js --rebuild",
+        "watch": "node esbuild.config.js --watch"
     },
     "files": [
         "dashboard",
