@@ -21,12 +21,10 @@ coverage
 
 # Dashboard bundle config
 nodecg-io-core/dashboard/dist
-!nodecg-io-core/dashboard/webpack.config.js
 !nodecg-io-core/dashboard/esbuild.config.js
 
 # Debug service bundle config
 services/nodecg-io-debug/dashboard/dist
-!services/nodecg-io-debug/webpack.config.js
 !services/nodecg-io-debug/esbuild.config.js
 
 # Editor configuration

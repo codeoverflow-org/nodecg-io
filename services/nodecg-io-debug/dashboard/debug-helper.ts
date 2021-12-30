@@ -85,15 +85,6 @@ interface MonacoEnvironment extends Window {
         if (label === "json") {
             return "./dist/json.worker.bundle.js";
         }
-        if (label === "css" || label === "scss" || label === "less") {
-            return "./dist/css.worker.bundle.js";
-        }
-        if (label === "html" || label === "handlebars" || label === "razor") {
-            return "./dist/html.worker.bundle.js";
-        }
-        if (label === "typescript" || label === "javascript") {
-            return "./dist/ts.worker.bundle.js";
-        }
         return "./dist/editor.worker.bundle.js";
     },
 };
