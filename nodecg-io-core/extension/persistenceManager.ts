@@ -303,7 +303,6 @@ export class PersistenceManager {
                     const logMesssage = `Failed to automatically login: ${err}`;
                     if (this.isLoaded()) {
                         // load() threw an error but nodecg-io is currently loaded nonetheless.
-                        // Probably because the a already open dashboard automatically logged in after reconnecting.
                         // Anyway, nodecg-io is loaded which is what we wanted
                         this.nodecg.log.warn(logMesssage);
                     } else {

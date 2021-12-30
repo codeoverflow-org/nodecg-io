@@ -13,7 +13,7 @@ export async function createAuthProvider(cfg: TwitchServiceConfig): Promise<Auth
  * Gets the token info for the passed config.
  */
 export async function getTokenInfo(cfg: TwitchServiceConfig): Promise<TokenInfo> {
-    return await twitchGetTokenInfo(normalizeToken(cfg));
+    return twitchGetTokenInfo(normalizeToken(cfg));
 }
 
 /**

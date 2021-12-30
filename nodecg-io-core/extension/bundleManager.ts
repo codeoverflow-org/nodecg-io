@@ -79,7 +79,7 @@ export class BundleManager extends EventEmitter {
             return error(`Bundle "${bundleName}" couldn't be found.`);
         }
 
-        // Get the service dependency that manages dependance for this service type
+        // Get the service dependency that manages dependence for this service type
         const svcDependency = bundle.find((svcDep) => svcDep.serviceType === instance.serviceType);
         if (svcDependency === undefined) {
             return error(`Bundle "${bundleName} doesn't depend on the "${instance.serviceType}" service.`);
