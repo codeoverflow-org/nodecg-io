@@ -9,10 +9,12 @@ let services: Service<unknown, never>[] | undefined;
 let password: string | undefined;
 
 /**
- * Layer between the actual dashboard and PersistentData.
- * a. the naming of bundleDependencies in the context of the dashboard is too long and
+ * Layer between the actual dashboard and `PersistentData`.
+ *
+ * a. the naming of `bundleDependencies` in the context of the dashboard is too long, and
  *    I don't want to change the format of the serialized data.
- * b. having everything at hand using one variable is quite nice so I've added services here to complete it.
+ *
+ * b. having everything at hand using one variable is quite nice, so I've added services here to complete it.
  */
 interface ConfigData {
     instances: ObjectMap<ServiceInstance<unknown, unknown>>;
@@ -38,21 +40,21 @@ class Config extends EventEmitter {
 }
 export const config = new Config();
 
-// Update the decrypted copy of the data once the encrypted version changes (if pw available).
-// This ensures that the decrypted data is kept up-to-date.
+// Update the decrypted copy of the data once the encrypted version changes (if a password is available).
+// This ensures that the decrypted data is always up-to-date.
 encryptedData.on("change", updateDecryptedData);
 
 /**
  * Sets the passed password to be used by the crypto module.
- * Will try to decrypt decrypted data to tell whether the password is correct,
+ * Will try to decrypt encrypted data to tell whether the password is correct,
  * if it is wrong the internal password will be set to undefined.
  * Returns whether the password is correct.
  * @param pw the password which should be set.
  */
 export async function setPassword(pw: string): Promise<boolean> {
     await Promise.all([
-        // Ensures that the encryptedData has been declared because it is needed by setPassword()
-        // This is especially needed when handling a reconnect as the replicant takes time to declare
+        // Ensures that the `encryptedData` has been declared because it is needed by `setPassword()`
+        // This is especially needed when handling a re-connect as the replicant takes time to declare
         // and the password check is usually faster than that.
         NodeCG.waitForReplicants(encryptedData),
         fetchServices(),
@@ -60,13 +62,13 @@ export async function setPassword(pw: string): Promise<boolean> {
 
     password = pw;
 
-    // Load framework, returns false if not already loaded and pw is wrong
+    // Load framework, returns false if not already loaded and password is wrong
     if ((await loadFramework()) === false) return false;
 
     if (encryptedData.value) {
         updateDecryptedData(encryptedData.value);
-        // Password is unset by updateDecryptedData if it is wrong.
-        // This may happen if the framework was already loaded and loadFramework didn't check the pw.
+        // Password is unset by `updateDecryptedData` if it is wrong.
+        // This may happen if the framework was already loaded and `loadFramework` didn't check the password.
         if (password === undefined) {
             return false;
         }
@@ -83,15 +85,15 @@ export async function sendAuthenticatedMessage<V>(messageName: string, message: 
 }
 
 /**
- * Returns whether a password has been set in the crypto module aka. whether is is authenticated.
+ * Returns whether a password has been set in the crypto module aka. whether is authenticated.
  */
 export function isPasswordSet(): boolean {
     return password !== undefined;
 }
 
 /**
- * Decryptes the passed data using the global password variable and saves it into ConfigData.
- * Unsets the password if its wrong and also forwards `undefined` to ConfigData if the password is unset.
+ * Decrypts the passed data using the global password variable and saves it into `ConfigData`.
+ * Unsets the password if its wrong and also forwards `undefined` to `ConfigData` if the password is unset.
  * @param data the data that should be decrypted.
  */
 function updateDecryptedData(data: EncryptedData): void {
@@ -119,8 +121,8 @@ function persistentData2ConfigData(data: PersistentData | undefined): ConfigData
     return {
         instances: data.instances,
         bundles: data.bundleDependencies,
-        // services can be treated as constant because once loaded the shouldn't change anymore.
-        // Therefore we don't need a handler to rebuild this if services change.
+        // services can be treated as constant because once loaded they shouldn't change any more.
+        // Therefore, we don't need a handler to rebuild this if services change.
         services,
     };
 }

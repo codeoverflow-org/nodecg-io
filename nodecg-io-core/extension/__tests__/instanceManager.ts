@@ -121,7 +121,7 @@ describe("InstanceManager", () => {
             if (!instance) throw new Error("instance was not saved");
             instance.client = testServiceInstance.client;
 
-            // Mock stopClient() to throw a error
+            // Mock stopClient() to throw an error
             const errorMsg = "client error message";
             testService.stopClient.mockImplementationOnce(() => {
                 throw new Error(errorMsg);
@@ -133,7 +133,7 @@ describe("InstanceManager", () => {
         });
 
         test("should call stopClient() on service if a client exists", () => {
-            // Case 1: the instance has no client. No call to stopClient() should happen
+            // Case 1: the instance has no client. No call to stopClient() should happen.
             instanceManager.deleteServiceInstance(testInstance);
 
             expect(testService.stopClient).not.toHaveBeenCalled();
@@ -156,12 +156,12 @@ describe("InstanceManager", () => {
             if (!instance) throw new Error("instance could not be found");
             instance.client = testServiceInstance.client;
 
-            // oh no, the service just got deleted from ServiceManager. It cannot be looked up anymore.
+            // oh no, the service just got deleted from ServiceManager. It cannot be looked up any more.
             const services = serviceManager.getServices().splice(0);
 
             const res = instanceManager.deleteServiceInstance(testInstance);
 
-            // Re-add the removed services again so other tests can still use them
+            // Re-add the removed services again, so other tests can still use them
             services.forEach((svc) => serviceManager.registerService(svc));
 
             expect(res).toBe(true);
@@ -209,7 +209,7 @@ describe("InstanceManager", () => {
             changeCb.mockReset(); // Don't count change event from service instance creation
 
             // updateInstanceClient is big enough that it gets tested separately
-            // therefore we have just a empty mock implementation when testing updateInstanceConfig.
+            // therefore we have just an empty mock implementation when testing updateInstanceConfig.
             instanceManager.updateInstanceClient = jest.fn(() => Promise.resolve(emptySuccess()));
 
             // This is our fake validateConfig function that gets used to make sure that the
@@ -284,13 +284,13 @@ describe("InstanceManager", () => {
         test("should validate config using the validateConfig() function of the service", async () => {
             // Refer to the mock implementation of validateConfig up top for details
 
-            // Using validConfig with a non empty string should be fine
+            // Using validConfig with a non-empty string should be fine
             const res1 = await instanceManager.updateInstanceConfig(testInstance, validConfig);
             expect(res1.failed).toBe(false);
             expect(changeCb).toHaveBeenCalledTimes(1); // validation passed, should emit change event
             changeCb.mockReset();
 
-            // Using funcInvalidConfig with a empty string should cause an error.
+            // Using funcInvalidConfig with an empty string should cause an error.
             const res2 = await instanceManager.updateInstanceConfig(testInstance, funcInvalidConfig);
             expect(res2.failed).toBe(true);
             if (res2.failed) {
@@ -449,7 +449,7 @@ describe("InstanceManager", () => {
         });
 
         test("should error if service of instance cannot be found anymore", () => {
-            // Remove service from ServiceManager so it cannot be found anymore
+            // Remove service from ServiceManager, so it cannot be found any more
             const services = serviceManager.getServices().splice(0);
 
             bundleManager.emit("reregisterInstance", testInstance);

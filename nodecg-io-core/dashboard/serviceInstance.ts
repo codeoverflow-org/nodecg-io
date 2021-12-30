@@ -246,7 +246,7 @@ function selectServiceInstance(instanceName: string) {
     for (let i = 0; i < selectInstance.options.length; i++) {
         const opt = selectInstance.options[i];
         if (opt?.value === instanceName) {
-            // If already selected a re-render monaco is not needed
+            // If already selected, a re-render monaco is not needed
             if (selectInstance.selectedIndex !== i) {
                 selectInstance.selectedIndex = i;
                 selectInstance.value = instanceName;
@@ -297,10 +297,10 @@ function showInMonaco(
     const contentStr = typeof content === "object" ? JSON.stringify(content, null, 4) : content;
 
     // JSON Schema stuff
-    // Get rid of old models, as they have to be unique and we may add the same again
+    // Get rid of old models, as they have to be unique, and we may add the same again
     monaco.editor.getModels().forEach((m) => m.dispose());
 
-    // This model uri can be completely made up as long the uri in the schema matches with the one in the language model.
+    // This model uri can be completely made up as long the URI in the schema matches with the one in the language model.
     const modelUri = monaco.Uri.parse(`mem://nodecg-io/selectedServiceSchema.json`);
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions(

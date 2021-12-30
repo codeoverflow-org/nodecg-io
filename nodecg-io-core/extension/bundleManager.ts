@@ -112,7 +112,7 @@ export class BundleManager extends EventEmitter {
         if (svcDependency !== undefined) {
             const oldInstance = svcDependency.serviceInstance;
 
-            // Unset service instance and let the bundle know that it hasn't access to this service anymore.
+            // Unset service instance and let the bundle know that it hasn't access to this service any more.
             svcDependency.serviceInstance = undefined;
             svcDependency.provider.updateClient(undefined);
 
