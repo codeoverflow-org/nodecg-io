@@ -76,6 +76,19 @@ if (instanceMonaco === null) {
     throw new Error("Could not find instanceMonaco");
 }
 
+interface MonacoEnvironment extends Window {
+    MonacoEnvironment: monaco.Environment | undefined;
+}
+
+(window as MonacoEnvironment & typeof globalThis).MonacoEnvironment = {
+    getWorkerUrl: function (moduleId: string, label: string) {
+        if (label === "json") {
+            return "./dist/json.worker.bundle.js";
+        }
+        return "./dist/editor.worker.bundle.js";
+    },
+};
+
 const jsonCode = JSON.stringify({ data: 42 }, null, 4);
 const model = monaco.editor.createModel(jsonCode, "json");
 const debugMonacoEditor = monaco.editor.create(instanceMonaco, {

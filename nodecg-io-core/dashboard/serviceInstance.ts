@@ -7,7 +7,7 @@ import {
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { objectDeepCopy } from "./utils/deepCopy";
 import { config, sendAuthenticatedMessage } from "./crypto";
-import { ObjectMap } from "../extension/service";
+import { ObjectMap } from "nodecg-io-core/extension/service";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
 const editorCreateText = "<---- Create a new service instance on the left and then you can edit it in here";
@@ -34,9 +34,24 @@ const instanceNameField = document.getElementById("instanceNameField");
 const instanceEditButtons = document.getElementById("instanceEditButtons");
 const instanceCreateButton = document.getElementById("instanceCreateButton");
 const instanceMonaco = document.getElementById("instanceMonaco");
+
 if (instanceMonaco === null) {
     throw new Error("Couldn't find instanceMonaco");
 }
+
+interface MonacoEnvironment extends Window {
+    MonacoEnvironment: monaco.Environment | undefined;
+}
+
+(window as MonacoEnvironment & typeof globalThis).MonacoEnvironment = {
+    getWorkerUrl: function (moduleId: string, label: string) {
+        if (label === "json") {
+            return "./dist/json.worker.bundle.js";
+        }
+        return "./dist/editor.worker.bundle.js";
+    },
+};
+
 const editor = monaco.editor.create(instanceMonaco, {
     theme: "vs-dark",
 });
@@ -54,7 +69,8 @@ export function updateMonacoLayout(): void {
 }
 
 // Instance drop-down
-export function onInstanceSelectChange(value: string): void {
+export function onInstanceSelectChange(): void {
+    const value = selectInstance.value;
     showNotice(undefined);
     switch (value) {
         case "new":
@@ -233,7 +249,8 @@ function selectServiceInstance(instanceName: string) {
             // If already selected a re-render monaco is not needed
             if (selectInstance.selectedIndex !== i) {
                 selectInstance.selectedIndex = i;
-                onInstanceSelectChange(instanceName);
+                selectInstance.value = instanceName;
+                onInstanceSelectChange();
             }
             break;
         }

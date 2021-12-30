@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.common.json",
+    "extends": "../../../tsconfig.common.json",
     "compilerOptions": {
         "target": "ES2015",
         "lib": ["ES2015", "dom"],
@@ -8,7 +8,7 @@
     },
     "references": [
         {
-            "path": "../"
+            "path": "../../../nodecg-io-core"
         }
     ]
 }
