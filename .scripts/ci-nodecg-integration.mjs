@@ -51,7 +51,6 @@ const log = child_process
 
 const lines = log.split("\n");
 
-
 // Try to find each bundle in the logs.
 const missing = bundles.filter(
     /*Using endsWith here to remove possible ansi styling of "[info]" caused by ModeCG's logger when run locally*/

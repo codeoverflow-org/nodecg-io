@@ -1,8 +1,14 @@
 {
-    "extends": "nodecg-io-tsconfig",
+    "files": [],
+    "compilerOptions": {
+        "composite": true
+    },
     "references": [
         {
-            "path": "../../nodecg-io-core"
+            "path": "./extension"
+        },
+        {
+            "path": "./dashboard"
         }
     ]
 }

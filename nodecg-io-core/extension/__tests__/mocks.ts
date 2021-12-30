@@ -2,8 +2,8 @@ import { ObjectMap, ServiceInstance } from "../service";
 import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg-types/types/server";
 import { EventEmitter } from "events";
 
-// The mock-nodecg package has a few problems like no typings and some un-implemented functions that are a dealbreaker for us.
-// Since the nodecg api isn't that big we can simply write our own mock.
+// The mock-nodecg package has a few problems like no typings and some unimplemented functions that are a dealbreaker for us.
+// Since the NodeCG API isn't that big, we can simply write our own mock.
 // We may upstream typings and fix some non-implemented stuff upstream in the future.
 // But for now we use these mocks that we can easily change if we need something
 // that mock-nodecg hasn't implemented yet.
@@ -39,7 +39,7 @@ export class MockNodeCG implements NodeCG {
     unlisten = jest.fn();
 
     // We don't care about the type that all replicants have. The user has to ensure that the type they provide
-    // to the Replicant method matches the actual content of the replicant.
+    // to the replicant method matches the actual content of the replicant.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private declaredReplicants: ObjectMap<ObjectMap<Replicant<any>>> = {};
     Replicant<V>(name: string, namespaceOrOpts?: string | ReplicantOptions<V>, o?: ReplicantOptions<V>): Replicant<V> {
@@ -100,7 +100,7 @@ class MockReplicant<V> extends EventEmitter implements Replicant<V> {
 
     get value() {
         // When no default value is provided this will need to return undefined even though the type does not allow undefined values.
-        // Meaning this is not possible to be type safe because the nodecg typings aren't completely correct.
+        // Meaning this is not possible to be type safe because the NodeCG typings aren't completely correct.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._value!;
     }
@@ -113,7 +113,7 @@ class MockReplicant<V> extends EventEmitter implements Replicant<V> {
     }
 
     validate() {
-        // We don't support json schema here, so we always say it is "valid".
+        // We don't support JSON schema here, so we always say it is "valid".
         return true;
     }
 }

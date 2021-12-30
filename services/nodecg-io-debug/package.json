@@ -13,8 +13,10 @@
         "directory": "services/nodecg-io-debug"
     },
     "scripts": {
-        "build": "webpack",
-        "watch": "webpack --watch"
+        "clean": "node esbuild.config.js --clean",
+        "build": "node esbuild.config.js",
+        "rebuild": "node esbuild.config.js --rebuild",
+        "watch": "node esbuild.config.js --watch"
     },
     "files": [
         "dashboard",
@@ -46,14 +48,10 @@
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^17.0.4",
-        "typescript": "^4.5.4",
+        "esbuild": "^0.14.8",
         "nodecg-io-tsconfig": "^1.0.0",
-        "webpack": "^5.65.0",
-        "webpack-cli": "^4.9.1",
-        "style-loader": "^3.3.1",
-        "css-loader": "^6.5.1",
-        "monaco-editor-webpack-plugin": "^7.0.1",
-        "monaco-editor": "^0.30.1"
+        "monaco-editor": "^0.31.1",
+        "typescript": "^4.5.4"
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",

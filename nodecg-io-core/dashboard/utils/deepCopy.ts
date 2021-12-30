@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 /**
- * Creates a deep copy of a object.
+ * Creates a deep copy of an object.
  * @param obj the copy of which a deep copy should be created.
  */
 export function objectDeepCopy<T extends Object>(obj: T | any): T {

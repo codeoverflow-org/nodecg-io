@@ -314,7 +314,7 @@ describe("PersistenceManager", () => {
 
             await triggerAutomaticLogin();
             expect(persistenceManager.load).not.toHaveBeenCalled();
-            // Warning that automatic login is setup.
+            // Warning that automatic login is set up.
             // Users should remove it from the config if not automatic login is permanently not used.
             expect(nodecg.log.warn).toHaveBeenCalled();
         });
@@ -362,7 +362,7 @@ describe("PersistenceManager", () => {
         });
 
         test("should not trigger automatic login if nodecg is not finished with loading bundles", async () => {
-            // If the nodecg.bundles replicant has length 0 nodecg isn't done loading and we should wait till it has a non-zero length.
+            // If the nodecg.bundles replicant has length 0 NodeCG isn't done loading, and we should wait till it has a non-zero length.
             // Refer to the comment in setupAutomaticLogin for further details.
             nodecg.bundleConfig = {
                 automaticLogin: {
