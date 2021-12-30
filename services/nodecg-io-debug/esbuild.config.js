@@ -48,7 +48,7 @@ const BuildOptions = {
     entryPoints: entryPoints,
     /**
      * This sets the output format for the generated JavaScript files. We are
-     * using the `iife`, witch format stands for "immediately-invoked function
+     * using the `iife`, which format stands for "immediately-invoked function
      * expression".
      */
     format: "iife",

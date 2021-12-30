@@ -85,7 +85,7 @@ export async function sendAuthenticatedMessage<V>(messageName: string, message: 
 }
 
 /**
- * Returns whether a password has been set in the crypto module aka. whether is authenticated.
+ * Returns whether a password has been set in the crypto module aka. whether it is authenticated.
  */
 export function isPasswordSet(): boolean {
     return password !== undefined;
