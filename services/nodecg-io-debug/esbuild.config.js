@@ -32,7 +32,7 @@ if (args.includes("--clean") || args.includes("--rebuild")) {
 /**@type {import('esbuild').BuildOptions}*/
 const BuildOptions = {
     /**
-     * By default esbuild will not bundle the input files. Bundling must be
+     * By default, esbuild will not bundle the input files. Bundling must be
      * explicitly enabled.
      */
     bundle: true,
@@ -48,7 +48,7 @@ const BuildOptions = {
     entryPoints: entryPoints,
     /**
      * This sets the output format for the generated JavaScript files. We are
-     * using th `iife`, witch format stands for "immediately-invoked function
+     * using the `iife`, which format stands for "immediately-invoked function
      * expression".
      */
     format: "iife",

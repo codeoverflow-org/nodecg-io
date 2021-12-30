@@ -1,4 +1,4 @@
-// Re-exports functions that are used in panel.html to the global scope
+// Re-export functions that are used in panel.html to the global scope
 import { loadFramework } from "./authentication";
 import {
     onInstanceSelectChange,

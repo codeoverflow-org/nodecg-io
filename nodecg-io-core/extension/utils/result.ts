@@ -1,7 +1,7 @@
 /**
  * Result is a return type for functions which might return a value
  * or might fail and return a string which describes the error.
- * Intended for functions which are called from a GUI and should provide a error message if one occurs.
+ * Intended for functions which are called from a GUI and should provide an error message if one occurs.
  *
  * The result is represented by the {@link Failure} and {@link Success} types.
  *
