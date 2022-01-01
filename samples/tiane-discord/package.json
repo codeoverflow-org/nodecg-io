@@ -16,6 +16,7 @@
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-discord": "^0.3.0",
         "nodecg-io-tiane": "^0.3.0",
-        "typescript": "^4.5.4"
+        "typescript": "^4.5.4",
+        "nodecg-io-tsconfig": "^1.0.0"
     }
 }

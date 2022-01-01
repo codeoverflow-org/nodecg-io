@@ -43,5 +43,8 @@ const colors = [
 if (commands.length > 0) {
     concurrently(commands, {
         prefixColors: colors,
+    }).catch(() => {
+        console.log("At least one build task has failed")
+        process.exit(1);
     });
 }
