@@ -44,7 +44,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/crypto-js": "^4.0.2",
+        "@types/crypto-js": "^4.1.0",
         "@types/jest": "^27.0.2",
         "@types/node": "^17.0.4",
         "jest": "^27.4.5",
