@@ -2,7 +2,9 @@ import { PersistentData, EncryptedData, decryptData } from "nodecg-io-core/exten
 import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/service";
 import { isLoaded } from "./authentication";
-import { PasswordMessage } from "nodecg-io-core/extension/messageManager";
+import { callCoreApi } from "./core";
+import { Result } from "nodecg-io-core";
+import { AuthenticatedRequest } from "../extension/dashboardApi";
 
 const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
 let services: Service<unknown, never>[] | undefined;
@@ -77,11 +79,11 @@ export async function setPassword(pw: string): Promise<boolean> {
     return true;
 }
 
-export async function sendAuthenticatedMessage<V>(messageName: string, message: Partial<PasswordMessage>): Promise<V> {
+export async function callCoreApiAuthenticated<V>(message: Partial<AuthenticatedRequest>): Promise<Result<V>> {
     if (password === undefined) throw "No password available";
-    const msgWithAuth = Object.assign({}, message);
+    const msgWithAuth = Object.assign({}, message) as AuthenticatedRequest;
     msgWithAuth.password = password;
-    return await nodecg.sendMessage(messageName, msgWithAuth);
+    return await callCoreApi(msgWithAuth);
 }
 
 /**
@@ -128,14 +130,17 @@ function persistentData2ConfigData(data: PersistentData | undefined): ConfigData
 }
 
 async function fetchServices() {
-    services = await nodecg.sendMessage("getServices");
+    const result = await callCoreApi<Array<Service<unknown, never>>>({ type: "getServices" });
+    if (!result.failed) {
+        services = result.result;
+    }
 }
 
 async function loadFramework(): Promise<boolean> {
     if (await isLoaded()) return true;
 
     try {
-        await nodecg.sendMessage("load", { password });
+        await callCoreApi({ type: "load", password });
         return true;
     } catch {
         return false;

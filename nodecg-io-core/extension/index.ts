@@ -1,12 +1,13 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
-import { MessageManager } from "./messageManager";
 import { InstanceManager } from "./instanceManager";
 import { Service } from "./service";
 import { PersistenceManager } from "./persistenceManager";
 import { ServiceProvider } from "./serviceProvider";
 import { Logger } from "./utils/logger";
+import { DashboardApi } from "./dashboardApi";
+
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.
@@ -24,13 +25,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
     const instanceManager = new InstanceManager(nodecg, serviceManager, bundleManager);
     const persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
 
-    new MessageManager(
-        nodecg,
-        serviceManager,
-        instanceManager,
-        bundleManager,
-        persistenceManager,
-    ).registerMessageHandlers();
+    new DashboardApi(nodecg, serviceManager, instanceManager, bundleManager, persistenceManager).mountApi();
 
     registerExitHandlers(nodecg, bundleManager, instanceManager, serviceManager, persistenceManager);
 

@@ -1,12 +1,12 @@
 import * as monaco from "monaco-editor";
 import {
-    CreateServiceInstanceMessage,
-    DeleteServiceInstanceMessage,
-    UpdateInstanceConfigMessage,
-} from "nodecg-io-core/extension/messageManager";
+    CreateServiceInstanceRequest,
+    DeleteServiceInstanceRequest,
+    UpdateInstanceConfigRequest,
+} from "nodecg-io-core/extension/dashboardApi";
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
 import { objectDeepCopy } from "./utils/deepCopy";
-import { config, sendAuthenticatedMessage } from "./crypto";
+import { config, callCoreApiAuthenticated } from "./crypto";
 import { ObjectMap } from "nodecg-io-core/extension/service";
 
 const editorDefaultText = "<---- Select a service instance to start editing it in here";
@@ -139,12 +139,13 @@ export async function saveInstanceConfig(): Promise<void> {
     try {
         const instName = selectInstance.options[selectInstance.selectedIndex]?.value;
         const config = JSON.parse(editor.getValue());
-        const msg: Partial<UpdateInstanceConfigMessage> = {
+        const msg: Partial<UpdateInstanceConfigRequest> = {
+            type: "updateInstanceConfig",
             config: config,
             instanceName: instName,
         };
         showNotice("Saving...");
-        await sendAuthenticatedMessage("updateInstanceConfig", msg);
+        await callCoreApiAuthenticated(msg);
         showNotice("Successfully saved.");
     } catch (err) {
         nodecg.log.error(`Couldn't save instance config: ${err}`);
@@ -154,11 +155,12 @@ export async function saveInstanceConfig(): Promise<void> {
 
 // Delete button
 export async function deleteInstance(): Promise<void> {
-    const msg: Partial<DeleteServiceInstanceMessage> = {
+    const msg: Partial<DeleteServiceInstanceRequest> = {
+        type: "deleteServiceInstance",
         instanceName: selectInstance.options[selectInstance.selectedIndex]?.value,
     };
 
-    const deleted = await sendAuthenticatedMessage("deleteServiceInstance", msg);
+    const deleted = await callCoreApiAuthenticated(msg);
     if (deleted) {
         selectServiceInstance("select");
     } else {
@@ -174,13 +176,14 @@ export async function createInstance(): Promise<void> {
     const service = selectService.options[selectService.options.selectedIndex]?.value;
     const name = inputInstanceName.value;
 
-    const msg: Partial<CreateServiceInstanceMessage> = {
+    const msg: Partial<CreateServiceInstanceRequest> = {
+        type: "createServiceInstance",
         serviceType: service,
         instanceName: name,
     };
 
     try {
-        await sendAuthenticatedMessage("createServiceInstance", msg);
+        await callCoreApiAuthenticated(msg);
     } catch (e) {
         showNotice(String(e));
         return;

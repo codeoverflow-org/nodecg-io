@@ -2,6 +2,7 @@
 
 import { updateMonacoLayout } from "./serviceInstance";
 import { setPassword, isPasswordSet } from "./crypto";
+import { callCoreApi } from "./core";
 
 // HTML elements
 const spanLoaded = document.getElementById("spanLoaded") as HTMLSpanElement;
@@ -41,7 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 export async function isLoaded(): Promise<boolean> {
     return new Promise((resolve, _reject) => {
-        nodecg.sendMessage("isLoaded", (_err, res) => resolve(res));
+        callCoreApi<boolean>({ type: "isLoaded" }).then((result) => {
+            if (result.failed) {
+                resolve(false);
+            } else {
+                resolve(result.result);
+            }
+        });
         setTimeout(() => resolve(false), 5000); // Fallback in case connection gets lost.
     });
 }
@@ -79,7 +86,8 @@ export async function loadFramework(): Promise<void> {
 }
 
 async function updateFirstStartupLabel(): Promise<void> {
-    const isFirstStartup: boolean = await nodecg.sendMessage("isFirstStartup");
+    const isFirstStartupRes = await callCoreApi<boolean>({ type: "isFirstStartup" });
+    const isFirstStartup = isFirstStartupRes.failed === false && isFirstStartupRes.result;
     if (isFirstStartup) {
         pFirstStartup?.classList.remove("hidden");
     } else {

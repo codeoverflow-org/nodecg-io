@@ -1,6 +1,6 @@
 import { updateOptionsArr, updateOptionsMap } from "./utils/selectUtils";
-import { SetServiceDependencyMessage } from "nodecg-io-core/extension/messageManager";
-import { config, sendAuthenticatedMessage } from "./crypto";
+import { SetServiceDependencyRequest } from "nodecg-io-core/extension/dashboardApi";
+import { config, callCoreApiAuthenticated } from "./crypto";
 
 document.addEventListener("DOMContentLoaded", () => {
     config.onChange(() => {
@@ -114,14 +114,15 @@ export function unsetAllBundleDependencies(): void {
 }
 
 async function setServiceDependency(bundle: string, instance: string | undefined, serviceType: string): Promise<void> {
-    const msg: Partial<SetServiceDependencyMessage> = {
+    const msg: Partial<SetServiceDependencyRequest> = {
+        type: "setServiceDependency",
         bundleName: bundle,
         instanceName: instance,
         serviceType,
     };
 
     try {
-        await sendAuthenticatedMessage("setServiceDependency", msg);
+        await callCoreApiAuthenticated(msg);
     } catch (err) {
         nodecg.log.error(err);
     }
