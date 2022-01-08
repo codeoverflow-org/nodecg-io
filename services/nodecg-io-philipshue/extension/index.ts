@@ -1,6 +1,6 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle, ObjectMap } from "nodecg-io-core";
-import * as ipv4 from "is-ip";
+import { isIPv4 } from "is-ip";
 import { v3 } from "node-hue-api";
 import HueApi = require("node-hue-api/lib/api/Api");
 const { api, discovery } = v3;
@@ -33,8 +33,7 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
 
     async validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
         const { port, ipAddr } = config;
-
-        if (!ipv4.isIPv4(ipAddr)) {
+        if (!isIPv4(ipAddr)) {
             return error("Invalid IP address, can handle only IPv4 at the moment!");
         } else if (port && !(0 <= port && port <= 65535)) {
             // the port is there but the port is wrong
