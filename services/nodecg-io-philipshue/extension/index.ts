@@ -33,7 +33,6 @@ class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHu
 
     async validateConfig(config: PhilipsHueServiceConfig): Promise<Result<void>> {
         const { port, ipAddr } = config;
-
         if (!isIPv4(ipAddr)) {
             return error("Invalid IP address, can handle only IPv4 at the moment!");
         } else if (port && !(0 <= port && port <= 65535)) {
