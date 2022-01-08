@@ -1,0 +1,87 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "npm",
+            "script": "clean",
+            "problemMatcher": [],
+            "label": "Clean",
+            "detail": "remove build results"
+        },
+        {
+            "type": "npm",
+            "script": "update",
+            "problemMatcher": [],
+            "label": "Update",
+            "detail": "update tsconfig paths"
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$tsc"],
+            "label": "Build",
+            "detail": "runs tsc and esbuild"
+        },
+        {
+            "type": "npm",
+            "script": "rebuild",
+            "group": "build",
+            "problemMatcher": ["$tsc"],
+            "label": "Rebuild",
+            "detail": "runs clean and build"
+        },
+        {
+            "type": "npm",
+            "script": "watch",
+            "group": "build",
+            "problemMatcher": ["$tsc-watch"],
+            "label": "Watch",
+            "detail": "runs tsc and esbuild in watch mode"
+        },
+        {
+            "type": "npm",
+            "script": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "label": "Test",
+            "detail": "runs jest in the nodecg-io root folder"
+        },
+        {
+            "type": "npm",
+            "script": "coverage",
+            "group": "test",
+            "problemMatcher": [],
+            "label": "Coverage",
+            "detail": "generates a coverage report with jest"
+        },
+        {
+            "type": "npm",
+            "script": "watchTest",
+            "group": "test",
+            "problemMatcher": [],
+            "label": "Watch Test",
+            "detail": "runs jest in watch mode"
+        },
+        {
+            "type": "npm",
+            "script": "format",
+            "problemMatcher": [],
+            "label": "Format",
+            "detail": "runs prettier"
+        },
+        {
+            "type": "npm",
+            "script": "lint",
+            "problemMatcher": ["$eslint-stylish"],
+            "label": "Lint",
+            "detail": "runs eslint"
+        }
+    ]
+}

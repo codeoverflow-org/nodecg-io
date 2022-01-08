@@ -11,5 +11,7 @@
         },
         "**/*.d.ts.map": true,
         "**/*.tsbuildinfo": true
-    }
+    },
+    "typescript.tsc.autoDetect": "off",
+    "npm.autoDetect": "off"
 }
