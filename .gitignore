@@ -33,6 +33,7 @@ services/nodecg-io-debug/dashboard/dist
 
 # Launch configurations and settings
 !/.vscode/launch.json
+!/.vscode/tasks.json
 !/.vscode/settings.json
 
 # Lerna temporary files
