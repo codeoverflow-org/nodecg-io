@@ -15,8 +15,8 @@
         "watch": "node .scripts/exec.mjs watch",
         "watch:root": "tsc -b -w --pretty --preserveWatchOutput",
         "lint": "eslint . --ext ts --ignore-pattern '**/*.d.ts'",
-        "format": "prettier --write \"./**/*.{ts,html,css,json}\"",
-        "format-pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json}'",
+        "format": "prettier --write \"./**/*.{ts,html,css,json,mjs}\"",
+        "format-pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json,mjs}'",
         "prepare": "husky install"
     },
     "devDependencies": {

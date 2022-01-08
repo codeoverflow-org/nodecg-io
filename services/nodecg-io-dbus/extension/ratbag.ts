@@ -332,8 +332,8 @@ export class RatBagResolution extends DBusObject {
  */
 export class RatBagButton extends DBusObject {
     private static readonly SPECIAL_ACTION_MAP: Record<RatBagSpecialAction, number> = {
-        unknown: 0x40000000,
-        doubleclick: 0x40000001,
+        "unknown": 0x40000000,
+        "doubleclick": 0x40000001,
         "wheel left": 0x40000002,
         "wheel right": 0x40000003,
         "wheel up": 0x40000004,

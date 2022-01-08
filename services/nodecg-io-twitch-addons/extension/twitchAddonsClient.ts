@@ -237,7 +237,7 @@ export class TwitchAddonsClient {
             await fetch(`https://api.twitch.tv/helix/users?login=${username}`, {
                 headers: {
                     "Client-ID": this.clientId,
-                    Authorization: `Bearer ${this.token}`,
+                    "Authorization": `Bearer ${this.token}`,
                 },
             })
         ).json();

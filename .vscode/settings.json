@@ -13,5 +13,6 @@
         "**/*.tsbuildinfo": true
     },
     "typescript.tsc.autoDetect": "off",
-    "npm.autoDetect": "off"
+    "npm.autoDetect": "off",
+    "js/ts.implicitProjectConfig.checkJs": true
 }

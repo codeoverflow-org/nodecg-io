@@ -168,7 +168,7 @@ export class CurseForge {
         const response = await fetch(`https://addons-ecs.forgesvc.net/api/v2/${endpoint}`, {
             method: method,
             headers: {
-                Accept: "application/json",
+                "Accept": "application/json",
                 "Content-Type": "application/json",
             },
             body: data === undefined ? undefined : JSON.stringify(data),

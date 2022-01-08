@@ -8,7 +8,7 @@ const path = require("path");
 const process = require("process");
 const fs = require("fs");
 
-const args = process.argv.slice(2);
+const args = new Set(process.argv.slice(2));
 const prod = process.env.NODE_ENV === "production";
 
 const entryPoints = [
@@ -17,19 +17,20 @@ const entryPoints = [
     "dashboard/debug-helper.ts",
 ];
 
-if (args.includes("--clean") || args.includes("--rebuild")) {
-    // remove dist folder
+if (args.has("--clean") || args.has("--rebuild")) {
+    // Remove dist folder
     try {
         fs.rmSync(path.join(__dirname, "dist"), { recursive: true, force: true });
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
-    if (!args.includes("--rebuild")) {
+
+    if (!args.has("--rebuild")) {
         process.exit(0);
     }
 }
 
-/**@type {import('esbuild').BuildOptions}*/
+/** @type {import('esbuild').BuildOptions} */
 const BuildOptions = {
     /**
      * By default, esbuild will not bundle the input files. Bundling must be
@@ -45,7 +46,7 @@ const BuildOptions = {
      * This is an array of files that each serve as an input to the bundling
      * algorithm.
      */
-    entryPoints: entryPoints,
+    entryPoints,
     /**
      * This sets the output format for the generated JavaScript files. We are
      * using the `iife`, which format stands for "immediately-invoked function
@@ -88,7 +89,7 @@ const BuildOptions = {
      * on the file system and to rebuild whenever a file changes that could
      * invalidate the build.
      */
-    watch: args.includes("--watch")
+    watch: args.has("--watch"),
 };
 
 esbuild
@@ -98,6 +99,7 @@ esbuild
         if (result.errors.length > 0) {
             console.error(result.errors);
         }
+
         if (result.warnings.length > 0) {
             console.error(result.warnings);
         }
