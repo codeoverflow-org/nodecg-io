@@ -3,7 +3,6 @@ import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nod
 import { google, GoogleApis } from "googleapis";
 import type { Credentials } from "google-auth-library/build/src/auth/credentials";
 import type { OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
-import * as express from "express";
 import opn = require("open");
 
 interface GoogleApisServiceConfig {
@@ -49,7 +48,7 @@ class GoogleApisService extends ServiceBundle<GoogleApisServiceConfig, GoogleApi
         });
 
         return new Promise((resolve, reject) => {
-            const router = express.Router();
+            const router = this.nodecg.Router();
 
             router.get("/nodecg-io-googleapis/oauth2callback", async (req, res) => {
                 try {

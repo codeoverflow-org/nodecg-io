@@ -38,7 +38,6 @@
     },
     "dependencies": {
         "@types/gapi": "^0.0.41",
-        "express": "^4.17.2",
         "googleapis": "^92.0.0",
         "nodecg-io-core": "^0.3.0",
         "open": "^8.4.0"
