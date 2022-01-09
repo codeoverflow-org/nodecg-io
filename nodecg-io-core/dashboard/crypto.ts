@@ -1,8 +1,15 @@
-import { PersistentData, EncryptedData, decryptData } from "nodecg-io-core/extension/persistenceManager";
+import {
+    PersistentData,
+    EncryptedData,
+    decryptData,
+    deriveEncryptionSecret,
+    reEncryptData,
+} from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/service";
 import { isLoaded } from "./authentication";
 import { PasswordMessage } from "nodecg-io-core/extension/messageManager";
+import cryptoJS from "crypto-js";
 
 const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
 let services: Service<unknown, never>[] | undefined;
@@ -60,7 +67,23 @@ export async function setPassword(pw: string): Promise<boolean> {
         fetchServices(),
     ]);
 
-    password = pw;
+    if (encryptedData.value === undefined) {
+        encryptedData.value = {};
+    }
+
+    const salt = encryptedData.value.salt ?? cryptoJS.lib.WordArray.random(128 / 8).toString(cryptoJS.enc.Hex);
+    if (encryptedData.value.salt === undefined) {
+        const newSecret = deriveEncryptionSecret(pw, salt);
+
+        if (encryptedData.value.cipherText !== undefined) {
+            const newSecretWordArray = cryptoJS.enc.Hex.parse(newSecret);
+            reEncryptData(encryptedData.value, pw, newSecretWordArray);
+        }
+
+        encryptedData.value.salt = salt;
+    }
+
+    password = deriveEncryptionSecret(pw, salt);
 
     // Load framework, returns false if not already loaded and password is wrong
     if ((await loadFramework()) === false) return false;
@@ -99,7 +122,8 @@ export function isPasswordSet(): boolean {
 function updateDecryptedData(data: EncryptedData): void {
     let result: PersistentData | undefined = undefined;
     if (password !== undefined && data.cipherText) {
-        const res = decryptData(data.cipherText, password);
+        const passwordWordArray = cryptoJS.enc.Hex.parse(password);
+        const res = decryptData(data.cipherText, passwordWordArray, data.iv);
         if (!res.failed) {
             result = res.result;
         } else {

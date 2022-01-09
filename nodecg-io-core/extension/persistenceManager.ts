@@ -1,7 +1,7 @@
 import { NodeCG, ReplicantServer } from "nodecg-types/types/server";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
-import * as crypto from "crypto-js";
+import crypto from "crypto-js";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./service";
 import { ServiceManager } from "./serviceManager";
@@ -28,6 +28,8 @@ export interface EncryptedData {
      * The encrypted format of the data that needs to be stored.
      */
     cipherText?: string;
+    salt?: string;
+    iv?: string;
 }
 
 /**
@@ -37,15 +39,62 @@ export interface EncryptedData {
  * @param cipherText the ciphertext that needs to be decrypted.
  * @param password the password for the encrypted data.
  */
-export function decryptData(cipherText: string, password: string): Result<PersistentData> {
+export function decryptData(
+    cipherText: string,
+    password: string | crypto.lib.WordArray,
+    iv: string | undefined,
+): Result<PersistentData> {
     try {
-        const decryptedBytes = crypto.AES.decrypt(cipherText, password);
+        const ivWordArray = iv ? crypto.enc.Hex.parse(iv) : undefined;
+        const decryptedBytes = crypto.AES.decrypt(cipherText, password, { iv: ivWordArray });
         const decryptedText = decryptedBytes.toString(crypto.enc.Utf8);
         const data: PersistentData = JSON.parse(decryptedText);
         return success(data);
     } catch {
         return error("Password isn't correct.");
     }
+}
+
+export function encryptData(data: PersistentData, password: string | crypto.lib.WordArray): [string, string] {
+    const iv = crypto.lib.WordArray.random(16);
+    const ivText = iv.toString();
+    const encrypted = crypto.AES.encrypt(JSON.stringify(data), password, { iv });
+    return [encrypted.toString(), ivText];
+}
+
+export function deriveEncryptionSecret(password: string, salt: string | undefined): string {
+    if (salt === undefined) {
+        return password;
+    }
+
+    const saltWordArray = crypto.enc.Hex.parse(salt);
+
+    return crypto
+        .PBKDF2(password, saltWordArray, {
+            keySize: 256 / 32,
+            iterations: 5000,
+        })
+        .toString(crypto.enc.Hex);
+}
+
+export function reEncryptData(
+    data: EncryptedData,
+    oldSecret: string | crypto.lib.WordArray,
+    newSecret: string | crypto.lib.WordArray,
+): Result<void> {
+    if (data.cipherText === undefined) {
+        return error("Cannot re-encrypt empty cipher text.");
+    }
+
+    const decryptedData = decryptData(data.cipherText, oldSecret, data.iv);
+    if (decryptedData.failed) {
+        return error(decryptedData.errorMessage);
+    }
+
+    const [newCipherText, iv] = encryptData(decryptedData.result, newSecret);
+    data.cipherText = newCipherText;
+    data.iv = iv;
+    return emptySuccess();
 }
 
 /**
@@ -116,8 +165,14 @@ export class PersistenceManager {
         } else {
             // Decrypt config
             this.nodecg.log.info("Decrypting and loading saved configuration.");
-            const data = decryptData(this.encryptedData.value.cipherText, password);
+            const passwordWordArray = crypto.enc.Hex.parse(password);
+            const data = decryptData(
+                this.encryptedData.value.cipherText,
+                passwordWordArray,
+                this.encryptedData.value.iv,
+            );
             if (data.failed) {
+                this.nodecg.log.error("Could not decrypt configuration: password is invalid.");
                 return data;
             }
 
@@ -215,8 +270,10 @@ export class PersistenceManager {
         };
 
         // Encrypt and save data to persistent replicant.
-        const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
-        this.encryptedData.value.cipherText = cipherText.toString();
+        const passwordWordArray = crypto.enc.Hex.parse(this.password);
+        const [cipherText, iv] = encryptData(data, passwordWordArray);
+        this.encryptedData.value.cipherText = cipherText;
+        this.encryptedData.value.iv = iv;
     }
 
     /**
@@ -292,7 +349,22 @@ export class PersistenceManager {
             if (bundles.length > 0) {
                 try {
                     this.nodecg.log.info("Attempting to automatically login...");
-                    const loadResult = await this.load(password);
+
+                    const salt =
+                        this.encryptedData.value.salt ?? crypto.lib.WordArray.random(128 / 8).toString(crypto.enc.Hex);
+                    if (this.encryptedData.value.salt === undefined) {
+                        const newSecret = deriveEncryptionSecret(password, salt);
+
+                        if (this.encryptedData.value.cipherText !== undefined) {
+                            const newSecretWordArray = crypto.enc.Hex.parse(newSecret);
+                            reEncryptData(this.encryptedData.value, password, newSecretWordArray);
+                        }
+
+                        this.encryptedData.value.salt = salt;
+                    }
+
+                    const encryptionSecret = deriveEncryptionSecret(password, salt);
+                    const loadResult = await this.load(encryptionSecret);
 
                     if (!loadResult.failed) {
                         this.nodecg.log.info("Automatic login successful.");
