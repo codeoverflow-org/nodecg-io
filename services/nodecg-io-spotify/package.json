@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-spotify",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. ",
     "homepage": "https://nodecg.io/RELEASE",
     "author": {
