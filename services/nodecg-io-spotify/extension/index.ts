@@ -10,18 +10,16 @@ interface SpotifyServiceConfig {
     clientSecret: string;
     scopes: Array<string>;
     refreshToken?: string;
+    httpsRedirect?: boolean;
 }
 
 export type SpotifyServiceClient = SpotifyWebApi;
 
-let callbackUrl = "";
 const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";
 const defaultState = "defaultState";
 const refreshInterval = 1800000;
 
 module.exports = (nodecg: NodeCG) => {
-    callbackUrl = `http://${nodecg.config.baseURL}${callbackEndpoint}`;
-
     new SpotifyService(nodecg, "spotify", __dirname, "../spotify-schema.json").register();
 };
 
@@ -40,7 +38,9 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
         const spotifyApi = new SpotifyWebApi({
             clientId: config.clientId,
             clientSecret: config.clientSecret,
-            redirectUri: callbackUrl,
+            redirectUri: `${config.httpsRedirect ? "https" : "http"}://${
+                this.nodecg.config.baseURL
+            }${callbackEndpoint}`,
         });
 
         // if we already have a refresh token is available we can use it to create a access token without the need to annoy the user
