@@ -1,7 +1,5 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
-import * as express from "express";
-import { Router } from "express";
 import SpotifyWebApi = require("spotify-web-api-node");
 import open = require("open");
 
@@ -77,7 +75,7 @@ class SpotifyService extends ServiceBundle<SpotifyServiceConfig, SpotifyServiceC
 
     private mountCallBackURL(spotifyApi: SpotifyWebApi, logger: Logger) {
         return new Promise((resolve) => {
-            const router: Router = express.Router();
+            const router = this.nodecg.Router();
 
             router.get(callbackEndpoint, (req, res) => {
                 // Get auth code with is returned as url query parameter if everything was successful
