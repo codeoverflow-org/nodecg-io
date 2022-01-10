@@ -2,18 +2,18 @@ import {
     PersistentData,
     EncryptedData,
     decryptData,
-    deriveEncryptionSecret,
+    deriveEncryptionKey,
     reEncryptData,
 } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/service";
 import { isLoaded } from "./authentication";
-import { PasswordMessage } from "nodecg-io-core/extension/messageManager";
+import { AuthenticationMessage } from "nodecg-io-core/extension/messageManager";
 import cryptoJS from "crypto-js";
 
 const encryptedData = nodecg.Replicant<EncryptedData>("encryptedConfig");
 let services: Service<unknown, never>[] | undefined;
-let password: string | undefined;
+let encryptionKey: string | undefined;
 
 /**
  * Layer between the actual dashboard and `PersistentData`.
@@ -47,20 +47,21 @@ class Config extends EventEmitter {
 }
 export const config = new Config();
 
-// Update the decrypted copy of the data once the encrypted version changes (if a password is available).
+// Update the decrypted copy of the data once the encrypted version changes (if a encryption key is available).
 // This ensures that the decrypted data is always up-to-date.
 encryptedData.on("change", updateDecryptedData);
 
 /**
  * Sets the passed password to be used by the crypto module.
- * Will try to decrypt encrypted data to tell whether the password is correct,
- * if it is wrong the internal password will be set to undefined.
+ * Uses the password to derive a decryption secret and then tries to decrypt
+ * the encrypted data to tell whether the password is correct.
+ * If it is wrong the internal encryption key will be set to undefined.
  * Returns whether the password is correct.
  * @param pw the password which should be set.
  */
 export async function setPassword(pw: string): Promise<boolean> {
     await Promise.all([
-        // Ensures that the `encryptedData` has been declared because it is needed by `setPassword()`
+        // Ensures that the `encryptedData` has been declared because it is needed to get the encrypted config.
         // This is especially needed when handling a re-connect as the replicant takes time to declare
         // and the password check is usually faster than that.
         NodeCG.waitForReplicants(encryptedData),
@@ -73,7 +74,7 @@ export async function setPassword(pw: string): Promise<boolean> {
 
     const salt = encryptedData.value.salt ?? cryptoJS.lib.WordArray.random(128 / 8).toString(cryptoJS.enc.Hex);
     if (encryptedData.value.salt === undefined) {
-        const newSecret = deriveEncryptionSecret(pw, salt);
+        const newSecret = deriveEncryptionKey(pw, salt);
 
         if (encryptedData.value.cipherText !== undefined) {
             const newSecretWordArray = cryptoJS.enc.Hex.parse(newSecret);
@@ -83,16 +84,16 @@ export async function setPassword(pw: string): Promise<boolean> {
         encryptedData.value.salt = salt;
     }
 
-    password = deriveEncryptionSecret(pw, salt);
+    encryptionKey = deriveEncryptionKey(pw, salt);
 
-    // Load framework, returns false if not already loaded and password is wrong
+    // Load framework, returns false if not already loaded and password/encryption key is wrong
     if ((await loadFramework()) === false) return false;
 
     if (encryptedData.value) {
         updateDecryptedData(encryptedData.value);
-        // Password is unset by `updateDecryptedData` if it is wrong.
-        // This may happen if the framework was already loaded and `loadFramework` didn't check the password.
-        if (password === undefined) {
+        // encryption key is unset by `updateDecryptedData` if it is wrong.
+        // This may happen if the framework was already loaded and `loadFramework` didn't check the password/encryption key.
+        if (encryptionKey === undefined) {
             return false;
         }
     }
@@ -100,35 +101,38 @@ export async function setPassword(pw: string): Promise<boolean> {
     return true;
 }
 
-export async function sendAuthenticatedMessage<V>(messageName: string, message: Partial<PasswordMessage>): Promise<V> {
-    if (password === undefined) throw "No password available";
+export async function sendAuthenticatedMessage<V>(
+    messageName: string,
+    message: Partial<AuthenticationMessage>,
+): Promise<V> {
+    if (encryptionKey === undefined) throw "Can't send authenticated message: crypto module not authenticated";
     const msgWithAuth = Object.assign({}, message);
-    msgWithAuth.password = password;
+    msgWithAuth.encryptionKey = encryptionKey;
     return await nodecg.sendMessage(messageName, msgWithAuth);
 }
 
 /**
- * Returns whether a password has been set in the crypto module aka. whether it is authenticated.
+ * Returns whether a password derived encryption key has been set in the crypto module aka. whether it is authenticated.
  */
 export function isPasswordSet(): boolean {
-    return password !== undefined;
+    return encryptionKey !== undefined;
 }
 
 /**
- * Decrypts the passed data using the global password variable and saves it into `ConfigData`.
- * Unsets the password if its wrong and also forwards `undefined` to `ConfigData` if the password is unset.
+ * Decrypts the passed data using the global encryptionKey variable and saves it into `ConfigData`.
+ * Unsets the encryption key if its wrong and also forwards `undefined` to `ConfigData` if the encryption key is unset.
  * @param data the data that should be decrypted.
  */
 function updateDecryptedData(data: EncryptedData): void {
     let result: PersistentData | undefined = undefined;
-    if (password !== undefined && data.cipherText) {
-        const passwordWordArray = cryptoJS.enc.Hex.parse(password);
+    if (encryptionKey !== undefined && data.cipherText) {
+        const passwordWordArray = cryptoJS.enc.Hex.parse(encryptionKey);
         const res = decryptData(data.cipherText, passwordWordArray, data.iv);
         if (!res.failed) {
             result = res.result;
         } else {
-            // Password is wrong
-            password = undefined;
+            // Secret is wrong
+            encryptionKey = undefined;
         }
     }
 
@@ -159,7 +163,7 @@ async function loadFramework(): Promise<boolean> {
     if (await isLoaded()) return true;
 
     try {
-        await nodecg.sendMessage("load", { password });
+        await nodecg.sendMessage("load", { encryptionKey });
         return true;
     } catch {
         return false;
