@@ -72,13 +72,20 @@ export async function setPassword(pw: string): Promise<boolean> {
         encryptedData.value = {};
     }
 
-    const salt = encryptedData.value.salt ?? cryptoJS.lib.WordArray.random(128 / 8).toString(cryptoJS.enc.Hex);
+    const salt = encryptedData.value.salt ?? cryptoJS.lib.WordArray.random(128 / 8).toString();
+    // Check if no salt is present, which is the case for the nodecg-io <=0.2 configs
+    // where crypto-js derived the encryption key and managed the salt.
     if (encryptedData.value.salt === undefined) {
-        const newSecret = deriveEncryptionKey(pw, salt);
+        // Salt is unset when nodecg-io is first started.
 
         if (encryptedData.value.cipherText !== undefined) {
-            const newSecretWordArray = cryptoJS.enc.Hex.parse(newSecret);
-            reEncryptData(encryptedData.value, pw, newSecretWordArray);
+            // Salt is unset but we have some encrypted data.
+            // This means that this is a old config, that we need to migrate to the new format.
+
+            // Re-encrypt the configuration using our own derived key instead of the password.
+            const newEncryptionKey = deriveEncryptionKey(pw, salt);
+            const newEncryptionKeyArr = cryptoJS.enc.Hex.parse(newEncryptionKey);
+            reEncryptData(encryptedData.value, pw, newEncryptionKeyArr);
         }
 
         encryptedData.value.salt = salt;

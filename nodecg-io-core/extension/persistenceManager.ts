@@ -28,13 +28,26 @@ export interface EncryptedData {
      * The encrypted format of the data that needs to be stored.
      */
     cipherText?: string;
+
+    /**
+     * The salt that is used when deriving the encryption key from the password.
+     * Only set for new format with nodecg-io >=0.3.
+     */
     salt?: string;
+
+    /**
+     * The initialization vector used for encryption.
+     * Only set for new format with nodecg-io >=0.3.
+     */
     iv?: string;
 }
 
 /**
  * Decrypts the passed encrypted data using the passed encryption key.
  * If the encryption key is wrong, an error will be returned.
+ *
+ * This function supports the <=0.2 format with the plain password as an
+ * encryption key and no iv (read from ciphertext) and the >=0.3 format with the iv and derived key.
  *
  * @param cipherText the ciphertext that needs to be decrypted.
  * @param encryptionKey the encryption key for the encrypted data.
@@ -56,6 +69,13 @@ export function decryptData(
     }
 }
 
+/**
+ * Encrypts the passed data objedt using the passed encryption key.
+ *
+ * @param data the data that needs to be encrypted.
+ * @param encryptionKey the encryption key that should be used to encrypt the data.
+ * @returns a tuple containing the encrypted data and the initialization vector as a hex string.
+ */
 export function encryptData(data: PersistentData, encryptionKey: crypto.lib.WordArray): [string, string] {
     const iv = crypto.lib.WordArray.random(16);
     const ivText = iv.toString();
@@ -63,11 +83,14 @@ export function encryptData(data: PersistentData, encryptionKey: crypto.lib.Word
     return [encrypted.toString(), ivText];
 }
 
-export function deriveEncryptionKey(password: string, salt: string | undefined): string {
-    if (salt === undefined) {
-        return password;
-    }
-
+/**
+ * Derives a key suitable for encrypting the config from the given password.
+ *
+ * @param password the password from which the encryption key will be derived.
+ * @param salt the salt that is used for key derivation.
+ * @returns a hex encoded string of the derived key.
+ */
+export function deriveEncryptionKey(password: string, salt: string): string {
     const saltWordArray = crypto.enc.Hex.parse(salt);
 
     return crypto
@@ -78,6 +101,14 @@ export function deriveEncryptionKey(password: string, salt: string | undefined):
         .toString(crypto.enc.Hex);
 }
 
+/**
+ * Re-encrypts the passed data to change the password/encryption key.
+ * Currently only used to migrate from <=0.2 to >=0.3 config formats but
+ * could be used to implement a change password feature in the future.
+ * @param data the data that should be re-encrypted.
+ * @param oldSecret the previous encryption key or password.
+ * @param newSecret the new encryption key.
+ */
 export function reEncryptData(
     data: EncryptedData,
     oldSecret: string | crypto.lib.WordArray,
@@ -351,14 +382,20 @@ export class PersistenceManager {
                 try {
                     this.nodecg.log.info("Attempting to automatically login...");
 
-                    const salt =
-                        this.encryptedData.value.salt ?? crypto.lib.WordArray.random(128 / 8).toString(crypto.enc.Hex);
+                    const salt = this.encryptedData.value.salt ?? crypto.lib.WordArray.random(128 / 8).toString();
+                    // Check if no salt is present, which is the case for the nodecg-io <=0.2 configs
+                    // where crypto-js derived the encryption key and managed the salt.
                     if (this.encryptedData.value.salt === undefined) {
-                        const newSecret = deriveEncryptionKey(password, salt);
+                        // Salt is unset when nodecg-io is first started.
 
                         if (this.encryptedData.value.cipherText !== undefined) {
-                            const newSecretWordArray = crypto.enc.Hex.parse(newSecret);
-                            reEncryptData(this.encryptedData.value, password, newSecretWordArray);
+                            // Salt is unset but we have some encrypted data.
+                            // This means that this is a old config, that we need to migrate to the new format.
+
+                            // Re-encrypt the configuration using our own derived key instead of the password.
+                            const newEncryptionKey = deriveEncryptionKey(password, salt);
+                            const newEncryptionKeyArr = crypto.enc.Hex.parse(newEncryptionKey);
+                            reEncryptData(this.encryptedData.value, password, newEncryptionKeyArr);
                         }
 
                         this.encryptedData.value.salt = salt;
