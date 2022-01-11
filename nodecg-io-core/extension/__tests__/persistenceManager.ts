@@ -79,12 +79,12 @@ describe("PersistenceManager", () => {
             expect(persistenceManager.checkEncryptionKey(validEncryptionKey)).toBe(false);
         });
 
-        test("should return false if loaded but password is wrong", async () => {
+        test("should return false if loaded but encryption key is wrong", async () => {
             await persistenceManager.load(validEncryptionKey);
             expect(persistenceManager.checkEncryptionKey(invalidEncryptionKey)).toBe(false);
         });
 
-        test("should return true if loaded and password is correct", async () => {
+        test("should return true if loaded and encryption key is correct", async () => {
             await persistenceManager.load(validEncryptionKey);
             expect(persistenceManager.checkEncryptionKey(validEncryptionKey)).toBe(true);
         });
@@ -97,14 +97,14 @@ describe("PersistenceManager", () => {
 
         test("should return false if load was called but failed", async () => {
             encryptedDataReplicant.value = generateEncryptedConfig();
-            const res = await persistenceManager.load(invalidEncryptionKey); // Will fail because the password is invalid
+            const res = await persistenceManager.load(invalidEncryptionKey); // Will fail because the encryption key is invalid
             expect(res.failed).toBe(true);
             expect(persistenceManager.isLoaded()).toBe(false);
         });
 
         test("should return true if load was called and succeeded", async () => {
             encryptedDataReplicant.value = generateEncryptedConfig();
-            const res = await persistenceManager.load(validEncryptionKey); // password is correct, should work
+            const res = await persistenceManager.load(validEncryptionKey); // encryption key is correct, should work
             expect(res.failed).toBe(false);
             expect(persistenceManager.isLoaded()).toBe(true);
         });
@@ -143,7 +143,7 @@ describe("PersistenceManager", () => {
             expect(encryptedDataReplicant.value.cipherText).toBeDefined();
         });
 
-        test("should error if password is wrong", async () => {
+        test("should error if encryption key is wrong", async () => {
             const res = await persistenceManager.load(invalidEncryptionKey);
             expect(res.failed).toBe(true);
             if (res.failed) {
@@ -151,7 +151,7 @@ describe("PersistenceManager", () => {
             }
         });
 
-        test("should succeed if password is correct", async () => {
+        test("should succeed if encryption key is correct", async () => {
             const res = await persistenceManager.load(validEncryptionKey);
             expect(res.failed).toBe(false);
         });
@@ -402,7 +402,7 @@ describe("PersistenceManager", () => {
     });
 
     test("should automatically save if BundleManager or InstanceManager emit a change event", async () => {
-        await persistenceManager.load(validEncryptionKey); // Set password so that we can save stuff
+        await persistenceManager.load(validEncryptionKey); // Set encryption key so that we can save stuff
 
         encryptedDataReplicant.value.cipherText = undefined;
         bundleManager.emit("change");
