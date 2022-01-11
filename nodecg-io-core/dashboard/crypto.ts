@@ -85,7 +85,10 @@ export async function setPassword(pw: string): Promise<boolean> {
             // Re-encrypt the configuration using our own derived key instead of the password.
             const newEncryptionKey = deriveEncryptionKey(pw, salt);
             const newEncryptionKeyArr = cryptoJS.enc.Hex.parse(newEncryptionKey);
-            reEncryptData(encryptedData.value, pw, newEncryptionKeyArr);
+            const res = reEncryptData(encryptedData.value, pw, newEncryptionKeyArr);
+            if (res.failed) {
+                throw new Error(`Failed to migrate config: ${res.errorMessage}`);
+            }
         }
 
         encryptedData.value.salt = salt;
@@ -127,7 +130,7 @@ export function isPasswordSet(): boolean {
 
 /**
  * Decrypts the passed data using the global encryptionKey variable and saves it into `ConfigData`.
- * Unsets the encryption key if its wrong and also forwards `undefined` to `ConfigData` if the encryption key is unset.
+ * Clears the encryption key if its wrong and also forwards `undefined` to `ConfigData` if the encryption key is unset.
  * @param data the data that should be decrypted.
  */
 function updateDecryptedData(data: EncryptedData): void {
