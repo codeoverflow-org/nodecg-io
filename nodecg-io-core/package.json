@@ -50,7 +50,7 @@
         "jest": "^27.4.7",
         "nodecg-types": "^1.8.3",
         "typescript": "^4.5.4",
-        "ts-jest": "^27.1.2"
+        "ts-jest": "^27.1.3"
     },
     "dependencies": {
         "ajv": "^8.8.1",
