@@ -53,7 +53,7 @@
         "ts-jest": "^27.1.3"
     },
     "dependencies": {
-        "ajv": "^8.8.1",
+        "ajv": "^8.9.0",
         "crypto-js": "^4.1.1",
         "tslib": "^2.3.1"
     }
