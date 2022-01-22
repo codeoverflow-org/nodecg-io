@@ -59,7 +59,10 @@ jobs:
         # are mounted by NodeCG. It will fail if one of them is not mounted.
         # You may check for other NodeCG runtime errors in the output (these
         # may not fail the run).
-        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/setup-node@v2
               with:
@@ -71,10 +74,18 @@ jobs:
             - name: Setup NodeCG
               run: nodecg setup
 
-            - name: Setup NodeCG config
+            - name: Setup NodeCG config linux
+              if: matrix.os == 'ubuntu-latest'
               run: |
                   mkdir cfg
                   echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE}'/nodecg-io","'${GITHUB_WORKSPACE}'/nodecg-io/services","'${GITHUB_WORKSPACE}'/nodecg-io/samples"]}}' > ./cfg/nodecg.json
+
+            - name: Setup NodeCG config windows
+              if: matrix.os == 'windows-latest'
+              shell: bash
+              run: |
+                  mkdir cfg
+                  echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io","'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io\\services","'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io\\samples"]}}' > ./cfg/nodecg.json
 
             # nodecg-io needs to be cloned after NodeCG setup because the nodecg-cli requires an empty directory.
             - uses: actions/checkout@v2
@@ -82,7 +93,12 @@ jobs:
                   path: "nodecg-io"
 
             - name: Install system dependencies
+              if: matrix.os == 'ubuntu-latest'
               run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+
+            - name: Install node native development files
+              shell: bash
+              run: npx node-gyp install
 
             - name: Install nodejs dependencies
               run: npm ci
@@ -93,6 +109,7 @@ jobs:
               working-directory: ./nodecg-io
 
             - name: Run test
+              shell: bash
               run: node .scripts/ci-nodecg-integration.mjs
               working-directory: ./nodecg-io
 
