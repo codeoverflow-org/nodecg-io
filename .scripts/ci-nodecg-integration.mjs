@@ -24,7 +24,7 @@ if (!nodecgiodir) {
  * }
  * ~~~
  */
-const npm = JSON.parse(child_process.execSync("npm ls --json"));
+const npm = JSON.parse(child_process.execSync("npm ls --json").toString());
 
 // Filter out any dependencies which are not resolved locally in samples or services because the other npm packages will not be loaded by NodeCG
 let bundles = Object.entries(npm.dependencies)
@@ -33,7 +33,8 @@ let bundles = Object.entries(npm.dependencies)
             (j) =>
                 j[0] === "resolved" &&
                 (`${j[1]}`.startsWith("file:../samples/") ||
-                    `${j[1]}`.startsWith("file:../services/" || `${j[1]}` === "file:../nodecg-io-core")),
+                    `${j[1]}`.startsWith("file:../services/") ||
+                    `${j[1]}` === "file:../nodecg-io-core"),
         ),
     )
     .map((v) => v[0]);
@@ -44,31 +45,47 @@ console.log("");
 console.log("NodeCG sterr");
 console.log("--------------------------------------------------------------------------------");
 
-// expects a NodeCG folder be the parent of the cwd needs timeout
-const log = child_process
-    .execSync("timeout --preserve-status 15s node " + cwd.dir + path.sep + "index.js", { cwd: cwd.dir })
-    .toString("utf8");
+// Spawn a process that runs NodeCG
+const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir });
 
-const lines = log.split("\n");
+// Store stdout in lines and stream stderr to stderr of this process
+const lines = [];
+child.stdout.on("data", (data) => lines.push(data.toString()));
+child.stderr.on("data", (data) => console.error(data.toString()));
 
-// Try to find each bundle in the logs.
-const missing = bundles.filter(
-    /*Using endsWith here to remove possible ansi styling of "[info]" caused by ModeCG's logger when run locally*/
-    (i) => !lines.some((j) => j.endsWith("[nodecg/lib/server/extensions] Mounted " + i + " extension")),
-);
+// Let NodeCG run for 15 seconds to load all bundles
+setTimeout(() => {
+    // We don't want to leave NodeCG running, if it was loaded successfully.
+    // If it has errored, it will not be running anymore.
+    if (child.pid) {
+        child.kill();
+    }
 
-// Fail the run if there are missing bundles.
-if (missing.length > 0) {
-    // Only log stout if the run has failed because otherwise its unimportant and everything important should be in stderr
-    console.log("");
-    console.log("NodeCG stout");
-    console.log("--------------------------------------------------------------------------------");
-    console.log(log);
+    // Check exit code for failure
+    const exitCode = child.exitCode;
+    if (exitCode !== null && exitCode !== 0) {
+        throw new Error(`NodeCG exited with code ${exitCode}`);
+    }
 
-    console.log("");
-    console.log("Missing Bundles");
-    console.log("--------------------------------------------------------------------------------");
-    console.log(missing);
+    // Try to find each bundle in the logs.
+    const missing = bundles.filter(
+        /*Using endsWith here to remove possible ansi styling of "[info]" caused by ModeCG's logger when run locally*/
+        (i) => !lines.some((j) => j.includes("[nodecg/lib/server/extensions] Mounted " + i + " extension")),
+    );
 
-    throw new Error(`NodeCG did not mount ${missing.length} bundle(s).`);
-}
+    // Fail the run if there are missing bundles.
+    if (missing.length > 0) {
+        // Only log stout if the run has failed because otherwise its unimportant and everything important should be in stderr
+        console.log("");
+        console.log("NodeCG stout");
+        console.log("--------------------------------------------------------------------------------");
+        console.log(lines.join(""));
+
+        console.log("");
+        console.log("Missing Bundles");
+        console.log("--------------------------------------------------------------------------------");
+        console.log(missing);
+
+        throw new Error(`NodeCG did not mount ${missing.length} bundle(s).`);
+    }
+}, 15000);
