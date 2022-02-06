@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-android",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Allows to connect to an android device via adb.",
     "homepage": "https://nodecg.io/samples/android",
     "author": {

@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-twitch-addons",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Support for the API's of BetterTTV and FrankerFaceZ",
     "homepage": "https://nodecg.io/samples/twitch-addons",
     "author": {

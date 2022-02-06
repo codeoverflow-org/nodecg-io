@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-serial",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Exposes serial deivces to nodecg-io",
     "homepage": "https://nodecg.io/samples/serial",
     "author": {

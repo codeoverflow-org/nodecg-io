@@ -1,6 +1,6 @@
 {
     "name": "nodecg-io-websocket-client",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Allows to connect to a external WebSocket server.",
     "homepage": "https://nodecg.io/samples/websocket-client/",
     "author": {
