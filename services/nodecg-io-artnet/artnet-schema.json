@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "host": {
+            "type": "string",
+            "description": "The brodcast host, default '0.0.0.0'",
+            "default": "0.0.0.0"
+        }
+    },
+    "required": []
+}

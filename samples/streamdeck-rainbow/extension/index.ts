@@ -32,7 +32,7 @@ module.exports = function (nodecg: NodeCG) {
 
             timeout = setInterval(() => {
                 try {
-                    deck.fillColor(
+                    deck.fillKeyColor(
                         i % deck.NUM_KEYS,
                         colors[i % colors.length]?.[0] ?? 0,
                         colors[i % colors.length]?.[1] ?? 0,

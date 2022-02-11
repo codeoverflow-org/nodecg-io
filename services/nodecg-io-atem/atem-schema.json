@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "address": {
+            "type": "string",
+            "description": "An IP address to the Atem server"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port of the Atem server"
+        },
+        "debugBuffers": {
+            "type": "boolean",
+            "description": "Enables debug buffers"
+        },
+        "disableMultithreaded": {
+            "type": "boolean",
+            "description": "Disable mulithreaded tasks"
+        },
+        "childProcessTimeout": {
+            "type": "number",
+            "description": "Set child proccess timeout"
+        }
+    },
+    "required": ["address"]
+}

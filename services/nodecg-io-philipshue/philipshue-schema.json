@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "ipAddr": {
+            "type": "string",
+            "description": "The IP address of the bridge that you want to connect to"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port that you want to use for connecting to your Hue bridge"
+        },
+        "apiKey": {
+            "type": "string",
+            "description": "The api key you want to use for the client/that will be generated on first startup"
+        },
+        "username": {
+            "type": "string",
+            "description": "The username that you want to use/that will be generated on first startup"
+        }
+    },
+    "required": ["ipAddr"]
+}

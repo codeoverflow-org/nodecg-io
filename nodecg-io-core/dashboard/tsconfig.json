@@ -1,11 +1,14 @@
 {
+    "extends": "nodecg-io-tsconfig",
     "compilerOptions": {
         "target": "ES2015",
-
         "lib": ["ES2015", "dom"],
         "module": "ES2015",
-        "sourceMap": true,
-        "declaration": false
+        "noEmit": true
     },
-    "extends": "../../tsconfig.common.json"
+    "references": [
+        {
+            "path": "../"
+        }
+    ]
 }

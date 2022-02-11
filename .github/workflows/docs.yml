@@ -1,41 +1,44 @@
-
 name: Update docs
 
 on:
-  push:
-    branches:
-    - master
-    - "release/**"
+    push:
+        branches:
+            - main
+            - "release/**"
+    schedule:
+        # https://crontab.guru/#3_21_*_*_6
+        - cron: "3 21 * * 6"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    if: startsWith(github.repository, 'codeoverflow-org') # don't run this in forks
-    steps:
-    
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8.3
-    
-    - uses: actions/checkout@v2
-    
-    - name: Checkout docs
-      uses: actions/checkout@v2
-      with:
-        repository: codeoverflow-org/nodecg-io-docs
-        path: docs
-        ssh-key: ${{ secrets.DOCS_SSH_KEY }}
-        ref: ${{ github.ref }}
+    build:
+        runs-on: ubuntu-latest
+        # don't run this in forks, because contributors maybe don't have forked the docs repository
+        # also don't run when this run is caused by dependabot because then we won't have access to the ssh key secret
+        if: startsWith(github.repository, 'codeoverflow-org') && github.actor != 'dependabot[bot]'
+        steps:
+            - name: Setup Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.8.3
 
-    - name: Build docs
-      run: python .scripts/build-docs.py
+            - uses: actions/checkout@v2
 
-    - name: GitHub Push
-      run: |
-        cd docs
-        git config --global user.email "<>"
-        git config --global user.name "codeoverflow-org"
-        git add .
-        git diff-index --quiet HEAD || git commit --message "Update generated documentation (codeoverflow-org/nodecg-io@${{ github.sha }})"
-        git push origin "${GITHUB_REF#refs/heads/}"
+            - name: Checkout docs
+              uses: actions/checkout@v2
+              with:
+                  repository: codeoverflow-org/nodecg-io-docs
+                  path: docs
+                  ssh-key: ${{ secrets.DOCS_SSH_KEY }}
+                  ref: ${{ github.ref }}
+
+            - name: Build docs
+              run: python .scripts/build-docs.py
+
+            - name: GitHub Push
+              run: |
+                  cd docs
+                  git config --global user.email "<>"
+                  git config --global user.name "codeoverflow-org"
+                  git add .
+                  git diff-index --quiet HEAD || git commit --message "Update generated documentation (codeoverflow-org/nodecg-io@${{ github.sha }})"
+                  git push origin "${GITHUB_REF#refs/heads/}"

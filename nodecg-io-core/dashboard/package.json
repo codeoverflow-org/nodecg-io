@@ -1,22 +1,33 @@
 {
     "name": "nodecg-io-dashboard",
-    "version": "0.2.0",
+    "version": "0.3.0",
+    "description": "Dashboard that is used to manage your nodecg-io configuration.",
+    "homepage": "https://nodecg.io/RELEASE",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "https://github.com/codeoverflow-org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "nodecg-io-core/dashboard"
+    },
     "scripts": {
-        "build": "webpack",
-        "watch": "webpack --watch"
+        "clean": "node esbuild.config.js --clean",
+        "build": "node esbuild.config.js",
+        "rebuild": "node esbuild.config.js --rebuild",
+        "watch": "node esbuild.config.js --watch"
     },
     "devDependencies": {
-        "clean-webpack-plugin": "^3.0.0",
-        "ts-loader": "^9.1.2",
-        "typescript": "^4.2.4",
-        "webpack": "^5.36.2",
-        "webpack-cli": "^4.7.0"
+        "esbuild": "^0.14.14",
+        "monaco-editor": "^0.31.1",
+        "typescript": "^4.5.5"
     },
     "dependencies": {
-        "crypto-js": "^4.0.0",
-        "monaco-editor": "^0.23.0",
-        "nodecg-types": "^1.8.2",
-        "nodecg-io-core": "^0.2.0"
+        "crypto-js": "^4.1.1",
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-types": "^1.8.3",
+        "events": "^3.3.0"
     },
     "license": "MIT"
 }

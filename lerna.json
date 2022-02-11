@@ -1,4 +1,0 @@
-{
-    "packages": ["nodecg-io-*", "nodecg-io-core/dashboard", "samples/*", "utils/*"],
-    "version": "0.2.0"
-}

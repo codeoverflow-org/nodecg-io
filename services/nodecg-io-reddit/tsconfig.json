@@ -1,0 +1,13 @@
+{
+    "extends": "nodecg-io-tsconfig",
+    "compilerOptions": {
+        // reddit-ts uses unchecked index accesses and we need to disable it here
+        // to be able to use reddit-ts.
+        "noUncheckedIndexedAccess": false
+    },
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        }
+    ]
+}

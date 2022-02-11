@@ -1,0 +1,357 @@
+/* - GLOBAL VARIABLES - */
+
+:root {
+    --clr-base-300: hsl(0, 0%, 17%);
+    --clr-base-400: hsl(0, 0%, 22%);
+    --clr-base-500: hsl(0, 0%, 25%);
+    --clr-base-600: hsl(0, 0%, 27%);
+
+    --clr-main-300: hsl(180, 19%, 30%);
+    --clr-main-400: hsl(180, 19%, 40%);
+    --clr-main-500: hsl(180, 19%, 50%);
+    --clr-main-600: hsl(180, 19%, 60%);
+
+    --clr-accent-1-300: hsl(212, 23%, 25%);
+    --clr-accent-1-400: hsl(212, 23%, 35%);
+    --clr-accent-1-500: hsl(212, 23%, 55%);
+    --clr-accent-1-600: hsl(212, 23%, 65%);
+
+    --clr-accent-2-300: hsl(196, 22%, 28%);
+    --clr-accent-2-400: hsl(196, 22%, 38%);
+    --clr-accent-2-500: hsl(196, 22%, 58%);
+    --clr-accent-2-600: hsl(196, 22%, 68%);
+
+    --clr-accent-3-300: hsl(180, 19%, 22%);
+    --clr-accent-3-400: hsl(180, 19%, 32%);
+    --clr-accent-3-500: hsl(180, 19%, 52%);
+    --clr-accent-3-600: hsl(180, 19%, 62%);
+
+    --clr-accent-4-300: hsl(162, 22%, 28%);
+    --clr-accent-4-400: hsl(162, 22%, 38%);
+    --clr-accent-4-500: hsl(162, 22%, 58%);
+    --clr-accent-4-600: hsl(162, 22%, 68%);
+
+    --clr-accent-5-300: hsl(146, 23%, 25%);
+    --clr-accent-5-400: hsl(146, 23%, 35%);
+    --clr-accent-5-500: hsl(146, 23%, 55%);
+    --clr-accent-5-600: hsl(146, 23%, 65%);
+
+    --ff-accent: "Podkova", serif;
+    --ff-base: "Open Sans", sans-serif;
+
+    --fs-300: 0.75rem;
+    --fs-400: 1rem;
+    --fs-500: 2rem;
+
+    --fw-400: 400;
+    --fw-700: 700;
+
+    --shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.1);
+    --border-radius: 0.75rem;
+    --container-shadow: 0 1rem 0.5rem -0.5rem rgba(0, 0, 0, 0.52);
+
+    --container-border: 1px dashed var(--clr-base-500);
+    --button-border: 1px solid var(--clr-main-400);
+
+    --spacing: 1rem;
+}
+
+/* -- RESET -- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* - UTILITIES - */
+
+.smallInfo {
+    font-size: small;
+}
+
+.flow-content > * + * {
+    margin-top: var(--flow-space, var(--spacing));
+}
+
+.flow-content--large {
+    --flow-space: 3rem;
+}
+
+.flex {
+    display: flex;
+    gap: var(--spacing);
+}
+
+/* - LAYOUT - */
+body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.container {
+    flex-basis: 200px;
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--clr-base-300);
+    border: var(--container-border);
+    box-shadow: var(--container-shadow);
+}
+
+.container__header {
+    background-color: var(--clr-base-400);
+    border-bottom: var(--container-border);
+    color: var(--clr-main-400);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.container__title {
+    font-weight: bold;
+}
+
+.container__event {
+    font-style: italic;
+}
+
+.container__body {
+    padding: 1rem;
+    white-space: nowrap;
+}
+
+.container__body--centered {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing);
+}
+
+/* - STYLES - */
+button,
+input,
+textarea {
+    background-color: var(--bg-clr, var(--clr-base-600));
+    border: var(--button-border);
+    border-radius: var(--border-radius);
+    font-family: var(--ff-base);
+
+    color: white;
+    font-size: large;
+    padding: 0.5rem 1rem;
+}
+
+button:active {
+    background-color: var(--bg-clr-active, rgb(90, 90, 90));
+}
+
+/* the benefits of custom vars */
+.button1 {
+    --bg-clr: var(--clr-accent-1-500);
+    --bg-clr-active: var(--clr-accent-1-400);
+}
+
+.button2 {
+    --bg-clr: var(--clr-accent-2-500);
+    --bg-clr-active: var(--clr-accent-2-400);
+}
+
+.button3 {
+    --bg-clr: var(--clr-accent-3-500);
+    --bg-clr-active: var(--clr-accent-3-400);
+}
+
+.button4 {
+    --bg-clr: var(--clr-accent-4-500);
+    --bg-clr-active: var(--clr-accent-4-400);
+}
+
+.button5 {
+    --bg-clr: var(--clr-accent-5-500);
+    --bg-clr-active: var(--clr-accent-5-400);
+}
+
+.cta {
+    background: linear-gradient(var(--clr-main-300), var(--clr-main-600));
+    color: var(--clr-base-500);
+    font-weight: bold;
+    transition: 0.6s;
+}
+
+.cta:hover {
+    color: var(--clr-base-300);
+}
+
+/* - INDIVIDUIAL CARDS - */
+
+#event_click button,
+#event_bool button {
+    height: 5rem;
+    width: 5rem;
+}
+
+input[type="number"] {
+    width: 80px;
+}
+
+/*src: https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/ */
+input[type="range"] {
+    width: 75%;
+    margin-right: 20px;
+    vertical-align: middle;
+    -webkit-appearance: none;
+}
+
+input[type="range"]:focus {
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: var(--clr-main-600);
+    border-radius: 25px;
+    margin: 6px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: var(--clr-main-300);
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -6px;
+}
+
+input[type="range"]:focus::-webkit-slider-runnable-track {
+    background: var(--clr-main-500);
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: var(--clr-main-600);
+    border-radius: 25px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    height: 20px;
+    width: 39px;
+    border-radius: 7px;
+    background: var(--clr-main-300);
+    cursor: pointer;
+}
+
+input[type="range"]::-ms-track {
+    width: 100%;
+    height: 12.8px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: transparent;
+    border-color: transparent;
+    border-width: 39px 0;
+    color: transparent;
+}
+
+input[type="range"]::-ms-fill-lower {
+    background: var(--clr-main-600);
+    border-radius: 50px;
+}
+
+input[type="range"]::-ms-fill-upper {
+    background: var(--clr-main-600);
+    border-radius: 50px;
+}
+
+input[type="range"]::-ms-thumb {
+    height: 20px;
+    width: 39px;
+    border-radius: 7px;
+    background: var(--clr-main-300);
+    cursor: pointer;
+}
+
+input[type="range"]:focus::-ms-fill-lower {
+    background: var(--clr-main-600);
+}
+
+input[type="range"]:focus::-ms-fill-upper {
+    background: var(--clr-main-600);
+}
+
+input[type="color"] {
+    width: 80px;
+    height: 80px;
+}
+
+input[type="date"],
+input[type="datetime-local"] {
+    width: 100%;
+}
+
+#event_text .container__body input,
+#event_text .container__body textarea {
+    flex-grow: 1;
+}
+
+#event_list .container__body textarea {
+    flex-grow: 1;
+}
+
+.area {
+    resize: none;
+    height: 100px;
+}
+
+.lists {
+    resize: none;
+    height: 120px;
+}
+
+.flex-fill {
+    flex: 1;
+}
+
+#instanceMonaco {
+    height: 300px;
+    width: 500px;
+}

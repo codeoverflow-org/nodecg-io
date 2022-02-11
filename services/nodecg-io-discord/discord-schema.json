@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "botToken": {
+            "type": "string",
+            "description": "The token of your bot"
+        },
+        "intents": {
+            "type": "array",
+            "description": "The discord intents your bot needs",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "GUILDS",
+                    "GUILD_MEMBERS",
+                    "GUILD_BANS",
+                    "GUILD_EMOJIS_AND_STICKERS",
+                    "GUILD_INTEGRATIONS",
+                    "GUILD_WEBHOOKS",
+                    "GUILD_INVITES",
+                    "GUILD_VOICE_STATES",
+                    "GUILD_PRESENCES",
+                    "GUILD_MESSAGES",
+                    "GUILD_MESSAGE_REACTIONS",
+                    "GUILD_MESSAGE_TYPING",
+                    "DIRECT_MESSAGES",
+                    "DIRECT_MESSAGE_REACTIONS",
+                    "DIRECT_MESSAGE_TYPING"
+                ]
+            }
+        }
+    },
+    "required": ["botToken"]
+}

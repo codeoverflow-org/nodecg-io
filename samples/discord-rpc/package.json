@@ -1,0 +1,19 @@
+{
+    "name": "discord-rpc",
+    "version": "0.3.0",
+    "private": true,
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-discord-rpc": "0.3.0"
+        }
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@types/node": "^17.0.15",
+        "nodecg-types": "^1.8.3",
+        "nodecg-io-core": "^0.3.0",
+        "typescript": "^4.5.5",
+        "nodecg-io-discord-rpc": "0.3.0"
+    }
+}

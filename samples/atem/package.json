@@ -1,0 +1,29 @@
+{
+    "name": "atem",
+    "homepage": "https://nodecg.io/RELEASE/samples/atem",
+    "author": {
+        "name": "Extrem Techniker",
+        "url": "https://github.com/ExtremTechniker"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "samples/atem"
+    },
+    "version": "0.3.0",
+    "private": true,
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-atem": "^0.3.0"
+        }
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@types/node": "^17.0.15",
+        "nodecg-types": "^1.8.3",
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-io-atem": "^0.3.0",
+        "typescript": "^4.5.5"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "files": [],
+    "compilerOptions": {
+        "composite": true
+    },
+    "references": [
+        {
+            "path": "./extension"
+        },
+        {
+            "path": "./dashboard"
+        }
+    ]
+}

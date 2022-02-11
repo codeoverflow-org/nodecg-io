@@ -1,0 +1,44 @@
+{
+    "name": "nodecg-io-websocket-server",
+    "version": "0.3.0",
+    "description": "Allows to create a custom WebSocket server.",
+    "homepage": "https://nodecg.io/RELEASE/samples/websocket-server/",
+    "author": {
+        "name": "derNiklaas",
+        "url": "https://github.com/derNiklaas"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-websocket-server"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.3.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^17.0.15",
+        "nodecg-types": "^1.8.3",
+        "typescript": "^4.5.5",
+        "nodecg-io-tsconfig": "^1.0.0"
+    },
+    "dependencies": {
+        "@types/ws": "^8.2.2",
+        "nodecg-io-core": "^0.3.0",
+        "ws": "^8.4.2"
+    }
+}

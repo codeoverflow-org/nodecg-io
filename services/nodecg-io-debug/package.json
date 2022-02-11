@@ -1,0 +1,60 @@
+{
+    "name": "nodecg-io-debug",
+    "version": "0.3.0",
+    "description": "Debug helper service that helps to easily trigger your code for debugging purposes.",
+    "homepage": "https://nodecg.io/RELEASE/samples/debug",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "https://github.com/codeoverflow-org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-debug"
+    },
+    "scripts": {
+        "clean": "node esbuild.config.js --clean",
+        "build": "node esbuild.config.js",
+        "rebuild": "node esbuild.config.js --rebuild",
+        "watch": "node esbuild.config.js --watch"
+    },
+    "files": [
+        "dashboard",
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.3.0"
+        },
+        "dashboardPanels": [
+            {
+                "name": "nodecg-io-debug-helper",
+                "title": "Debug Helper",
+                "file": "debug-helper.html",
+                "fullbleed": true,
+                "headerColor": "#527878"
+            }
+        ]
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^17.0.15",
+        "esbuild": "^0.14.14",
+        "nodecg-io-tsconfig": "^1.0.0",
+        "monaco-editor": "^0.31.1",
+        "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "nodecg-io-core": "^0.3.0",
+        "nodecg-types": "^1.8.3"
+    }
+}

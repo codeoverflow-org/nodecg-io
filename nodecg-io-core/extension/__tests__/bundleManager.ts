@@ -41,7 +41,7 @@ describe("BundleManager", () => {
     });
 
     /**
-     * A util function for all tests that require a registered test service but don't test the registerServiceDependency function.
+     * A utility function for all tests that requires a registered test service but don't test the registerServiceDependency function.
      * Automatically removes call to changeCb so that these tests don't need to worry about the call caused by registerServiceDependency.
      * @returns the service provider of the service dependency
      */
@@ -71,7 +71,7 @@ describe("BundleManager", () => {
         });
 
         test("should error if bundle has service dependencies but not for this service", () => {
-            // Here testBundle depends on testService and we try to set a instance for otherService
+            // Here testBundle depends on testService, and we try to set an instance for otherService
             // on which testBundle does not depend upon which should cause an error.
             registerTestServiceDep();
             const res = bundleManager.setServiceDependency(testBundle, "otherInstance", {

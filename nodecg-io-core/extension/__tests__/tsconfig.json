@@ -1,6 +1,7 @@
 {
-    "extends": "../../../tsconfig.common.json",
+    "extends": "nodecg-io-tsconfig",
     "compilerOptions": {
-        "noEmit": true
+        "noEmit": true,
+        "composite": false
     }
 }

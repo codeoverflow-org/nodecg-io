@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "clientId": {
+            "type": "string",
+            "description": "The clientId of your registered Spotify application. Please visit: https://developer.spotify.com/dashboard/applications"
+        },
+        "clientSecret": {
+            "type": "string",
+            "description": "The client secret of your registered Spotify application. Please visit: https://developer.spotify.com/dashboard/applications"
+        },
+        "scopes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "A list of scopes. More information: https://developer.spotify.com/documentation/general/guides/scopes/"
+        },
+        "refreshToken": {
+            "type": "string",
+            "description": "A refresh token to get and refresh access tokens. Gets set by nodecg-io. You don't need to set this!"
+        },
+        "httpsRedirect": {
+            "type": "boolean",
+            "description": "Should the OAuth redirect URL use the https protocol"
+        }
+    },
+    "required": ["clientId", "clientSecret", "scopes"]
+}

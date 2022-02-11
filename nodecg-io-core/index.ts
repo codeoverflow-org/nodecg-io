@@ -6,3 +6,4 @@ export type { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./e
 export * from "./extension/utils/result";
 export * from "./extension/serviceBundle";
 export * from "./extension/serviceProvider";
+export * from "./extension/utils/logger";

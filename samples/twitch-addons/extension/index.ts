@@ -9,12 +9,15 @@ module.exports = function (nodecg: NodeCG) {
 
     twitchAddons?.onAvailable(async (client) => {
         nodecg.log.info("Twitch-addons service available.");
-        const emotes = await client.getEmoteCollection("#derniklaas", false);
+        const emotes = await client.getEmoteCollection("#derniklaas", { includeGlobal: false });
         const emoteNames = client.getEmoteNames(emotes);
-        const global = await client.getEmoteCollection("#derniklaas", true);
+        const global = await client.getEmoteCollection("#derniklaas", { includeGlobal: true });
         const globalNames = client.getEmoteNames(global);
+        const stv = await client.getEmoteCollection("#derniklaas", { includeGlobal: true, include7tv: true });
+        const stvNames = client.getEmoteNames(stv);
         nodecg.log.info(`BTTV & FFZ emotes on the twitch channel #derniklaas (without global emotes): ${emoteNames}`);
         nodecg.log.info(`BTTV & FFZ emotes on the twitch channel #derniklaas (with global emotes): ${globalNames}`);
+        nodecg.log.info(`BTTV, FFZ, & 7TV emotes on the twitch channel #derniklaas (with global emotes): ${stvNames}`);
     });
 
     twitchAddons?.onUnavailable(() => {

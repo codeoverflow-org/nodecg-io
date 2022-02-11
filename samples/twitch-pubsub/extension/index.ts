@@ -19,7 +19,7 @@ module.exports = function (nodecg: NodeCG) {
             nodecg.log.info(`${message.userName} just unlocked the ${message.badgeTier} Badge`);
         });
         client.onRedemption((message) => {
-            nodecg.log.info(`${message.userDisplayName} redeemed ${message.rewardName} (${message.message})`);
+            nodecg.log.info(`${message.userDisplayName} redeemed ${message.rewardTitle} (${message.message})`);
         });
     });
 

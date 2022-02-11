@@ -1,0 +1,9 @@
+{
+    "name": "services",
+    "version": "0.3.0",
+    "description": "",
+    "private": true,
+    "nodecg": {
+        "compatibleRange": "^1.1.1"
+    }
+}

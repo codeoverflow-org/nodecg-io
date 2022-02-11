@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "address": {
+            "type": "string",
+            "description": "The address of the server"
+        },
+        "password": {
+            "type": "string",
+            "description": "The password to connect to the server"
+        },
+        "username": {
+            "type": "string",
+            "description": "The username to connect to the server"
+        },
+        "topics": {
+            "type": "array",
+            "description": "Array of topic you want to subscribe to"
+        }
+    },
+    "required": ["address", "topics"]
+}

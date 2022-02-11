@@ -47,7 +47,7 @@ describe("ServiceProvider", () => {
 
 describe("requireService", () => {
     test("should log error and return undefined if core not loaded", () => {
-        // MockNodeCG by default has extensions set to a empty object, meaning core was not loaded by nodecg
+        // MockNodeCG by default has extensions set to a empty object, meaning core was not loaded by NodeCG
         const nodecg = new MockNodeCG();
         const result = requireService(nodecg, "test");
 

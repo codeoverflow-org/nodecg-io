@@ -1,8 +1,0 @@
-{
-    "extends": "../tsconfig.common.json",
-    "compilerOptions": {
-        // reddit-ts uses unchecked index accesses and we need to disable it here
-        // to be able to use reddit-ts.
-        "noUncheckedIndexedAccess": false
-    }
-}

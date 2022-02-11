@@ -1,0 +1,45 @@
+{
+    "name": "nodecg-io-spotify",
+    "version": "0.3.0",
+    "description": "Allows to connect to your personal Spotify account. This enables you to e.g. control music playback or get current song information. ",
+    "homepage": "https://nodecg.io/RELEASE",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "http://codeoverflow.org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-spotify"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle"
+    ],
+    "nodecg": {
+        "compatibleRange": "^1.1.1",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.3.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^17.0.15",
+        "nodecg-types": "^1.8.3",
+        "typescript": "^4.5.5",
+        "nodecg-io-tsconfig": "^1.0.0"
+    },
+    "dependencies": {
+        "@types/spotify-web-api-node": "^5.0.7",
+        "nodecg-io-core": "^0.3.0",
+        "open": "^8.4.0",
+        "spotify-web-api-node": "^5.0.2"
+    }
+}

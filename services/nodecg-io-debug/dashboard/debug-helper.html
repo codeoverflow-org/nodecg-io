@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="debug-helper.css" />
+        <link rel="stylesheet" href="dist/debug-helper.bundle.css" />
+    </head>
+
+    <body>
+        <!-- Clicks -->
+        <div class="container" id="event_click">
+            <div class="container__header">
+                <span class="container__title">Clicks</span>
+                <span class="container__event">onClick, onclick[1-5]</span>
+            </div>
+            <div class="container__body">
+                <button id="click_button1" class="button1">1</button>
+                <button id="click_button2" class="button2">2</button>
+                <button id="click_button3" class="button3">3</button>
+                <button id="click_button4" class="button4">4</button>
+                <button id="click_button5" class="button5">5</button>
+            </div>
+        </div>
+
+        <!-- Numbers -->
+        <div class="container" id="event_number">
+            <div class="container__header">
+                <span class="container__title">Numbers</span>
+                <span class="container__event">onNumber</span>
+            </div>
+            <div class="container__body flow-content">
+                <div class="buttons">
+                    <button id="number_button1" class="button1">1</button>
+                    <button id="number_button10" class="button2">10</button>
+                    <button id="number_button100" class="button3">100</button>
+                    <button id="number_button1000" class="button4">1000</button>
+                    <button id="number_button10000" class="button5">10000</button>
+                </div>
+
+                <div>
+                    <input type="number" id="number_input1" value="1" />
+                    <button id="number_input1_send" class="cta">Send</button>
+                </div>
+                <div>
+                    <input type="number" id="number_input2" value="-1" />
+                    <span class="smallInfo">(number sent automatically)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ranges -->
+        <div class="container" id="event_range">
+            <div class="container__header">
+                <span class="container__title">Ranges</span>
+                <span class="container__event">onRange(0to100|0to1|M1to1)</span>
+            </div>
+            <div class="container__body flow-content">
+                <div>
+                    <input type="range" min="0" max="100" step="1" id="range_0to100" />
+                    <span id="range_0to100_label">50</span>
+                </div>
+
+                <div>
+                    <input type="range" min="0" max="1" step="0.001" id="range_0to1" />
+                    <span id="range_0to1_label">0.5</span>
+                </div>
+                <div>
+                    <input type="range" min="-1" max="1" step="0.001" id="range_M1to1" />
+                    <span id="range_M1to1_label">0</span>
+                </div>
+            </div>
+            <script>
+                function bindLabel(range) {
+                    document.querySelector("#range_" + range).addEventListener("input", (e) => {
+                        document.querySelector("#range_" + range + "_label").innerHTML = e.target.value;
+                    });
+                }
+                bindLabel("0to100");
+                bindLabel("0to1");
+                bindLabel("M1to1");
+            </script>
+        </div>
+
+        <!-- Colors -->
+        <div class="container" id="event_color">
+            <div class="container__header">
+                <span class="container__title">Colors</span>
+                <span class="container__event">onColor</span>
+            </div>
+            <div class="container__body container__body--centered">
+                <input type="color" id="color_color" />
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div class="container" id="event_date">
+            <div class="container__header">
+                <span class="container__title">Date</span>
+                <span class="container__event">onDate</span>
+            </div>
+            <div class="container__body flow-content">
+                <div>
+                    <input type="date" id="date_date" />
+                </div>
+                <div>
+                    <input type="datetime-local" id="date_datetime" value="2069-04-20T13:37" />
+                </div>
+            </div>
+            <script>
+                document.querySelector("#date_date").valueAsDate = new Date();
+            </script>
+        </div>
+
+        <!-- Booleans -->
+        <div class="container" id="event_bool">
+            <div class="container__header">
+                <span class="container__title">Booleans</span>
+                <span class="container__event">onBool</span>
+            </div>
+            <div class="container__body container__body--centered">
+                <button id="bool_false" class="button1">false</button>
+                <button id="bool_true" class="button5">true</button>
+            </div>
+        </div>
+
+        <!-- Strings -->
+        <div class="container" id="event_text">
+            <div class="container__header">
+                <span class="container__title">Strings</span>
+                <span class="container__event">onText</span>
+            </div>
+            <div class="container__body flow-content">
+                <div class="flex">
+                    <input type="text" id="text_oneline" />
+                    <button id="text_oneline_send">Send</button>
+                </div>
+                <div class="flex">
+                    <textarea id="text_multiline" class="area"></textarea>
+                    <button id="text_multiline_send">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lists -->
+        <div class="container" id="event_list">
+            <div class="container__header">
+                <span class="container__title">Lists</span>
+                <span class="container__event">onList</span>
+            </div>
+            <div class="container__body flow-content">
+                <div class="flex">
+                    <textarea id="list_list" class="lists"></textarea>
+                    <button id="list_list_send">Send</button>
+                </div>
+                <div class="smallInfo">(List entries are comma separated)</div>
+            </div>
+        </div>
+
+        <!-- JSON -->
+        <div class="container" id="event_json">
+            <div class="container__header">
+                <span class="container__title">JSON</span>
+                <span class="container__event">onJSON</span>
+            </div>
+            <div class="container__body flow-content">
+                <div id="instanceMonaco"></div>
+                <div>
+                    <button id="json_send">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="dist/debug-helper.bundle.js"></script>
+    </body>
+</html>

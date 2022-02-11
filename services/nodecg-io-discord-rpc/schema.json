@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "clientId": {
+            "type": "string",
+            "description": "The client id of the discord app."
+        },
+        "clientSecret": {
+            "type": "string",
+            "description": "The client secret of the discord app."
+        },
+        "accessToken": {
+            "type": "string",
+            "description": "The client access token."
+        },
+        "refreshToken": {
+            "type": "string",
+            "description": "The client refresh token."
+        },
+        "redirectUrl": {
+            "type": "string",
+            "description": "The client redirect URL."
+        },
+        "expireTime": {
+            "type": "number",
+            "description": "Timestamp when the access token expires."
+        }
+    },
+    "required": ["clientId", "clientSecret"]
+}

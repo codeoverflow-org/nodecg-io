@@ -3,8 +3,8 @@
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
 [![Bugs](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/bug?label=Bugs&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/bug)
 [![Pull Requests](https://img.shields.io/github/issues-pr/codeoverflow-org/nodecg-io?label=Pull%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/pulls)
-[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=33&color=blue&style=flat-square)](https://nodecg.io/RELEASE/services/)
-[![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/master/LICENSE)
+[![Services](https://img.shields.io/static/v1?label=Services%20implemented&message=39&color=blue&style=flat-square)](https://nodecg.io/RELEASE/services/)
+[![License](https://img.shields.io/github/license/codeoverflow-org/nodecg-io?label=License&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/blob/main/LICENSE)
 [![Discord](https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/GEJzxBGRu6)
 
 **A NodeCG-bundle which implements Social Media API's in the NodeCG framework**
@@ -15,18 +15,25 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 
 ## Implemented Services and Interfaces
 
+<details>
+  <summary>Click to see more!</summary>
+
 - AutoHotkey
 - Android (using adb)
+- Art-Net
+- Atem
 - CurseForge
 - DBus
 - Discord
+- Discord RPC
 - Elgato lights
 - GitHub
-- Google Apis
+- Google APIs
 - IntelliJ IDEs
 - IRC (Internet Relay Chat)
 - MIDI Input
 - MIDI Output
+- MQTT
 - Nanoleafs
 - OBS
 - Philips Hue
@@ -35,14 +42,15 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - sACN Receiver
 - sACN Sender
 - Serial Port (Arduino)
-- Slack WebAPI
+- [Shlink](https://shlink.io/)
+- Slack Web API
 - Spotify
 - SQL (using [knex](https://knexjs.org/))
 - Elgato Stream Deck
 - StreamElements
 - Telegram
 - TIANE
-- Twitch Addons
+- Twitch Add-ons
 - Twitch API
 - Twitch Chat
 - Twitch PubSub
@@ -50,6 +58,8 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - WebSocket Client
 - WebSocket Server
 - Xdotool
+
+</details>
 
 ## How to use nodecg-io
 
@@ -64,7 +74,7 @@ If you want to contribute to this bundle you can implement one of those services
 
 > <img src="https://avatars.githubusercontent.com/daniel0611"   height="50px" title="Daniel Huber"/> | [`@daniel0611`](https://github.com/daniel0611)
 
-> <img src="https://avatars.githubusercontent.com/joblo2213"    height="50px" title="Jonas"/> | [`@joblo2213`](https://github.com/joblo2213)
+> <img src="https://avatars.githubusercontent.com/J0B10"    height="50px" title="Jonas"/> | [`@J0B10`](https://github.com/J0B10)
 
 > <img src="https://avatars.githubusercontent.com/sebinside"    height="50px" title="Sebastian"/> | [`@sebinside`](https://github.com/sebinside)
 
@@ -76,10 +86,11 @@ P.S.: If you have some spare time to help out around here, we would be delighted
 
 ```
 nodecg-io/
-+--docs/                         Documentation repo (you have to clone this separately)
-+--nodecg-io-core/               Core framework
-   +--dashboard/                    GUI
-+--nodecg-io-<service name>/     Service implementations
-+--samples/                      Samplecode that shows how each service is used
-+--utils/                        Utility packages for shared code between services
++--docs/                          Documentation repo (you have to clone this separately)
++--nodecg-io-core/                Core framework
+   +--dashboard/                  GUI
++--services/
+   +--nodecg-io-<service name>/   Service implementations
++--samples/                       Samplecode that shows how each service is used
++--utils/                         Utility packages for shared code between services
 ```

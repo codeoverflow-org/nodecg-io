@@ -5,7 +5,7 @@ import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import Ajv from "ajv";
 import { EventEmitter } from "events";
-
+import { Logger } from "./utils/logger";
 /**
  * Manages instances of services and their configs/clients.
  */
@@ -43,7 +43,7 @@ export class InstanceManager extends EventEmitter {
 
     /**
      * Creates a service instance of the passed service.
-     * @param serviceType the type of the service of which a instance should be created
+     * @param serviceType the type of the service of which an instance should be created
      * @param instanceName how the instance should be named
      * @return void if everything went fine and a string describing the issue if not
      */
@@ -52,7 +52,7 @@ export class InstanceManager extends EventEmitter {
             return error("Instance name must not be empty.");
         }
 
-        // Check if a instance with the same name already exists.
+        // Check if an instance with the same name already exists.
         if (this.serviceInstances[instanceName] !== undefined) {
             return error("A service instance with the same name already exists.");
         }
@@ -105,7 +105,7 @@ export class InstanceManager extends EventEmitter {
             } else {
                 this.nodecg.log.info(`Successfully stopped client of service instance "${instanceName}".`);
                 try {
-                    svc.result.stopClient(instance.client);
+                    svc.result.stopClient(instance.client, new Logger(instanceName, this.nodecg));
                 } catch (e) {
                     this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
                 }
@@ -130,7 +130,7 @@ export class InstanceManager extends EventEmitter {
 
     /**
      * Updates the config of a service instance.
-     * Before actually setting the new config, it validates it against the json schema of the service and
+     * Before actually setting the new config, it validates it against the JSON schema of the service and
      * the validate function of the service.
      * @param instanceName the name of the service instance of which the config should be set.
      * @param config the actual config that will be given to the service instance.
@@ -172,7 +172,10 @@ export class InstanceManager extends EventEmitter {
 
             // Validation by the service.
             try {
-                const validationRes = await service.result.validateConfig(config);
+                const validationRes = await service.result.validateConfig(
+                    config,
+                    new Logger(instanceName, this.nodecg),
+                );
                 if (validationRes.failed) {
                     throw validationRes.errorMessage;
                 }
@@ -209,18 +212,18 @@ export class InstanceManager extends EventEmitter {
         const oldClient = inst.client;
 
         if (inst.config === undefined && !service.requiresNoConfig) {
-            // No config has been set, therefore the service isn't ready and we can't create a client.
+            // No config has been set, therefore the service isn't ready, and we can't create a client.
             inst.client = undefined;
         } else {
             try {
                 // Create a client using the new config
 
-                // If the service requires a config we make the undefined check above which ensures that undefined doesn't
-                // get passed to the createClient function of the service.
+                // If the service requires a config, we make the undefined check above, which ensures that undefined is not
+                // passed to the createClient function of the service.
                 // If the service does not require a config we can safely ignore the undefined error because in that case
-                // passing undefined is the intended behavior.
+                // passing undefined is the intended behaviour.
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const client = await service.createClient(inst.config!);
+                const client = await service.createClient(inst.config!, new Logger(instanceName, this.nodecg));
 
                 // Check if a error happened while creating the client
                 if (client.failed) {
@@ -230,7 +233,7 @@ export class InstanceManager extends EventEmitter {
                     inst.client = client.result;
                 }
             } catch (err) {
-                const msg = `The "${inst.serviceType}" service produced an error while creating a client: ${err}`;
+                const msg = `The "${inst.serviceType}" service with the name "${instanceName}" produced an error while creating a client: ${err}`;
                 this.nodecg.log.error(msg);
                 inst.client = undefined;
                 return error(msg);
@@ -240,11 +243,11 @@ export class InstanceManager extends EventEmitter {
         // Update client of bundles using this instance
         this.bundles.handleInstanceUpdate(inst, instanceName);
 
-        // Stop old client, as it isn't used by any bundle anymore.
+        // Stop old client, as it isn't used by any bundle any more.
         if (oldClient !== undefined) {
             this.nodecg.log.info(`Stopping old unused ${inst.serviceType} client...`);
             try {
-                service.stopClient(oldClient);
+                service.stopClient(oldClient, new Logger(instanceName, this.nodecg));
             } catch (e) {
                 this.nodecg.log.error(`Couldn't stop service instance: ${e}`);
             }
@@ -287,7 +290,9 @@ export class InstanceManager extends EventEmitter {
             svc.result.removeHandlers(inst.client);
         } catch (err) {
             this.nodecg.log.error(
-                `Can't re-register handlers of instance "${instanceName}": error while removing handlers: ${err.toString()}`,
+                `Can't re-register handlers of instance "${instanceName}": error while removing handlers: ${String(
+                    err,
+                )}`,
             );
         }
         // Readd handlers by running the `onAvailable` function of all bundles

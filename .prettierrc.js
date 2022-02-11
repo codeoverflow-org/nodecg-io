@@ -1,9 +1,16 @@
+/** @type {import("prettier").RequiredOptions} */
 module.exports = {
-    semi: true,
-    trailingComma: "all",
-    singleQuote: false,
     printWidth: 120,
     tabWidth: 4,
     useTabs: false,
-    endOfLine: "auto"
+    semi: true,
+    singleQuote: false,
+    quoteProps: "consistent",
+    jsxSingleQuote: false,
+    trailingComma: "all",
+    bracketSpacing: true,
+    arrowParens: "always",
+    proseWrap: "preserve",
+    vueIndentScriptAndStyle: false,
+    endOfLine: "lf",
 };
