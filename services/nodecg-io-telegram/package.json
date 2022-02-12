@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "@types/node-telegram-bot-api": "^0.53.6",
+        "@types/node-telegram-bot-api": "^0.56.0",
         "node-telegram-bot-api": "^0.56.0",
         "nodecg-io-core": "^0.3.0"
     }
