@@ -43,6 +43,6 @@
         "@serialport/parser-readline": "^9.2.4",
         "@types/serialport": "^8.0.2",
         "nodecg-io-core": "^0.3.0",
-        "serialport": "^9.2.8"
+        "serialport": "^10.3.0"
     }
 }
