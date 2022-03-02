@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>streamelements-events sample bundle</title>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+            /* don't show container until vue has compiled all templates */
+            [v-cloak] {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>streamelements-events sample bundle</h1>
+        <div id="app" v-cloak>
+            <p>Newest events of configured streamelements instance:</p>
+            <p>
+                Last subscriber:
+                <span v-if="se?.lastSubscriber">
+                    {{ se?.lastSubscriber?.data.displayName }} subscribed for {{ se?.lastSubscriber?.data.amount }}
+                    months ({{ subTier }}).
+                </span>
+                <span v-else>none</span>
+            </p>
+            <p>
+                Last tip:
+                <span v-if="se?.lastTip">
+                    {{ se?.lastSubscriber?.data.displayName }} subscribed for {{ se?.lastSubscriber?.data.amount }}
+                    months.
+                </span>
+                <span v-else>none</span>
+            </p>
+            <p>
+                Last cheer:
+                <span v-if="se?.lastCheer">
+                    {{ se?.lastCheer?.data.amount }} bits by {{ se?.lastCheer?.data.displayName }}
+                </span>
+                <span v-else>none</span>
+            </p>
+            <p>
+                Last follow:
+                <span v-if="se?.lastFollow"> {{ se?.lastFollow?.data.displayName }} </span>
+                <span v-else>none</span>
+            </p>
+            <p>
+                Last raid:
+                <span v-if="se?.lastRaid">
+                    {{ se?.lastRaid?.data.displayName }} raided with {{ se?.lastRaid?.data.amount }} viewers
+                </span>
+                <span v-else>none</span>
+            </p>
+            <p>
+                Last host:
+                <span v-if="se?.lastHost">
+                    {{ se?.lastHost?.data.displayName }} hosted with {{ se?.lastHost?.data.viewers }} viewers
+                </span>
+                <span v-else>none</span>
+            </p>
+        </div>
+
+        <script src="index.js"></script>
+    </body>
+</html>

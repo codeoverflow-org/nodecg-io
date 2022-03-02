@@ -1,0 +1,22 @@
+{
+    "extends": "nodecg-io-tsconfig",
+    "compilerOptions": {
+        "target": "ES2015",
+        "lib": ["ES2015", "dom"],
+        "module": "ES2015",
+        "noEmit": true,
+        "paths": {
+            // TODO: properly set an alias from vue -> vue/dist/vue.esm.bundler.js in esbuild
+            // so typings can be loaded properly without this workaround
+            "vue/dist/vue.esm-bundler.js": ["../../../node_modules/vue/dist/vue"]
+        }
+    },
+    "references": [
+        {
+            "path": "../../../nodecg-io-core"
+        },
+        {
+            "path": "../../../services/nodecg-io-streamelements"
+        }
+    ]
+}

@@ -23,11 +23,7 @@ export interface SerialServiceConfig {
 
 export class SerialServiceClient extends SerialPort {
     private parser: ReadlineParser;
-    constructor(
-        options: SerialPortOpenOptions<AutoDetectTypes>,
-        protocol?: ReadlineOptions, // TODO: maybe rename this to parseOptions or something
-        callback?: ErrorCallback,
-    ) {
+    constructor(options: SerialPortOpenOptions<AutoDetectTypes>, protocol?: ReadlineOptions, callback?: ErrorCallback) {
         super(options, callback);
         this.parser = this.pipe(new ReadlineParser(protocol));
     }
