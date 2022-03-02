@@ -4,7 +4,7 @@ import type { StreamElementsReplicant } from "nodecg-io-streamelements";
 
 const replicant = nodecg.Replicant<StreamElementsReplicant>("streamelements");
 
-const mainComponent = defineComponent<{}, {}, { se: StreamElementsReplicant }>({
+const mainComponent = defineComponent<unknown, unknown, { se: StreamElementsReplicant }>({
     data() {
         return {
             se: {},
