@@ -9,13 +9,15 @@ export interface SQLConfig {
     connection: Record<string, unknown>;
 }
 
-export type SQLClient = Knex;
+// any is the upper type limit of knex for the TRecord type. Bundles can use a more specific type if they want to.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SQLClient = Knex<any, unknown[]>;
 
 module.exports = (nodecg: NodeCG) => {
     new SQLService(nodecg, "sql", __dirname, "../schema.json").register();
 };
 
-class SQLService extends ServiceBundle<SQLConfig, Knex> {
+class SQLService extends ServiceBundle<SQLConfig, SQLClient> {
     async validateConfig(config: SQLConfig): Promise<Result<void>> {
         // No way to validate without creating the client, thus only statically validating the configs
 
@@ -35,13 +37,13 @@ class SQLService extends ServiceBundle<SQLConfig, Knex> {
         return emptySuccess();
     }
 
-    async createClient(config: SQLConfig, logger: Logger): Promise<Result<Knex>> {
+    async createClient(config: SQLConfig, logger: Logger): Promise<Result<SQLClient>> {
         const knexInstance = knex(config);
         logger.info("Successfully created sql client.");
         return success(knexInstance);
     }
 
-    stopClient(client: Knex, logger: Logger): void {
+    stopClient(client: SQLClient, logger: Logger): void {
         client.destroy();
         logger.info("Successfully stopped sql client.");
     }
