@@ -1,5 +1,5 @@
 /// <reference types="nodecg-types/types/browser" />
-import { createApp, defineComponent } from "vue/dist/vue.esm-bundler.js";
+import { createApp, defineComponent } from "vue";
 import type { StreamElementsReplicant } from "nodecg-io-streamelements";
 
 const replicant = nodecg.Replicant<StreamElementsReplicant>("streamelements");
