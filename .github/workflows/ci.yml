@@ -80,7 +80,7 @@ jobs:
 
             - name: Cache NodeCG dependencies
               id: cache-nodecg
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                 path: 'node_modules'
                 key: ${{ runner.os }}-${{ steps.nodecgHash.outputs.nodecgHash }}-nodecg
