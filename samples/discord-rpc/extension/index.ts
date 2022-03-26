@@ -8,7 +8,7 @@ module.exports = function (nodecg: NodeCG) {
     const discordRpc = requireService<DiscordRpcClient>(nodecg, "discord-rpc");
 
     discordRpc?.onAvailable((client) => {
-        nodecg.log.info("DiscordRpc service available. Username: " + client.user.username);
+        nodecg.log.info("DiscordRpc service available. Username: " + client.user?.username);
     });
 
     discordRpc?.onUnavailable(() => {
