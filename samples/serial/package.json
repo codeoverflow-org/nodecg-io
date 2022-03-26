@@ -14,7 +14,7 @@
         "nodecg-types": "^1.8.3",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-serial": "^0.3.0",
-        "typescript": "^4.6.2",
+        "typescript": "^4.6.3",
         "nodecg-io-tsconfig": "^1.0.0"
     }
 }
