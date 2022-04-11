@@ -20,7 +20,7 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
         const devices: Array<string> = new Array<string>();
 
         // Virtual devices can always be created, easymidi will find a
-        // free name for the matching output
+        // free name for the matching input
         if (!config.virtual) {
             easymidi.getInputs().forEach((device) => {
                 if (device.includes(config.device)) {
@@ -58,7 +58,7 @@ class MidiService extends ServiceBundle<MidiInputServiceConfig, MidiInputService
                 deviceName = config.device;
             } else {
                 // Otherwise we find a device which contains the pattern.
-                easymidi.getOutputs().forEach((device) => {
+                easymidi.getInputs().forEach((device) => {
                     if (device.includes(config.device) && deviceName === null) {
                         deviceName = device;
                     }
