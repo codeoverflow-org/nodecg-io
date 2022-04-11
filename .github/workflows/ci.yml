@@ -31,7 +31,7 @@ jobs:
                   tar cvzf compilation-results.tar.gz --exclude "node_modules" **/*.js **/*.js.map **/*.d.ts **/*.d.ts.map **/*.tsbuildinfo **/*.ttf
 
             - name: Upload compilation results
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                 name: compilation-results
                 path: compilation-results.tar.gz
