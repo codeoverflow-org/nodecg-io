@@ -147,7 +147,7 @@ jobs:
                 node-version: "16"
 
             - name: Download compilation results # From the build step
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v3
               with:
                 name: compilation-results
 
