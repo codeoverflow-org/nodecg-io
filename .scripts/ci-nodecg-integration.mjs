@@ -39,7 +39,7 @@ child.once("exit", (exitCode, signal) => {
     console.log("Stopped NodeCG\n");
 
     // Check exit code for failure
-    if (exitCode !== 0) {
+    if (exitCode !== null && exitCode !== 0) {
         throw new Error(`NodeCG exited with code ${exitCode} ${signal}`);
     }
 
