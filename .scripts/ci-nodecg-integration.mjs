@@ -25,38 +25,29 @@ console.log(`Found ${bundles.length} bundles in this install.`);
 console.log("\nStarted NodeCG");
 console.log("--------------------------------------------------------------------------------");
 
-// Spawn a process that runs NodeCG
-const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir });
+// Spawn a process that runs NodeCG and let it run for 15 seconds to load all bundles
+const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir, timeout: 15000 });
 
-// Store stdout in lines and stream stderr to stderr of this process
-const lines = [];
-child.stdout.on("data", (data) => lines.push(data.toString()));
+// Store stdout and pipe the output of the child process to the output of this process
+const buffer = [];
+child.stdout.on("data", (data) => buffer.push(data));
 child.stdout.pipe(process.stdout);
 child.stderr.pipe(process.stderr);
 
-// Let NodeCG run for 15 seconds to load all bundles
-setTimeout(() => {
-    // We don't want to leave NodeCG running, if it was loaded successfully.
-    // If it has errored, it will not be running anymore.
-    if (child.pid) {
-        child.kill();
-    }
+child.once("exit", (exitCode, signal) => {
     console.log("--------------------------------------------------------------------------------");
     console.log("Stopped NodeCG\n");
 
     // Check exit code for failure
-    const exitCode = child.exitCode;
-    if (exitCode !== null && exitCode !== 0) {
-        throw new Error(`NodeCG exited with code ${exitCode}`);
+    if (exitCode !== 0) {
+        throw new Error(`NodeCG exited with code ${exitCode} ${signal}`);
     }
+
+    const log = Buffer.concat(buffer).toString();
 
     // Try to find each bundle in the logs.
     const missing = bundles.filter(
-        // Using endsWith here to remove possible ansi styling of "[info]" caused by ModeCG's logger when run locally
-        (i) =>
-            !lines.some((j) =>
-                j.includes("[nodecg/lib/server/extensions] Mounted " + i.packageJson.name + " extension"),
-            ),
+        (i) => !log.includes(`[nodecg/lib/server/extensions] Mounted ${i.packageJson.name} extension`),
     );
 
     // Fail the run if there are missing bundles.
@@ -68,4 +59,4 @@ setTimeout(() => {
     }
 
     console.log("No Errors!");
-}, 15000);
+});
