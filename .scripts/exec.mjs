@@ -3,7 +3,7 @@ import concurrently from "concurrently";
 
 const COMMAND = process.argv[2];
 
-/**@type {import('concurrently').CommandObj[]}*/
+/**@type {import('concurrently').ConcurrentlyCommandInput[]}*/
 const commands = packages
     .filter((v) => v.packageJson["scripts"] && v.packageJson["scripts"][COMMAND])
     .map((v) => ({
