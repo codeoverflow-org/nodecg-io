@@ -24,7 +24,7 @@
         "@typescript-eslint/eslint-plugin": "^5.21.0",
         "@typescript-eslint/parser": "^5.21.0",
         "concurrently": "^7.1.0",
-        "eslint": "^8.14.0",
+        "eslint": "^8.15.0",
         "husky": "^7.0.4",
         "nodemon": "^2.0.16",
         "prettier": "^2.6.2",
