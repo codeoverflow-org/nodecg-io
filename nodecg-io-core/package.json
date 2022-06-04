@@ -46,10 +46,10 @@
     "devDependencies": {
         "@types/crypto-js": "^4.1.1",
         "@types/jest": "^27.5.1",
-        "@types/node": "^17.0.36",
+        "@types/node": "^17.0.39",
         "jest": "^28.1.0",
         "nodecg-types": "^1.8.3",
-        "typescript": "^4.7.2",
+        "typescript": "^4.7.3",
         "ts-jest": "^28.0.3"
     },
     "dependencies": {
