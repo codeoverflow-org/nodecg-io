@@ -5,6 +5,7 @@ import OBSWebSocket from "obs-websocket-js";
 interface OBSServiceConfig {
     host: string;
     port: number;
+    isSecure?: boolean;
     password?: string;
 }
 
@@ -18,7 +19,7 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
     async validateConfig(config: OBSServiceConfig): Promise<Result<void>> {
         const client = new OBSWebSocket();
         try {
-            await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+            await this.connectClient(client, config);
 
             client.disconnect();
         } catch (e) {
@@ -30,13 +31,18 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
     async createClient(config: OBSServiceConfig, logger: Logger): Promise<Result<OBSServiceClient>> {
         const client = new OBSWebSocket();
         try {
-            await client.connect({ address: `${config.host}:${config.port}`, password: config.password });
+            await this.connectClient(client, config);
             logger.info("Connected to OBS successfully.");
         } catch (e) {
             return error(e.error);
         }
 
         return success(client);
+    }
+
+    private async connectClient(client: OBSWebSocket, config: OBSServiceConfig): Promise<void> {
+        const protocol = config.isSecure ? "wss" : "ws";
+        await client.connect(`${protocol}://${config.host}:${config.port}`, config.password);
     }
 
     stopClient(client: OBSServiceClient) {
