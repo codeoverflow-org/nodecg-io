@@ -7,6 +7,11 @@
             "type": "string",
             "description": "An IP address to the obs websocket server"
         },
+        "isSecure": {
+            "type": "boolean",
+            "description": "Whether the websocket connection is using encryption (wss) or not (ws)",
+            "default": false
+        },
         "port": {
             "type": "number",
             "description": "The port of the obs websocket server"
