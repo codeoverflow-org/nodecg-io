@@ -34,7 +34,7 @@ class OBSService extends ServiceBundle<OBSServiceConfig, OBSServiceClient> {
             await this.connectClient(client, config);
             logger.info("Connected to OBS successfully.");
         } catch (e) {
-            return error(e.error);
+            return error(e.message);
         }
 
         return success(client);
