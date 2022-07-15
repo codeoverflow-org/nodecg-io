@@ -1,11 +1,12 @@
 import { NodeCG } from "nodecg-types/types/server";
-import { StreamElementsServiceClient } from "nodecg-io-streamelements";
+import { StreamElementsReplicant, StreamElementsServiceClient } from "nodecg-io-streamelements";
 import { requireService } from "nodecg-io-core";
 
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for StreamElements started");
 
     const streamElements = requireService<StreamElementsServiceClient>(nodecg, "streamelements");
+    const streamElementsReplicant = nodecg.Replicant<StreamElementsReplicant>("streamelements");
 
     streamElements?.onAvailable((client) => {
         nodecg.log.info("SE client has been updated, registering handlers now.");
@@ -30,6 +31,10 @@ module.exports = function (nodecg: NodeCG) {
 
         client.onGift((data) => {
             if (data.data.tier) {
+                // We want to display the tier as 1, 2, 3
+                // However StreamElements stores the sub tiers as 1000, 2000 and 3000.
+                // So we divide the tier by 1000 to get the tier in our expected format.
+                // We don't need to care about prime subs here because they cannot be gifted.
                 const tier = (Number.parseInt(data.data.tier) / 1000).toString();
                 if (data.data.sender) {
                     nodecg.log.info(
@@ -62,6 +67,8 @@ module.exports = function (nodecg: NodeCG) {
         client.onTest((data) => {
             nodecg.log.info(JSON.stringify(data));
         });
+
+        client.setupReplicant(streamElementsReplicant);
     });
 
     streamElements?.onUnavailable(() => nodecg.log.info("SE client has been unset."));

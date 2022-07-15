@@ -2,6 +2,17 @@ import io = require("socket.io-client");
 import { Result, emptySuccess, error } from "nodecg-io-core";
 import { StreamElementsEvent } from "./StreamElementsEvent";
 import { EventEmitter } from "events";
+import { Replicant } from "nodecg-types/types/server";
+
+export interface StreamElementsReplicant {
+    lastSubscriber?: StreamElementsEvent;
+    lastTip?: StreamElementsEvent;
+    lastCheer?: StreamElementsEvent;
+    lastGift?: StreamElementsEvent;
+    lastFollow?: StreamElementsEvent;
+    lastRaid?: StreamElementsEvent;
+    lastHost?: StreamElementsEvent;
+}
 
 export class StreamElementsServiceClient extends EventEmitter {
     private socket: SocketIOClient.Socket;
@@ -130,5 +141,19 @@ export class StreamElementsServiceClient extends EventEmitter {
 
     public onTest(handler: (data: StreamElementsEvent) => void): void {
         this.on("test", handler);
+    }
+
+    public setupReplicant(rep: Replicant<StreamElementsReplicant>): void {
+        if (rep.value === undefined) {
+            rep.value = {};
+        }
+
+        this.on("subscriber", (data) => (rep.value.lastSubscriber = data));
+        this.on("tip", (data) => (rep.value.lastTip = data));
+        this.on("cheer", (data) => (rep.value.lastCheer = data));
+        this.on("gift", (data) => (rep.value.lastGift = data));
+        this.on("follow", (data) => (rep.value.lastFollow = data));
+        this.on("raid", (data) => (rep.value.lastRaid = data));
+        this.on("host", (data) => (rep.value.lastHost = data));
     }
 }

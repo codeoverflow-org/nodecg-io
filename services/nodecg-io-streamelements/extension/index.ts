@@ -7,7 +7,7 @@ interface StreamElementsServiceConfig {
     handleTestEvents: boolean;
 }
 
-export { StreamElementsServiceClient } from "./StreamElements";
+export { StreamElementsServiceClient, StreamElementsReplicant } from "./StreamElements";
 
 module.exports = (nodecg: NodeCG) => {
     const schemaPath = [__dirname, "../streamelements-schema.json"];
