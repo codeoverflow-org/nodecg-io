@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as child_process from "child_process";
+import { getPackages } from "@manypkg/get-packages";
 
 const cwd = path.parse(process.cwd());
 const nodecgiodir = fs.readdirSync(process.cwd()).some((v) => v === "nodecg-io-core");
@@ -9,83 +10,53 @@ const nodecgiodir = fs.readdirSync(process.cwd()).some((v) => v === "nodecg-io-c
 if (!nodecgiodir) {
     throw new Error("You will have to run this script from inside the nodecg-io folder!");
 }
-/**
- * expected data:
- *
- * ~~~json
- * {
- *   name: 'nodecg-io',
- *   dependencies: {
- *     'name': {
- *       version: 'version',
- *       resolved: 'optional'
- *     },
- *   }
- * }
- * ~~~
- */
-const npm = JSON.parse(child_process.execSync("npm ls --json").toString());
 
-// Filter out any dependencies which are not resolved locally in samples or services because the other npm packages will not be loaded by NodeCG
-let bundles = Object.entries(npm.dependencies)
-    .filter((i) =>
-        Object.entries(i[1]).some(
-            (j) =>
-                j[0] === "resolved" &&
-                (`${j[1]}`.startsWith("file:../samples/") ||
-                    `${j[1]}`.startsWith("file:../services/") ||
-                    `${j[1]}` === "file:../nodecg-io-core"),
-        ),
-    )
-    .map((v) => v[0]);
+const { packages } = await getPackages(process.cwd());
+
+// Filter out packages other than core, samples and services, because they should not be NodeCG-bundles (dashboard, utils)
+const bundles = packages.filter(
+    (v) =>
+        v.packageJson.name === "nodecg-io-core" ||
+        path.parse(v.dir).dir.endsWith("samples") ||
+        path.parse(v.dir).dir.endsWith("services"),
+);
 
 console.log(`Found ${bundles.length} bundles in this install.`);
-
-console.log("");
-console.log("NodeCG sterr");
+console.log("\nStarted NodeCG");
 console.log("--------------------------------------------------------------------------------");
 
-// Spawn a process that runs NodeCG
-const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir });
+// Spawn a process that runs NodeCG and let it run for 15 seconds to load all bundles
+const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir, timeout: 15000 });
 
-// Store stdout in lines and stream stderr to stderr of this process
-const lines = [];
-child.stdout.on("data", (data) => lines.push(data.toString()));
-child.stderr.on("data", (data) => console.error(data.toString()));
+// Store stdout and pipe the output of the child process to the output of this process
+const buffer = [];
+child.stdout.on("data", (data) => buffer.push(data));
+child.stdout.pipe(process.stdout);
+child.stderr.pipe(process.stderr);
 
-// Let NodeCG run for 15 seconds to load all bundles
-setTimeout(() => {
-    // We don't want to leave NodeCG running, if it was loaded successfully.
-    // If it has errored, it will not be running anymore.
-    if (child.pid) {
-        child.kill();
-    }
+child.once("exit", (exitCode, signal) => {
+    console.log("--------------------------------------------------------------------------------");
+    console.log("Stopped NodeCG\n");
 
     // Check exit code for failure
-    const exitCode = child.exitCode;
     if (exitCode !== null && exitCode !== 0) {
-        throw new Error(`NodeCG exited with code ${exitCode}`);
+        throw new Error(`NodeCG exited with code ${exitCode} ${signal}`);
     }
+
+    const log = Buffer.concat(buffer).toString();
 
     // Try to find each bundle in the logs.
     const missing = bundles.filter(
-        /*Using endsWith here to remove possible ansi styling of "[info]" caused by ModeCG's logger when run locally*/
-        (i) => !lines.some((j) => j.includes("[nodecg/lib/server/extensions] Mounted " + i + " extension")),
+        (i) => !log.includes(`[nodecg/lib/server/extensions] Mounted ${i.packageJson.name} extension`),
     );
 
     // Fail the run if there are missing bundles.
     if (missing.length > 0) {
-        // Only log stout if the run has failed because otherwise its unimportant and everything important should be in stderr
-        console.log("");
-        console.log("NodeCG stout");
-        console.log("--------------------------------------------------------------------------------");
-        console.log(lines.join(""));
-
-        console.log("");
-        console.log("Missing Bundles");
-        console.log("--------------------------------------------------------------------------------");
-        console.log(missing);
+        console.log("Missing Bundles:");
+        console.log(missing.map((v) => v.packageJson.name));
 
         throw new Error(`NodeCG did not mount ${missing.length} bundle(s).`);
     }
-}, 15000);
+
+    console.log("No Errors!");
+});

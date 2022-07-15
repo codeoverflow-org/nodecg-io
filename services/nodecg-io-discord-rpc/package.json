@@ -31,16 +31,16 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^17.0.21",
+        "@types/node": "^18.0.3",
         "@types/node-fetch": "^2.6.1",
         "nodecg-types": "^1.8.3",
-        "typescript": "^4.6.2",
+        "typescript": "^4.7.4",
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
         "discord-rpc": "^4.0.1",
-        "@types/discord-rpc": "^4.0.0",
+        "@types/discord-rpc": "^4.0.3",
         "node-fetch": "^2.6.7"
     }
 }

@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3.0.0
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: "16"
 
@@ -31,7 +31,7 @@ jobs:
                   tar cvzf compilation-results.tar.gz --exclude "node_modules" **/*.js **/*.js.map **/*.d.ts **/*.d.ts.map **/*.tsbuildinfo **/*.ttf
 
             - name: Upload compilation results
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                 name: compilation-results
                 path: compilation-results.tar.gz
@@ -40,7 +40,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3.0.0
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: "16"
 
@@ -64,7 +64,7 @@ jobs:
             os: [ubuntu-latest, windows-2019]
         runs-on: ${{ matrix.os }}
         steps:
-            - uses: actions/setup-node@v3.0.0
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: "16"
 
@@ -80,7 +80,7 @@ jobs:
 
             - name: Cache NodeCG dependencies
               id: cache-nodecg
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                 path: 'node_modules'
                 key: ${{ runner.os }}-${{ steps.nodecgHash.outputs.nodecgHash }}-nodecg
@@ -142,12 +142,12 @@ jobs:
         - nodecg
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3.0.0
+            - uses: actions/setup-node@v3.4.1
               with:
                 node-version: "16"
 
             - name: Download compilation results # From the build step
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v3
               with:
                 name: compilation-results
 
