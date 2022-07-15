@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8" />
+        <meta charstreamElementsReplicantt="UTF-8" />
         <title>streamelements-events sample bundle</title>
         <style>
             body {
-                font-family: sans-serif;
+                font-family: sans-streamElementsReplicantrif;
             }
             /* don't show container until vue has compiled all templates */
             [v-cloak] {
@@ -20,43 +20,48 @@
             <p>Newest events of configured streamelements instance:</p>
             <p>
                 Last subscriber:
-                <span v-if="se?.lastSubscriber">
-                    {{ se?.lastSubscriber?.data.displayName }} subscribed for {{ se?.lastSubscriber?.data.amount }}
-                    months ({{ subTier }}).
+                <span v-if="streamElementsReplicant?.lastSubscriber">
+                    {{ streamElementsReplicant?.lastSubscriber?.data.displayName }} subscribed for {{
+                    streamElementsReplicant?.lastSubscriber?.data.amount }} months ({{ subTier }}).
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last tip:
-                <span v-if="se?.lastTip">
-                    {{ se?.lastSubscriber?.data.displayName }} subscribed for {{ se?.lastSubscriber?.data.amount }}
-                    months.
+                <span v-if="streamElementsReplicant?.lastTip">
+                    {{ streamElementsReplicant?.lastSubscriber?.data.displayName }} subscribed for {{
+                    streamElementsReplicant?.lastSubscriber?.data.amount }} months.
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last cheer:
-                <span v-if="se?.lastCheer">
-                    {{ se?.lastCheer?.data.amount }} bits by {{ se?.lastCheer?.data.displayName }}
+                <span v-if="streamElementsReplicant?.lastCheer">
+                    {{ streamElementsReplicant?.lastCheer?.data.amount }} bits by {{
+                    streamElementsReplicant?.lastCheer?.data.displayName }}
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last follow:
-                <span v-if="se?.lastFollow"> {{ se?.lastFollow?.data.displayName }} </span>
+                <span v-if="streamElementsReplicant?.lastFollow">
+                    {{ streamElementsReplicant?.lastFollow?.data.displayName }}
+                </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last raid:
-                <span v-if="se?.lastRaid">
-                    {{ se?.lastRaid?.data.displayName }} raided with {{ se?.lastRaid?.data.amount }} viewers
+                <span v-if="streamElementsReplicant?.lastRaid">
+                    {{ streamElementsReplicant?.lastRaid?.data.displayName }} raided with {{
+                    streamElementsReplicant?.lastRaid?.data.amount }} viewers
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last host:
-                <span v-if="se?.lastHost">
-                    {{ se?.lastHost?.data.displayName }} hosted with {{ se?.lastHost?.data.viewers }} viewers
+                <span v-if="streamElementsReplicant?.lastHost">
+                    {{ streamElementsReplicant?.lastHost?.data.displayName }} hosted with {{
+                    streamElementsReplicant?.lastHost?.data.viewers }} viewers
                 </span>
                 <span v-else>none</span>
             </p>

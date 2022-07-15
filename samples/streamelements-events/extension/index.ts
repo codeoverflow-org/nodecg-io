@@ -31,6 +31,10 @@ module.exports = function (nodecg: NodeCG) {
 
         client.onGift((data) => {
             if (data.data.tier) {
+                // We want to display the tier as 1, 2, 3
+                // However StreamElements stores the sub tiers as 1000, 2000 and 3000.
+                // So we divide the tier by 1000 to get the tier in our expected format.
+                // We don't need to care about prime subs here because they cannot be gifted.
                 const tier = (Number.parseInt(data.data.tier) / 1000).toString();
                 if (data.data.sender) {
                     nodecg.log.info(
