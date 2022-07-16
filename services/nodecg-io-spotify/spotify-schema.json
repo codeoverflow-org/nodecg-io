@@ -21,6 +21,10 @@
         "refreshToken": {
             "type": "string",
             "description": "A refresh token to get and refresh access tokens. Gets set by nodecg-io. You don't need to set this!"
+        },
+        "httpsRedirect": {
+            "type": "boolean",
+            "description": "Should the OAuth redirect URL use the https protocol"
         }
     },
     "required": ["clientId", "clientSecret", "scopes"]

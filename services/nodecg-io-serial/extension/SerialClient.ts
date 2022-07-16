@@ -1,5 +1,7 @@
 import { success, error, Result, emptySuccess } from "nodecg-io-core";
-import SerialPort from "serialport";
+import { SerialPort, SerialPortOpenOptions, ReadlineParser, ReadlineOptions } from "serialport";
+import { ErrorCallback } from "@serialport/stream";
+import { AutoDetectTypes } from "@serialport/bindings-cpp";
 
 export interface DeviceInfo {
     port?: string;
@@ -15,30 +17,33 @@ interface Protocol {
 
 export interface SerialServiceConfig {
     device: DeviceInfo;
-    connection: SerialPort.OpenOptions;
+    connection: Partial<SerialPortOpenOptions<AutoDetectTypes>>;
     protocol: Protocol;
 }
 
 export class SerialServiceClient extends SerialPort {
-    private parser: SerialPort.parsers.Readline;
-    constructor(
-        path: string,
-        protocol: Protocol,
-        options?: SerialPort.OpenOptions,
-        callback?: SerialPort.ErrorCallback,
-    ) {
-        super(path, options, callback);
-        this.parser = this.pipe(new SerialPort.parsers.Readline(protocol));
+    private parser: ReadlineParser;
+    constructor(options: SerialPortOpenOptions<AutoDetectTypes>, protocol?: ReadlineOptions, callback?: ErrorCallback) {
+        super(options, callback);
+        this.parser = this.pipe(new ReadlineParser(protocol));
     }
 
     static async createClient(config: SerialServiceConfig): Promise<Result<SerialServiceClient>> {
         const port = await SerialServiceClient.inferPort(config.device);
         if (!port.failed) {
             return await new Promise<Result<SerialServiceClient>>((resolve) => {
-                const serialPort = new SerialServiceClient(port.result, config.protocol, config.connection, (e) => {
-                    if (e) resolve(error(e.message));
-                    else resolve(success(serialPort));
-                });
+                const serialPort = new SerialServiceClient(
+                    {
+                        ...config.connection,
+                        path: port.result,
+                        baudRate: config.connection.baudRate ?? 9600,
+                    },
+                    config.protocol,
+                    (e) => {
+                        if (e) resolve(error(e.message));
+                        else resolve(success(serialPort));
+                    },
+                );
             });
         } else {
             return error(port.errorMessage);
@@ -82,7 +87,7 @@ export class SerialServiceClient extends SerialPort {
                 device: {
                     // If we know the manufacturer and serial number we prefer them over the port
                     // because reboots or replugging devices may change the port number.
-                    // Only use the raw port number if we have.
+                    // Only use the raw port number if we have to.
                     port: dev.manufacturer && dev.serialNumber ? undefined : dev.path,
                     manufacturer: dev.manufacturer,
                     serialNumber: dev.serialNumber,

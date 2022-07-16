@@ -3,7 +3,7 @@ import concurrently from "concurrently";
 
 const COMMAND = process.argv[2];
 
-/**@type {import('concurrently').CommandObj[]}*/
+/**@type {import('concurrently').ConcurrentlyCommandInput[]}*/
 const commands = packages
     .filter((v) => v.packageJson["scripts"] && v.packageJson["scripts"][COMMAND])
     .map((v) => ({
@@ -43,8 +43,8 @@ const colors = [
 if (commands.length > 0) {
     concurrently(commands, {
         prefixColors: colors,
-    }).catch(() => {
-        console.log("At least one build task has failed")
+    }).result.catch(() => {
+        console.log("At least one build task has failed");
         process.exit(1);
     });
 }

@@ -11,8 +11,8 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: "16"
 
@@ -31,7 +31,7 @@ jobs:
                   tar cvzf compilation-results.tar.gz --exclude "node_modules" **/*.js **/*.js.map **/*.d.ts **/*.d.ts.map **/*.tsbuildinfo **/*.ttf
 
             - name: Upload compilation results
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                 name: compilation-results
                 path: compilation-results.tar.gz
@@ -39,8 +39,8 @@ jobs:
     tests:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: "16"
 
@@ -59,30 +59,62 @@ jobs:
         # are mounted by NodeCG. It will fail if one of them is not mounted.
         # You may check for other NodeCG runtime errors in the output (these
         # may not fail the run).
-        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-2019]
+        runs-on: ${{ matrix.os }}
         steps:
-            - uses: actions/setup-node@v2
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: "16"
 
-            - name: Install nodecg-cli
-              run: npm install --global nodecg-cli
+            - name: Download NodeCG
+              uses: actions/checkout@v3
+              with:
+                repository: nodecg/nodecg
 
-            - name: Setup NodeCG
-              run: nodecg setup
+            - name: Get NodeCG commit hash
+              id: nodecgHash
+              shell: bash
+              run: echo "::set-output name=nodecgHash::$(git rev-parse HEAD)"
 
-            - name: Setup NodeCG config
+            - name: Cache NodeCG dependencies
+              id: cache-nodecg
+              uses: actions/cache@v3
+              with:
+                path: 'node_modules'
+                key: ${{ runner.os }}-${{ steps.nodecgHash.outputs.nodecgHash }}-nodecg
+
+            - name: Install NodeCG dependencies
+              # Only get dependencies if we didn't get them from the cache
+              if: steps.cache-nodecg.outputs.cache-hit != 'true'
+              run: npm install --prod
+
+            - name: Setup NodeCG config linux
+              if: matrix.os == 'ubuntu-latest'
               run: |
                   mkdir cfg
                   echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE}'/nodecg-io","'${GITHUB_WORKSPACE}'/nodecg-io/services","'${GITHUB_WORKSPACE}'/nodecg-io/samples"]}}' > ./cfg/nodecg.json
 
-            # nodecg-io needs to be cloned after NodeCG setup because the nodecg-cli requires an empty directory.
-            - uses: actions/checkout@v2
+            - name: Setup NodeCG config windows
+              if: matrix.os == 'windows-2019'
+              shell: bash
+              run: |
+                  mkdir cfg
+                  # We need to escape backslashes to get valid json. Replaces each "\" with "\\"
+                  echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io","'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io\\services","'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io\\samples"]}}' > ./cfg/nodecg.json
+
+            - uses: actions/checkout@v3
               with:
                   path: "nodecg-io"
 
             - name: Install system dependencies
+              if: matrix.os == 'ubuntu-latest'
               run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+
+            - name: Install node native development files
+              shell: bash
+              run: npx node-gyp install
 
             - name: Install nodejs dependencies
               run: npm ci
@@ -93,6 +125,7 @@ jobs:
               working-directory: ./nodecg-io
 
             - name: Run test
+              shell: bash
               run: node .scripts/ci-nodecg-integration.mjs
               working-directory: ./nodecg-io
 
@@ -108,13 +141,13 @@ jobs:
         - tests
         - nodecg
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3.4.1
               with:
                 node-version: "16"
 
             - name: Download compilation results # From the build step
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v3
               with:
                 name: compilation-results
 
@@ -125,7 +158,7 @@ jobs:
               run: npm pack --workspaces
 
             - name: Clone publish repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   repository: codeoverflow-org/nodecg-io-publish
                   ssh-key: ${{ secrets.PUBLISH_SSH_KEY }}

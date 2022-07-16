@@ -14,4 +14,5 @@ const tsconfig = {
 };
 
 let content = "// This file will be overwritten automatically! Do not store options here.\n" + JSON.stringify(tsconfig);
+console.log("Update root tsconfig.json…");
 fs.writeFileSync(rootTSconfig, content, { encoding: "utf8" });
