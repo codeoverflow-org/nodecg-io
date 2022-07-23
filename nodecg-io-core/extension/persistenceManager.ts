@@ -95,8 +95,26 @@ export function deriveEncryptionKey(password: string, salt: string): string {
 
     return crypto
         .PBKDF2(password, saltWordArray, {
+            // Generate a 256 bit long key for AES-256.
             keySize: 256 / 32,
+            // Iterations should ideally be as high as possible.
+            // OWASP recommends 310.000 iterations for PBKDF2 with SHA-256 [https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2].
+            // The problem that we have here is that this is run inside the browser
+            // and we must use the JavaScript implementation which is slow.
+            // There is the SubtleCrypto API in browsers that is implemented in native code inside the browser and can use cryptographic CPU extensions.
+            // However SubtleCrypto is only available in secure contexts (https) so we cannot use it
+            // because nodecg-io should be usable on e.g. raspberry pi on a local trusted network.
+            // So were left with only 5000 iterations which were determined
+            // by checking how many iterations are possible on a AMD Ryzen 5 1600 in a single second
+            // which should be acceptable time for logging in. Slower CPUs will take longer,
+            // so I didn't want to increase this any further.
+
+            // For comparison: the crypto.js internal key generation function that was used in nodecg.io <0.3 configs
+            // used PBKDF1 based on a single MD5 iteration (yes, that is really the default in crypto.js...).
+            // So this is still a big improvement in comparison to the old config format.
             iterations: 5000,
+            // Use SHA-256 as the hashing algorithm. crypto.js defaults to SHA-1 which is less secure.
+            hasher: crypto.algo.SHA256,
         })
         .toString(crypto.enc.Hex);
 }
