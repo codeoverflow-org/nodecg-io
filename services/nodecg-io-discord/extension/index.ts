@@ -1,10 +1,10 @@
 import { NodeCG } from "nodecg-types/types/server";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
-import { Client as DiscordClient, IntentsString } from "discord.js";
+import { Client as DiscordClient, GatewayIntentBits } from "discord.js";
 
 interface DiscordServiceConfig {
     botToken: string;
-    intents?: IntentsString[];
+    intents?: GatewayIntentBits[];
 }
 
 export type DiscordServiceClient = DiscordClient;
@@ -13,21 +13,20 @@ module.exports = (nodecg: NodeCG) => {
     new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json").register();
 };
 
-// All except GUILD_MEMBERS and GUILD_PRESENCES.
-const defaultIntents: IntentsString[] = [
-    "DIRECT_MESSAGES",
-    "DIRECT_MESSAGE_REACTIONS",
-    "DIRECT_MESSAGE_TYPING",
-    "GUILDS",
-    "GUILD_BANS",
-    "GUILD_EMOJIS_AND_STICKERS",
-    "GUILD_INTEGRATIONS",
-    "GUILD_INVITES",
-    "GUILD_MESSAGES",
-    "GUILD_MESSAGE_REACTIONS",
-    "GUILD_MESSAGE_TYPING",
-    "GUILD_VOICE_STATES",
-    "GUILD_WEBHOOKS",
+const defaultIntents: GatewayIntentBits[] = [
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
+    GatewayIntentBits.DirectMessageTyping,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildIntegrations,
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMessageTyping,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildWebhooks,
 ];
 
 class DiscordService extends ServiceBundle<DiscordServiceConfig, DiscordServiceClient> {
