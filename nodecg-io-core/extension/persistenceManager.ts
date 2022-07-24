@@ -22,6 +22,20 @@ export interface PersistentData {
 
 /**
  * Models all the data that needs to be persistent in an encrypted manner.
+ *
+ * For nodecg-io <= 0.2 configurations only the ciphertext value may be set
+ * containing the encrypted data, iv and salt in the crypto.js format.
+ * Salt and iv are managed by crypto.js and all AES defaults with a password are used (PBKDF1 using 1 MD5 iteration).
+ * All this happens in the nodecg-io-core extension and the password is sent using NodeCG Messages.
+ *
+ * For nodecg-io >= 0.3 this was changed. PBKDF2 using SHA256 is directly run inside the browser when logging in.
+ * Only the derived AES encryption key is sent to the extension using NodeCG messages.
+ * That way analyzed network traffic and malicious bundles that listen for the same NodeCG message only allow getting
+ * the encryption key and not the plain text password that may be used somewhere else.
+ *
+ * Still with this security upgrade you should only use trusted bundles with your NodeCG installation
+ * and use https if your using the dashboard over a untrusted network.
+ *
  */
 export interface EncryptedData {
     /**
@@ -145,6 +159,47 @@ export function reEncryptData(
     data.cipherText = newCipherText;
     data.iv = iv;
     return emptySuccess();
+}
+
+/**
+ * Ensures that the passed encrypted data has the salt attribute set.
+ * The salt attribute is not set when either this is the first start of nodecg-io
+ * or if this is a old config from nodecg-io <= 0.2.
+ *
+ * If this is a new configuration a new salt will be generated and set inside the EncryptedData object.
+ * If this is a old configuration from nodecg-io <= 0.2 it will be migrated to the new format as well.
+ *
+ * @param data the encrypted data where the salt should be ensured to be available
+ * @param password the password of the encrypted data. Used if this config needs to be migrated
+ */
+export function ensureEncryptionSaltIsSet(data: EncryptedData, password: string): void {
+    if (data.salt !== undefined) {
+        // We already have a salt, so we have the new (nodecg-io >=0.3) format too.
+        // We don't need to do anything then.
+        return;
+    }
+
+    // No salt is present, which is the case for the nodecg-io <=0.2 configs
+    // where crypto-js derived the encryption key and managed the salt
+    // or when nodecg-io is first started.
+
+    // Generate a random salt.
+    const salt = crypto.lib.WordArray.random(128 / 8).toString();
+
+    if (data.cipherText !== undefined) {
+        // Salt is unset but we have some encrypted data.
+        // This means that this is a old config (nodecg-io <=0.2), that we need to migrate to the new format.
+
+        // Re-encrypt the configuration using our own derived key instead of the password.
+        const newEncryptionKey = deriveEncryptionKey(password, salt);
+        const newEncryptionKeyArr = crypto.enc.Hex.parse(newEncryptionKey);
+        const res = reEncryptData(data, password, newEncryptionKeyArr);
+        if (res.failed) {
+            throw new Error(`Failed to migrate config: ${res.errorMessage}`);
+        }
+    }
+
+    data.salt = salt;
 }
 
 /**
@@ -400,29 +455,8 @@ export class PersistenceManager {
                 try {
                     this.nodecg.log.info("Attempting to automatically login...");
 
-                    const salt = this.encryptedData.value.salt ?? crypto.lib.WordArray.random(128 / 8).toString();
-                    // Check if no salt is present, which is the case for the nodecg-io <=0.2 configs
-                    // where crypto-js derived the encryption key and managed the salt.
-                    if (this.encryptedData.value.salt === undefined) {
-                        // Salt is unset when nodecg-io is first started.
-
-                        if (this.encryptedData.value.cipherText !== undefined) {
-                            // Salt is unset but we have some encrypted data.
-                            // This means that this is a old config, that we need to migrate to the new format.
-
-                            // Re-encrypt the configuration using our own derived key instead of the password.
-                            const newEncryptionKey = deriveEncryptionKey(password, salt);
-                            const newEncryptionKeyArr = crypto.enc.Hex.parse(newEncryptionKey);
-                            const res = reEncryptData(this.encryptedData.value, password, newEncryptionKeyArr);
-                            if (res.failed) {
-                                throw new Error(`Failed to migrate config: ${res.errorMessage}`);
-                            }
-                        }
-
-                        this.encryptedData.value.salt = salt;
-                    }
-
-                    const encryptionKey = deriveEncryptionKey(password, salt);
+                    ensureEncryptionSaltIsSet(this.encryptedData.value, password);
+                    const encryptionKey = deriveEncryptionKey(password, this.encryptedData.value.salt ?? "");
                     const loadResult = await this.load(encryptionKey);
 
                     if (!loadResult.failed) {

@@ -4,6 +4,7 @@ import {
     decryptData,
     deriveEncryptionKey,
     reEncryptData,
+    ensureEncryptionSaltIsSet,
 } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/service";
@@ -72,29 +73,8 @@ export async function setPassword(pw: string): Promise<boolean> {
         encryptedData.value = {};
     }
 
-    const salt = encryptedData.value.salt ?? cryptoJS.lib.WordArray.random(128 / 8).toString();
-    // Check if no salt is present, which is the case for the nodecg-io <=0.2 configs
-    // where crypto-js derived the encryption key and managed the salt.
-    if (encryptedData.value.salt === undefined) {
-        // Salt is unset when nodecg-io is first started.
-
-        if (encryptedData.value.cipherText !== undefined) {
-            // Salt is unset but we have some encrypted data.
-            // This means that this is a old config, that we need to migrate to the new format.
-
-            // Re-encrypt the configuration using our own derived key instead of the password.
-            const newEncryptionKey = deriveEncryptionKey(pw, salt);
-            const newEncryptionKeyArr = cryptoJS.enc.Hex.parse(newEncryptionKey);
-            const res = reEncryptData(encryptedData.value, pw, newEncryptionKeyArr);
-            if (res.failed) {
-                throw new Error(`Failed to migrate config: ${res.errorMessage}`);
-            }
-        }
-
-        encryptedData.value.salt = salt;
-    }
-
-    encryptionKey = deriveEncryptionKey(pw, salt);
+    ensureEncryptionSaltIsSet(encryptedData.value, pw);
+    encryptionKey = deriveEncryptionKey(pw, encryptedData.value.salt ?? "");
 
     // Load framework, returns false if not already loaded and password/encryption key is wrong
     if ((await loadFramework()) === false) return false;
