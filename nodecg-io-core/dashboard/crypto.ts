@@ -3,7 +3,6 @@ import {
     EncryptedData,
     decryptData,
     deriveEncryptionKey,
-    reEncryptData,
     ensureEncryptionSaltIsSet,
 } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
