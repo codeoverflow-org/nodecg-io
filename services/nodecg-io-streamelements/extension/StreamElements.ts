@@ -4,7 +4,14 @@ import {
     StreamElementsCheerEvent,
     StreamElementsEvent,
     StreamElementsFollowEvent,
-    StreamElementsHostEvent, StreamElementsRaidEvent, StreamElementsSubscriberEvent, StreamElementsTipEvent
+    StreamElementsHostEvent,
+    StreamElementsRaidEvent,
+    StreamElementsSubscriberEvent,
+    StreamElementsTestCheerEvent,
+    StreamElementsTestFollowEvent,
+    StreamElementsTestHostEvent, StreamElementsTestRaidEvent,
+    StreamElementsTestSubscriberEvent,
+    StreamElementsTipEvent
 } from "./StreamElementsEvent";
 import { EventEmitter } from "events";
 import { Replicant } from "nodecg-types/types/server";
@@ -50,6 +57,7 @@ export class StreamElementsServiceClient extends EventEmitter {
             this.onTestEvent((data: StreamElementsEvent) => {
                 if (data.listener) {
                     this.emit("test", data);
+                    this.emit("test:" + data.listener, data);
                 }
             });
         }
@@ -146,6 +154,34 @@ export class StreamElementsServiceClient extends EventEmitter {
 
     public onTest(handler: (data: StreamElementsEvent) => void): void {
         this.on("test", handler);
+    }
+
+    public onTestSubscription(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
+        this.on("test:subscription-latest", handler);
+    }
+
+    public onTestCheer(handler: (data: StreamElementsTestCheerEvent) => void): void {
+        this.on("test:cheer-latest", handler);
+    }
+
+    public onTestGift(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
+        this.on("test:subscriber-latest", d => {
+            if(d.data.gifted) {
+                handler(d);
+            }
+        });
+    }
+
+    public onTestFollow(handler: (data: StreamElementsTestFollowEvent) => void): void {
+        this.on("test:follow-latest", handler);
+    }
+
+    public onTestRaid(handler: (data: StreamElementsTestRaidEvent) => void): void {
+        this.on("test:raid-latest", handler);
+    }
+
+    public onTestHost(handler: (data: StreamElementsTestHostEvent) => void): void {
+        this.on("test:host-latest", handler);
     }
 
     public setupReplicant(rep: Replicant<StreamElementsReplicant>): void {

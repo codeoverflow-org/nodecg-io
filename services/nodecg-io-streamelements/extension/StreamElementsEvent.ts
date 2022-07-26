@@ -44,6 +44,7 @@ export interface StreamElementsEvent {
      * Event property for test events
      */
     event?: StreamElementsTestEventData;
+
     [k: string]: unknown;
 }
 
@@ -101,6 +102,7 @@ export interface StreamElementsEventData {
      * URI of user avatar
      */
     avatar: string;
+
     [k: string]: unknown;
 }
 
@@ -158,6 +160,7 @@ export interface StreamElementsTestEventData {
      * URI of user avatar
      */
     avatar: string;
+
     [k: string]: unknown;
 }
 
@@ -273,6 +276,107 @@ export type StreamElementsSubscriberEvent = StreamElementsBaseEvent<"subscriber"
 }>;
 
 export type StreamElementsTipEvent = StreamElementsBaseEvent<"tip", {
+    /**
+     * The amount of money in the given currency that was tipped.
+     */
+    amount: number;
+    /**
+     * The user provided message for this tip.
+     */
+    message: string;
+    /**
+     * The currency symbol.
+     */
+    currency: string;
+    /**
+     * StreamElements's hexadecimal tip ID.
+     */
+    tipId: string;
+}>
+
+interface StreamElementsBaseTestEvent<TListener, TEvent> {
+    /**
+     * Event provider
+     */
+    provider: "twitch" | "youtube" | "facebook";
+    listener: TListener,
+    event: TEvent | StreamElementsTestDataBase
+}
+
+interface StreamElementsTestDataBase {
+    /**
+     * The url of the user's avatar.
+     */
+    avatar: string;
+    /**
+     * The users display name.
+     */
+    displayName: string;
+    /**
+     * The user's Twitch username.
+     */
+    name: string;
+    /**
+     * The Twitch Channel ID
+     */
+    providerId?: string;
+}
+
+export type StreamElementsTestFollowEvent = StreamElementsBaseTestEvent<"follower-latest", {}>
+
+export type StreamElementsTestCheerEvent = StreamElementsBaseTestEvent<"cheer-latest", {
+    /**
+     * The count of bits that were cheered.
+     */
+    amount: number;
+    /**
+     * The message contained in the cheer.
+     */
+    message: string;
+}>
+
+export type StreamElementsTestHostEvent = StreamElementsBaseTestEvent<"host-latest", {
+    /**
+     * Number of viewers that are watching through this host.
+     */
+    amount: number;
+}>
+
+export type StreamElementsTestRaidEvent = StreamElementsBaseTestEvent<"raid-latest", {
+    /**
+     * Number of viewers raiding this channel.
+     */
+    amount: number;
+}>
+
+export type StreamElementsTestSubscriberEvent = StreamElementsBaseTestEvent<"subscriber-latest", {
+    /**
+     * The total amount of months that this user has already subscribed.
+     */
+    amount: number;
+    /**
+     * True if this sub was gifted by someone else.
+     */
+    gifted?: boolean;
+    /**
+     * The username of the user that has gifted this sub.
+     */
+    sender?: string;
+    /**
+     * Subscription message by user
+     */
+    message: string;
+    /**
+     * Amount of consequent months this user already has subscribed.
+     */
+    streak: number;
+    /**
+     * The tier of the subscription.
+     */
+    tier: "1000" | "2000" | "3000" | "prime";
+}>
+
+export type StreamElementsTestTipEvent = StreamElementsBaseTestEvent<"tip-latest", {
     /**
      * The amount of money in the given currency that was tipped.
      */
