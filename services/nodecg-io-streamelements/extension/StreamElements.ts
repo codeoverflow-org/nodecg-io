@@ -1,17 +1,22 @@
 import io = require("socket.io-client");
 import { Result, emptySuccess, error } from "nodecg-io-core";
-import { StreamElementsEvent } from "./StreamElementsEvent";
+import {
+    StreamElementsCheerEvent,
+    StreamElementsEvent,
+    StreamElementsFollowEvent,
+    StreamElementsHostEvent, StreamElementsRaidEvent, StreamElementsSubscriberEvent, StreamElementsTipEvent
+} from "./StreamElementsEvent";
 import { EventEmitter } from "events";
 import { Replicant } from "nodecg-types/types/server";
 
 export interface StreamElementsReplicant {
-    lastSubscriber?: StreamElementsEvent;
-    lastTip?: StreamElementsEvent;
-    lastCheer?: StreamElementsEvent;
-    lastGift?: StreamElementsEvent;
-    lastFollow?: StreamElementsEvent;
-    lastRaid?: StreamElementsEvent;
-    lastHost?: StreamElementsEvent;
+    lastSubscriber?: StreamElementsSubscriberEvent;
+    lastTip?: StreamElementsTipEvent;
+    lastCheer?: StreamElementsCheerEvent;
+    lastGift?: StreamElementsSubscriberEvent;
+    lastFollow?: StreamElementsFollowEvent;
+    lastRaid?: StreamElementsRaidEvent;
+    lastHost?: StreamElementsHostEvent;
 }
 
 export class StreamElementsServiceClient extends EventEmitter {
@@ -111,31 +116,31 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    public onSubscriber(handler: (data: StreamElementsEvent) => void): void {
+    public onSubscriber(handler: (data: StreamElementsSubscriberEvent) => void): void {
         this.on("subscriber", handler);
     }
 
-    public onTip(handler: (data: StreamElementsEvent) => void): void {
+    public onTip(handler: (data: StreamElementsTipEvent) => void): void {
         this.on("tip", handler);
     }
 
-    public onCheer(handler: (data: StreamElementsEvent) => void): void {
+    public onCheer(handler: (data: StreamElementsCheerEvent) => void): void {
         this.on("cheer", handler);
     }
 
-    public onGift(handler: (data: StreamElementsEvent) => void): void {
+    public onGift(handler: (data: StreamElementsSubscriberEvent) => void): void {
         this.on("gift", handler);
     }
 
-    public onFollow(handler: (data: StreamElementsEvent) => void): void {
+    public onFollow(handler: (data: StreamElementsFollowEvent) => void): void {
         this.on("follow", handler);
     }
 
-    public onRaid(handler: (data: StreamElementsEvent) => void): void {
+    public onRaid(handler: (data: StreamElementsRaidEvent) => void): void {
         this.on("raid", handler);
     }
 
-    public onHost(handler: (data: StreamElementsEvent) => void): void {
+    public onHost(handler: (data: StreamElementsHostEvent) => void): void {
         this.on("host", handler);
     }
 
