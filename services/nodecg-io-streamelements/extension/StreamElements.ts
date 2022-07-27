@@ -6,7 +6,7 @@ import {
     StreamElementsHostEvent,
     StreamElementsRaidEvent,
     StreamElementsSubscriberEvent,
-    StreamElementsTestCheerEvent,
+    StreamElementsTestCheerEvent, StreamElementsTestEvent,
     StreamElementsTestFollowEvent,
     StreamElementsTestHostEvent, StreamElementsTestRaidEvent,
     StreamElementsTestSubscriberEvent, StreamElementsTestTipEvent,
@@ -53,7 +53,7 @@ export class StreamElementsServiceClient extends EventEmitter {
             this.emit(data.type, data);
         });
         if (this.handleTestEvents) {
-            this.onTestEvent((data: StreamElementsEvent) => {
+            this.onTestEvent((data: StreamElementsTestEvent) => {
                 if (data.listener) {
                     this.emit("test", data);
                     this.emit("test:" + data.listener, data);
@@ -115,8 +115,8 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    private onTestEvent(handler: (data: StreamElementsEvent) => void): void {
-        this.socket.on("event:test", (data: StreamElementsEvent) => {
+    private onTestEvent(handler: (data: StreamElementsTestEvent) => void): void {
+        this.socket.on("event:test", (data: StreamElementsTestEvent) => {
             if (data) {
                 handler(data);
             }
