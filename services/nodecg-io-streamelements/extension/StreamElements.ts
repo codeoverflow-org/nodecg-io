@@ -1,17 +1,28 @@
 import io = require("socket.io-client");
 import { Result, emptySuccess, error } from "nodecg-io-core";
-import { StreamElementsEvent } from "./StreamElementsEvent";
+import {
+    StreamElementsCheerEvent, StreamElementsEvent,
+    StreamElementsFollowEvent,
+    StreamElementsHostEvent,
+    StreamElementsRaidEvent,
+    StreamElementsSubscriberEvent,
+    StreamElementsTestCheerEvent, StreamElementsTestEvent,
+    StreamElementsTestFollowEvent,
+    StreamElementsTestHostEvent, StreamElementsTestRaidEvent,
+    StreamElementsTestSubscriberEvent, StreamElementsTestTipEvent,
+    StreamElementsTipEvent
+} from "./StreamElementsEvent";
 import { EventEmitter } from "events";
 import { Replicant } from "nodecg-types/types/server";
 
 export interface StreamElementsReplicant {
-    lastSubscriber?: StreamElementsEvent;
-    lastTip?: StreamElementsEvent;
-    lastCheer?: StreamElementsEvent;
-    lastGift?: StreamElementsEvent;
-    lastFollow?: StreamElementsEvent;
-    lastRaid?: StreamElementsEvent;
-    lastHost?: StreamElementsEvent;
+    lastSubscriber?: StreamElementsSubscriberEvent;
+    lastTip?: StreamElementsTipEvent;
+    lastCheer?: StreamElementsCheerEvent;
+    lastGift?: StreamElementsSubscriberEvent;
+    lastFollow?: StreamElementsFollowEvent;
+    lastRaid?: StreamElementsRaidEvent;
+    lastHost?: StreamElementsHostEvent;
 }
 
 export class StreamElementsServiceClient extends EventEmitter {
@@ -42,9 +53,10 @@ export class StreamElementsServiceClient extends EventEmitter {
             this.emit(data.type, data);
         });
         if (this.handleTestEvents) {
-            this.onTestEvent((data: StreamElementsEvent) => {
+            this.onTestEvent((data: StreamElementsTestEvent) => {
                 if (data.listener) {
                     this.emit("test", data);
+                    this.emit("test:" + data.listener, data);
                 }
             });
         }
@@ -103,44 +115,76 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    private onTestEvent(handler: (data: StreamElementsEvent) => void): void {
-        this.socket.on("event:test", (data: StreamElementsEvent) => {
+    private onTestEvent(handler: (data: StreamElementsTestEvent) => void): void {
+        this.socket.on("event:test", (data: StreamElementsTestEvent) => {
             if (data) {
                 handler(data);
             }
         });
     }
 
-    public onSubscriber(handler: (data: StreamElementsEvent) => void): void {
+    public onSubscriber(handler: (data: StreamElementsSubscriberEvent) => void): void {
         this.on("subscriber", handler);
     }
 
-    public onTip(handler: (data: StreamElementsEvent) => void): void {
+    public onTip(handler: (data: StreamElementsTipEvent) => void): void {
         this.on("tip", handler);
     }
 
-    public onCheer(handler: (data: StreamElementsEvent) => void): void {
+    public onCheer(handler: (data: StreamElementsCheerEvent) => void): void {
         this.on("cheer", handler);
     }
 
-    public onGift(handler: (data: StreamElementsEvent) => void): void {
+    public onGift(handler: (data: StreamElementsSubscriberEvent) => void): void {
         this.on("gift", handler);
     }
 
-    public onFollow(handler: (data: StreamElementsEvent) => void): void {
+    public onFollow(handler: (data: StreamElementsFollowEvent) => void): void {
         this.on("follow", handler);
     }
 
-    public onRaid(handler: (data: StreamElementsEvent) => void): void {
+    public onRaid(handler: (data: StreamElementsRaidEvent) => void): void {
         this.on("raid", handler);
     }
 
-    public onHost(handler: (data: StreamElementsEvent) => void): void {
+    public onHost(handler: (data: StreamElementsHostEvent) => void): void {
         this.on("host", handler);
     }
 
     public onTest(handler: (data: StreamElementsEvent) => void): void {
         this.on("test", handler);
+    }
+
+    public onTestSubscription(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
+        this.on("test:subscription-latest", handler);
+    }
+
+    public onTestCheer(handler: (data: StreamElementsTestCheerEvent) => void): void {
+        this.on("test:cheer-latest", handler);
+    }
+
+    public onTestGift(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
+        this.on("test:subscriber-latest", d => {
+            if(d.data.gifted) {
+                handler(d);
+            }
+        });
+    }
+
+    public onTestFollow(handler: (data: StreamElementsTestFollowEvent) => void): void {
+        this.on("test:follower-latest", handler);
+    }
+
+    public onTestRaid(handler: (data: StreamElementsTestRaidEvent) => void): void {
+        this.on("test:raid-latest", handler);
+    }
+
+    public onTestHost(handler: (data: StreamElementsTestHostEvent) => void): void {
+        this.on("test:host-latest", handler);
+    }
+
+    public onTestTip(handler: (data: StreamElementsTestTipEvent) => void): void {
+        this.on("test:tip-latest", handler);
     }
 
     public setupReplicant(rep: Replicant<StreamElementsReplicant>): void {
