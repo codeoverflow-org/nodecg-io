@@ -190,7 +190,7 @@ interface StreamElementsBaseEvent<TType, TData> {
     /**
      * The internal event data.
      */
-    data: TData | StreamElementsDataBase;
+    data: TData & StreamElementsDataBase;
     flagged: boolean;
     /**
      * Event provider
@@ -300,7 +300,7 @@ interface StreamElementsBaseTestEvent<TListener, TEvent> {
      */
     provider: "twitch" | "youtube" | "facebook";
     listener: TListener,
-    event: TEvent | StreamElementsTestDataBase
+    event: TEvent & StreamElementsTestDataBase
 }
 
 interface StreamElementsTestDataBase {

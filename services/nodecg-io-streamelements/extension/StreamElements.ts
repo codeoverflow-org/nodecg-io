@@ -1,8 +1,7 @@
 import io = require("socket.io-client");
 import { Result, emptySuccess, error } from "nodecg-io-core";
 import {
-    StreamElementsCheerEvent,
-    StreamElementsEvent,
+    StreamElementsCheerEvent, StreamElementsEvent,
     StreamElementsFollowEvent,
     StreamElementsHostEvent,
     StreamElementsRaidEvent,
@@ -10,7 +9,7 @@ import {
     StreamElementsTestCheerEvent,
     StreamElementsTestFollowEvent,
     StreamElementsTestHostEvent, StreamElementsTestRaidEvent,
-    StreamElementsTestSubscriberEvent,
+    StreamElementsTestSubscriberEvent, StreamElementsTestTipEvent,
     StreamElementsTipEvent
 } from "./StreamElementsEvent";
 import { EventEmitter } from "events";
@@ -173,7 +172,7 @@ export class StreamElementsServiceClient extends EventEmitter {
     }
 
     public onTestFollow(handler: (data: StreamElementsTestFollowEvent) => void): void {
-        this.on("test:follow-latest", handler);
+        this.on("test:follower-latest", handler);
     }
 
     public onTestRaid(handler: (data: StreamElementsTestRaidEvent) => void): void {
@@ -182,6 +181,10 @@ export class StreamElementsServiceClient extends EventEmitter {
 
     public onTestHost(handler: (data: StreamElementsTestHostEvent) => void): void {
         this.on("test:host-latest", handler);
+    }
+
+    public onTestTip(handler: (data: StreamElementsTestTipEvent) => void): void {
+        this.on("test:tip-latest", handler);
     }
 
     public setupReplicant(rep: Replicant<StreamElementsReplicant>): void {
