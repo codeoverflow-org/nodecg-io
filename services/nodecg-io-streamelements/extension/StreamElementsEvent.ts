@@ -53,7 +53,7 @@ interface StreamElementsDataBase {
     providerId?: string;
 }
 
-export type StreamElementsFollowEvent = StreamElementsBaseEvent<"follow", {}>;
+export type StreamElementsFollowEvent = StreamElementsBaseEvent<"follow", unknown>;
 
 export type StreamElementsCheerEvent = StreamElementsBaseEvent<"cheer", {
     /**
@@ -154,7 +154,7 @@ interface StreamElementsTestDataBase {
     providerId?: string;
 }
 
-export type StreamElementsTestFollowEvent = StreamElementsBaseTestEvent<"follower-latest", {}>
+export type StreamElementsTestFollowEvent = StreamElementsBaseTestEvent<"follower-latest", unknown>
 
 export type StreamElementsTestCheerEvent = StreamElementsBaseTestEvent<"cheer-latest", {
     /**
