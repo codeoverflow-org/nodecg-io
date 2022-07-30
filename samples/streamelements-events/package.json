@@ -21,7 +21,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^18.0.6",
+        "@types/node": "^18.6.2",
         "esbuild": "^0.14.51",
         "esbuild-plugin-alias": "^0.2.1",
         "nodecg-io-core": "^0.3.0",
