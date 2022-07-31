@@ -155,12 +155,8 @@ export class StreamElementsServiceClient extends EventEmitter {
         this.on("test", handler);
     }
 
-    public onTestSubscription(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
-        this.on("test:subscription-latest", handler);
-    }
-
-    public onTestCheer(handler: (data: StreamElementsTestCheerEvent) => void): void {
-        this.on("test:cheer-latest", handler);
+    public onTestSubscriber(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
+        this.on("test:subscriber-latest", handler);
     }
 
     public onTestGift(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
@@ -169,6 +165,10 @@ export class StreamElementsServiceClient extends EventEmitter {
                 handler(d);
             }
         });
+    }
+
+    public onTestCheer(handler: (data: StreamElementsTestCheerEvent) => void): void {
+        this.on("test:cheer-latest", handler);
     }
 
     public onTestFollow(handler: (data: StreamElementsTestFollowEvent) => void): void {
