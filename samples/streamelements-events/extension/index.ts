@@ -35,7 +35,7 @@ module.exports = function (nodecg: NodeCG) {
             nodecg.log.info(`${data.data.displayName} just subscribed for ${data.data.amount} months (${formatSubTier(data.data.tier)}).`);
         });
 
-        client.onTestSubscription((data) => {
+        client.onTestSubscriber((data) => {
             nodecg.log.info(`${data.event.displayName} just subscribed for ${data.event.amount} months (${formatSubTier(data.event.tier)}).`);
         })
 
