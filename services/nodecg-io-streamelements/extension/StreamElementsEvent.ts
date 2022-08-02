@@ -55,84 +55,110 @@ interface StreamElementsDataBase {
 
 export type StreamElementsFollowEvent = StreamElementsBaseEvent<"follow", unknown>;
 
-export type StreamElementsCheerEvent = StreamElementsBaseEvent<"cheer", {
-    /**
-     * The count of bits that were cheered.
-     */
-    amount: number;
-    /**
-     * The message contained in the cheer.
-     */
-    message: string;
-}>;
+export type StreamElementsCheerEvent = StreamElementsBaseEvent<
+    "cheer",
+    {
+        /**
+         * The count of bits that were cheered.
+         */
+        amount: number;
+        /**
+         * The message contained in the cheer.
+         */
+        message: string;
+    }
+>;
 
-export type StreamElementsHostEvent = StreamElementsBaseEvent<"host", {
-    /**
-     * Number of viewers that are watching through this host.
-     */
-    amount: number;
-}>;
+export type StreamElementsHostEvent = StreamElementsBaseEvent<
+    "host",
+    {
+        /**
+         * Number of viewers that are watching through this host.
+         */
+        amount: number;
+    }
+>;
 
-export type StreamElementsRaidEvent = StreamElementsBaseEvent<"raid", {
-    /**
-     * Number of viewers raiding this channel.
-     */
-    amount: number;
-}>;
+export type StreamElementsRaidEvent = StreamElementsBaseEvent<
+    "raid",
+    {
+        /**
+         * Number of viewers raiding this channel.
+         */
+        amount: number;
+    }
+>;
 
-export type StreamElementsSubscriberEvent = StreamElementsBaseEvent<"subscriber", {
-    /**
-     * The total amount of months that this user has already subscribed.
-     */
-    amount: number;
-    /**
-     * True if this sub was gifted by someone else.
-     */
-    gifted?: boolean;
-    /**
-     * The username of the user that has gifted this sub.
-     */
-    sender?: string;
-    /**
-     * Subscription message by user
-     */
-    message: string;
-    /**
-     * Amount of consequent months this user already has subscribed.
-     */
-    streak: number;
-    /**
-     * The tier of the subscription.
-     */
-    tier: "1000" | "2000" | "3000" | "prime";
-}>;
+export type StreamElementsSubscriberEvent = StreamElementsBaseEvent<
+    "subscriber",
+    {
+        /**
+         * The total amount of months that this user has already subscribed.
+         */
+        amount: number;
+        /**
+         * True if this sub was gifted by someone else.
+         */
+        gifted?: boolean;
+        /**
+         * The username of the user that has gifted this sub.
+         */
+        sender?: string;
+        /**
+         * Subscription message by user
+         */
+        message: string;
+        /**
+         * Amount of consequent months this user already has subscribed.
+         */
+        streak: number;
+        /**
+         * The tier of the subscription.
+         */
+        tier: "1000" | "2000" | "3000" | "prime";
+    }
+>;
 
-export type StreamElementsTipEvent = StreamElementsBaseEvent<"tip", {
+export interface StreamElementsSubBombEvent<T extends StreamElementsSubscriberEvent | StreamElementsTestSubscriberEvent> {
     /**
-     * The amount of money in the given currency that was tipped.
+     * The username of the gifter.
      */
-    amount: number;
+    gifterUsername: string;
     /**
-     * The user provided message for this tip.
+     * All gifted subs.
      */
-    message: string;
-    /**
-     * The currency symbol.
-     */
-    currency: string;
-    /**
-     * StreamElements's hexadecimal tip ID.
-     */
-    tipId: string;
-}>
+    subscribers: ReadonlyArray<T>;
+}
+
+export type StreamElementsTipEvent = StreamElementsBaseEvent<
+    "tip",
+    {
+        /**
+         * The amount of money in the given currency that was tipped.
+         */
+        amount: number;
+        /**
+         * The user provided message for this tip.
+         */
+        message: string;
+        /**
+         * The currency symbol.
+         */
+        currency: string;
+        /**
+         * StreamElements's hexadecimal tip ID.
+         */
+        tipId: string;
+    }
+>;
 
 interface StreamElementsBaseTestEvent<TListener, TEvent> {
     /**
      * Event provider
      */
     provider: "twitch" | "youtube" | "facebook";
-    listener: TListener,
-    event: TEvent & StreamElementsTestDataBase
+    listener: TListener;
+    event: TEvent & StreamElementsTestDataBase;
 }
 
 interface StreamElementsTestDataBase {
@@ -154,81 +180,96 @@ interface StreamElementsTestDataBase {
     providerId?: string;
 }
 
-export type StreamElementsTestFollowEvent = StreamElementsBaseTestEvent<"follower-latest", unknown>
+export type StreamElementsTestFollowEvent = StreamElementsBaseTestEvent<"follower-latest", unknown>;
 
-export type StreamElementsTestCheerEvent = StreamElementsBaseTestEvent<"cheer-latest", {
-    /**
-     * The count of bits that were cheered.
-     */
-    amount: number;
-    /**
-     * The message contained in the cheer.
-     */
-    message: string;
-}>
+export type StreamElementsTestCheerEvent = StreamElementsBaseTestEvent<
+    "cheer-latest",
+    {
+        /**
+         * The count of bits that were cheered.
+         */
+        amount: number;
+        /**
+         * The message contained in the cheer.
+         */
+        message: string;
+    }
+>;
 
-export type StreamElementsTestHostEvent = StreamElementsBaseTestEvent<"host-latest", {
-    /**
-     * Number of viewers that are watching through this host.
-     */
-    amount: number;
-}>
+export type StreamElementsTestHostEvent = StreamElementsBaseTestEvent<
+    "host-latest",
+    {
+        /**
+         * Number of viewers that are watching through this host.
+         */
+        amount: number;
+    }
+>;
 
-export type StreamElementsTestRaidEvent = StreamElementsBaseTestEvent<"raid-latest", {
-    /**
-     * Number of viewers raiding this channel.
-     */
-    amount: number;
-}>
+export type StreamElementsTestRaidEvent = StreamElementsBaseTestEvent<
+    "raid-latest",
+    {
+        /**
+         * Number of viewers raiding this channel.
+         */
+        amount: number;
+    }
+>;
 
-export type StreamElementsTestSubscriberEvent = StreamElementsBaseTestEvent<"subscriber-latest", {
-    /**
-     * The total amount of months that this user has already subscribed.
-     */
-    amount: number;
-    /**
-     * True if this sub was gifted by someone else.
-     */
-    gifted?: boolean;
-    /**
-     * The username of the user that has gifted this sub.
-     */
-    sender?: string;
-    /**
-     * Subscription message by user
-     */
-    message: string;
-    /**
-     * Amount of consequent months this user already has subscribed.
-     */
-    streak: number;
-    /**
-     * The tier of the subscription.
-     */
-    tier: "1000" | "2000" | "3000" | "prime";
-}>
+export type StreamElementsTestSubscriberEvent = StreamElementsBaseTestEvent<
+    "subscriber-latest",
+    {
+        /**
+         * The total amount of months that this user has already subscribed.
+         */
+        amount: number;
+        /**
+         * True if this sub was gifted by someone else.
+         */
+        gifted?: boolean;
+        /**
+         * The username of the user that has gifted this sub.
+         */
+        sender?: string;
+        /**
+         * Subscription message by user
+         */
+        message: string;
+        /**
+         * Amount of consequent months this user already has subscribed.
+         */
+        streak: number;
+        /**
+         * The tier of the subscription.
+         */
+        tier: "1000" | "2000" | "3000" | "prime";
+    }
+>;
 
-export type StreamElementsTestTipEvent = StreamElementsBaseTestEvent<"tip-latest", {
-    /**
-     * The amount of money in the given currency that was tipped.
-     */
-    amount: number;
-    /**
-     * The user provided message for this tip.
-     */
-    message: string;
-    /**
-     * The currency symbol.
-     */
-    currency: string;
-    /**
-     * StreamElements's hexadecimal tip ID.
-     */
-    tipId: string;
-}>
+export type StreamElementsTestTipEvent = StreamElementsBaseTestEvent<
+    "tip-latest",
+    {
+        /**
+         * The amount of money in the given currency that was tipped.
+         */
+        amount: number;
+        /**
+         * The user provided message for this tip.
+         */
+        message: string;
+        /**
+         * The currency symbol.
+         */
+        currency: string;
+        /**
+         * StreamElements's hexadecimal tip ID.
+         */
+        tipId: string;
+    }
+>;
 
 export type StreamElementsEvent =
-    StreamElementsFollowEvent
+    | StreamElementsFollowEvent
     | StreamElementsCheerEvent
     | StreamElementsHostEvent
     | StreamElementsRaidEvent
@@ -236,7 +277,7 @@ export type StreamElementsEvent =
     | StreamElementsTipEvent;
 
 export type StreamElementsTestEvent =
-    StreamElementsTestFollowEvent
+    | StreamElementsTestFollowEvent
     | StreamElementsTestCheerEvent
     | StreamElementsTestHostEvent
     | StreamElementsTestRaidEvent
