@@ -32,24 +32,44 @@ module.exports = function (nodecg: NodeCG) {
         });
 
         client.onSubscriber((data) => {
-            nodecg.log.info(`${data.data.displayName} just subscribed for ${data.data.amount} months (${formatSubTier(data.data.tier)}).`);
+            nodecg.log.info(
+                `${data.data.displayName} just subscribed for ${data.data.amount} months (${formatSubTier(
+                    data.data.tier,
+                )}).`,
+            );
         });
 
         client.onTestSubscriber((data) => {
-            nodecg.log.info(`${data.event.displayName} just subscribed for ${data.event.amount} months (${formatSubTier(data.event.tier)}).`);
-        })
+            nodecg.log.info(
+                `${data.event.displayName} just subscribed for ${data.event.amount} months (${formatSubTier(
+                    data.event.tier,
+                )}).`,
+            );
+        });
+
+        client.onSubscriberBomb((data) => {
+            nodecg.log.info(`${data.gifterUsername} just gifted ${data.subscribers.length} subs.`);
+        });
+
+        client.onTestSubscriberBomb((data) => {
+            nodecg.log.info(`${data.gifterUsername} just gifted ${data.subscribers.length} subs.`);
+        });
 
         client.onGift((data) => {
             nodecg.log.info(
-                `${data.data.displayName} just got a tier ${formatSubTier(data.data.tier)} subscription from ${data.data.sender ?? "anonymous"}! It's ${data.data.displayName}'s ${data.data.amount} month.`,
+                `${data.data.displayName} just got a tier ${formatSubTier(data.data.tier)} subscription from ${
+                    data.data.sender ?? "anonymous"
+                }! It's ${data.data.displayName}'s ${data.data.amount} month.`,
             );
         });
 
         client.onTestGift((data) => {
             nodecg.log.info(
-                `${data.event.displayName} just got a tier ${formatSubTier(data.event.tier)} subscription from ${data.event.sender ?? "anonymous"}! It's ${data.event.displayName}'s ${data.event.amount} month.`,
+                `${data.event.displayName} just got a tier ${formatSubTier(data.event.tier)} subscription from ${
+                    data.event.sender ?? "anonymous"
+                }! It's ${data.event.displayName}'s ${data.event.amount} month.`,
             );
-        })
+        });
 
         client.onHost((data) => {
             nodecg.log.info(`${data.data.displayName} just hosted the stream for ${data.data.amount} viewer(s).`);
@@ -57,7 +77,7 @@ module.exports = function (nodecg: NodeCG) {
 
         client.onTestHost((data) => {
             nodecg.log.info(`${data.event.displayName} just hosted the stream for ${data.event.amount} viewer(s).`);
-        })
+        });
 
         client.onRaid((data) => {
             nodecg.log.info(`${data.data.displayName} just raided the stream with ${data.data.amount} viewers.`);
@@ -92,8 +112,7 @@ module.exports = function (nodecg: NodeCG) {
 };
 
 function formatSubTier(tier: "1000" | "2000" | "3000" | "prime"): string {
-    if (tier === "prime")
-        return "Twitch Prime";
+    if (tier === "prime") return "Twitch Prime";
 
     // We want to display the tier as 1, 2, 3
     // However StreamElements stores the sub tiers as 1000, 2000 and 3000.
