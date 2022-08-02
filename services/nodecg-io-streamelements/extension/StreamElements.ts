@@ -62,9 +62,11 @@ export class StreamElementsServiceClient extends EventEmitter {
         this.onEvent((data: StreamElementsEvent) => {
             if (data.type === "subscriber") {
                 if (data.data.gifted) {
-                    this.handleSubGift(data.data.sender, data,
+                    this.handleSubGift(
+                        data.data.sender,
+                        data,
                         (subBomb) => this.emit("subbomb", subBomb),
-                        (gift)  => this.emit("gift", gift)
+                        (gift) => this.emit("gift", gift),
                     );
                 }
             }
@@ -81,9 +83,11 @@ export class StreamElementsServiceClient extends EventEmitter {
 
             this.onTestSubscriber((data) => {
                 if (data.event.gifted) {
-                    this.handleSubGift(data.event.sender, data,
+                    this.handleSubGift(
+                        data.event.sender,
+                        data,
                         (subBomb) => this.emit("test:subbomb", subBomb),
-                        (gift)  => this.emit("test:gift", gift)
+                        (gift) => this.emit("test:gift", gift),
                     );
                 }
             });
@@ -186,8 +190,11 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    public onSubscriber(handler: (data: StreamElementsSubscriberEvent) => void): void {
-        this.on("subscriber", handler);
+    public onSubscriber(handler: (data: StreamElementsSubscriberEvent) => void, includeSubGifts = true): void {
+        this.on("subscriber", (data) => {
+            if (data.data.gifted && !includeSubGifts) return;
+            handler(data);
+        });
     }
 
     public onSubscriberBomb(handler: (data: StreamElementsSubBombEvent<StreamElementsSubscriberEvent>) => void): void {
@@ -222,8 +229,11 @@ export class StreamElementsServiceClient extends EventEmitter {
         this.on("test", handler);
     }
 
-    public onTestSubscriber(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
-        this.on("test:subscriber-latest", handler);
+    public onTestSubscriber(handler: (data: StreamElementsTestSubscriberEvent) => void, includeSubGifts = true): void {
+        this.on("test:subscriber-latest", (data) => {
+            if (data.event.gifted && !includeSubGifts) return;
+            handler(data);
+        });
     }
 
     public onTestSubscriberBomb(
@@ -261,13 +271,13 @@ export class StreamElementsServiceClient extends EventEmitter {
             rep.value = {};
         }
 
-        this.onSubscriber(data => rep.value.lastSubscriber = data);
-        this.onSubscriberBomb(data => rep.value.lastSubBomb = data);
-        this.onTip(data => rep.value.lastTip = data);
-        this.onCheer(data => rep.value.lastCheer = data);
-        this.onGift(data => rep.value.lastGift = data);
-        this.onFollow(data => rep.value.lastFollow = data);
-        this.onRaid(data => rep.value.lastRaid = data);
-        this.onHost(data => rep.value.lastHost = data);
+        this.onSubscriber((data) => (rep.value.lastSubscriber = data));
+        this.onSubscriberBomb((data) => (rep.value.lastSubBomb = data));
+        this.onTip((data) => (rep.value.lastTip = data));
+        this.onCheer((data) => (rep.value.lastCheer = data));
+        this.onGift((data) => (rep.value.lastGift = data));
+        this.onFollow((data) => (rep.value.lastFollow = data));
+        this.onRaid((data) => (rep.value.lastRaid = data));
+        this.onHost((data) => (rep.value.lastHost = data));
     }
 }
