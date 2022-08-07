@@ -21,32 +21,32 @@
             <p>
                 Last subscriber:
                 <span v-if="streamElementsReplicant?.lastSubscriber">
-                    {{ streamElementsReplicant?.lastSubscriber?.data.displayName }} subscribed for
-                    {{ streamElementsReplicant?.lastSubscriber?.data.amount }} months ({{ subTier }}).
+                    {{ streamElementsReplicant?.lastSubscriber?.data.displayName }} subscribed for {{
+                    streamElementsReplicant?.lastSubscriber?.data.amount }} months ({{ subTier }}).
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last subbomb:
                 <span v-if="streamElementsReplicant?.lastSubBomb">
-                    {{ streamElementsReplicant?.lastSubBomb.gifterUsername }} gifted
-                    {{ streamElementsReplicant?.subscribers.subs.length }}.
+                    {{ streamElementsReplicant?.lastSubBomb.gifterUsername }} gifted {{
+                    streamElementsReplicant?.subscribers.subs.length }}.
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last tip:
                 <span v-if="streamElementsReplicant?.lastTip">
-                    {{ streamElementsReplicant?.lastSubscriber?.data.displayName }} subscribed for
-                    {{ streamElementsReplicant?.lastSubscriber?.data.amount }} months.
+                    {{ streamElementsReplicant?.lastSubscriber?.data.displayName }} subscribed for {{
+                    streamElementsReplicant?.lastSubscriber?.data.amount }} months.
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last cheer:
                 <span v-if="streamElementsReplicant?.lastCheer">
-                    {{ streamElementsReplicant?.lastCheer?.data.amount }} bits by
-                    {{ streamElementsReplicant?.lastCheer?.data.displayName }}.
+                    {{ streamElementsReplicant?.lastCheer?.data.amount }} bits by {{
+                    streamElementsReplicant?.lastCheer?.data.displayName }}.
                 </span>
                 <span v-else>none</span>
             </p>
@@ -60,16 +60,16 @@
             <p>
                 Last raid:
                 <span v-if="streamElementsReplicant?.lastRaid">
-                    {{ streamElementsReplicant?.lastRaid?.data.displayName }} raided with
-                    {{ streamElementsReplicant?.lastRaid?.data.amount }} viewers.
+                    {{ streamElementsReplicant?.lastRaid?.data.displayName }} raided with {{
+                    streamElementsReplicant?.lastRaid?.data.amount }} viewers.
                 </span>
                 <span v-else>none</span>
             </p>
             <p>
                 Last host:
                 <span v-if="streamElementsReplicant?.lastHost">
-                    {{ streamElementsReplicant?.lastHost?.data.displayName }} hosted with
-                    {{ streamElementsReplicant?.lastHost?.data.viewers }} viewers.
+                    {{ streamElementsReplicant?.lastHost?.data.displayName }} hosted with {{
+                    streamElementsReplicant?.lastHost?.data.viewers }} viewers.
                 </span>
                 <span v-else>none</span>
             </p>

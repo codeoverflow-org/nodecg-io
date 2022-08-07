@@ -119,7 +119,9 @@ export type StreamElementsSubscriberEvent = StreamElementsBaseEvent<
     }
 >;
 
-export interface StreamElementsSubBombEvent<T extends StreamElementsSubscriberEvent | StreamElementsTestSubscriberEvent> {
+export interface StreamElementsSubBombEvent<
+    T extends StreamElementsSubscriberEvent | StreamElementsTestSubscriberEvent,
+> {
     /**
      * The username of the gifter.
      */
