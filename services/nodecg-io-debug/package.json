@@ -50,7 +50,7 @@
         "@types/node": "^18.6.2",
         "esbuild": "^0.14.51",
         "nodecg-io-tsconfig": "^1.0.0",
-        "monaco-editor": "^0.33.0",
+        "monaco-editor": "^0.34.0",
         "typescript": "^4.7.4"
     },
     "dependencies": {
