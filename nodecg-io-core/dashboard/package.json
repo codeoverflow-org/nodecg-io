@@ -26,7 +26,7 @@
     "dependencies": {
         "crypto-js": "^4.1.1",
         "nodecg-io-core": "^0.3.0",
-        "nodecg-types": "^1.8.3",
+        "nodecg-types": "^1.9.0",
         "events": "^3.3.0"
     },
     "license": "MIT"

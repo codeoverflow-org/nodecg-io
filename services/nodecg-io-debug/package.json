@@ -55,6 +55,6 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
-        "nodecg-types": "^1.8.3"
+        "nodecg-types": "^1.9.0"
     }
 }
