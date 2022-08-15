@@ -2,6 +2,7 @@ import { NodeCG, ReplicantServer } from "nodecg-types/types/server";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import crypto from "crypto-js";
+import * as argon2 from "argon2-browser";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./service";
 import { ServiceManager } from "./serviceManager";
@@ -28,13 +29,13 @@ export interface PersistentData {
  * Salt and iv are managed by crypto.js and all AES defaults with a password are used (PBKDF1 using 1 MD5 iteration).
  * All this happens in the nodecg-io-core extension and the password is sent using NodeCG Messages.
  *
- * For nodecg-io >= 0.3 this was changed. PBKDF2 using SHA256 is directly run inside the browser when logging in.
+ * For nodecg-io >= 0.3 this was changed. A encryption key is derived using argon2id directly inside the browser when logging in.
  * Only the derived AES encryption key is sent to the extension using NodeCG messages.
  * That way analyzed network traffic and malicious bundles that listen for the same NodeCG message only allow getting
  * the encryption key and not the plain text password that may be used somewhere else.
  *
  * Still with this security upgrade you should only use trusted bundles with your NodeCG installation
- * and use https if your using the dashboard over a untrusted network.
+ * and use https if you're using the dashboard over a untrusted network.
  *
  */
 export interface EncryptedData {
@@ -101,36 +102,27 @@ export function encryptData(data: PersistentData, encryptionKey: crypto.lib.Word
  * Derives a key suitable for encrypting the config from the given password.
  *
  * @param password the password from which the encryption key will be derived.
- * @param salt the salt that is used for key derivation.
+ * @param salt the hex encoded salt that is used for key derivation.
  * @returns a hex encoded string of the derived key.
  */
-export function deriveEncryptionKey(password: string, salt: string): string {
-    const saltWordArray = crypto.enc.Hex.parse(salt);
+export async function deriveEncryptionKey(password: string, salt: string): Promise<string> {
+    const saltBytes = Uint8Array.from(salt.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) ?? []);
 
-    return crypto
-        .PBKDF2(password, saltWordArray, {
-            // Generate a 256 bit long key for AES-256.
-            keySize: 256 / 32,
-            // Iterations should ideally be as high as possible.
-            // OWASP recommends 310.000 iterations for PBKDF2 with SHA-256 [https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2].
-            // The problem that we have here is that this is run inside the browser
-            // and we must use the JavaScript implementation which is slow.
-            // There is the SubtleCrypto API in browsers that is implemented in native code inside the browser and can use cryptographic CPU extensions.
-            // However SubtleCrypto is only available in secure contexts (https) so we cannot use it
-            // because nodecg-io should be usable on e.g. raspberry pi on a local trusted network.
-            // So were left with only 5000 iterations which were determined
-            // by checking how many iterations are possible on a AMD Ryzen 5 1600 in a single second
-            // which should be acceptable time for logging in. Slower CPUs will take longer,
-            // so I didn't want to increase this any further.
+    const hash = await argon2.hash({
+        pass: password,
+        salt: saltBytes,
+        // OWASP reccomends either t=1,m=37MiB or t=2,m=37MiB for argon2id:
+        // https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet#Argon2id
+        // On a Ryzen 5 5500u a single iteration is about 220 ms. Two iterations would make that about 440 ms, which is still fine.
+        // This is run inside the browser when logging in, therefore 37 MiB is acceptable too.
+        // To future proof this we use 37 MiB ram and 2 iterations.
+        time: 2,
+        mem: 37 * 1024,
+        hashLen: 32, // Output size: 32 bytes = 256 bits as a key for AES-256
+        type: argon2.ArgonType.Argon2id,
+    });
 
-            // For comparison: the crypto.js internal key generation function that was used in nodecg.io <0.3 configs
-            // used PBKDF1 based on a single MD5 iteration (yes, that is really the default in crypto.js...).
-            // So this is still a big improvement in comparison to the old config format.
-            iterations: 5000,
-            // Use SHA-256 as the hashing algorithm. crypto.js defaults to SHA-1 which is less secure.
-            hasher: crypto.algo.SHA256,
-        })
-        .toString(crypto.enc.Hex);
+    return hash.hashHex;
 }
 
 /**
@@ -166,17 +158,18 @@ export function reEncryptData(
  * The salt attribute is not set when either this is the first start of nodecg-io
  * or if this is a old config from nodecg-io <= 0.2.
  *
- * If this is a new configuration a new salt will be generated and set inside the EncryptedData object.
+ * If this is a new configuration a new salt will be generated, set inside the EncryptedData object and returned.
  * If this is a old configuration from nodecg-io <= 0.2 it will be migrated to the new format as well.
  *
  * @param data the encrypted data where the salt should be ensured to be available
  * @param password the password of the encrypted data. Used if this config needs to be migrated
+ * @return returns the either retrieved or generated salt
  */
-export function ensureEncryptionSaltIsSet(data: EncryptedData, password: string): void {
+export async function getEncryptionSalt(data: EncryptedData, password: string): Promise<string> {
     if (data.salt !== undefined) {
         // We already have a salt, so we have the new (nodecg-io >=0.3) format too.
         // We don't need to do anything then.
-        return;
+        return data.salt;
     }
 
     // No salt is present, which is the case for the nodecg-io <=0.2 configs
@@ -191,7 +184,7 @@ export function ensureEncryptionSaltIsSet(data: EncryptedData, password: string)
         // This means that this is a old config (nodecg-io <=0.2), that we need to migrate to the new format.
 
         // Re-encrypt the configuration using our own derived key instead of the password.
-        const newEncryptionKey = deriveEncryptionKey(password, salt);
+        const newEncryptionKey = await deriveEncryptionKey(password, salt);
         const newEncryptionKeyArr = crypto.enc.Hex.parse(newEncryptionKey);
         const res = reEncryptData(data, password, newEncryptionKeyArr);
         if (res.failed) {
@@ -200,6 +193,7 @@ export function ensureEncryptionSaltIsSet(data: EncryptedData, password: string)
     }
 
     data.salt = salt;
+    return salt;
 }
 
 /**
@@ -455,8 +449,8 @@ export class PersistenceManager {
                 try {
                     this.nodecg.log.info("Attempting to automatically login...");
 
-                    ensureEncryptionSaltIsSet(this.encryptedData.value, password);
-                    const encryptionKey = deriveEncryptionKey(password, this.encryptedData.value.salt ?? "");
+                    const salt = await getEncryptionSalt(this.encryptedData.value, password);
+                    const encryptionKey = await deriveEncryptionKey(password, salt);
                     const loadResult = await this.load(encryptionKey);
 
                     if (!loadResult.failed) {

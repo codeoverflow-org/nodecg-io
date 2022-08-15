@@ -3,7 +3,7 @@ import {
     EncryptedData,
     decryptData,
     deriveEncryptionKey,
-    ensureEncryptionSaltIsSet,
+    getEncryptionSalt,
 } from "nodecg-io-core/extension/persistenceManager";
 import { EventEmitter } from "events";
 import { ObjectMap, ServiceInstance, ServiceDependency, Service } from "nodecg-io-core/extension/service";
@@ -72,8 +72,8 @@ export async function setPassword(pw: string): Promise<boolean> {
         encryptedData.value = {};
     }
 
-    ensureEncryptionSaltIsSet(encryptedData.value, pw);
-    encryptionKey = deriveEncryptionKey(pw, encryptedData.value.salt ?? "");
+    const salt = await getEncryptionSalt(encryptedData.value, pw);
+    encryptionKey = await deriveEncryptionKey(pw, salt);
 
     // Load framework, returns false if not already loaded and password/encryption key is wrong
     if ((await loadFramework()) === false) return false;
