@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "is-ip": "^3.1.0",
+        "is-ip": "^5.0.0",
         "node-hue-api": "^4.0.11",
         "nodecg-io-core": "^0.3.0"
     }
