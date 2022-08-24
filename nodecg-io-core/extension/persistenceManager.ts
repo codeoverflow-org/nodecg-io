@@ -459,15 +459,15 @@ export class PersistenceManager {
                         throw new Error(loadResult.errorMessage);
                     }
                 } catch (err) {
-                    const logMesssage = `Failed to automatically login: ${err}`;
+                    const logMessage = `Failed to automatically login: ${err}`;
                     if (this.isLoaded()) {
                         // load() threw an error but nodecg-io is currently loaded nonetheless.
                         // Anyway, nodecg-io is loaded which is what we wanted
-                        this.nodecg.log.warn(logMesssage);
+                        this.nodecg.log.warn(logMessage);
                     } else {
                         // Something went wrong and nodecg-io is not loaded.
                         // This is a real error, the password might be wrong or some other issue.
-                        this.nodecg.log.error(logMesssage);
+                        this.nodecg.log.error(logMessage);
                     }
                 }
             }

@@ -17,8 +17,8 @@ describe("PersistenceManager", () => {
     const validPassword = "myPassword";
     const invalidPassword = "myInvalidPassword";
     const salt = crypto.lib.WordArray.random(128 / 8).toString();
-    const validEncryptionKey = deriveEncryptionKey(validPassword, salt).toString();
-    const invalidEncryptionKey = deriveEncryptionKey(invalidPassword, salt).toString();
+    let validEncryptionKey = ""; // Generated in beforeEach
+    let invalidEncryptionKey = "";
 
     const nodecg = new MockNodeCG();
     const serviceManager = new ServiceManager(nodecg);
@@ -30,7 +30,12 @@ describe("PersistenceManager", () => {
     const encryptedDataReplicant = nodecg.Replicant<EncryptedData>("encryptedConfig");
     let persistenceManager: PersistenceManager;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+        if (!validEncryptionKey || !invalidEncryptionKey) {
+            validEncryptionKey = await deriveEncryptionKey(validPassword, salt);
+            invalidEncryptionKey = await deriveEncryptionKey(invalidPassword, salt);
+        }
+
         encryptedDataReplicant.removeAllListeners();
         encryptedDataReplicant.value = {};
 
@@ -310,6 +315,8 @@ describe("PersistenceManager", () => {
                 else return error("encryption key invalid");
             });
             nodecgBundleReplicant.value = bundleRepValue ?? [nodecg.bundleName];
+            // Wait for automatic login to trigger
+            await new Promise((res) => setTimeout(res, 500));
         }
 
         beforeEach(() => {

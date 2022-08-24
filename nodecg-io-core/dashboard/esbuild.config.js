@@ -11,32 +11,6 @@ const fs = require("fs");
 const args = new Set(process.argv.slice(2));
 const prod = process.env.NODE_ENV === "production";
 
-// esbuild plugin to bundle wasm modules as base64 encoded strings
-// inside the generate js bundle.
-// This is used for the argon2-browser wasm module.
-// This is documented here: https://github.com/evanw/esbuild/issues/408#issuecomment-757555771
-const wasmPlugin = {
-    name: 'wasm',
-    setup(build) {
-        const namespace = "wasm-binary";
-
-        build.onResolve({ filter: /\.wasm$/ }, args => {
-            if (args.resolveDir === '') {
-                return // Ignore unresolvable paths
-            }
-            return {
-                path: path.isAbsolute(args.path) ? args.path : path.join(args.resolveDir, args.path),
-                namespace,
-            }
-        })
-
-        build.onLoad({ filter: /.*/, namespace }, async (args) => ({
-            contents: await fs.promises.readFile(args.path),
-            loader: 'base64',
-        }))
-    },
-};
-
 const entryPoints = [
     "monaco-editor/esm/vs/language/json/json.worker.js",
     "monaco-editor/esm/vs/editor/editor.worker.js",
@@ -120,7 +94,6 @@ const BuildOptions = {
     // because these code paths aren't executed we can just ignore the error that they don't exist in browser environments.
     // See https://github.com/antelle/argon2-browser/issues/79 and https://github.com/antelle/argon2-browser/issues/26
     external: ["fs", "path"],
-    plugins: [wasmPlugin],
 };
 
 esbuild
