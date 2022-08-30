@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The unique name of the google cast device that is independent of host."
+        },
+        "friendlyName": {
+            "type": "string",
+            "description": "The user configured friendly display name of this google cast device."
+        },
+        "host": {
+            "type": "string",
+            "description": "The network host (ip or mDNS hostname) of this google cast device."
+        }
+    },
+    "required": ["host"]
+}
