@@ -29,6 +29,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - Elgato lights
 - GitHub
 - Google APIs
+- Google Cast
 - IntelliJ IDEs
 - IRC (Internet Relay Chat)
 - MIDI Input
