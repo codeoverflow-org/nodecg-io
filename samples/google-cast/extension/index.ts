@@ -5,11 +5,11 @@ import { requireService } from "nodecg-io-core";
 module.exports = function (nodecg: NodeCG) {
     nodecg.log.info("Sample bundle for the google-cast service started.");
 
-    const template = requireService<GoogleCastClient>(nodecg, "google-cast");
+    const googleCast = requireService<GoogleCastClient>(nodecg, "google-cast");
 
     let previousDevice: GoogleCastClient | undefined = undefined;
 
-    template?.onAvailable((castDevice) => {
+    googleCast?.onAvailable((castDevice) => {
         nodecg.log.info("google-cast service available.");
         previousDevice = castDevice;
 
@@ -22,7 +22,7 @@ module.exports = function (nodecg: NodeCG) {
         });
     });
 
-    template?.onUnavailable(() => {
+    googleCast?.onUnavailable(() => {
         nodecg.log.info("google-cast service unavailable.");
 
         if (previousDevice !== undefined) {
