@@ -13,7 +13,7 @@ async function playTTSInGraphic(client: OpenTTSClient, nodecg: NodeCG) {
     if (voiceName === undefined) throw new Error("no voice available");
 
     const helloWorldUrl = client.generateWavUrl("Hello World", voiceName);
-    await nodecg.sendMessage("setSrc", helloWorldUrl);
+    nodecg.sendMessage("setSrc", helloWorldUrl);
 }
 
 module.exports = function (nodecg: NodeCG) {
@@ -23,9 +23,10 @@ module.exports = function (nodecg: NodeCG) {
 
     nodecg.listenFor("ready", () => {
         const client = opentts?.getClient();
-        if (client !== undefined){
-            playTTSInGraphic(client, nodecg)
-                .catch(err => nodecg.log.error(`Error while trying to play tts message: ${err.messages}`));
+        if (client !== undefined) {
+            playTTSInGraphic(client, nodecg).catch((err) =>
+                nodecg.log.error(`Error while trying to play tts message: ${err.messages}`),
+            );
         }
     });
 

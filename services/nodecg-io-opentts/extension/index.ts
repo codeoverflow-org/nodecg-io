@@ -25,8 +25,7 @@ class OpenTTSService extends ServiceBundle<OpenTTSConfig, OpenTTSClient> {
         return success(client);
     }
 
-    stopClient(_: OpenTTSClient, logger: Logger): void {
+    stopClient(_: OpenTTSClient, _logger: Logger): void {
         // Client is stateless, no need to stop anything
     }
 }
-
