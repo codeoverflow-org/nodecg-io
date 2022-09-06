@@ -22,7 +22,6 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - Android (using adb)
 - Art-Net
 - Atem
-- CurseForge
 - DBus
 - Discord
 - Discord RPC
