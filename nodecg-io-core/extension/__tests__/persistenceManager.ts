@@ -5,13 +5,21 @@ import {
     decryptData,
     deriveEncryptionKey,
     EncryptedData,
+    getEncryptionSalt,
     PersistenceManager,
     PersistentData,
 } from "../persistenceManager";
 import { ServiceManager } from "../serviceManager";
 import { ServiceProvider } from "../serviceProvider";
 import { emptySuccess, error } from "../utils/result";
-import { MockNodeCG, testBundle, testInstance, testService, testServiceInstance } from "./mocks";
+import {
+    MockNodeCG,
+    testBundle,
+    testInstance,
+    testService,
+    testServiceInstance,
+    websocketServerService,
+} from "./mocks";
 
 describe("PersistenceManager", () => {
     const validPassword = "myPassword";
@@ -23,6 +31,7 @@ describe("PersistenceManager", () => {
     const nodecg = new MockNodeCG();
     const serviceManager = new ServiceManager(nodecg);
     serviceManager.registerService(testService);
+    serviceManager.registerService(websocketServerService);
 
     let bundleManager: BundleManager;
     let instanceManager: InstanceManager;
@@ -261,6 +270,54 @@ describe("PersistenceManager", () => {
             const deps = bundleManager.getBundleDependencies()[testBundle];
             expect(deps?.[0]).toBeDefined();
             expect(deps?.[0]?.serviceInstance).toBeUndefined();
+        });
+
+        // Config migration
+
+        test("should be able to migrate nodecg-io <= 0.2 config to a newer nodecg-io >= 0.3 config", async () => {
+            // Old nodecg-io 0.2 config with the following values:
+            // password: 654321
+            // services:
+            //   ws -> websocket-server
+            //     port: 5678
+            // bundles:
+            //   ws-server-test:
+            //     websocket-server -> ws
+            const oldConfig: EncryptedData = {
+                cipherText:
+                    "U2FsdGVkX19/ECpN7V/FUE4WQ3Fp5mb/0y06HHG6TVw7oRdQfMygbnfP2VtgJ7MVx/Uw7U5wI7jlwSNHN/3eG0rY0Du2E5jJbHr3OHl5OfgsZKWbGVoEzuCtEsLjSz1FeEf4C2VIvjWeJWTKBmSm+DVitNRwwM6Ex+f97gI0HbWjU9qVhBsw05RY9vA4/XpsucRdEh5Q6RIDnVn3Gj75OlB7IlsygCv2IzxnGqx4vr3k8J4kQo8DBhyOdxQtYCkHSpuM0d3cBOMAgySZWcw2EU5PN7F6wMmeR5Zko10LhNuMntSD+Zw6yZFeFPVDRM4OhVv8146zZX5+w3XJX2KZjQ==",
+            };
+            encryptedDataReplicant.value = oldConfig;
+            bundleManager.registerServiceDependency("ws-server-test", websocketServerService);
+
+            // Invalid keys should also error with olds configs
+            const invalidResult = await persistenceManager.load(invalidEncryptionKey);
+            expect(invalidResult.failed).toBe(true);
+
+            // Loading should just work and migrate the configuration
+            const password = "654321";
+            const salt = await getEncryptionSalt(oldConfig, password);
+            const encryptionKey = await deriveEncryptionKey(password, salt);
+            const correctPasswordResult = await persistenceManager.load(encryptionKey);
+            expect(correctPasswordResult.failed).toBe(false);
+
+            // Config has been migrated: salt and iv are only present in nodecg-io >=0.3 configs
+            expect(oldConfig.salt).toBeDefined();
+            expect(oldConfig.iv).toBeDefined();
+
+            // Check instances and bundles for correct data
+            expect(instanceManager.getServiceInstance("ws")).toBeDefined();
+            expect(instanceManager.getServiceInstance("ws")?.config).toEqual({
+                port: 5678,
+            });
+
+            expect(bundleManager.getBundleDependencies()["ws-server-test"]).toEqual([
+                {
+                    serviceType: "websocket-server",
+                    serviceInstance: "ws",
+                    provider: new ServiceProvider(),
+                },
+            ]);
         });
     });
 

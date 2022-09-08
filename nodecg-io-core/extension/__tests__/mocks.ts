@@ -1,4 +1,4 @@
-import { ObjectMap, ServiceInstance } from "../service";
+import { ObjectMap, ServiceInstance, Service } from "../service";
 import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg-types/types/server";
 import { EventEmitter } from "events";
 
@@ -141,6 +141,24 @@ export const testService = {
     schema: {
         $schema: "http://json-schema.org/draft-07/schema#",
         type: "string",
+    },
+};
+
+export const websocketServerService: Service<{ port: number }, void> = {
+    serviceType: "websocket-server",
+    validateConfig: jest.fn(),
+    createClient: jest.fn(),
+    stopClient: jest.fn(),
+    reCreateClientToRemoveHandlers: false,
+    requiresNoConfig: false,
+    schema: {
+        $schema: "http://json-schema.org/draft-07/schema#",
+        type: "object",
+        properties: {
+            port: {
+                type: "integer",
+            },
+        },
     },
 };
 
