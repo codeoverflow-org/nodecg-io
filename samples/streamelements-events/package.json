@@ -22,7 +22,7 @@
     "license": "MIT",
     "dependencies": {
         "@types/node": "^18.7.14",
-        "esbuild": "^0.15.6",
+        "esbuild": "^0.15.7",
         "esbuild-plugin-alias": "^0.2.1",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-streamelements": "^0.3.0",
