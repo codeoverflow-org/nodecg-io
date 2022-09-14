@@ -1,0 +1,30 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/typescript-node
+{
+    "name": "nodecg-io inside a NodeCG installation",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+
+    // Configure tool-specific properties.
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": ["dbaeumer.vscode-eslint", "streetsidesoftware.code-spell-checker", "esbenp.prettier-vscode"]
+        }
+    },
+
+    "forwardPorts": [
+        9090 // NodeCG dashboard port
+    ],
+
+    // Install node.js dependencies and build project after the container has been created.
+    "postCreateCommand": "npm install && npm run build",
+
+    // Change directory from /workspaces/nodecg-io to /workspaces/nodecg/nodecg-io inside the NodeCG installation
+    "workspaceFolder": "/workspaces/nodecg/nodecg-io",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/nodecg/nodecg-io,type=bind",
+
+    "remoteUser": "node"
+}

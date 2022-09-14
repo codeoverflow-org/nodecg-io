@@ -1,0 +1,9 @@
+{
+    "bundles": {
+        "paths": [
+            "/workspaces/nodecg/nodecg-io",
+            "/workspaces/nodecg/nodecg-io/services",
+            "/workspaces/nodecg/nodecg-io/samples"
+        ]
+    }
+}
