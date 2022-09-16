@@ -9,3 +9,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
+  - package-ecosystem: "docker"
+    directory: ".devcontainer"
+    schedule:
+      interval: "monthly"
