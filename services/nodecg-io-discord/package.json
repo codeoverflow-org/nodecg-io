@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "discord.js": "^14.3.0",
+        "discord.js": "^14.5.0",
         "nodecg-io-core": "^0.3.0"
     }
 }
