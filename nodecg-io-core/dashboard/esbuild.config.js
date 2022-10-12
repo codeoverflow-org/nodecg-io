@@ -90,10 +90,6 @@ const BuildOptions = {
      * invalidate the build.
      */
     watch: args.has("--watch"),
-    // argon2-browser has some imports to fs and path that only get actually imported when running in node.js
-    // because these code paths aren't executed we can just ignore the error that they don't exist in browser environments.
-    // See https://github.com/antelle/argon2-browser/issues/79 and https://github.com/antelle/argon2-browser/issues/26
-    external: ["fs", "path"],
 };
 
 esbuild

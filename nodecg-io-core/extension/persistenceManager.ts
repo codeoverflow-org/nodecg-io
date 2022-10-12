@@ -2,7 +2,7 @@ import { NodeCG, ReplicantServer } from "nodecg-types/types/server";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import crypto from "crypto-js";
-import * as argon2 from "argon2-browser";
+import { argon2id } from "hash-wasm";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./service";
 import { ServiceManager } from "./serviceManager";
@@ -108,21 +108,20 @@ export function encryptData(data: PersistentData, encryptionKey: crypto.lib.Word
 export async function deriveEncryptionKey(password: string, salt: string): Promise<string> {
     const saltBytes = Uint8Array.from(salt.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) ?? []);
 
-    const hash = await argon2.hash({
-        pass: password,
+    return await argon2id({
+        password,
         salt: saltBytes,
         // OWASP reccomends either t=1,m=37MiB or t=2,m=37MiB for argon2id:
         // https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet#Argon2id
         // On a Ryzen 5 5500u a single iteration is about 220 ms. Two iterations would make that about 440 ms, which is still fine.
         // This is run inside the browser when logging in, therefore 37 MiB is acceptable too.
         // To future proof this we use 37 MiB ram and 2 iterations.
-        time: 2,
-        mem: 37 * 1024,
-        hashLen: 32, // Output size: 32 bytes = 256 bits as a key for AES-256
-        type: argon2.ArgonType.Argon2id,
+        iterations: 2,
+        memorySize: 37, // KiB
+        hashLength: 32, // Output size: 32 bytes = 256 bits as a key for AES-256
+        parallelism: 1,
+        outputType: "hex",
     });
-
-    return hash.hashHex;
 }
 
 /**
