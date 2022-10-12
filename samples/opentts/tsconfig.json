@@ -5,7 +5,7 @@
             "path": "../../nodecg-io-core"
         },
         {
-            "path": "../../services/nodecg-io-curseforge"
+            "path": "../../services/nodecg-io-opentts"
         }
     ]
 }

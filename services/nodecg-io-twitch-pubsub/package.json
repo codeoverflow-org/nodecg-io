@@ -31,15 +31,15 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^18.0.3",
-        "nodecg-types": "^1.8.3",
-        "typescript": "^4.7.4",
+        "@types/node": "^18.7.18",
+        "nodecg-types": "^1.9.0",
+        "typescript": "^4.8.4",
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-twitch-auth": "^0.3.0",
-        "@twurple/api": "^5.1.6",
-        "@twurple/pubsub": "^5.1.6"
+        "@twurple/api": "^5.2.4",
+        "@twurple/pubsub": "^5.2.4"
     }
 }

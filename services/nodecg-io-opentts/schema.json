@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "host": {
+            "type": "string",
+            "description": "Host (hostname/ip) of the OpenTTS instance."
+        },
+        "useHttps": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the server should be contacted using https instead of http."
+        }
+    },
+    "required": ["host"]
+}

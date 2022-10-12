@@ -10,11 +10,11 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^18.0.3",
-        "nodecg-types": "^1.8.3",
+        "@types/node": "^18.7.18",
+        "nodecg-types": "^1.9.0",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-spotify": "^0.3.0",
-        "typescript": "^4.7.4",
+        "typescript": "^4.8.4",
         "nodecg-io-tsconfig": "^1.0.0"
     }
 }

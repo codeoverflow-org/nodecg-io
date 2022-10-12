@@ -12,5 +12,5 @@ module.exports = {
     arrowParens: "always",
     proseWrap: "preserve",
     vueIndentScriptAndStyle: false,
-    endOfLine: "lf",
+    endOfLine: "auto",
 };

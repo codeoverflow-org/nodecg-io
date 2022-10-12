@@ -17,43 +17,74 @@ module.exports = function (nodecg: NodeCG) {
             );
         });
 
+        client.onTestCheer((data) => {
+            nodecg.log.info(
+                `${data.event.displayName} just cheered ${data.event.amount} bit(s). Message: ${data.event.message}`,
+            );
+        });
+
         client.onFollow((data) => {
             nodecg.log.info(`${data.data.displayName} just followed.`);
         });
 
+        client.onTestFollow((data) => {
+            nodecg.log.info(`${data.event.displayName} just followed.`);
+        });
+
         client.onSubscriber((data) => {
-            if (data.data.tier) {
-                const tier =
-                    data.data.tier === "prime" ? "Twitch Prime" : "Tier " + Number.parseInt(data.data.tier) / 1000;
-                nodecg.log.info(`${data.data.displayName} just subscribed for ${data.data.amount} months (${tier}).`);
-            }
+            nodecg.log.info(
+                `${data.data.displayName} just subscribed for ${data.data.amount} months (${formatSubTier(
+                    data.data.tier,
+                )}).`,
+            );
+        });
+
+        client.onTestSubscriber((data) => {
+            nodecg.log.info(
+                `${data.event.displayName} just subscribed for ${data.event.amount} months (${formatSubTier(
+                    data.event.tier,
+                )}).`,
+            );
+        });
+
+        client.onSubscriberBomb((data) => {
+            nodecg.log.info(`${data.gifterUsername} just gifted ${data.subscribers.length} subs.`);
+        });
+
+        client.onTestSubscriberBomb((data) => {
+            nodecg.log.info(`${data.gifterUsername} just gifted ${data.subscribers.length} subs.`);
         });
 
         client.onGift((data) => {
-            if (data.data.tier) {
-                // We want to display the tier as 1, 2, 3
-                // However StreamElements stores the sub tiers as 1000, 2000 and 3000.
-                // So we divide the tier by 1000 to get the tier in our expected format.
-                // We don't need to care about prime subs here because they cannot be gifted.
-                const tier = (Number.parseInt(data.data.tier) / 1000).toString();
-                if (data.data.sender) {
-                    nodecg.log.info(
-                        `${data.data.displayName} just got a tier ${tier} subscription from ${data.data.sender}! It's ${data.data.displayName}'s ${data.data.amount} month.`,
-                    );
-                } else {
-                    nodecg.log.info(
-                        `${data.data.displayName} just got a tier ${tier} subscription! It's ${data.data.displayName}'s ${data.data.amount} month.`,
-                    );
-                }
-            }
+            nodecg.log.info(
+                `${data.data.displayName} just got a tier ${formatSubTier(data.data.tier)} subscription from ${
+                    data.data.sender ?? "anonymous"
+                }! It's ${data.data.displayName}'s ${data.data.amount} month.`,
+            );
+        });
+
+        client.onTestGift((data) => {
+            nodecg.log.info(
+                `${data.event.displayName} just got a tier ${formatSubTier(data.event.tier)} subscription from ${
+                    data.event.sender ?? "anonymous"
+                }! It's ${data.event.displayName}'s ${data.event.amount} month.`,
+            );
         });
 
         client.onHost((data) => {
             nodecg.log.info(`${data.data.displayName} just hosted the stream for ${data.data.amount} viewer(s).`);
         });
 
+        client.onTestHost((data) => {
+            nodecg.log.info(`${data.event.displayName} just hosted the stream for ${data.event.amount} viewer(s).`);
+        });
+
         client.onRaid((data) => {
             nodecg.log.info(`${data.data.displayName} just raided the stream with ${data.data.amount} viewers.`);
+        });
+
+        client.onTestRaid((data) => {
+            nodecg.log.info(`${data.event.displayName} just raided the stream with ${data.event.amount} viewers.`);
         });
 
         client.onTip((data) => {
@@ -62,6 +93,12 @@ module.exports = function (nodecg: NodeCG) {
                     `${data.data.username} just donated ${data.data.amount} ${data.data.currency}. Message. ${data.data.message}`,
                 );
             }
+        });
+
+        client.onTestTip((data) => {
+            nodecg.log.info(
+                `${data.event.name} just donated ${data.event.amount} ${data.event.currency}. Message. ${data.event.message}`,
+            );
         });
 
         client.onTest((data) => {
@@ -73,3 +110,12 @@ module.exports = function (nodecg: NodeCG) {
 
     streamElements?.onUnavailable(() => nodecg.log.info("SE client has been unset."));
 };
+
+function formatSubTier(tier: "1000" | "2000" | "3000" | "prime"): string {
+    if (tier === "prime") return "Twitch Prime";
+
+    // We want to display the tier as 1, 2, 3
+    // However StreamElements stores the sub tiers as 1000, 2000 and 3000.
+    // So we divide the tier by 1000 to get the tier in our expected format.
+    return "Tier " + (Number.parseInt(tier) / 1000).toString();
+}

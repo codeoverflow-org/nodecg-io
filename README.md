@@ -22,13 +22,13 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - Android (using adb)
 - Art-Net
 - Atem
-- CurseForge
 - DBus
 - Discord
 - Discord RPC
 - Elgato lights
 - GitHub
 - Google APIs
+- Google Cast
 - IntelliJ IDEs
 - IRC (Internet Relay Chat)
 - MIDI Input
@@ -36,6 +36,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - MQTT
 - Nanoleafs
 - OBS
+- [OpenTTS](https://github.com/synesthesiam/opentts)
 - Philips Hue
 - RCON
 - Reddit

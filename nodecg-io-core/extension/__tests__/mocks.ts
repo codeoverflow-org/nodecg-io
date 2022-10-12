@@ -66,6 +66,12 @@ export class MockNodeCG implements NodeCG {
         return newReplicant;
     }
 
+    readReplicant<V>(name: string): V;
+    readReplicant<V>(name: string, namespace: string): V;
+    readReplicant<V>(name: string, namespace?: string): V {
+        return this.Replicant<V>(name, namespace).value;
+    }
+
     getSocketIOServer = jest.fn();
     Router = jest.fn();
     mount = jest.fn();
