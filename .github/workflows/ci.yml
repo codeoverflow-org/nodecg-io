@@ -76,14 +76,14 @@ jobs:
             - name: Get NodeCG commit hash
               id: nodecgHash
               shell: bash
-              run: echo "::set-output name=nodecgHash::$(git rev-parse HEAD)"
+              run: echo "NODECG_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
             - name: Cache NodeCG dependencies
               id: cache-nodecg
               uses: actions/cache@v3
               with:
                 path: 'node_modules'
-                key: ${{ runner.os }}-${{ steps.nodecgHash.outputs.nodecgHash }}-nodecg
+                key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg
 
             - name: Install NodeCG dependencies
               # Only get dependencies if we didn't get them from the cache
