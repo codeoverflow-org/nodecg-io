@@ -19,7 +19,7 @@
         "watch": "node esbuild.config.js --watch"
     },
     "devDependencies": {
-        "esbuild": "^0.15.8",
+        "esbuild": "^0.15.11",
         "monaco-editor": "^0.34.0",
         "nodecg-types": "^1.9.0",
         "typescript": "^4.8.4"
