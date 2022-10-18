@@ -20,7 +20,7 @@
     },
     "devDependencies": {
         "esbuild": "^0.15.11",
-        "monaco-editor": "^0.34.0",
+        "monaco-editor": "^0.34.1",
         "nodecg-types": "^1.9.0",
         "typescript": "^4.8.4"
     },
