@@ -124,7 +124,19 @@ jobs:
               run: npm run build
               working-directory: ./nodecg-io
 
-            - name: Run test
+              # Under linux we need to run the test as the root user because
+              # the midi service requires access to audio devices.
+              # By default the GitHub Actions user is not in the `audio` group and therefore
+              # has no access. Either we need to run as root to get access or need to add the user
+              # to the `audio` group which doesn't work for us, as it would only take affect on next login,
+              # but we cannot logout and login in CI.
+            - name: Run test (ubuntu)
+              if: matrix.os == 'ubuntu-latest'
+              run: sudo node .scripts/ci-nodecg-integration.mjs
+              working-directory: ./nodecg-io
+
+            - name: Run test (windows)
+              if: matrix.os == 'windows-2019'
               shell: bash
               run: node .scripts/ci-nodecg-integration.mjs
               working-directory: ./nodecg-io
