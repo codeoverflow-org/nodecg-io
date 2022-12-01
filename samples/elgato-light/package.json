@@ -10,7 +10,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^18.11.8",
+        "@types/node": "^18.11.10",
         "nodecg-types": "^1.9.0",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-elgato-light": "^0.3.0",
