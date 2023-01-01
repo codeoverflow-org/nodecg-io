@@ -6,6 +6,7 @@ updates:
       interval: "monthly"
   - package-ecosystem: "npm"
     directory: "/"
+    open-pull-requests-limit: 15
     schedule:
       interval: "monthly"
   - package-ecosystem: "docker"
