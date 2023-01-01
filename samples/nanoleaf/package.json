@@ -10,7 +10,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^18.11.11",
+        "@types/node": "^18.11.18",
         "nodecg-types": "^1.9.0",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-nanoleaf": "^0.3.0",
