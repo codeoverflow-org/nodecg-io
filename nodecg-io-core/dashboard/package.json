@@ -22,7 +22,7 @@
         "esbuild": "^0.16.12",
         "monaco-editor": "^0.34.1",
         "nodecg-types": "^1.9.0",
-        "typescript": "^4.8.4"
+        "typescript": "^4.9.4"
     },
     "dependencies": {
         "crypto-js": "^4.1.1",
