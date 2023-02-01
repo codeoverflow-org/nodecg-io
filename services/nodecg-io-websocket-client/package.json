@@ -39,6 +39,6 @@
     "dependencies": {
         "@types/ws": "^8.5.4",
         "nodecg-io-core": "^0.3.0",
-        "ws": "^8.11.0"
+        "ws": "^8.12.0"
     }
 }
