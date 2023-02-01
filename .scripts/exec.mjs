@@ -1,4 +1,4 @@
-import { root, packages } from "./update-paths.mjs";
+import { rootDir, packages, rootPackage } from "./update-paths.mjs";
 import concurrently from "concurrently";
 
 const COMMAND = process.argv[2];
@@ -12,12 +12,12 @@ const commands = packages
         cwd: v.dir,
     }));
 
-const scripts = root.packageJson["scripts"];
+const scripts = rootPackage?.packageJson["scripts"];
 if (scripts && scripts[COMMAND + ":root"]) {
     commands.unshift({
-        name: root.packageJson.name,
+        name: rootPackage?.packageJson.name,
         command: "npm:" + COMMAND + ":root",
-        cwd: root.dir,
+        cwd: rootDir,
     });
 }
 
