@@ -5,7 +5,7 @@ import { getPackages } from "@manypkg/get-packages";
 
 let projects = [];
 // @ts-ignore
-const { root, packages } = await getPackages(cwd());
+const { packages } = await getPackages(cwd());
 
 /** @param pkg {import("@manypkg/get-packages").Package} */
 function hasJestConfig(pkg) {
@@ -21,7 +21,7 @@ function hasJestConfig(pkg) {
     );
 }
 
-projects = packages.filter((pkg) => hasJestConfig(pkg)).map((v) => `<rootDir>/${path.relative(root.dir, v.dir)}`);
+projects = packages.filter((pkg) => hasJestConfig(pkg)).map((v) => `<rootDir>/${path.relative(cwd(), v.dir)}`);
 
 console.log(projects);
 
