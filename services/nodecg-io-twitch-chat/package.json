@@ -39,6 +39,6 @@
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-twitch-auth": "^0.3.0",
-        "@twurple/chat": "^5.3.1"
+        "@twurple/chat": "^5.3.4"
     }
 }
