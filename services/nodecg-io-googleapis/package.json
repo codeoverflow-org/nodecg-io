@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "googleapis": "^110.0.0",
+        "googleapis": "^111.0.0",
         "nodecg-io-core": "^0.3.0",
         "open": "^8.4.0"
     }
