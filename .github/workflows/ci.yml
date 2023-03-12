@@ -158,6 +158,9 @@ jobs:
               with:
                 node-version: "18"
 
+            - name: Install ripgrep
+              run: sudo apt install ripgrep -y
+
             - name: Download compilation results # From the build step
               uses: actions/download-artifact@v3
               with:
