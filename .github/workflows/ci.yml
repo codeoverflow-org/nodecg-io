@@ -158,9 +158,6 @@ jobs:
               with:
                 node-version: "18"
 
-            - name: Install ripgrep
-              run: sudo apt install ripgrep -y
-
             - name: Download compilation results # From the build step
               uses: actions/download-artifact@v3
               with:
@@ -179,11 +176,11 @@ jobs:
               run: |
                 # Get current version as it is needed for the tarball file name
                 TWITCH_AUTH_VERSION=$(cat utils/nodecg-io-twitch-auth/package.json | jq .version -r)
-                echo "$TWITCH_AUTH_VERSION"
+
                 # Find usages in all package.json files and replace with the corresponding tarball url
-                rg -g 'package.json' -l '"nodecg-io-twitch-auth": ".+"'
-                rg -g 'package.json' -l '"nodecg-io-twitch-auth": ".+"' | \
-                  xargs sed -i "s/\"nodecg-io-twitch-auth\": \".*\"/\"nodecg-io-twitch-auth\": \"https:\/\/codeoverflow-org.github.io\/nodecg-io-publish\/nodecg-io-twitch-auth-${TWITCH_AUTH_VERSION}.tgz\"/g"
+                find . -name 'package.json' -exec grep -q -E '"nodecg-io-twitch-auth": ".+"' {} \; -print # Print found files for debug purposes
+                find . -name 'package.json' -exec grep -q -E '"nodecg-io-twitch-auth": ".+"' {} \; -print0 | \
+                    xargs -0 sed -i "s/\"nodecg-io-twitch-auth\": \".*\"/\"nodecg-io-twitch-auth\": \"https:\/\/codeoverflow-org.github.io\/nodecg-io-publish\/nodecg-io-twitch-auth-${TWITCH_AUTH_VERSION}.tgz\"/g"
 
             - name: Create npm tarballs
               run: npm pack --workspaces
