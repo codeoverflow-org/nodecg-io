@@ -178,9 +178,11 @@ jobs:
             - name: Patch twitch-auth dependency to use published current tarball
               run: |
                 # Get current version as it is needed for the tarball file name
-                TWITCH_AUTH_VERSION=$(cat utils/nodecg-io-twitch-auth/package.json| jq .version -r)
+                TWITCH_AUTH_VERSION=$(cat utils/nodecg-io-twitch-auth/package.json | jq .version -r)
+                echo "$TWITCH_AUTH_VERSION"
                 # Find usages in all package.json files and replace with the corresponding tarball url
-                rg -g 'package.json' -l -t json -o '"nodecg-io-twitch-auth": ".+"' | \
+                rg -g 'package.json' -l '"nodecg-io-twitch-auth": ".+"'
+                rg -g 'package.json' -l '"nodecg-io-twitch-auth": ".+"' | \
                   xargs sed -i "s/\"nodecg-io-twitch-auth\": \".*\"/\"nodecg-io-twitch-auth\": \"https:\/\/codeoverflow-org.github.io\/nodecg-io-publish\/nodecg-io-twitch-auth-${TWITCH_AUTH_VERSION}.tgz\"/g"
 
             - name: Create npm tarballs
