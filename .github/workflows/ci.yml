@@ -166,6 +166,20 @@ jobs:
             - name: Extract compilation results
               run: tar xvf compilation-results.tar.gz
 
+              # All twitch services depend on the utility package `nodecg-io-twitch-auth`.
+              # In the repository the services depend on the latest development version which is not yet published.
+              # If someone installs the service using the published tarball npm would try to get the
+              # unpublished version of twitch-auth from the npm registry which is not possible.
+              # To fix this we update the version of the twitch-auth package in all usages
+              # to also reference the published tarball.
+            - name: Patch twitch-auth dependency to use published current tarball
+              run: |
+                # Get current version as it is needed for the tarball file name
+                TWITCH_AUTH_VERSION=$(cat utils/nodecg-io-twitch-auth/package.json| jq .version -r)
+                # Find usages in all package.json files and replace with the corresponding tarball url
+                rg -g 'package.json' -l -t json -o '"nodecg-io-twitch-auth": ".+"' | \
+                  xargs sed -i "s/\"nodecg-io-twitch-auth\": \".*\"/\"nodecg-io-twitch-auth\": \"https:\/\/codeoverflow-org.github.io\/nodecg-io-publish\/nodecg-io-twitch-auth-${TWITCH_AUTH_VERSION}.tgz\"/g"
+
             - name: Create npm tarballs
               run: npm pack --workspaces
 
