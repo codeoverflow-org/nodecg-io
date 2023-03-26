@@ -79,16 +79,28 @@ jobs:
               run: echo "NODECG_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
             - name: Cache NodeCG dependencies
-              id: cache-nodecg
+              id: cache-nodecg-deps
               uses: actions/cache@v3
               with:
                 path: 'node_modules'
-                key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg
+                key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg-deps
+
+            - name: Cache NodeCG compilation outputs
+              id: cache-nodecg-build
+              uses: actions/cache@v3
+              with:
+                path: 'build'
+                key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg-build
 
             - name: Install NodeCG dependencies
               # Only get dependencies if we didn't get them from the cache
-              if: steps.cache-nodecg.outputs.cache-hit != 'true'
-              run: npm install --prod
+              if: steps.cache-nodecg-deps.outputs.cache-hit != 'true'
+              run: npm install
+
+            - name: Build NodeCG
+              # Only build NodeCG if we didn't have cached compilation results
+              if: steps.cache-nodecg-build.outputs.cache-hit != 'true'
+              run: npm run build
 
             - name: Setup NodeCG config linux
               if: matrix.os == 'ubuntu-latest'
