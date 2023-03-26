@@ -15,7 +15,7 @@
         "nodecg-io"
     ],
     "nodecg": {
-        "compatibleRange": "^1.1.1"
+        "compatibleRange": ">=1.1.1"
     },
     "license": "MIT",
     "devDependencies": {

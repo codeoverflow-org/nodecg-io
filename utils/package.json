@@ -4,6 +4,6 @@
     "description": "",
     "private": true,
     "nodecg": {
-        "compatibleRange": "^1.1.1"
+        "compatibleRange": ">=1.1.1"
     }
 }

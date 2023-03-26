@@ -39,7 +39,8 @@ child.once("exit", (exitCode, signal) => {
     console.log("Stopped NodeCG\n");
 
     // Check exit code for failure
-    if (exitCode !== null && exitCode !== 0) {
+    // 143 is the exit code when the process is killed by the timeout (SIGTERM)
+    if (exitCode !== null && exitCode !== 143) {
         throw new Error(`NodeCG exited with code ${exitCode} ${signal}`);
     }
 
@@ -47,7 +48,7 @@ child.once("exit", (exitCode, signal) => {
 
     // Try to find each bundle in the logs.
     const missing = bundles.filter(
-        (i) => !log.includes(`[nodecg/lib/server/extensions] Mounted ${i.packageJson.name} extension`),
+        (bundle) => !log.includes(` [extensions] Mounted ${bundle.packageJson.name} extension`),
     );
 
     // Fail the run if there are missing bundles.
