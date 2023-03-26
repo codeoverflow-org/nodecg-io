@@ -3,7 +3,7 @@
     "version": "0.3.0",
     "private": true,
     "nodecg": {
-        "compatibleRange": "^1.1.1",
+        "compatibleRange": ">=1.1.1",
         "bundleDependencies": {
             "nodecg-io-websocket-client": "^0.3.0"
         }

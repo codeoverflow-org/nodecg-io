@@ -7,7 +7,7 @@
         "watch": "npm run build -- --watch"
     },
     "nodecg": {
-        "compatibleRange": "^1.1.1",
+        "compatibleRange": ">=1.1.1",
         "bundleDependencies": {
             "nodecg-io-streamelements": "^0.3.0"
         },
