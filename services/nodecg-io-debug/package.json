@@ -31,7 +31,7 @@
         "nodecg-bundle"
     ],
     "nodecg": {
-        "compatibleRange": ">=1.1.1",
+        "compatibleRange": ">=1.1.1 <3.0.0",
         "bundleDependencies": {
             "nodecg-io-core": "^0.3.0"
         },

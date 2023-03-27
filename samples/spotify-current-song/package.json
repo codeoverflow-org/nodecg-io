@@ -3,7 +3,7 @@
     "private": true,
     "version": "0.3.0",
     "nodecg": {
-        "compatibleRange": ">=1.1.1",
+        "compatibleRange": ">=1.1.1 <3.0.0",
         "bundleDependencies": {
             "nodecg-io-spotify": "^0.3.0"
         }

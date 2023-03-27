@@ -3,7 +3,7 @@
     "version": "0.3.0",
     "private": true,
     "nodecg": {
-        "compatibleRange": ">=1.1.1",
+        "compatibleRange": ">=1.1.1 <3.0.0",
         "bundleDependencies": {
             "nodecg-io-discord": "^0.3.0",
             "nodecg-io-tiane": "^0.3.0"

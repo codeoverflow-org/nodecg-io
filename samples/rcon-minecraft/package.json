@@ -8,7 +8,7 @@
         "url": "https://github.com/derNiklaas"
     },
     "nodecg": {
-        "compatibleRange": ">=1.1.1",
+        "compatibleRange": ">=1.1.1 <3.0.0",
         "bundleDependencies": {
             "nodecg-io-rcon": "^0.3.0"
         }
