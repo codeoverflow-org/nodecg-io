@@ -8,7 +8,7 @@
         "url": "https://github.com/noeppi-noeppi"
     },
     "nodecg": {
-        "compatibleRange": "^1.1.1",
+        "compatibleRange": ">=1.1.1 <3.0.0",
         "bundleDependencies": {
             "nodecg-io-reddit": "^0.3.0"
         }
