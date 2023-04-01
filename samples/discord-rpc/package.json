@@ -13,7 +13,7 @@
         "@types/node": "^18.15.11",
         "nodecg-types": "^1.9.0",
         "nodecg-io-core": "^0.3.0",
-        "typescript": "^4.9.5",
+        "typescript": "^5.0.3",
         "nodecg-io-discord-rpc": "0.3.0"
     }
 }
