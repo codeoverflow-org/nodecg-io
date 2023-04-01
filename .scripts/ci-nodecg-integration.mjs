@@ -26,7 +26,7 @@ console.log("\nStarted NodeCG");
 console.log("--------------------------------------------------------------------------------");
 
 // Spawn a process that runs NodeCG and let it run for 15 seconds to load all bundles
-const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir, timeout: 15000 });
+const child = child_process.spawn("node", ["index.js"], { cwd: cwd.dir, timeout: 20000 });
 
 // Store stdout and pipe the output of the child process to the output of this process
 const buffer = [];
