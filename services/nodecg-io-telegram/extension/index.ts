@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 
 // Disable automatic promise cancellation
@@ -17,7 +17,7 @@ interface TelegramServiceConfig {
 
 export type TelegramServiceClient = TelegramBot;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new TelegramService(nodecg, "telegram", __dirname, "../telegram-schema.json").register();
 };
 

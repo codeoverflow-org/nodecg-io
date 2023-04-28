@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { XdotoolServiceClient } from "nodecg-io-xdotool";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for xdotool started");
 
     const xdotool = requireService<XdotoolServiceClient>(nodecg, "xdotool");

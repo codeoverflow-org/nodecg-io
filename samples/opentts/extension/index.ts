@@ -1,11 +1,11 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { OpenTTSClient } from "nodecg-io-opentts";
 import { requireService } from "nodecg-io-core";
 
 /**
  * Plays a "hello world" tts message inside the graphic of this sample bundle.
  */
-async function playTTSInGraphic(client: OpenTTSClient, nodecg: NodeCG) {
+async function playTTSInGraphic(client: OpenTTSClient, nodecg: NodeCG.ServerAPI) {
     const voices = await client.getVoices("en");
 
     // Get random voice
@@ -16,7 +16,7 @@ async function playTTSInGraphic(client: OpenTTSClient, nodecg: NodeCG) {
     nodecg.sendMessage("setSrc", helloWorldUrl);
 }
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for the OpenTTS service started.");
 
     const opentts = requireService<OpenTTSClient>(nodecg, "opentts");

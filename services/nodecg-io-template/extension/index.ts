@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { TemplateClient } from "./templateClient";
 
@@ -8,7 +8,7 @@ export interface TemplateConfig {
 
 export { TemplateClient } from "./templateClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new TemplateService(nodecg, "template", __dirname, "../schema.json").register();
 };
 

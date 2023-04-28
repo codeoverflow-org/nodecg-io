@@ -1,11 +1,11 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 import { TwitchPubSubServiceClient } from "./pubSubClient";
 
 export { TwitchPubSubServiceClient } from "./pubSubClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new TwitchPubSubService(nodecg, "twitch-pubsub", __dirname, "../pubsub-schema.json").register();
 };
 

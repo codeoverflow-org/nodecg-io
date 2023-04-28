@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Client as DiscordClient, GatewayIntentBits } from "discord.js";
 
@@ -9,7 +9,7 @@ interface DiscordServiceConfig {
 
 export type DiscordServiceClient = DiscordClient;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new DiscordService(nodecg, "discord", __dirname, "../discord-schema.json").register();
 };
 

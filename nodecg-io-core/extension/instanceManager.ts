@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { ObjectMap, Service, ServiceInstance } from "./service";
 import { emptySuccess, error, Result } from "./utils/result";
 import { ServiceManager } from "./serviceManager";
@@ -14,7 +14,7 @@ export class InstanceManager extends EventEmitter {
     private ajv = new Ajv();
 
     constructor(
-        private readonly nodecg: NodeCG,
+        private readonly nodecg: NodeCG.ServerAPI,
         private readonly services: ServiceManager,
         private readonly bundles: BundleManager,
     ) {

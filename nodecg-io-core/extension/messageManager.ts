@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
@@ -35,7 +35,7 @@ export interface SetServiceDependencyMessage extends PasswordMessage {
  */
 export class MessageManager {
     constructor(
-        private nodecg: NodeCG,
+        private nodecg: NodeCG.ServerAPI,
         private services: ServiceManager,
         private instances: InstanceManager,
         private bundles: BundleManager,

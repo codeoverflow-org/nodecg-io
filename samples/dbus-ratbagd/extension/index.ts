@@ -1,9 +1,9 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { DBusClient } from "nodecg-io-dbus";
 import { RatBagManager } from "nodecg-io-dbus/extension/ratbag";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for Dbus started.");
 
     const dbus = requireService<DBusClient>(nodecg, "dbus");

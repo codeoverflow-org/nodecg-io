@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Color } from "./interfaces";
 
 /**
@@ -40,7 +40,7 @@ export class NanoleafUtils {
      * @param ipAddress the ip address of the nanoleaf controller
      * @param nodecg the current nodecg instance
      */
-    static async retrieveAuthKey(ipAddress: string, nodecg: NodeCG): Promise<string> {
+    static async retrieveAuthKey(ipAddress: string, nodecg: NodeCG.ServerAPI): Promise<string> {
         const errorMessage =
             "Received error while requesting nanoleaf auth token. Make sure to press the 'on' button for 5 seconds before executing this command.";
 

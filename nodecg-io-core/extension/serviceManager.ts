@@ -1,5 +1,5 @@
 import { Service } from "./service";
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { error, Result, success } from "./utils/result";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -10,7 +10,7 @@ import { error, Result, success } from "./utils/result";
 export class ServiceManager {
     private services: Service<unknown, any>[] = [];
 
-    constructor(private readonly nodecg: NodeCG) {}
+    constructor(private readonly nodecg: NodeCG.ServerAPI) {}
 
     /**
      * Registers the passed service which show it in the GUI and allows it to be instanced using {@link createServiceInstance}.

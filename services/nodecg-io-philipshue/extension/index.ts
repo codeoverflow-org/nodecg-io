@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, ObjectMap } from "nodecg-io-core";
 import { v4 as ipv4 } from "is-ip";
 import { v3 } from "node-hue-api";
@@ -17,14 +17,14 @@ interface PhilipsHueServiceConfig {
 
 export type PhilipsHueServiceClient = HueApi;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new PhilipsHueService(nodecg, "philipshue", __dirname, "../philipshue-schema.json").register();
 };
 
 class PhilipsHueService extends ServiceBundle<PhilipsHueServiceConfig, PhilipsHueServiceClient> {
     presets = {};
 
-    constructor(nodecg: NodeCG, name: string, ...pathSegments: string[]) {
+    constructor(nodecg: NodeCG.ServerAPI, name: string, ...pathSegments: string[]) {
         super(nodecg, name, ...pathSegments);
         this.discoverBridges()
             .then((bridgePresets) => (this.presets = bridgePresets))

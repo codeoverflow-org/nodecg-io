@@ -1,11 +1,11 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { DiscordRpcConfig, createLoginData } from "./discordRpcAuth";
 import * as rpc from "discord-rpc";
 
 export type DiscordRpcClient = rpc.Client;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new DiscordRpcService(nodecg, "discord-rpc", __dirname, "../schema.json").register();
 };
 

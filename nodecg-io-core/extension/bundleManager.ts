@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { ObjectMap, Service, ServiceDependency, ServiceInstance } from "./service";
 import { emptySuccess, error, Result } from "./utils/result";
 import { EventEmitter } from "events";
@@ -11,7 +11,7 @@ export class BundleManager extends EventEmitter {
     // Object that maps a bundle name to the array that contains all services that this bundle depends upon
     private readonly bundles: ObjectMap<ServiceDependency<unknown>[]> = {};
 
-    constructor(private readonly nodecg: NodeCG) {
+    constructor(private readonly nodecg: NodeCG.ServerAPI) {
         super();
     }
 

@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, error, ServiceBundle } from "nodecg-io-core";
 import { SerialServiceClient, SerialServiceConfig } from "./SerialClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new SerialService(nodecg, "serial", __dirname, "../serial-schema.json").register();
 };
 
@@ -11,7 +11,7 @@ export { SerialServiceClient } from "./SerialClient";
 class SerialService extends ServiceBundle<SerialServiceConfig, SerialServiceClient> {
     presets = {};
 
-    constructor(nodecg: NodeCG, serviceName: string, ...pathSegments: string[]) {
+    constructor(nodecg: NodeCG.ServerAPI, serviceName: string, ...pathSegments: string[]) {
         super(nodecg, serviceName, ...pathSegments);
 
         SerialServiceClient.getConnectedDevices()

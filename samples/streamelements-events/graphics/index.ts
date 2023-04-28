@@ -1,6 +1,11 @@
-/// <reference types="nodecg-types/types/browser" />
+import { NodeCGAPIClient } from "@nodecg/types/client/api/api.client";
 import { createApp, defineComponent } from "vue";
 import type { StreamElementsReplicant } from "nodecg-io-streamelements";
+
+declare global {
+    const nodecg: NodeCGAPIClient;
+    const NodeCG: typeof NodeCGAPIClient;
+}
 
 const replicant = nodecg.Replicant<StreamElementsReplicant>("streamelements");
 
@@ -12,7 +17,9 @@ const mainComponent = defineComponent<unknown, unknown, { streamElementsReplican
     },
     created() {
         replicant.on("change", (newVal) => {
-            this.streamElementsReplicant = newVal;
+            if (newVal !== undefined) {
+                this.streamElementsReplicant = newVal;
+            }
         });
     },
     computed: {

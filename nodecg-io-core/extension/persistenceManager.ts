@@ -1,10 +1,11 @@
-import { NodeCG, ReplicantServer } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { InstanceManager } from "./instanceManager";
 import { BundleManager } from "./bundleManager";
 import * as crypto from "crypto-js";
 import { emptySuccess, error, Result, success } from "./utils/result";
 import { ObjectMap, ServiceDependency, ServiceInstance } from "./service";
 import { ServiceManager } from "./serviceManager";
+import { NodeCGBundleConfig } from ".";
 
 /**
  * Models all the data that needs to be persistent in a plain manner.
@@ -55,10 +56,10 @@ export class PersistenceManager {
     private password: string | undefined;
     // We store the encrypted data in a replicant, because writing files in a NodeCG bundle isn't very clean
     // and the bundle config is read-only. It is only in encrypted form, so it is OK to be accessible in the browser.
-    private encryptedData: ReplicantServer<EncryptedData>;
+    private encryptedData: NodeCG.ServerReplicant<EncryptedData>;
 
     constructor(
-        private readonly nodecg: NodeCG,
+        private readonly nodecg: NodeCG.ServerAPI<NodeCGBundleConfig>,
         private readonly services: ServiceManager,
         private readonly instances: InstanceManager,
         private readonly bundles: BundleManager,
@@ -94,7 +95,7 @@ export class PersistenceManager {
      * If this returns true {{@link load}} will accept any password and use it to encrypt the configuration.
      */
     isFirstStartup(): boolean {
-        return this.encryptedData.value.cipherText === undefined;
+        return this.encryptedData.value?.cipherText === undefined;
     }
 
     /**
@@ -107,7 +108,7 @@ export class PersistenceManager {
             return error("Config has already been decrypted and loaded.");
         }
 
-        if (this.encryptedData.value.cipherText === undefined) {
+        if (this.encryptedData.value?.cipherText === undefined) {
             // No encrypted data has been saved, probably because this is the first startup.
             // Therefore nothing needs to be decrypted, and we write an empty config to disk.
             this.nodecg.log.info("No saved configuration found, creating a empty one.");
@@ -216,6 +217,10 @@ export class PersistenceManager {
 
         // Encrypt and save data to persistent replicant.
         const cipherText = crypto.AES.encrypt(JSON.stringify(data), this.password);
+
+        if (this.encryptedData.value === undefined) {
+            this.encryptedData.value = {};
+        }
         this.encryptedData.value.cipherText = cipherText.toString();
     }
 
@@ -263,7 +268,7 @@ export class PersistenceManager {
 
         // If enabled isn't undefined the JSON schema guarantees that enabled is a boolean and password is a string
         const enabled: boolean = this.nodecg.bundleConfig.automaticLogin.enabled;
-        const password: string = this.nodecg.bundleConfig.automaticLogin.password;
+        const password: string | undefined = this.nodecg.bundleConfig.automaticLogin.password;
 
         if (enabled === false) {
             // We inform the user that automatic login is set up but not activated because having the ability
@@ -271,6 +276,11 @@ export class PersistenceManager {
             // If automatic login is permanently not used the user should remove the password from the config
             // to regain the advantages of data-at-rest encryption which are slashed when the password is also stored on disk.
             this.nodecg.log.warn("Automatic login is setup but disabled.");
+            return;
+        }
+
+        if (password === undefined) {
+            this.nodecg.log.error("Automatic login is setup but no password is provided.");
             return;
         }
 
@@ -289,7 +299,7 @@ export class PersistenceManager {
         // So if we want to wait for NodeCG to be loaded we can watch for changes on this replicant and
         // if we get a non-empty array it means that NodeCG has finished loading.
         this.nodecg.Replicant<unknown[]>("bundles", "nodecg").on("change", async (bundles) => {
-            if (bundles.length > 0) {
+            if (bundles && bundles.length > 0) {
                 try {
                     this.nodecg.log.info("Attempting to automatically login...");
                     const loadResult = await this.load(password);
@@ -300,15 +310,15 @@ export class PersistenceManager {
                         throw loadResult.errorMessage;
                     }
                 } catch (err) {
-                    const logMesssage = `Failed to automatically login: ${err}`;
+                    const logMessage = `Failed to automatically login: ${err}`;
                     if (this.isLoaded()) {
                         // load() threw an error but nodecg-io is currently loaded nonetheless.
                         // Anyway, nodecg-io is loaded which is what we wanted
-                        this.nodecg.log.warn(logMesssage);
+                        this.nodecg.log.warn(logMessage);
                     } else {
                         // Something went wrong and nodecg-io is not loaded.
                         // This is a real error, the password might be wrong or some other issue.
-                        this.nodecg.log.error(logMesssage);
+                        this.nodecg.log.error(logMessage);
                     }
                 }
             }

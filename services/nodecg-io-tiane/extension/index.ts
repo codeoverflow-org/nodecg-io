@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Tiane } from "./tiane";
 
@@ -8,7 +8,7 @@ interface TianeServiceConfig {
 
 export type TianeServiceClient = Tiane;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new TianeService(nodecg, "tiane", __dirname, "../tiane-schema.json").register();
 };
 

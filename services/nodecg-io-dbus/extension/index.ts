@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { DBusClient } from "./dbusClient";
 import * as dbus from "dbus-next";
@@ -9,7 +9,7 @@ export interface DBusConfig {
 
 export * from "./dbusClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new DBusService(nodecg, "dbus", __dirname, "../schema.json").register();
 };
 

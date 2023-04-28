@@ -1,4 +1,9 @@
-/// <reference types="nodecg-types/types/browser" />
+import { NodeCGAPIClient } from "@nodecg/types/client/api/api.client";
+
+declare global {
+    const nodecg: NodeCGAPIClient;
+    const NodeCG: typeof NodeCGAPIClient;
+}
 
 // Listens for event from opentts sample and plays the audio by the provided url.
 

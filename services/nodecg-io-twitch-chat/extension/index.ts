@@ -1,11 +1,11 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { TwitchChatServiceClient } from "./twitchClient";
 import { getTokenInfo, TwitchServiceConfig } from "nodecg-io-twitch-auth";
 
 export { TwitchChatServiceClient } from "./twitchClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new TwitchService(nodecg, "twitch-chat", __dirname, "../twitch-schema.json").register();
 };
 

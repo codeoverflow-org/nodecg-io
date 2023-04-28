@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { PhilipsHueServiceClient } from "nodecg-io-philipshue";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG): void {
+module.exports = function (nodecg: NodeCG.ServerAPI): void {
     nodecg.log.info("Sample bundle for Philips Hue started");
 
     const hue = requireService<PhilipsHueServiceClient>(nodecg, "philipshue");

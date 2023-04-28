@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Logger } from "nodecg-io-core";
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 
 export interface Color {
     red: number;
@@ -9,7 +9,7 @@ export interface Color {
 }
 
 export class DebugHelper extends EventEmitter {
-    constructor(nodecg: NodeCG, logger: Logger) {
+    constructor(nodecg: NodeCG.ServerAPI, logger: Logger) {
         super();
         logger.info("DebugHelper is ready to help debugging.");
 
@@ -65,7 +65,7 @@ export class DebugHelper extends EventEmitter {
         };
     }
 
-    static createClient(nodecg: NodeCG, logger: Logger): DebugHelper {
+    static createClient(nodecg: NodeCG.ServerAPI, logger: Logger): DebugHelper {
         return new DebugHelper(nodecg, logger);
     }
 

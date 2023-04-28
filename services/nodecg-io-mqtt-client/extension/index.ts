@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { MqttClient, connect } from "mqtt";
 
@@ -54,7 +54,7 @@ export class MQTTClientServiceClient {
     }
 }
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new MQTTClientService(nodecg, "mqtt-client", __dirname, "../mqtt-schema.json").register();
 };
 

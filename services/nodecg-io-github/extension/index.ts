@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Octokit } from "@octokit/rest";
 
@@ -8,7 +8,7 @@ export interface GitHubConfig {
 
 export type GitHubClient = Octokit;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new GitHubService(nodecg, "github", __dirname, "../schema.json").register();
 };
 

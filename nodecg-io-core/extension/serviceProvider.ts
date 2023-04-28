@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { NodeCGIOCore } from "./index";
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 
 /**
  * A wrapper around a ServiceClient that has helper functions for setting up callbacks and
@@ -60,12 +60,12 @@ export class ServiceProvider<C> {
 
 /**
  * Allows for bundles to require services.
- * @param {NodeCG} nodecg the NodeCG instance of your bundle. Is used to get the bundle name of the calling bundle.
+ * @param {NodeCG.ServerAPI} nodecg the NodeCG instance of your bundle. Is used to get the bundle name of the calling bundle.
  * @param {string} serviceType the type of service you want to require, e.g., "twitch" or "spotify".
  * @return {ServiceClientWrapper<C> | undefined} a service client wrapper for access to the service client
  *                                               or undefined if the core wasn't loaded or the service type doesn't exist.
  */
-export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined {
+export function requireService<C>(nodecg: NodeCG.ServerAPI, serviceType: string): ServiceProvider<C> | undefined {
     const core = nodecg.extensions["nodecg-io-core"] as unknown as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error(
