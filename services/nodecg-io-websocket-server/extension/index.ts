@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import * as WebSocket from "ws";
 
@@ -8,7 +8,7 @@ interface WSServerServiceConfig {
 
 export type WSServerServiceClient = WebSocket.Server;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new WSServerService(nodecg, "websocket-server", __dirname, "../ws-schema.json").register();
 };
 

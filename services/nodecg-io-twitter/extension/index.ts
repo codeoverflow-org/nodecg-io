@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import Twitter = require("twitter");
 
@@ -11,7 +11,7 @@ interface TwitterServiceConfig {
 
 export type TwitterServiceClient = Twitter;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new TwitterService(nodecg, "twitter", __dirname, "../twitter-schema.json").register();
 };
 

@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { TemplateClient } from "nodecg-io-template";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for the template service started.");
 
     const template = requireService<TemplateClient>(nodecg, "template");

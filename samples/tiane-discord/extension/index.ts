@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { requireService } from "nodecg-io-core";
 import { DiscordServiceClient } from "nodecg-io-discord";
 import { TianeServiceClient } from "nodecg-io-tiane";
@@ -8,7 +8,7 @@ import { TextChannel, User } from "discord.js";
  * Adds a discord bot that is powered by TIANE. Ping it if you wan't to talk to her.
  */
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for discord started");
 
     let myDiscord: DiscordServiceClient | null = null;

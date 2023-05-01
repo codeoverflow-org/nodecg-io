@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Client as IRCClient } from "irc";
 
@@ -25,7 +25,7 @@ export class IRCServiceClient extends IRCClient {
     }
 }
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new IRCService(nodecg, "irc", __dirname, "../irc-schema.json").register();
 };
 

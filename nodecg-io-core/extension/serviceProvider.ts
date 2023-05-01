@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { NodeCGIOCore } from "./index";
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 
 /**
  * A wrapper around a ServiceClient that has helper functions for setting up callbacks and
@@ -59,13 +59,28 @@ export class ServiceProvider<C> {
 }
 
 /**
+ * Common interface between multiple NodeCG typings.
+ * Ensures that the only user-facing function {@link requireService} works with the old official nodecg 1.x types,
+ * the unofficial nodecg-types for 1.x without the rest of the repository and the new
+ * official @nodecg/types for nodecg 2.x.
+ */
+interface NodeCGCompatible {
+    readonly extensions: Record<string, unknown>;
+    bundleName: string;
+    log: {
+        error: (message: string) => void;
+    };
+}
+
+/**
  * Allows for bundles to require services.
- * @param {NodeCG} nodecg the NodeCG instance of your bundle. Is used to get the bundle name of the calling bundle.
+ * @param {NodeCGCompatible} nodecg the NodeCG instance of your bundle. Is used to get the bundle name of the calling bundle
+ *                                  and to get access to the nodecg-io-core bundle to register your service requirement.
  * @param {string} serviceType the type of service you want to require, e.g., "twitch" or "spotify".
  * @return {ServiceClientWrapper<C> | undefined} a service client wrapper for access to the service client
  *                                               or undefined if the core wasn't loaded or the service type doesn't exist.
  */
-export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined {
+export function requireService<C>(nodecg: NodeCGCompatible, serviceType: string): ServiceProvider<C> | undefined {
     const core = nodecg.extensions["nodecg-io-core"] as unknown as NodeCGIOCore | undefined;
     if (core === undefined) {
         nodecg.log.error(
@@ -74,5 +89,5 @@ export function requireService<C>(nodecg: NodeCG, serviceType: string): ServiceP
         return;
     }
 
-    return core.requireService(nodecg, serviceType);
+    return core.requireService(nodecg as NodeCG.ServerAPI, serviceType);
 }

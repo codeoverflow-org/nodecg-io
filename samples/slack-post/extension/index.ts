@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { SlackServiceClient } from "nodecg-io-slack";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for Slack WebAPI started");
 
     const slack = requireService<SlackServiceClient>(nodecg, "slack");

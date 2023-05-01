@@ -717,7 +717,7 @@ export class GpsSensor {
      * @param time The minimum time (in milliseconds) between two location updates sent. Set this as high as possible.
      * @param distance The minimum distance (in meters) between two location updates
      */
-    async subscribeLocations(listener: (l: Location) => void, time = 5000, distance = 0): Promise<Subscription> {
+    async subscribeLocations(listener: (l: LocationInfo) => void, time = 5000, distance = 0): Promise<Subscription> {
         const result = await this.android.rawRequest(
             "gps_subscribe",
             {

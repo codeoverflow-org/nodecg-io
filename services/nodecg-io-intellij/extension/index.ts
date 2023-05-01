@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { IntelliJ } from "./intellij";
 
@@ -8,7 +8,7 @@ interface IntelliJServiceConfig {
 
 export type IntelliJServiceClient = IntelliJ;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new IntellijService(nodecg, "intellij", __dirname, "../intellij-schema.json").register();
 };
 

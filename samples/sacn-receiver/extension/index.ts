@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { SacnReceiverServiceClient } from "nodecg-io-sacn-receiver";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for sACN started");
 
     const sacn = requireService<SacnReceiverServiceClient>(nodecg, "sacn-receiver");
@@ -15,7 +15,7 @@ module.exports = function (nodecg: NodeCG) {
     sacn?.onUnavailable(() => nodecg.log.info("sACN receiver has been unset."));
 };
 
-function addListeners(nodecg: NodeCG, client: SacnReceiverServiceClient) {
+function addListeners(nodecg: NodeCG.ServerAPI, client: SacnReceiverServiceClient) {
     nodecg.log.info("Listening to these universes: " + client.universes);
     client.onPacket((packet) => {
         nodecg.log.info("Received sACN data: " + packet);

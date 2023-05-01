@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { DiscordServiceClient } from "nodecg-io-discord";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for Discord started");
 
     const discord = requireService<DiscordServiceClient>(nodecg, "discord");

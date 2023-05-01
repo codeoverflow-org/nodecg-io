@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { SacnSenderServiceClient } from "./sacnSenderClient";
 
@@ -10,7 +10,7 @@ export interface SacnSenderServiceConfig {
 
 export { SacnSenderServiceClient } from "./sacnSenderClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new SacnSenderService(nodecg, "sacn-sender", __dirname, "../sacn-sender-schema.json").register();
 };
 

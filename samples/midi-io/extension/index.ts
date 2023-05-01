@@ -1,10 +1,10 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { requireService } from "nodecg-io-core";
 import { MidiInputServiceClient } from "nodecg-io-midi-input";
 import { MidiOutputServiceClient } from "nodecg-io-midi-output";
 import { Input, Output } from "easymidi";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("midi-io sample bundle started");
 
     const inputService = requireService<MidiInputServiceClient>(nodecg, "midi-input");

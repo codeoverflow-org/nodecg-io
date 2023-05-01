@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle } from "nodecg-io-core";
 import { Atem } from "atem-connection";
 
@@ -12,7 +12,7 @@ interface AtemServiceConfig {
 
 export type AtemServiceClient = Atem;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new AtemService(nodecg, "atem", __dirname, "../atem-schema.json").register();
 };
 

@@ -1,10 +1,10 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { DebugHelper } from "./debugHelper";
 
 export { DebugHelper } from "./debugHelper";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new DebugService(nodecg, "debug").register();
 };
 

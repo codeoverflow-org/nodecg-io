@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger, error } from "nodecg-io-core";
 import { OpenTTSClient } from "./openTtsClient";
 
@@ -9,7 +9,7 @@ export interface OpenTTSConfig {
 
 export { OpenTTSClient, OpenTTSVoice } from "./openTtsClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new OpenTTSService(nodecg, "opentts", __dirname, "../schema.json").register();
 };
 

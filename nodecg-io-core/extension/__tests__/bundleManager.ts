@@ -1,4 +1,4 @@
-import { MockNodeCG, testBundle, testService, testServiceInstance } from "./mocks";
+import { mockNodeCG, testBundle, testService, testServiceInstance } from "./mocks";
 import { BundleManager } from "../bundleManager";
 
 describe("BundleManager", () => {
@@ -12,7 +12,7 @@ describe("BundleManager", () => {
 
     beforeEach(() => {
         changeCb.mockReset();
-        bundleManager = new BundleManager(new MockNodeCG());
+        bundleManager = new BundleManager(mockNodeCG());
         bundleManager.on("change", changeCb);
     });
 
@@ -30,7 +30,7 @@ describe("BundleManager", () => {
         });
 
         test("should error if registering a dependency on the same service twice", () => {
-            const bundleManager = new BundleManager(new MockNodeCG());
+            const bundleManager = new BundleManager(mockNodeCG());
             // Depending on testService for the first time => fine
             bundleManager.registerServiceDependency(testBundle, testService);
             // Depending on testService for the second time => not fine

@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { Android } from "./android";
 
@@ -8,7 +8,7 @@ interface AndroidServiceConfig {
 
 export type AndroidServiceClient = Android;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new AndroidService(nodecg, "android", __dirname, "../android-schema.json").register();
 };
 

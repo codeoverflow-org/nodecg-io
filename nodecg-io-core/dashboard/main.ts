@@ -1,3 +1,11 @@
+// Define NodeCG instance on global scope
+import type { NodeCGAPIClient } from "@nodecg/types/client/api/api.client";
+
+declare global {
+    const NodeCG: typeof NodeCGAPIClient;
+    const nodecg: NodeCGAPIClient;
+}
+
 // Re-export functions that are used in panel.html to the global scope
 import { loadFramework } from "./authentication";
 import {

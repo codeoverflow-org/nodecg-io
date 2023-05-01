@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { StreamElementsReplicant, StreamElementsServiceClient } from "nodecg-io-streamelements";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for StreamElements started");
 
     const streamElements = requireService<StreamElementsServiceClient>(nodecg, "streamelements");

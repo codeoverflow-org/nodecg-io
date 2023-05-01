@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { ElgatoLightClient } from "nodecg-io-elgato-light";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for the Elgato light service started.");
 
     const elgatoLightClient = requireService<ElgatoLightClient>(nodecg, "elgato-light");

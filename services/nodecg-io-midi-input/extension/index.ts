@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import * as easymidi from "easymidi";
 
@@ -9,7 +9,7 @@ interface MidiInputServiceConfig {
 
 export type MidiInputServiceClient = easymidi.Input;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new MidiService(nodecg, "midi-input", __dirname, "../midi-input-schema.json").register();
 };
 

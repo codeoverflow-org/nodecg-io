@@ -1,9 +1,9 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { GoogleApisServiceClient } from "nodecg-io-googleapis";
 import { requireService } from "nodecg-io-core";
 import type { youtube_v3 } from "googleapis";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     nodecg.log.info("Sample bundle for youtube started");
 
     const googleApis = requireService<GoogleApisServiceClient>(nodecg, "googleapis");

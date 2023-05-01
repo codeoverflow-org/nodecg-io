@@ -1,9 +1,9 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { requireService } from "nodecg-io-core";
 import { AtemServiceClient } from "nodecg-io-atem";
 import { Commands } from "atem-connection";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for Atem Protocol started.");
 
     const service = requireService<AtemServiceClient>(nodecg, "atem");

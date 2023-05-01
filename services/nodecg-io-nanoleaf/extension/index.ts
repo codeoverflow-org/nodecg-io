@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, error, Logger } from "nodecg-io-core";
 import { NanoleafClient } from "./nanoleafClient";
 import { NanoleafUtils } from "./nanoleafUtils";
@@ -11,7 +11,7 @@ export interface NanoleafServiceConfig {
 // Reexportation of important classes and types is done in ../index.ts because we need to
 // export NanoleafUtils which is a class and this file already has a default export for nodecg.
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new NanoleafService(nodecg, "nanoleaf", __dirname, "../nanoleaf-schema.json").register();
 };
 

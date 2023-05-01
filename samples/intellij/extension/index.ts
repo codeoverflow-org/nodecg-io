@@ -1,9 +1,9 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { IntelliJServiceClient } from "nodecg-io-intellij";
 import { Plugin } from "nodecg-io-intellij/extension/intellij";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for intellij started");
 
     const ij = requireService<IntelliJServiceClient>(nodecg, "intellij");

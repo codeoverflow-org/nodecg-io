@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { success, ServiceBundle, Logger } from "nodecg-io-core";
 import { StreamElementsServiceClient } from "./StreamElements";
 
@@ -9,7 +9,7 @@ interface StreamElementsServiceConfig {
 
 export { StreamElementsServiceClient, StreamElementsReplicant } from "./StreamElements";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     const schemaPath = [__dirname, "../streamelements-schema.json"];
     new StreamElementsService(nodecg, "streamelements", ...schemaPath).register();
 };
