@@ -5,13 +5,13 @@ import { decryptData, EncryptedData, PersistenceManager, PersistentData } from "
 import { ServiceManager } from "../serviceManager";
 import { ServiceProvider } from "../serviceProvider";
 import { emptySuccess, error } from "../utils/result";
-import { MockNodeCG, testBundle, testInstance, testService, testServiceInstance } from "./mocks";
+import { mockNodeCG, testBundle, testInstance, testService, testServiceInstance } from "./mocks";
 
 describe("PersistenceManager", () => {
     const validPassword = "myPassword";
     const invalidPassword = "someOtherPassword";
 
-    const nodecg = new MockNodeCG();
+    const nodecg = mockNodeCG();
     const serviceManager = new ServiceManager(nodecg);
     serviceManager.registerService(testService);
 
@@ -378,6 +378,10 @@ describe("PersistenceManager", () => {
 
     test("should automatically save if BundleManager or InstanceManager emit a change event", async () => {
         await persistenceManager.load(validPassword); // Set password so that we can save stuff
+
+        if (!encryptedDataReplicant.value) {
+            throw new Error("encryptedDataReplicant.value was undefined");
+        }
 
         encryptedDataReplicant.value.cipherText = undefined;
         bundleManager.emit("change");
