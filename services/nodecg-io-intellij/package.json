@@ -34,7 +34,7 @@
         "@types/node": "^18.15.11",
         "@types/node-fetch": "^2.6.2",
         "nodecg-types": "^1.9.0",
-        "typescript": "^5.0.3",
+        "typescript": "^5.0.4",
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {

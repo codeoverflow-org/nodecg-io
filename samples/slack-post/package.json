@@ -14,7 +14,7 @@
         "nodecg-types": "^1.9.0",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-slack": "^0.3.0",
-        "typescript": "^5.0.3",
+        "typescript": "^5.0.4",
         "nodecg-io-tsconfig": "^1.0.0"
     }
 }
