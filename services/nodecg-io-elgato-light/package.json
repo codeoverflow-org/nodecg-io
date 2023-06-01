@@ -37,8 +37,8 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "@types/node-fetch": "^2.6.2",
-        "node-fetch": "^2.6.9",
+        "@types/node-fetch": "^2.6.4",
+        "node-fetch": "^2.6.11",
         "nodecg-io-core": "^0.3.0"
     }
 }
