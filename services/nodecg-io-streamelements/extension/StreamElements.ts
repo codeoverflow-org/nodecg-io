@@ -5,7 +5,8 @@ import {
     StreamElementsEvent,
     StreamElementsFollowEvent,
     StreamElementsHostEvent,
-    StreamElementsRaidEvent, StreamElementsReplayEvent,
+    StreamElementsRaidEvent,
+    StreamElementsReplayEvent,
     StreamElementsSubBombEvent,
     StreamElementsSubscriberEvent,
     StreamElementsTestCheerEvent,
@@ -198,7 +199,7 @@ export class StreamElementsServiceClient extends EventEmitter {
                 handler({
                     event: data.data,
                     listener: data.name,
-                    provider: data.provider
+                    provider: data.provider,
                 } as unknown as StreamElementsTestEvent);
             }
         });

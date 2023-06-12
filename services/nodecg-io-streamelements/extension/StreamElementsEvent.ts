@@ -297,5 +297,5 @@ export type StreamElementsTestEvent =
 export interface StreamElementsReplayEvent {
     provider?: "twitch" | "youtube" | "facebook";
     name: string;
-    data: ObjectMap<string | number>
+    data: ObjectMap<string | number>;
 }
