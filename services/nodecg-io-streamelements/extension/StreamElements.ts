@@ -5,7 +5,7 @@ import {
     StreamElementsEvent,
     StreamElementsFollowEvent,
     StreamElementsHostEvent,
-    StreamElementsRaidEvent,
+    StreamElementsRaidEvent, StreamElementsReplayEvent,
     StreamElementsSubBombEvent,
     StreamElementsSubscriberEvent,
     StreamElementsTestCheerEvent,
@@ -186,6 +186,20 @@ export class StreamElementsServiceClient extends EventEmitter {
         this.socket.on("event:test", (data: StreamElementsTestEvent) => {
             if (data) {
                 handler(data);
+            }
+        });
+
+        this.socket.on("event:update", (data: StreamElementsReplayEvent) => {
+            // event:update is all replays of previous real events.
+            // Because the structure is similar to the test events and just the keys in the root element
+            // are named differently we rename those to align with the naming in the test events
+            // and handle it as a test event from here on.
+            if (data) {
+                handler({
+                    event: data.data,
+                    listener: data.name,
+                    provider: data.provider
+                } as unknown as StreamElementsTestEvent);
             }
         });
     }
