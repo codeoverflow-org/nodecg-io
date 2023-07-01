@@ -1,5 +1,5 @@
 # Base devcontainer for node.js development
-FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0.205-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:1-20-bullseye
 USER node
 
 # Install required system dependencies
