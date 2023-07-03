@@ -13,7 +13,7 @@
         "@types/node": "^20.3.3",
         "@nodecg/types": "^2.1.11",
         "nodecg-io-core": "^0.3.0",
-        "typescript": "^5.0.3",
+        "typescript": "^5.1.6",
         "nodecg-io-dbus": "0.3.0"
     }
 }
