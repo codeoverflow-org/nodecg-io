@@ -39,7 +39,7 @@
     },
     "dependencies": {
         "@rauschma/stringio": "^1.4.0",
-        "node-fetch": "^2.6.11",
+        "node-fetch": "^2.6.12",
         "nodecg-io-core": "^0.3.0"
     }
 }
