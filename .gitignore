@@ -19,13 +19,11 @@ node_modules/
 # Coverage reports by jest
 coverage
 
-# Dashboard bundle config
-nodecg-io-core/dashboard/dist
-!nodecg-io-core/dashboard/esbuild.config.js
+# Dashboard bundle output from esbuild
+dist/
 
-# Debug service bundle config
-services/nodecg-io-debug/dashboard/dist
-!services/nodecg-io-debug/esbuild.config.js
+# Esbuild config
+!utils/nodecg-io-esbuild/esbuild.config.js
 
 # Editor configuration
 .idea/
@@ -36,9 +34,6 @@ services/nodecg-io-debug/dashboard/dist
 !/.vscode/tasks.json
 !/.vscode/settings.json
 
-# Lerna temporary files
-package.json.lerna_backup
-
 # Configuration of prettier and ESLint
 !.eslintrc.js
 !.prettierrc.js
@@ -48,9 +43,6 @@ package.json.lerna_backup
 
 # Documentation
 docs/
-
-# lerna debug
-lerna-debug.log
 
 # nodecg-io-cli install details. Created when installing development version using nodecg-io install.
 install.json
