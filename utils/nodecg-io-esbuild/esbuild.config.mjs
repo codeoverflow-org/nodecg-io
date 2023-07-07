@@ -1,26 +1,41 @@
+#!/usr/bin/env node
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-undef */
 /* eslint-disable no-console */
+/* eslint-disable no-undef */ // TODO: fix
 
-const esbuild = require("esbuild");
-const path = require("path");
-const process = require("process");
-const fs = require("fs");
+import * as esbuild from "esbuild";
+import * as process from "process";
+import * as fs from "fs";
 
 const args = new Set(process.argv.slice(2));
 const prod = process.env.NODE_ENV === "production";
 
-const entryPoints = [
-    "monaco-editor/esm/vs/language/json/json.worker.js",
-    "monaco-editor/esm/vs/editor/editor.worker.js",
-    "dashboard/debug-helper.ts",
-];
+if (args.has("--help")) {
+    console.log("Usage: esbuild.config.mjs [entrypoint] [options]");
+    console.log("Builds a graphic or dashboard for NodeCG using esbuild.");
+    console.log("If no entrypoint is specified, main.ts is used.");
+    console.log("Options:");
+    console.log("  --clean     Remove dist folder and exit");
+    console.log("  --help      Show this help");
+    console.log("  --monaco    Add monaco editor workers as entrypoints");
+    console.log("  --rebuild   Remove dist folder and rebuild");
+    console.log("  --watch     Watch for changes and build");
+    process.exit(0);
+}
+
+const [firstArg] = args;
+const mainEntryPoint = firstArg && !firstArg.startsWith("--") ? firstArg : "main.ts";
+const entryPoints = [mainEntryPoint];
+
+if (args.has("--monaco")) {
+    entryPoints.push("monaco-editor/esm/vs/language/json/json.worker.js");
+    entryPoints.push("monaco-editor/esm/vs/editor/editor.worker.js");
+}
 
 if (args.has("--clean") || args.has("--rebuild")) {
     // Remove dist folder
     try {
-        fs.rmSync(path.join(__dirname, "dist"), { recursive: true, force: true });
+        fs.rmSync("dist", { recursive: true, force: true });
     } catch (error) {
         console.log(error);
     }
@@ -31,7 +46,7 @@ if (args.has("--clean") || args.has("--rebuild")) {
 }
 
 /** @type {import('esbuild').BuildOptions} */
-const BuildOptions = {
+const buildOptions = {
     /**
      * By default, esbuild will not bundle the input files. Bundling must be
      * explicitly enabled.
@@ -68,7 +83,7 @@ const BuildOptions = {
     /**
      * This option sets the output directory for the build operation.
      */
-    outdir: path.join(__dirname, "dashboard", "dist"),
+    outdir: "dist",
     /**
      * Configure esbuild's bundler to generate code intended for the browser.
      */
@@ -84,18 +99,14 @@ const BuildOptions = {
      * firefox57, safari11, edge16]).
      */
     target: "ES2015",
-    /**
-     * Enabling watch mode on the build API tells esbuild to listen for changes
-     * on the file system and to rebuild whenever a file changes that could
-     * invalidate the build.
-     */
-    watch: args.has("--watch"),
 };
 
-esbuild
-    .build(BuildOptions)
-    .catch(() => process.exit(1))
-    .then((result) => {
+try {
+    const context = await esbuild.context(buildOptions);
+    if (args.has("--watch")) {
+        await context.watch();
+    } else {
+        const result = await context.rebuild();
         if (result.errors.length > 0) {
             console.error(result.errors);
         }
@@ -103,4 +114,10 @@ esbuild
         if (result.warnings.length > 0) {
             console.error(result.warnings);
         }
-    });
+
+        process.exit(0);
+    }
+} catch (error) {
+    console.error(error);
+    process.exit(1);
+}

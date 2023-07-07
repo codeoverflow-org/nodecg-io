@@ -1,7 +1,7 @@
 {
-    "name": "nodecg-io-twitch-auth",
-    "version": "0.3.0",
-    "description": "Utility package that handles authentication for all nodecg-io twitch services.",
+    "name": "nodecg-io-esbuild",
+    "version": "1.0.0",
+    "description": "Shared esbuild configuration that is used to bundle nodecg-io related graphics and dashboards.",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"
@@ -9,18 +9,19 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/codeoverflow-org/nodecg-io.git",
-        "directory": "utils/nodecg-io-twitch-chat"
+        "directory": "utils/nodecg-io-esbuild"
     },
     "keywords": [
         "nodecg-io"
     ],
     "license": "MIT",
+    "bin": {
+        "nodecg-io-esbuild": "esbuild.config.mjs"
+    },
     "devDependencies": {
-        "@types/node": "^20.3.3",
-        "nodecg-io-tsconfig": "^1.0.0",
-        "typescript": "^5.1.6"
+        "@types/node": "^20.2.5"
     },
     "dependencies": {
-        "@twurple/auth": "^5.3.4"
+        "esbuild": "^0.18.11"
     }
 }

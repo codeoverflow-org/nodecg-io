@@ -13,10 +13,10 @@
         "directory": "services/nodecg-io-debug"
     },
     "scripts": {
-        "clean": "node esbuild.config.js --clean",
-        "build": "node esbuild.config.js",
-        "rebuild": "node esbuild.config.js --rebuild",
-        "watch": "node esbuild.config.js --watch"
+        "build": "cd dashboard && nodecg-io-esbuild debug-helper.ts --monaco",
+        "clean": "npm run build -- --clean",
+        "rebuild": "npm run build -- --rebuild",
+        "watch": "npm run -- --watch"
     },
     "files": [
         "dashboard",
@@ -50,6 +50,7 @@
         "@types/node": "^20.3.3",
         "esbuild": "^0.16.12",
         "monaco-editor": "^0.38.0",
+        "nodecg-io-esbuild": "^1.0.0",
         "nodecg-io-tsconfig": "^1.0.0",
         "@nodecg/types": "^2.1.11",
         "typescript": "^5.1.6"
