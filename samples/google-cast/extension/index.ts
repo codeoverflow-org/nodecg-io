@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { GoogleCastClient } from "nodecg-io-google-cast";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for the google-cast service started.");
 
     const googleCast = requireService<GoogleCastClient>(nodecg, "google-cast");

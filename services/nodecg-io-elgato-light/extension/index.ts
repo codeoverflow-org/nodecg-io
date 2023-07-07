@@ -1,11 +1,11 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, error, Logger } from "nodecg-io-core";
 import { ElgatoLightClient, ElgatoLightConfig } from "./elgatoLightClient";
 
 export { ElgatoLight, ElgatoKeyLight, ElgatoLightStrip, LightType } from "./elgatoLight";
 export { ElgatoLightClient, ElgatoLightConfig } from "./elgatoLightClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new ElgatoLightService(nodecg, "elgato-light", __dirname, "../schema.json").register();
 };
 

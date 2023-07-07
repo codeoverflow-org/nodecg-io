@@ -13,7 +13,7 @@ import { ServiceManager } from "../serviceManager";
 import { ServiceProvider } from "../serviceProvider";
 import { emptySuccess, error } from "../utils/result";
 import {
-    MockNodeCG,
+    mockNodeCG,
     testBundle,
     testInstance,
     testService,
@@ -28,7 +28,7 @@ describe("PersistenceManager", () => {
     let validEncryptionKey = ""; // Generated in beforeEach
     let invalidEncryptionKey = "";
 
-    const nodecg = new MockNodeCG();
+    const nodecg = mockNodeCG();
     const serviceManager = new ServiceManager(nodecg);
     serviceManager.registerService(testService);
     serviceManager.registerService(websocketServerService);
@@ -467,6 +467,10 @@ describe("PersistenceManager", () => {
 
     test("should automatically save if BundleManager or InstanceManager emit a change event", async () => {
         await persistenceManager.load(validEncryptionKey); // Set encryption key so that we can save stuff
+
+        if (!encryptedDataReplicant.value) {
+            throw new Error("encryptedDataReplicant.value was undefined");
+        }
 
         encryptedDataReplicant.value.cipherText = undefined;
         bundleManager.emit("change");

@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import { google, GoogleApis } from "googleapis";
 import type { Credentials } from "google-auth-library/build/src/auth/credentials";
@@ -15,7 +15,7 @@ interface GoogleApisServiceConfig {
 
 export type GoogleApisServiceClient = GoogleApis;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new GoogleApisService(nodecg, "googleapis", __dirname, "../googleapis-schema.json").register();
 };
 

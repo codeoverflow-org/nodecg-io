@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { TwitchChatServiceClient } from "nodecg-io-twitch-chat";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for twitch-chat started");
 
     // Require the twitch service.
@@ -24,7 +24,7 @@ module.exports = function (nodecg: NodeCG) {
     twitch?.onUnavailable(() => nodecg.log.info("Twitch chat client has been unset."));
 };
 
-function addListeners(nodecg: NodeCG, client: TwitchChatServiceClient, channel: string) {
+function addListeners(nodecg: NodeCG.ServerAPI, client: TwitchChatServiceClient, channel: string) {
     client
         .join(channel)
         .then(() => {

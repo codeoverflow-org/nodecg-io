@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import RedditAPI from "reddit-ts";
 
@@ -11,7 +11,7 @@ interface RedditServiceConfig {
 
 export type RedditServiceClient = RedditAPI;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new RedditService(nodecg, "reddit", __dirname, "../reddit-schema.json").register();
 };
 

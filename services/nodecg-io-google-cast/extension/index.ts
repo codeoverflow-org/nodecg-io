@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { GoogleCastClient } from "./castClient";
 import ChromecastAPI from "chromecast-api";
@@ -11,14 +11,14 @@ export interface GoogleCastConfig {
 
 export { GoogleCastClient } from "./castClient";
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new GoogleCastService(nodecg).register();
 };
 
 class GoogleCastService extends ServiceBundle<GoogleCastConfig, GoogleCastClient> {
     private autoDiscoveryClient = new ChromecastAPI();
 
-    constructor(nodecg: NodeCG) {
+    constructor(nodecg: NodeCG.ServerAPI) {
         super(nodecg, "google-cast", __dirname, "../schema.json");
 
         this.autoDiscoveryClient.on("device", (device) => {

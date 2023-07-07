@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, error, Logger } from "nodecg-io-core";
 import { Knex, knex } from "knex";
 
@@ -13,7 +13,7 @@ export interface SQLConfig {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SQLClient = Knex<any, unknown[]>;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new SQLService(nodecg, "sql", __dirname, "../schema.json").register();
 };
 

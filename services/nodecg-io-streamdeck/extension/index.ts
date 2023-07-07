@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import * as streamdeck from "@elgato-stream-deck/node";
 import { StreamDeck } from "@elgato-stream-deck/node";
@@ -9,7 +9,7 @@ interface StreamdeckServiceConfig {
 
 export type StreamdeckServiceClient = StreamDeck;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new StreamdeckServiceBundle(nodecg, "streamdeck", __dirname, "../streamdeck-schema.json").register();
 };
 

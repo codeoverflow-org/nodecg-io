@@ -6,6 +6,7 @@ import {
     StreamElementsFollowEvent,
     StreamElementsHostEvent,
     StreamElementsRaidEvent,
+    StreamElementsReplayEvent,
     StreamElementsSubBombEvent,
     StreamElementsSubscriberEvent,
     StreamElementsTestCheerEvent,
@@ -18,7 +19,7 @@ import {
     StreamElementsTipEvent,
 } from "./StreamElementsEvent";
 import { EventEmitter } from "events";
-import { Replicant } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 
 export interface StreamElementsReplicant {
     lastSubscriber?: StreamElementsSubscriberEvent;
@@ -188,6 +189,20 @@ export class StreamElementsServiceClient extends EventEmitter {
                 handler(data);
             }
         });
+
+        this.socket.on("event:update", (data: StreamElementsReplayEvent) => {
+            // event:update is all replays of previous real events.
+            // Because the structure is similar to the test events and just the keys in the root element
+            // are named differently we rename those to align with the naming in the test events
+            // and handle it as a test event from here on.
+            if (data) {
+                handler({
+                    event: data.data,
+                    listener: data.name,
+                    provider: data.provider,
+                } as unknown as StreamElementsTestEvent);
+            }
+        });
     }
 
     public onSubscriber(handler: (data: StreamElementsSubscriberEvent) => void, includeSubGifts = true): void {
@@ -266,18 +281,27 @@ export class StreamElementsServiceClient extends EventEmitter {
         this.on("test:tip-latest", handler);
     }
 
-    public setupReplicant(rep: Replicant<StreamElementsReplicant>): void {
+    public setupReplicant(rep: NodeCG.ServerReplicant<StreamElementsReplicant>): void {
         if (rep.value === undefined) {
             rep.value = {};
         }
 
-        this.onSubscriber((data) => (rep.value.lastSubscriber = data));
-        this.onSubscriberBomb((data) => (rep.value.lastSubBomb = data));
-        this.onTip((data) => (rep.value.lastTip = data));
-        this.onCheer((data) => (rep.value.lastCheer = data));
-        this.onGift((data) => (rep.value.lastGift = data));
-        this.onFollow((data) => (rep.value.lastFollow = data));
-        this.onRaid((data) => (rep.value.lastRaid = data));
-        this.onHost((data) => (rep.value.lastHost = data));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        function setValue(key: keyof StreamElementsReplicant, value: any) {
+            if (rep.value === undefined) {
+                rep.value = {};
+            }
+
+            rep.value[key] = value;
+        }
+
+        this.onSubscriber((data) => setValue("lastSubscriber", data));
+        this.onSubscriberBomb((data) => setValue("lastSubBomb", data));
+        this.onTip((data) => setValue("lastTip", data));
+        this.onCheer((data) => setValue("lastCheer", data));
+        this.onGift((data) => setValue("lastGift", data));
+        this.onFollow((data) => setValue("lastFollow", data));
+        this.onRaid((data) => setValue("lastRaid", data));
+        this.onHost((data) => setValue("lastHost", data));
     }
 }

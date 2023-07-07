@@ -3,18 +3,18 @@
     "private": true,
     "version": "0.3.0",
     "nodecg": {
-        "compatibleRange": "^1.1.1",
+        "compatibleRange": ">=1.1.1 <3.0.0",
         "bundleDependencies": {
             "nodecg-io-spotify": "^0.3.0"
         }
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^18.7.18",
-        "nodecg-types": "^1.9.0",
+        "@types/node": "^20.3.3",
+        "@nodecg/types": "^2.1.11",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-spotify": "^0.3.0",
-        "typescript": "^4.8.4",
+        "typescript": "^5.1.6",
         "nodecg-io-tsconfig": "^1.0.0"
     }
 }

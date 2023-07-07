@@ -4,7 +4,7 @@ import { ServiceInstance } from "../service";
 import { ServiceManager } from "../serviceManager";
 import { emptySuccess, error, success } from "../utils/result";
 import {
-    MockNodeCG,
+    mockNodeCG,
     testBundle,
     testBundle2,
     testInstance,
@@ -14,7 +14,7 @@ import {
 } from "./mocks";
 
 describe("InstanceManager", () => {
-    const nodecg = new MockNodeCG();
+    const nodecg = mockNodeCG();
 
     const noConfigService = {
         ...testService,

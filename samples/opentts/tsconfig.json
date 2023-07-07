@@ -1,5 +1,8 @@
 {
     "extends": "nodecg-io-tsconfig",
+    "compilerOptions": {
+        "lib": ["dom"]
+    },
     "references": [
         {
             "path": "../../nodecg-io-core"

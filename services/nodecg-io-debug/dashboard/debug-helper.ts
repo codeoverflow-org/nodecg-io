@@ -1,5 +1,10 @@
-/// <reference types="nodecg-types/types/browser" />
+import { NodeCGAPIClient } from "@nodecg/types/client/api/api.client";
 import * as monaco from "monaco-editor";
+
+declare global {
+    const nodecg: NodeCGAPIClient;
+    const NodeCG: typeof NodeCGAPIClient;
+}
 
 // Buttons
 for (let i = 1; i <= 5; i++) {

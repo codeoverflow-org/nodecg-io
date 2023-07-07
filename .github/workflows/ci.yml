@@ -12,9 +12,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3.5.0
+            - uses: actions/setup-node@v3.6.0
               with:
-                  node-version: "16"
+                  node-version: "18"
 
             - name: Install system dependencies
               run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
@@ -40,9 +40,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3.5.0
+            - uses: actions/setup-node@v3.6.0
               with:
-                  node-version: "16"
+                  node-version: "18"
 
             - name: Install system dependencies
               run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
@@ -64,9 +64,9 @@ jobs:
             os: [ubuntu-latest, windows-2019]
         runs-on: ${{ matrix.os }}
         steps:
-            - uses: actions/setup-node@v3.5.0
+            - uses: actions/setup-node@v3.6.0
               with:
-                  node-version: "16"
+                  node-version: "18"
 
             - name: Download NodeCG
               uses: actions/checkout@v3
@@ -76,19 +76,31 @@ jobs:
             - name: Get NodeCG commit hash
               id: nodecgHash
               shell: bash
-              run: echo "::set-output name=nodecgHash::$(git rev-parse HEAD)"
+              run: echo "NODECG_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
             - name: Cache NodeCG dependencies
-              id: cache-nodecg
+              id: cache-nodecg-deps
               uses: actions/cache@v3
               with:
                 path: 'node_modules'
-                key: ${{ runner.os }}-${{ steps.nodecgHash.outputs.nodecgHash }}-nodecg
+                key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg-deps
+
+            - name: Cache NodeCG compilation outputs
+              id: cache-nodecg-build
+              uses: actions/cache@v3
+              with:
+                path: 'build'
+                key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg-build
 
             - name: Install NodeCG dependencies
               # Only get dependencies if we didn't get them from the cache
-              if: steps.cache-nodecg.outputs.cache-hit != 'true'
-              run: npm install --prod
+              if: steps.cache-nodecg-deps.outputs.cache-hit != 'true'
+              run: npm install
+
+            - name: Build NodeCG
+              # Only build NodeCG if we didn't have cached compilation results
+              if: steps.cache-nodecg-build.outputs.cache-hit != 'true'
+              run: npm run build
 
             - name: Setup NodeCG config linux
               if: matrix.os == 'ubuntu-latest'
@@ -124,7 +136,19 @@ jobs:
               run: npm run build
               working-directory: ./nodecg-io
 
-            - name: Run test
+              # Under linux we need to run the test as the root user because
+              # the midi service requires access to audio devices.
+              # By default the GitHub Actions user is not in the `audio` group and therefore
+              # has no access. Either we need to run as root to get access or need to add the user
+              # to the `audio` group which doesn't work for us, as it would only take affect on next login,
+              # but we cannot logout and login in CI.
+            - name: Run test (ubuntu)
+              if: matrix.os == 'ubuntu-latest'
+              run: sudo node .scripts/ci-nodecg-integration.mjs
+              working-directory: ./nodecg-io
+
+            - name: Run test (windows)
+              if: matrix.os == 'windows-2019'
               shell: bash
               run: node .scripts/ci-nodecg-integration.mjs
               working-directory: ./nodecg-io
@@ -142,9 +166,9 @@ jobs:
         - nodecg
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3.5.0
+            - uses: actions/setup-node@v3.6.0
               with:
-                node-version: "16"
+                node-version: "18"
 
             - name: Download compilation results # From the build step
               uses: actions/download-artifact@v3
@@ -153,6 +177,22 @@ jobs:
 
             - name: Extract compilation results
               run: tar xvf compilation-results.tar.gz
+
+              # All twitch services depend on the utility package `nodecg-io-twitch-auth`.
+              # In the repository the services depend on the latest development version which is not yet published.
+              # If someone installs the service using the published tarball npm would try to get the
+              # unpublished version of twitch-auth from the npm registry which is not possible.
+              # To fix this we update the version of the twitch-auth package in all usages
+              # to also reference the published tarball.
+            - name: Patch twitch-auth dependency to use published current tarball
+              run: |
+                # Get current version as it is needed for the tarball file name
+                TWITCH_AUTH_VERSION=$(cat utils/nodecg-io-twitch-auth/package.json | jq .version -r)
+
+                # Find usages in all package.json files and replace with the corresponding tarball url
+                find . -name 'package.json' -exec grep -q -E '"nodecg-io-twitch-auth": ".+"' {} \; -print # Print found files for debug purposes
+                find . -name 'package.json' -exec grep -q -E '"nodecg-io-twitch-auth": ".+"' {} \; -print0 | \
+                    xargs -0 sed -i "s/\"nodecg-io-twitch-auth\": \".*\"/\"nodecg-io-twitch-auth\": \"https:\/\/codeoverflow-org.github.io\/nodecg-io-publish\/nodecg-io-twitch-auth-${TWITCH_AUTH_VERSION}.tgz\"/g"
 
             - name: Create npm tarballs
               run: npm pack --workspaces

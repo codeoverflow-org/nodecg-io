@@ -47,7 +47,7 @@ if __name__ == '__main__':
     os.mkdir(f'services/nodecg-io-{service_name}/extension')
     with open(f'services/nodecg-io-{service_name}/extension/index.ts', mode='w') as file:
         file.writelines([
-            'import { NodeCG } from "nodecg-types/types/server";\n',
+            'import NodeCG from "@nodecg/types";\n',
             'import { Result, emptySuccess, success, ServiceBundle } from "nodecg-io-core";\n',
             f'import {{ {service_name_c}Client }} from "./{service_name_cc}Client";\n',
             '\n',
@@ -57,7 +57,7 @@ if __name__ == '__main__':
             '\n',
             f'export {{ {service_name_c}Client }} from "./{service_name_cc}Client";\n',
             '\n',
-            'module.exports = (nodecg: NodeCG) => {\n',
+            'module.exports = (nodecg: NodeCG.ServerAPI) => {\n',
             f'    new {service_name_c}Service(nodecg, "{service_name}", __dirname, "../schema.json").register();\n',
             '};\n',
             '\n',
@@ -135,11 +135,11 @@ if __name__ == '__main__':
     os.mkdir(f'samples/{sample_name}/extension')
     with open(f'samples/{sample_name}/extension/index.ts', mode='w') as file:
         file.writelines([
-            'import { NodeCG } from "nodecg-types/types/server";\n',
+            'import NodeCG from "@nodecg/types";\n',
             f'import {{ {service_name_c}Client }} from "nodecg-io-{service_name}";\n',
             'import { requireService } from "nodecg-io-core";\n',
             '\n',
-            'module.exports = function (nodecg: NodeCG) {\n',
+            'module.exports = function (nodecg: NodeCG.ServerAPI) {\n',
             f'    nodecg.log.info("Sample bundle for {service_name_c} started.");\n',
             '\n',
             f'    const {service_name_cc} = requireService<{service_name_c}Client>(nodecg, "{service_name}");\n',

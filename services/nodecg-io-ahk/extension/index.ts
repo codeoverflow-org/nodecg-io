@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, ServiceBundle, Logger } from "nodecg-io-core";
 import { AHK } from "./AHK";
 
@@ -9,7 +9,7 @@ interface AHKServiceConfig {
 
 export type AHKServiceClient = AHK;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new AhkService(nodecg, "ahk", __dirname, "../ahk-schema.json").register();
 };
 

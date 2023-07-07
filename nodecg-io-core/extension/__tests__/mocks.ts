@@ -1,5 +1,5 @@
 import { ObjectMap, ServiceInstance, Service } from "../service";
-import type { NodeCG, ReplicantOptions, Replicant, Logger } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { EventEmitter } from "events";
 
 // The mock-nodecg package has a few problems like no typings and some unimplemented functions that are a dealbreaker for us.
@@ -8,7 +8,7 @@ import { EventEmitter } from "events";
 // But for now we use these mocks that we can easily change if we need something
 // that mock-nodecg hasn't implemented yet.
 
-export class MockNodeCG implements NodeCG {
+export class MockNodeCG {
     constructor(
         public bundleName: string = "nodecg-io-core",
         public bundleConfig = {},
@@ -31,7 +31,9 @@ export class MockNodeCG implements NodeCG {
         logging: {},
         sentry: {},
         login: {},
-    };
+        exitOnUncaught: false,
+        bundles: {},
+    } as unknown as NodeCG.Config;
 
     sendMessage = jest.fn();
     sendMessageToBundle = jest.fn();
@@ -41,8 +43,12 @@ export class MockNodeCG implements NodeCG {
     // We don't care about the type that all replicants have. The user has to ensure that the type they provide
     // to the replicant method matches the actual content of the replicant.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private declaredReplicants: ObjectMap<ObjectMap<Replicant<any>>> = {};
-    Replicant<V>(name: string, namespaceOrOpts?: string | ReplicantOptions<V>, o?: ReplicantOptions<V>): Replicant<V> {
+    private declaredReplicants: ObjectMap<ObjectMap<MockedReplicant<any>>> = {};
+    Replicant<V>(
+        name: string,
+        namespaceOrOpts?: string | NodeCG.Replicant.OptionsWithDefault<V>,
+        o?: NodeCG.Replicant.OptionsWithDefault<V>,
+    ): MockedReplicant<V> {
         const namespace = typeof namespaceOrOpts === "string" ? namespaceOrOpts : this.bundleName;
 
         // Check if this replicant was already declared once and return it if found
@@ -54,7 +60,7 @@ export class MockNodeCG implements NodeCG {
         // This replicant was not already declared and needs to be created.
 
         const opts = typeof namespaceOrOpts === "object" ? namespaceOrOpts : o;
-        const newReplicant = new MockReplicant(this.log, name, namespace, opts ?? {});
+        const newReplicant = new MockReplicant(this.log, name, namespace, opts ?? {}) as unknown as MockedReplicant<V>;
 
         const namespaceObj = this.declaredReplicants[namespace];
         if (namespaceObj === undefined) {
@@ -68,7 +74,7 @@ export class MockNodeCG implements NodeCG {
 
     readReplicant<V>(name: string): V;
     readReplicant<V>(name: string, namespace: string): V;
-    readReplicant<V>(name: string, namespace?: string): V {
+    readReplicant<V>(name: string, namespace?: string): V | undefined {
         return this.Replicant<V>(name, namespace).value;
     }
 
@@ -82,24 +88,26 @@ export class MockNodeCG implements NodeCG {
 }
 
 class MockLogger {
+    name: "logger";
     trace = jest.fn();
     debug = jest.fn();
     info = jest.fn();
     warn = jest.fn();
     error = jest.fn();
     replicants = jest.fn();
-    static globalReconfigure = jest.fn();
 }
 
-class MockReplicant<V> extends EventEmitter implements Replicant<V> {
-    private _value: V | undefined = this.opts.defaultValue;
+type MockedReplicant<V> = MockReplicant<V> & NodeCG.ServerReplicant<V>;
+
+class MockReplicant<V> extends EventEmitter {
+    _value: V | undefined = this.opts.defaultValue;
     revision = 0;
 
     constructor(
-        public readonly log: Logger,
+        public readonly log: NodeCG.Logger,
         public readonly name: string,
         public readonly namespace: string,
-        public readonly opts: ReplicantOptions<V>,
+        public readonly opts: Partial<NodeCG.Replicant.OptionsWithDefault<V>>,
     ) {
         super();
     }
@@ -122,6 +130,10 @@ class MockReplicant<V> extends EventEmitter implements Replicant<V> {
         // We don't support JSON schema here, so we always say it is "valid".
         return true;
     }
+}
+
+export function mockNodeCG(): MockNodeCG & NodeCG.ServerAPI {
+    return new MockNodeCG() as unknown as MockNodeCG & NodeCG.ServerAPI;
 }
 
 // Test objects

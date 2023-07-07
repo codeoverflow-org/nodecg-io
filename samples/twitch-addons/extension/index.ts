@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { TwitchAddonsClient } from "nodecg-io-twitch-addons";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Twitch-addons bundle started.");
 
     const twitchAddons = requireService<TwitchAddonsClient>(nodecg, "twitch-addons");

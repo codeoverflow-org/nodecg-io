@@ -1,8 +1,8 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { StreamdeckServiceClient } from "nodecg-io-streamdeck";
 import { requireService } from "nodecg-io-core";
 
-module.exports = function (nodecg: NodeCG) {
+module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.log.info("Sample bundle for streamdeck started");
 
     const streamdeck = requireService<StreamdeckServiceClient>(nodecg, "streamdeck");

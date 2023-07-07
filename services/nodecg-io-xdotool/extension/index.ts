@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import { Xdotool } from "./xdotool";
 
@@ -9,7 +9,7 @@ interface XdotoolServiceConfig {
 
 export type XdotoolServiceClient = Xdotool;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new XdotoolServiceBundle(nodecg, "xdotool", __dirname, "../xdotool-schema.json").register();
 };
 

@@ -1,5 +1,3 @@
-/// <reference types="nodecg-types/types/browser" />
-
 import { updateMonacoLayout } from "./serviceInstance";
 import { setPassword, isPasswordSet } from "./crypto";
 
@@ -41,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 export async function isLoaded(): Promise<boolean> {
     return new Promise((resolve, _reject) => {
-        nodecg.sendMessage("isLoaded", (_err, res) => resolve(res));
+        nodecg.sendMessage("isLoaded", (_err, res: boolean) => resolve(res));
         setTimeout(() => resolve(false), 5000); // Fallback in case connection gets lost.
     });
 }

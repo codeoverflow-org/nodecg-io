@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import { WebClient } from "@slack/web-api";
 
@@ -8,7 +8,7 @@ interface SlackServiceConfig {
 
 export type SlackServiceClient = WebClient;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new SlackService(nodecg, "slack", __dirname, "../slack-schema.json").register();
 };
 

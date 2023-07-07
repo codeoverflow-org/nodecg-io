@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { Result, emptySuccess, success, error, ServiceBundle, Logger } from "nodecg-io-core";
 import SpotifyWebApi = require("spotify-web-api-node");
 import open = require("open");
@@ -17,7 +17,7 @@ const callbackEndpoint = "/nodecg-io-spotify/spotifycallback";
 const defaultState = "defaultState";
 const refreshInterval = 1800000;
 
-module.exports = (nodecg: NodeCG) => {
+module.exports = (nodecg: NodeCG.ServerAPI) => {
     new SpotifyService(nodecg, "spotify", __dirname, "../spotify-schema.json").register();
 };
 

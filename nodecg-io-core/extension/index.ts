@@ -1,4 +1,4 @@
-import { NodeCG } from "nodecg-types/types/server";
+import NodeCG from "@nodecg/types";
 import { ServiceManager } from "./serviceManager";
 import { BundleManager } from "./bundleManager";
 import { MessageManager } from "./messageManager";
@@ -7,16 +7,28 @@ import { Service } from "./service";
 import { PersistenceManager } from "./persistenceManager";
 import { ServiceProvider } from "./serviceProvider";
 import { Logger } from "./utils/logger";
+
+/**
+ * Config schema for the core bundle.
+ * This is also defined in the configschema.json file.
+ */
+export interface NodeCGBundleConfig {
+    automaticLogin?: {
+        enabled?: boolean;
+        password?: string;
+    };
+}
+
 /**
  * Main type of NodeCG extension that the core bundle exposes.
  * Contains references to all internal modules.
  */
 export interface NodeCGIOCore {
     registerService<R, C>(service: Service<R, C>): void;
-    requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined;
+    requireService<C>(nodecg: NodeCG.ServerAPI, serviceType: string): ServiceProvider<C> | undefined;
 }
 
-module.exports = (nodecg: NodeCG): NodeCGIOCore => {
+module.exports = (nodecg: NodeCG.ServerAPI): NodeCGIOCore => {
     nodecg.log.info("Minzig!");
 
     const serviceManager = new ServiceManager(nodecg);
@@ -40,7 +52,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
         registerService<R, C>(service: Service<R, C>): void {
             serviceManager.registerService(service);
         },
-        requireService<C>(nodecg: NodeCG, serviceType: string): ServiceProvider<C> | undefined {
+        requireService<C>(nodecg: NodeCG.ServerAPI, serviceType: string): ServiceProvider<C> | undefined {
             const bundleName = nodecg.bundleName;
             const svc = serviceManager.getService(serviceType);
 
@@ -58,7 +70,7 @@ module.exports = (nodecg: NodeCG): NodeCGIOCore => {
 };
 
 function onExit(
-    nodecg: NodeCG,
+    nodecg: NodeCG.ServerAPI,
     bundleManager: BundleManager,
     instanceManager: InstanceManager,
     serviceManager: ServiceManager,
@@ -100,7 +112,7 @@ function onExit(
 }
 
 function registerExitHandlers(
-    nodecg: NodeCG,
+    nodecg: NodeCG.ServerAPI,
     bundleManager: BundleManager,
     instanceManager: InstanceManager,
     serviceManager: ServiceManager,
