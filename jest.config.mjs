@@ -23,8 +23,6 @@ function hasJestConfig(pkg) {
 
 projects = packages.filter((pkg) => hasJestConfig(pkg)).map((v) => `<rootDir>/${path.relative(cwd(), v.dir)}`);
 
-console.log(projects);
-
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
     projects,
