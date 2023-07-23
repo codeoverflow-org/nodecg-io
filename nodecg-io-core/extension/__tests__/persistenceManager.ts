@@ -1,19 +1,37 @@
 import * as crypto from "crypto-js";
 import { BundleManager } from "../bundleManager";
 import { InstanceManager } from "../instanceManager";
-import { decryptData, EncryptedData, PersistenceManager, PersistentData } from "../persistenceManager";
+import {
+    decryptData,
+    deriveEncryptionKey,
+    EncryptedData,
+    getEncryptionSalt,
+    PersistenceManager,
+    PersistentData,
+} from "../persistenceManager";
 import { ServiceManager } from "../serviceManager";
 import { ServiceProvider } from "../serviceProvider";
 import { emptySuccess, error } from "../utils/result";
-import { mockNodeCG, testBundle, testInstance, testService, testServiceInstance } from "./mocks";
+import {
+    mockNodeCG,
+    testBundle,
+    testInstance,
+    testService,
+    testServiceInstance,
+    websocketServerService,
+} from "./mocks";
 
 describe("PersistenceManager", () => {
     const validPassword = "myPassword";
-    const invalidPassword = "someOtherPassword";
+    const invalidPassword = "myInvalidPassword";
+    const salt = crypto.lib.WordArray.random(128 / 8).toString();
+    let validEncryptionKey = ""; // Generated in beforeEach
+    let invalidEncryptionKey = "";
 
     const nodecg = mockNodeCG();
     const serviceManager = new ServiceManager(nodecg);
     serviceManager.registerService(testService);
+    serviceManager.registerService(websocketServerService);
 
     let bundleManager: BundleManager;
     let instanceManager: InstanceManager;
@@ -21,7 +39,12 @@ describe("PersistenceManager", () => {
     const encryptedDataReplicant = nodecg.Replicant<EncryptedData>("encryptedConfig");
     let persistenceManager: PersistenceManager;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+        if (!validEncryptionKey || !invalidEncryptionKey) {
+            validEncryptionKey = await deriveEncryptionKey(validPassword, salt);
+            invalidEncryptionKey = await deriveEncryptionKey(invalidPassword, salt);
+        }
+
         encryptedDataReplicant.removeAllListeners();
         encryptedDataReplicant.value = {};
 
@@ -39,7 +62,7 @@ describe("PersistenceManager", () => {
      * Creates a basic config and encrypts it. Used to check whether load decrypts and more importantly
      * restores the same configuration again.
      */
-    function generateEncryptedConfig(data?: PersistentData) {
+    function generateEncryptedConfig(data?: PersistentData): EncryptedData {
         const d: PersistentData = data
             ? data
             : {
@@ -56,22 +79,28 @@ describe("PersistenceManager", () => {
                       [testInstance]: testServiceInstance,
                   },
               };
-        return crypto.AES.encrypt(JSON.stringify(d), validPassword).toString();
+
+        const iv = crypto.lib.WordArray.random(16);
+        const encryptionKeyArray = crypto.enc.Hex.parse(validEncryptionKey);
+        return {
+            cipherText: crypto.AES.encrypt(JSON.stringify(d), encryptionKeyArray, { iv }).toString(),
+            iv: iv.toString(),
+        };
     }
 
-    describe("checkPassword", () => {
+    describe("checkEncryptionKey", () => {
         test("should return false if not loaded", () => {
-            expect(persistenceManager.checkPassword(validPassword)).toBe(false);
+            expect(persistenceManager.checkEncryptionKey(validEncryptionKey)).toBe(false);
         });
 
-        test("should return false if loaded but password is wrong", async () => {
-            await persistenceManager.load(validPassword);
-            expect(persistenceManager.checkPassword(invalidPassword)).toBe(false);
+        test("should return false if loaded but encryption key is wrong", async () => {
+            await persistenceManager.load(validEncryptionKey);
+            expect(persistenceManager.checkEncryptionKey(invalidEncryptionKey)).toBe(false);
         });
 
-        test("should return true if loaded and password is correct", async () => {
-            await persistenceManager.load(validPassword);
-            expect(persistenceManager.checkPassword(validPassword)).toBe(true);
+        test("should return true if loaded and encryption key is correct", async () => {
+            await persistenceManager.load(validEncryptionKey);
+            expect(persistenceManager.checkEncryptionKey(validEncryptionKey)).toBe(true);
         });
     });
 
@@ -81,15 +110,15 @@ describe("PersistenceManager", () => {
         });
 
         test("should return false if load was called but failed", async () => {
-            encryptedDataReplicant.value.cipherText = generateEncryptedConfig();
-            const res = await persistenceManager.load(invalidPassword); // Will fail because the password is invalid
+            encryptedDataReplicant.value = generateEncryptedConfig();
+            const res = await persistenceManager.load(invalidEncryptionKey); // Will fail because the encryption key is invalid
             expect(res.failed).toBe(true);
             expect(persistenceManager.isLoaded()).toBe(false);
         });
 
         test("should return true if load was called and succeeded", async () => {
-            encryptedDataReplicant.value.cipherText = generateEncryptedConfig();
-            const res = await persistenceManager.load(validPassword); // password is correct, should work
+            encryptedDataReplicant.value = generateEncryptedConfig();
+            const res = await persistenceManager.load(validEncryptionKey); // encryption key is correct, should work
             expect(res.failed).toBe(false);
             expect(persistenceManager.isLoaded()).toBe(true);
         });
@@ -102,20 +131,20 @@ describe("PersistenceManager", () => {
         });
 
         test("should return false if an encrypted config exists", () => {
-            encryptedDataReplicant.value.cipherText = generateEncryptedConfig(); // config = not a first startup
+            encryptedDataReplicant.value = generateEncryptedConfig(); // config = not a first startup
             expect(persistenceManager.isFirstStartup()).toBe(false);
         });
     });
 
     describe("load", () => {
-        beforeEach(() => (encryptedDataReplicant.value.cipherText = generateEncryptedConfig()));
+        beforeEach(() => (encryptedDataReplicant.value = generateEncryptedConfig()));
 
         // General
 
         test("should error if called after configuration already has been loaded", async () => {
-            const res1 = await persistenceManager.load(validPassword);
+            const res1 = await persistenceManager.load(validEncryptionKey);
             expect(res1.failed).toBe(false);
-            const res2 = await persistenceManager.load(validPassword);
+            const res2 = await persistenceManager.load(validEncryptionKey);
             expect(res2.failed).toBe(true);
             if (res2.failed) {
                 expect(res2.errorMessage).toContain("already been decrypted and loaded");
@@ -123,28 +152,28 @@ describe("PersistenceManager", () => {
         });
 
         test("should save current state if no encrypted config was found", async () => {
-            const res = await persistenceManager.load(validPassword);
+            const res = await persistenceManager.load(validEncryptionKey);
             expect(res.failed).toBe(false);
             expect(encryptedDataReplicant.value.cipherText).toBeDefined();
         });
 
-        test("should error if password is wrong", async () => {
-            const res = await persistenceManager.load(invalidPassword);
+        test("should error if encryption key is wrong", async () => {
+            const res = await persistenceManager.load(invalidEncryptionKey);
             expect(res.failed).toBe(true);
             if (res.failed) {
                 expect(res.errorMessage).toContain("Password isn't correct");
             }
         });
 
-        test("should succeed if password is correct", async () => {
-            const res = await persistenceManager.load(validPassword);
+        test("should succeed if encryption key is correct", async () => {
+            const res = await persistenceManager.load(validEncryptionKey);
             expect(res.failed).toBe(false);
         });
 
         // Service instances
 
         test("should load service instances including configuration", async () => {
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
             const inst = instanceManager.getServiceInstance(testInstance);
             expect(inst).toBeDefined();
             if (!inst) return;
@@ -153,13 +182,13 @@ describe("PersistenceManager", () => {
         });
 
         test("should log failures when creating service instances", async () => {
-            encryptedDataReplicant.value.cipherText = generateEncryptedConfig({
+            encryptedDataReplicant.value = generateEncryptedConfig({
                 instances: {
                     "": testServiceInstance, // This is invalid because the instance name is empty
                 },
                 bundleDependencies: {},
             });
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
             expect(nodecg.log.warn).toHaveBeenCalledTimes(1);
             expect(nodecg.log.warn.mock.calls[0][0]).toContain("Couldn't load instance");
             expect(nodecg.log.warn.mock.calls[0][0]).toContain("name must not be empty");
@@ -167,7 +196,7 @@ describe("PersistenceManager", () => {
 
         test("should not set instance config when no config is required", async () => {
             testService.requiresNoConfig = true;
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
 
             const inst = instanceManager.getServiceInstance(testInstance);
             if (!inst) throw new Error("instance was not re-created");
@@ -182,7 +211,7 @@ describe("PersistenceManager", () => {
         test("should log failures when setting service instance configs", async () => {
             const errorMsg = "client error message";
             testService.createClient.mockImplementationOnce(() => error(errorMsg));
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
 
             // Wait for all previous promises created by loading to settle.
             await new Promise((res) => setImmediate(res));
@@ -194,7 +223,7 @@ describe("PersistenceManager", () => {
         // Service dependency assignments
 
         test("should load service dependency assignments", async () => {
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
             const deps = bundleManager.getBundleDependencies()[testBundle];
             expect(deps).toBeDefined();
             if (!deps) return;
@@ -204,7 +233,7 @@ describe("PersistenceManager", () => {
         });
 
         test("should unset service dependencies when the underlying instance was deleted", async () => {
-            encryptedDataReplicant.value.cipherText = generateEncryptedConfig({
+            encryptedDataReplicant.value = generateEncryptedConfig({
                 instances: {},
                 bundleDependencies: {
                     [testBundle]: [
@@ -216,7 +245,7 @@ describe("PersistenceManager", () => {
                     ],
                 },
             });
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
 
             const deps = bundleManager.getBundleDependencies()[testBundle];
             expect(deps?.[0]).toBeDefined();
@@ -224,7 +253,7 @@ describe("PersistenceManager", () => {
         });
 
         test("should support unassigned service dependencies", async () => {
-            encryptedDataReplicant.value.cipherText = generateEncryptedConfig({
+            encryptedDataReplicant.value = generateEncryptedConfig({
                 instances: {},
                 bundleDependencies: {
                     [testBundle]: [
@@ -236,11 +265,59 @@ describe("PersistenceManager", () => {
                     ],
                 },
             });
-            await persistenceManager.load(validPassword);
+            await persistenceManager.load(validEncryptionKey);
 
             const deps = bundleManager.getBundleDependencies()[testBundle];
             expect(deps?.[0]).toBeDefined();
             expect(deps?.[0]?.serviceInstance).toBeUndefined();
+        });
+
+        // Config migration
+
+        test("should be able to migrate nodecg-io <= 0.2 config to a newer nodecg-io >= 0.3 config", async () => {
+            // Old nodecg-io 0.2 config with the following values:
+            // password: 654321
+            // services:
+            //   ws -> websocket-server
+            //     port: 5678
+            // bundles:
+            //   ws-server-test:
+            //     websocket-server -> ws
+            const oldConfig: EncryptedData = {
+                cipherText:
+                    "U2FsdGVkX19/ECpN7V/FUE4WQ3Fp5mb/0y06HHG6TVw7oRdQfMygbnfP2VtgJ7MVx/Uw7U5wI7jlwSNHN/3eG0rY0Du2E5jJbHr3OHl5OfgsZKWbGVoEzuCtEsLjSz1FeEf4C2VIvjWeJWTKBmSm+DVitNRwwM6Ex+f97gI0HbWjU9qVhBsw05RY9vA4/XpsucRdEh5Q6RIDnVn3Gj75OlB7IlsygCv2IzxnGqx4vr3k8J4kQo8DBhyOdxQtYCkHSpuM0d3cBOMAgySZWcw2EU5PN7F6wMmeR5Zko10LhNuMntSD+Zw6yZFeFPVDRM4OhVv8146zZX5+w3XJX2KZjQ==",
+            };
+            encryptedDataReplicant.value = oldConfig;
+            bundleManager.registerServiceDependency("ws-server-test", websocketServerService);
+
+            // Invalid keys should also error with olds configs
+            const invalidResult = await persistenceManager.load(invalidEncryptionKey);
+            expect(invalidResult.failed).toBe(true);
+
+            // Loading should just work and migrate the configuration
+            const password = "654321";
+            const salt = await getEncryptionSalt(oldConfig, password);
+            const encryptionKey = await deriveEncryptionKey(password, salt);
+            const correctPasswordResult = await persistenceManager.load(encryptionKey);
+            expect(correctPasswordResult.failed).toBe(false);
+
+            // Config has been migrated: salt and iv are only present in nodecg-io >=0.3 configs
+            expect(oldConfig.salt).toBeDefined();
+            expect(oldConfig.iv).toBeDefined();
+
+            // Check instances and bundles for correct data
+            expect(instanceManager.getServiceInstance("ws")).toBeDefined();
+            expect(instanceManager.getServiceInstance("ws")?.config).toEqual({
+                port: 5678,
+            });
+
+            expect(bundleManager.getBundleDependencies()["ws-server-test"]).toEqual([
+                {
+                    serviceType: "websocket-server",
+                    serviceInstance: "ws",
+                    provider: new ServiceProvider(),
+                },
+            ]);
         });
     });
 
@@ -251,7 +328,7 @@ describe("PersistenceManager", () => {
         });
 
         test("should encrypt and save configuration if framework is loaded", async () => {
-            const res = await persistenceManager.load(validPassword);
+            const res = await persistenceManager.load(validEncryptionKey);
             expect(res.failed).toBe(false);
 
             instanceManager.createServiceInstance(testService.serviceType, testInstance);
@@ -267,8 +344,12 @@ describe("PersistenceManager", () => {
             if (!encryptedDataReplicant.value.cipherText) return;
 
             // Decrypt and check that the information that was saved is correct
-            const data = decryptData(encryptedDataReplicant.value.cipherText, validPassword);
-            if (data.failed) throw new Error("could not decrypt newly encrypted data");
+            const data = decryptData(
+                encryptedDataReplicant.value.cipherText,
+                crypto.enc.Hex.parse(validEncryptionKey),
+                encryptedDataReplicant.value.iv,
+            );
+            if (data.failed) throw new Error("could not decrypt newly encrypted data: " + data.errorMessage);
 
             expect(data.result.instances[testInstance]?.serviceType).toBe(testService.serviceType);
             expect(data.result.instances[testInstance]?.config).toBe(testService.defaultConfig);
@@ -286,12 +367,20 @@ describe("PersistenceManager", () => {
             nodecg.log.error.mockReset();
 
             persistenceManager = new PersistenceManager(nodecg, serviceManager, instanceManager, bundleManager);
-            persistenceManager.load = jest.fn().mockImplementation(async (password: string) => {
-                if (password === validPassword) return emptySuccess();
-                else return error("password invalid");
+            persistenceManager.load = jest.fn().mockImplementation(async (encryptionKey: string) => {
+                if (encryptionKey === validEncryptionKey) return emptySuccess();
+                else return error("encryption key invalid");
             });
             nodecgBundleReplicant.value = bundleRepValue ?? [nodecg.bundleName];
+            // Wait for automatic login to trigger
+            await new Promise((res) => setTimeout(res, 500));
         }
+
+        beforeEach(() => {
+            encryptedDataReplicant.value = {
+                salt,
+            };
+        });
 
         afterEach(() => {
             nodecg.bundleConfig = {};
@@ -377,7 +466,7 @@ describe("PersistenceManager", () => {
     });
 
     test("should automatically save if BundleManager or InstanceManager emit a change event", async () => {
-        await persistenceManager.load(validPassword); // Set password so that we can save stuff
+        await persistenceManager.load(validEncryptionKey); // Set encryption key so that we can save stuff
 
         if (!encryptedDataReplicant.value) {
             throw new Error("encryptedDataReplicant.value was undefined");

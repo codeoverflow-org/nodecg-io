@@ -5,25 +5,25 @@ import { BundleManager } from "./bundleManager";
 import { PersistenceManager } from "./persistenceManager";
 import { ServiceManager } from "./serviceManager";
 
-export interface PasswordMessage {
-    password: string;
+export interface AuthenticationMessage {
+    encryptionKey: string;
 }
 
-export interface UpdateInstanceConfigMessage extends PasswordMessage {
+export interface UpdateInstanceConfigMessage extends AuthenticationMessage {
     instanceName: string;
     config: unknown;
 }
 
-export interface CreateServiceInstanceMessage extends PasswordMessage {
+export interface CreateServiceInstanceMessage extends AuthenticationMessage {
     serviceType: string;
     instanceName: string;
 }
 
-export interface DeleteServiceInstanceMessage extends PasswordMessage {
+export interface DeleteServiceInstanceMessage extends AuthenticationMessage {
     instanceName: string;
 }
 
-export interface SetServiceDependencyMessage extends PasswordMessage {
+export interface SetServiceDependencyMessage extends AuthenticationMessage {
     bundleName: string;
     instanceName: string | undefined;
     serviceType: string;
@@ -82,8 +82,8 @@ export class MessageManager {
             return success(this.persist.isLoaded());
         });
 
-        this.listen("load", async (msg: PasswordMessage) => {
-            return this.persist.load(msg.password);
+        this.listen("load", async (msg: AuthenticationMessage) => {
+            return this.persist.load(msg.encryptionKey);
         });
 
         this.listen("getServices", async () => {
@@ -113,12 +113,12 @@ export class MessageManager {
         });
     }
 
-    private listenWithAuth<M extends PasswordMessage, V>(
+    private listenWithAuth<M extends AuthenticationMessage, V>(
         messageName: string,
         cb: (msg: M) => Promise<Result<V>>,
     ): void {
         this.listen(messageName, async (msg: M) => {
-            if (this.persist.checkPassword(msg.password)) {
+            if (this.persist.checkEncryptionKey(msg.encryptionKey)) {
                 return cb(msg);
             } else {
                 return error("The password is invalid");
