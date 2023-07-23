@@ -158,7 +158,7 @@ jobs:
         name: Publish compilation results
         # Don't run this in forks. This pushes to our separate repository that external contributors don't have access to.
         # We also only want to publish if we have pushed a branch, not on a pull request. Otherwise we would publish everything twice.
-        if: startsWith(github.repository, 'codeoverflow-org') && github.actor != 'dependabot[bot]' && github.event_name != 'pull_request'
+        if: startsWith(github.repository, 'codeoverflow-org') && github.actor != 'dependabot[bot]' && github.event_name != 'pull_request' && github.ref_type != 'tag'
         # Only publish anything if we're sure this version compiles (obviously) and all tests pass.
         needs:
         - build
