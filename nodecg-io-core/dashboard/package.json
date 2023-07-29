@@ -3,6 +3,11 @@
     "version": "0.3.0",
     "description": "Dashboard that is used to manage your nodecg-io configuration.",
     "homepage": "https://nodecg.io/RELEASE",
+    "files": [
+        "dist",
+        "*.css",
+        "*.html"
+    ],
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"
