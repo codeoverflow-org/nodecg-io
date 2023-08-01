@@ -88,6 +88,10 @@ export class StreamElementsServiceClient extends EventEmitter {
                         subscribers: subBomb.subs as T[],
                     };
                     handlerSubBomb(subBombEvent);
+
+                    subBomb.subs.forEach(sub => {
+                        sub.data.isFromSubBomb = true;
+                    });
                 }
 
                 subBomb.subs.forEach(handlerGift);

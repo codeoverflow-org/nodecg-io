@@ -105,6 +105,10 @@ export type StreamElementsSubscriberEvent = StreamElementsBaseEvent<
          */
         gifted?: boolean;
         /**
+         * True if this sub is part of a subbomb. If not, it is undefined.
+         */
+        isFromSubBomb?: true;
+        /**
          * The username of the user that has gifted this sub.
          */
         sender?: string;
