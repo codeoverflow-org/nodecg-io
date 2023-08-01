@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "easymidi": "^3.0.1",
+        "easymidi": "^3.1.0",
         "nodecg-io-core": "^0.3.0"
     }
 }
