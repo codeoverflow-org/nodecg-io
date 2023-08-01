@@ -6,16 +6,8 @@ import {
     StreamElementsFollowEvent,
     StreamElementsHostEvent,
     StreamElementsRaidEvent,
-    StreamElementsReplayEvent,
     StreamElementsSubBombEvent,
     StreamElementsSubscriberEvent,
-    StreamElementsTestCheerEvent,
-    StreamElementsTestEvent,
-    StreamElementsTestFollowEvent,
-    StreamElementsTestHostEvent,
-    StreamElementsTestRaidEvent,
-    StreamElementsTestSubscriberEvent,
-    StreamElementsTestTipEvent,
     StreamElementsTipEvent,
 } from "./StreamElementsEvent";
 import { EventEmitter } from "events";
@@ -23,7 +15,7 @@ import NodeCG from "@nodecg/types";
 
 export interface StreamElementsReplicant {
     lastSubscriber?: StreamElementsSubscriberEvent;
-    lastSubBomb?: StreamElementsSubBombEvent<StreamElementsSubscriberEvent>;
+    lastSubBomb?: StreamElementsSubBombEvent;
     lastTip?: StreamElementsTipEvent;
     lastCheer?: StreamElementsCheerEvent;
     lastGift?: StreamElementsSubscriberEvent;
@@ -37,14 +29,14 @@ export interface StreamElementsReplicant {
  */
 interface SubBomb {
     timeout: NodeJS.Timeout;
-    subs: Array<StreamElementsSubscriberEvent | StreamElementsTestSubscriberEvent>;
+    subs: Array<StreamElementsSubscriberEvent>;
 }
 
 export class StreamElementsServiceClient extends EventEmitter {
     private socket: SocketIOClient.Socket;
     private subBombDetectionMap: Map<string, SubBomb> = new Map();
 
-    constructor(private jwtToken: string, private handleTestEvents: boolean) {
+    constructor(private jwtToken: string) {
         super();
     }
 
@@ -73,32 +65,12 @@ export class StreamElementsServiceClient extends EventEmitter {
             }
             this.emit(data.type, data);
         });
-
-        if (this.handleTestEvents) {
-            this.onTestEvent((data: StreamElementsTestEvent) => {
-                if (data.listener) {
-                    this.emit("test", data);
-                    this.emit("test:" + data.listener, data);
-                }
-            });
-
-            this.onTestSubscriber((data) => {
-                if (data.event.gifted) {
-                    this.handleSubGift(
-                        data.event.sender,
-                        data,
-                        (subBomb) => this.emit("test:subbomb", subBomb),
-                        (gift) => this.emit("test:gift", gift),
-                    );
-                }
-            });
-        }
     }
 
-    private handleSubGift<T extends StreamElementsSubscriberEvent | StreamElementsTestSubscriberEvent>(
+    private handleSubGift<T extends StreamElementsSubscriberEvent>(
         subGifter: string | undefined,
         gift: T,
-        handlerSubBomb: (data: StreamElementsSubBombEvent<T>) => void,
+        handlerSubBomb: (data: StreamElementsSubBombEvent) => void,
         handlerGift: (data: T) => void,
     ) {
         const gifter = subGifter ?? "anonymous";
@@ -116,6 +88,10 @@ export class StreamElementsServiceClient extends EventEmitter {
                         subscribers: subBomb.subs as T[],
                     };
                     handlerSubBomb(subBombEvent);
+
+                    subBomb.subs.forEach(sub => {
+                        sub.data.isFromSubBomb = true;
+                    });
                 }
 
                 subBomb.subs.forEach(handlerGift);
@@ -183,28 +159,6 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    private onTestEvent(handler: (data: StreamElementsTestEvent) => void): void {
-        this.socket.on("event:test", (data: StreamElementsTestEvent) => {
-            if (data) {
-                handler(data);
-            }
-        });
-
-        this.socket.on("event:update", (data: StreamElementsReplayEvent) => {
-            // event:update is all replays of previous real events.
-            // Because the structure is similar to the test events and just the keys in the root element
-            // are named differently we rename those to align with the naming in the test events
-            // and handle it as a test event from here on.
-            if (data) {
-                handler({
-                    event: data.data,
-                    listener: data.name,
-                    provider: data.provider,
-                } as unknown as StreamElementsTestEvent);
-            }
-        });
-    }
-
     public onSubscriber(handler: (data: StreamElementsSubscriberEvent) => void, includeSubGifts = true): void {
         this.on("subscriber", (data) => {
             if (data.data.gifted && !includeSubGifts) return;
@@ -212,7 +166,7 @@ export class StreamElementsServiceClient extends EventEmitter {
         });
     }
 
-    public onSubscriberBomb(handler: (data: StreamElementsSubBombEvent<StreamElementsSubscriberEvent>) => void): void {
+    public onSubscriberBomb(handler: (data: StreamElementsSubBombEvent) => void): void {
         this.on("subbomb", handler);
     }
 
@@ -238,47 +192,6 @@ export class StreamElementsServiceClient extends EventEmitter {
 
     public onHost(handler: (data: StreamElementsHostEvent) => void): void {
         this.on("host", handler);
-    }
-
-    public onTest(handler: (data: StreamElementsEvent) => void): void {
-        this.on("test", handler);
-    }
-
-    public onTestSubscriber(handler: (data: StreamElementsTestSubscriberEvent) => void, includeSubGifts = true): void {
-        this.on("test:subscriber-latest", (data) => {
-            if (data.event.gifted && !includeSubGifts) return;
-            handler(data);
-        });
-    }
-
-    public onTestSubscriberBomb(
-        handler: (data: StreamElementsSubBombEvent<StreamElementsTestSubscriberEvent>) => void,
-    ): void {
-        this.on("test:subbomb", handler);
-    }
-
-    public onTestGift(handler: (data: StreamElementsTestSubscriberEvent) => void): void {
-        this.on("test:gift", handler);
-    }
-
-    public onTestCheer(handler: (data: StreamElementsTestCheerEvent) => void): void {
-        this.on("test:cheer-latest", handler);
-    }
-
-    public onTestFollow(handler: (data: StreamElementsTestFollowEvent) => void): void {
-        this.on("test:follower-latest", handler);
-    }
-
-    public onTestRaid(handler: (data: StreamElementsTestRaidEvent) => void): void {
-        this.on("test:raid-latest", handler);
-    }
-
-    public onTestHost(handler: (data: StreamElementsTestHostEvent) => void): void {
-        this.on("test:host-latest", handler);
-    }
-
-    public onTestTip(handler: (data: StreamElementsTestTipEvent) => void): void {
-        this.on("test:tip-latest", handler);
     }
 
     public setupReplicant(rep: NodeCG.ServerReplicant<StreamElementsReplicant>): void {
