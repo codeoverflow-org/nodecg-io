@@ -31,13 +31,13 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^20.3.3",
+        "@types/node": "^20.4.7",
         "@nodecg/types": "^2.1.11",
         "typescript": "^5.1.6",
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "discord.js": "^14.11.0",
+        "discord.js": "^14.12.1",
         "nodecg-io-core": "^0.3.0"
     }
 }
