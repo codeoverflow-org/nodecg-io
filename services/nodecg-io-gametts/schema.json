@@ -5,7 +5,7 @@
     "properties": {
         "host": {
             "type": "string",
-            "description": "Host (hostname/ip) of the OpenTTS instance."
+            "description": "Host (hostname/ip) of the GameTTS instance."
         },
         "useHttps": {
             "type": "boolean",

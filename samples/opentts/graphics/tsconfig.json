@@ -1,0 +1,7 @@
+{
+    "extends": "nodecg-io-tsconfig",
+    "compilerOptions": {
+        "lib": ["ES2015", "dom"],
+        "module": "ES2015"
+    }
+}
