@@ -26,6 +26,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - Discord
 - Discord RPC
 - Elgato lights
+- [GameTTS](https://github.com/lexkoro/GameTTS)
 - GitHub
 - Google APIs
 - Google Cast
