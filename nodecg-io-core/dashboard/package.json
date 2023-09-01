@@ -24,7 +24,7 @@
         "watch": "npm run -- --watch"
     },
     "devDependencies": {
-        "esbuild": "^0.16.12",
+        "esbuild": "^0.19.2",
         "monaco-editor": "^0.40.0",
         "nodecg-io-esbuild": "^1.0.0",
         "@nodecg/types": "^2.1.11",
