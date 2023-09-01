@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "knex": "^2.4.2",
+        "knex": "^2.5.1",
         "nodecg-io-core": "^0.3.0"
     }
 }
