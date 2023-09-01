@@ -38,7 +38,7 @@
     },
     "dependencies": {
         "@types/node-fetch": "^2.6.4",
-        "node-fetch": "^2.6.12",
+        "node-fetch": "^2.7.0",
         "nodecg-io-core": "^0.3.0"
     }
 }
