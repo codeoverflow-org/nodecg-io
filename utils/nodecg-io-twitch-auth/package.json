@@ -16,7 +16,7 @@
     ],
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^20.4.7",
+        "@types/node": "^20.5.7",
         "nodecg-io-tsconfig": "^1.0.0",
         "typescript": "^5.1.6"
     },
