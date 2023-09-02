@@ -18,7 +18,7 @@
     "devDependencies": {
         "@types/node": "^20.5.9",
         "nodecg-io-tsconfig": "^1.0.0",
-        "typescript": "^5.1.6"
+        "typescript": "^5.2.2"
     },
     "dependencies": {
         "@twurple/auth": "^5.3.4"

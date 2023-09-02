@@ -52,7 +52,7 @@
         "nodecg-io-esbuild": "^1.0.0",
         "nodecg-io-tsconfig": "^1.0.0",
         "@nodecg/types": "^2.1.11",
-        "typescript": "^5.1.6"
+        "typescript": "^5.2.2"
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0"
