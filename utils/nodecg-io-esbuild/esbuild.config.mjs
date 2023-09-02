@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @ts-check
 /* eslint-disable no-console */
-/* eslint-disable no-undef */ // TODO: fix
+/* eslint-disable no-undef */
 
 import * as esbuild from "esbuild";
 import * as process from "process";
