@@ -15,7 +15,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^20.4.7",
+        "@types/node": "^20.5.9",
         "@nodecg/types": "^2.1.11",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-discord": "^0.3.0",
