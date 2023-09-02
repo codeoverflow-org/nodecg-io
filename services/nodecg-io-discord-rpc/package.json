@@ -41,6 +41,6 @@
         "nodecg-io-core": "^0.3.0",
         "discord-rpc": "^4.0.1",
         "@types/discord-rpc": "^4.0.5",
-        "node-fetch": "^2.6.12"
+        "node-fetch": "^2.7.0"
     }
 }
