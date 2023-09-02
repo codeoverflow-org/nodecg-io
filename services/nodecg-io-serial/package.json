@@ -40,7 +40,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "@serialport/parser-readline": "^11.0.0",
+        "@serialport/parser-readline": "^12.0.0",
         "@types/serialport": "^8.0.2",
         "nodecg-io-core": "^0.3.0",
         "serialport": "^12.0.0"
