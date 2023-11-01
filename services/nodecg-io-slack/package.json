@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "@slack/web-api": "^6.8.1",
+        "@slack/web-api": "^6.9.1",
         "nodecg-io-core": "^0.3.0"
     }
 }
