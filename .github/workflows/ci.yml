@@ -63,6 +63,7 @@ jobs:
           matrix:
             os: [ubuntu-latest, windows-2019]
         runs-on: ${{ matrix.os }}
+        continue-on-error: true
         steps:
             - uses: actions/setup-node@v3.8.1
               with:
@@ -123,6 +124,13 @@ jobs:
             - name: Install system dependencies
               if: matrix.os == 'ubuntu-latest'
               run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
+
+            - name: Temp patch \#1030 (ubuntu 22.04) – Removing midi services / samples
+              working-directory: ./nodecg-io
+              if: matrix.os == 'ubuntu-latest'
+              run: |
+                 sudo rm -rf ./services/nodecg-io-midi-*
+                 sudo rm -rf ./samples/midi-*
 
             - name: Install node native development files
               shell: bash
