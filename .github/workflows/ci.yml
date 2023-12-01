@@ -61,8 +61,9 @@ jobs:
         # may not fail the run).
         strategy:
           matrix:
-            os: [ubuntu-latest, windows-2019]
+            os: [ubuntu-20.04, windows-2019]
         runs-on: ${{ matrix.os }}
+        continue-on-error: true
         steps:
             - uses: actions/setup-node@v3.8.1
               with:
@@ -103,7 +104,7 @@ jobs:
               run: npm run build
 
             - name: Setup NodeCG config linux
-              if: matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'ubuntu-20.04'
               run: |
                   mkdir cfg
                   echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE}'/nodecg-io","'${GITHUB_WORKSPACE}'/nodecg-io/services","'${GITHUB_WORKSPACE}'/nodecg-io/samples"]}}' > ./cfg/nodecg.json
@@ -121,7 +122,7 @@ jobs:
                   path: "nodecg-io"
 
             - name: Install system dependencies
-              if: matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'ubuntu-20.04'
               run: sudo apt update && sudo apt-get -y install libusb-1.0-0-dev libasound2-dev libudev-dev
 
             - name: Install node native development files
@@ -143,7 +144,7 @@ jobs:
               # to the `audio` group which doesn't work for us, as it would only take affect on next login,
               # but we cannot logout and login in CI.
             - name: Run test (ubuntu)
-              if: matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'ubuntu-20.04'
               run: sudo node .scripts/ci-nodecg-integration.mjs
               working-directory: ./nodecg-io
 
