@@ -180,7 +180,7 @@ jobs:
                 node-version: "18"
 
             - name: Download compilation results # From the build step
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: compilation-results
 
