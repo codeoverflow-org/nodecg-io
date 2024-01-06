@@ -4,7 +4,11 @@ import { Logger } from "nodecg-io-core";
 export class AHK {
     private readonly address: string;
 
-    public constructor(private logger: Logger, host: string, port: number) {
+    public constructor(
+        private logger: Logger,
+        host: string,
+        port: number,
+    ) {
         this.address = `http://${host}:${port}`;
     }
 

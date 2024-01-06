@@ -16,7 +16,6 @@
         "watch:root": "tsc -b -w --pretty --preserveWatchOutput",
         "lint": "eslint . --ext ts --ignore-pattern '**/*.d.ts'",
         "format": "prettier --write \"./**/*.{ts,html,css,json,mjs}\"",
-        "format-pre-commit": "pretty-quick --staged --pattern '*/**/*.{ts,html,css,json,mjs}'",
         "prepare": "husky install"
     },
     "devDependencies": {
@@ -27,9 +26,9 @@
         "eslint": "^8.56.0",
         "husky": "^8.0.3",
         "jest": "^28.1.3",
+        "lint-staged": "^15.2.0",
         "nodemon": "^3.0.1",
         "prettier": "^3.0.3",
-        "pretty-quick": "^3.1.3",
         "typescript": "^5.2.2"
     },
     "workspaces": [
@@ -38,5 +37,9 @@
         "services/*",
         "samples/*",
         "utils/*"
-    ]
+    ],
+    "lint-staged": {
+        "*.ts": "eslint --cache --fix",
+        "*.{ts,html,css,json,mjs}": "prettier --write"
+    }
 }

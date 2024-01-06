@@ -8,7 +8,10 @@ export type LightType = "KeyLight" | "LightStrip";
  * Represents an elgato light. Is never directly created but has subclasses for the different light types.
  */
 export abstract class ElgatoLight {
-    constructor(public readonly ipAddress: string, public readonly name?: string) {}
+    constructor(
+        public readonly ipAddress: string,
+        public readonly name?: string,
+    ) {}
 
     /**
      * Tests if the elgato light is reachable.

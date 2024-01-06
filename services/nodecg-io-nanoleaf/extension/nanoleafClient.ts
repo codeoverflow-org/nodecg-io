@@ -18,7 +18,10 @@ export class NanoleafClient {
         return this.queue;
     }
 
-    constructor(private ipAddress: string, private authToken: string) {}
+    constructor(
+        private ipAddress: string,
+        private authToken: string,
+    ) {}
 
     private async callGET(relativePath: string) {
         return fetch(NanoleafUtils.buildBaseRequestAddress(this.ipAddress, this.authToken) + relativePath, {

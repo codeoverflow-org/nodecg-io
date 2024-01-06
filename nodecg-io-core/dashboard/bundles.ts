@@ -77,9 +77,8 @@ export function renderInstanceSelector(): void {
         return;
     }
 
-    const currentInstance = config.data.bundles[bundle]?.find(
-        (dep) => dep.serviceType === serviceType,
-    )?.serviceInstance;
+    const currentInstance = config.data.bundles[bundle]?.find((dep) => dep.serviceType === serviceType)
+        ?.serviceInstance;
 
     let index = 0;
     for (let i = 0; i < selectBundleInstance.options.length; i++) {

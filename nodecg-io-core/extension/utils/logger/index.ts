@@ -2,7 +2,10 @@
 import NodeCG from "@nodecg/types";
 
 export class Logger {
-    constructor(private name: string, private nodecg: NodeCG.ServerAPI) {}
+    constructor(
+        private name: string,
+        private nodecg: NodeCG.ServerAPI,
+    ) {}
     trace(...args: any[]): void {
         this.nodecg.log.trace(`[${this.name}] ${args[0]}`, ...args.slice(1));
     }
