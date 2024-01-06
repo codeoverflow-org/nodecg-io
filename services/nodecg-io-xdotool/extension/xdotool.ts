@@ -6,7 +6,11 @@ import { Logger } from "nodecg-io-core";
 export class Xdotool {
     private readonly address: string | null;
 
-    constructor(private logger: Logger, host: string, port: number) {
+    constructor(
+        private logger: Logger,
+        host: string,
+        port: number,
+    ) {
         if ((host.startsWith("127.0.0.") || host === "localhost") && port < 0) {
             this.address = null;
         } else {
