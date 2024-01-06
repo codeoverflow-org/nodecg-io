@@ -238,7 +238,7 @@ jobs:
                   done;
 
             - name: Publish
-              uses: stefanzweifel/git-auto-commit-action@v4
+              uses: stefanzweifel/git-auto-commit-action@v5
               with:
                   commit_message: Publish codeoverflow-org/nodecg-io@${{ github.sha }}
                   commit_user_name: codeoverflow-org
