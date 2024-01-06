@@ -26,7 +26,7 @@ export class MQTTClientServiceClient {
                 this.client.end();
                 reject(err.message);
             });
-            this.client.on("connect", resolve);
+            this.client.on("connect", () => resolve());
 
             this.once = this.client.once;
             this.on = this.client.on;
