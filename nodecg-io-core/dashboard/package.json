@@ -30,7 +30,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "crypto-js": "^4.1.1",
+        "crypto-js": "^4.2.0",
         "nodecg-io-core": "^0.3.0",
         "events": "^3.3.0"
     },
