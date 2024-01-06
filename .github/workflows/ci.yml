@@ -11,7 +11,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v4.0.1
               with:
                   node-version: "18"
@@ -39,7 +39,7 @@ jobs:
     tests:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v4.0.1
               with:
                   node-version: "18"
@@ -70,7 +70,7 @@ jobs:
                   node-version: "18"
 
             - name: Download NodeCG
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                 repository: nodecg/nodecg
 
@@ -117,7 +117,7 @@ jobs:
                   # We need to escape backslashes to get valid json. Replaces each "\" with "\\"
                   echo '{"bundles": {"paths": ["'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io","'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io\\services","'${GITHUB_WORKSPACE//\\/\\\\}'\\nodecg-io\\samples"]}}' > ./cfg/nodecg.json
 
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
               with:
                   path: "nodecg-io"
 
@@ -174,7 +174,7 @@ jobs:
         - tests
         - nodecg
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v4.0.1
               with:
                 node-version: "18"
@@ -207,7 +207,7 @@ jobs:
               run: npm pack --workspaces
 
             - name: Clone publish repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   repository: codeoverflow-org/nodecg-io-publish
                   ssh-key: ${{ secrets.PUBLISH_SSH_KEY }}
