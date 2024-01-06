@@ -23,7 +23,7 @@
         "@manypkg/get-packages": "^2.2.0",
         "@typescript-eslint/eslint-plugin": "^6.18.0",
         "@typescript-eslint/parser": "^6.16.0",
-        "concurrently": "^8.2.0",
+        "concurrently": "^8.2.2",
         "eslint": "^8.46.0",
         "husky": "^8.0.3",
         "jest": "^28.1.3",
