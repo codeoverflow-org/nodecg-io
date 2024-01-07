@@ -37,6 +37,7 @@ dist/
 # Configuration of prettier and ESLint
 !.eslintrc.js
 !.prettierrc.js
+.eslintcache
 
 # Configuration of jest
 !jest.config.js
