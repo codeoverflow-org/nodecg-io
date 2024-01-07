@@ -55,7 +55,7 @@
     "dependencies": {
         "hash-wasm": "^4.9.0",
         "ajv": "^8.12.0",
-        "crypto-js": "^4.1.1",
+        "crypto-js": "^4.2.0",
         "tslib": "^2.6.2"
     }
 }

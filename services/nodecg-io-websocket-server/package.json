@@ -37,8 +37,8 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "@types/ws": "^8.5.5",
+        "@types/ws": "^8.5.10",
         "nodecg-io-core": "^0.3.0",
-        "ws": "^8.12.1"
+        "ws": "^8.16.0"
     }
 }

@@ -29,7 +29,10 @@ export class Android {
     public readonly contactManager: ContactManager;
     public readonly fileManager: FileManager;
 
-    constructor(private logger: Logger, device: string) {
+    constructor(
+        private logger: Logger,
+        device: string,
+    ) {
         this.device = device;
         this.connected = false;
 
