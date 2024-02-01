@@ -33,7 +33,7 @@
     "devDependencies": {
         "@types/node": "^20.5.9",
         "@types/node-fetch": "^2.6.4",
-        "@nodecg/types": "^2.1.11",
+        "@nodecg/types": "^2.1.12",
         "typescript": "^5.2.2",
         "nodecg-io-tsconfig": "^1.0.0"
     },
