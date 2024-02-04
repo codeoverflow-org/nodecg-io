@@ -38,6 +38,6 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
-        "mqtt": "^5.3.4"
+        "mqtt": "^5.3.5"
     }
 }
