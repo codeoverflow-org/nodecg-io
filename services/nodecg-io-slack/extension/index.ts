@@ -16,7 +16,7 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
     async validateConfig(config: SlackServiceConfig): Promise<Result<void>> {
         const client = new WebClient(config.token);
 
-        const res = await client.auth.test();
+        const res = await client.auth.test({ token: config.token });
         if (res.ok) {
             return emptySuccess();
         } else {
@@ -27,7 +27,7 @@ class SlackService extends ServiceBundle<SlackServiceConfig, SlackServiceClient>
     async createClient(config: SlackServiceConfig, logger: Logger): Promise<Result<SlackServiceClient>> {
         const client = new WebClient(config.token);
         logger.info("Successfully created Web Client for Slack WebAPI.");
-        const res = await client.auth.test();
+        const res = await client.auth.test({ token: config.token });
         if (res.ok) {
             return success(client);
         } else {

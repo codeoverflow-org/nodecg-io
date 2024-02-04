@@ -10,7 +10,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     slack?.onAvailable(async (client) => {
         nodecg.log.info("Slack WebAPI client has been updated, sending message to channel.");
         // Get all channels
-        const channelListResponse = await client.conversations.list();
+        const channelListResponse = await client.conversations.list({});
 
         nodecg.log.info(JSON.stringify(channelListResponse.channels));
 
