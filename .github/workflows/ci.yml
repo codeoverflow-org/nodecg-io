@@ -81,14 +81,14 @@ jobs:
 
             - name: Cache NodeCG dependencies
               id: cache-nodecg-deps
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: "node_modules"
                   key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg-deps
 
             - name: Cache NodeCG compilation outputs
               id: cache-nodecg-build
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: "build"
                   key: ${{ runner.os }}-${{ env.NODECG_HASH }}-nodecg-build
