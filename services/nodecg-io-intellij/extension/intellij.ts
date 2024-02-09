@@ -969,7 +969,7 @@ export class HistoryLabel extends HistoryChange {
      * gets the name of the label
      */
     async getName(): Promise<string> {
-        return await super.intellij.rawRequest("lh_label_name", { change_id: this.id });
+        return await this.intellij.rawRequest("lh_label_name", { change_id: this.id });
     }
 
     /**
