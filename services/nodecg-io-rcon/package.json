@@ -38,6 +38,6 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
-        "rcon-client": "^4.2.3"
+        "rcon-client": "^4.2.4"
     }
 }
