@@ -39,6 +39,6 @@
     "dependencies": {
         "googleapis": "^130.0.0",
         "nodecg-io-core": "^0.3.0",
-        "open": "^8.4.0"
+        "open": "^10.0.4"
     }
 }
