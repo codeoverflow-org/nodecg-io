@@ -37,7 +37,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^20.5.9",
+        "@types/node": "^20.11.24",
         "@types/chromecast-api": "^0.4.5",
         "@nodecg/types": "^2.1.12",
         "typescript": "^5.3.3",
