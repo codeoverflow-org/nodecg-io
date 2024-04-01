@@ -19,7 +19,7 @@
         "nodecg-io-esbuild": "esbuild.config.mjs"
     },
     "devDependencies": {
-        "@types/node": "^20.11.24"
+        "@types/node": "^20.12.2"
     },
     "dependencies": {
         "esbuild": "^0.20.2"

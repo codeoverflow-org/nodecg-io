@@ -10,7 +10,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^20.11.24",
+        "@types/node": "^20.12.2",
         "@nodecg/types": "^2.1.12",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-telegram": "^0.3.0",
