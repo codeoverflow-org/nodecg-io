@@ -37,7 +37,7 @@
         "nodecg-io-tsconfig": "^1.0.0"
     },
     "dependencies": {
-        "@elgato-stream-deck/node": "^5.7.2",
+        "@elgato-stream-deck/node": "^6.0.0",
         "nodecg-io-core": "^0.3.0"
     }
 }
