@@ -14,10 +14,15 @@ module.exports = (nodecg: NodeCG.ServerAPI) => {
 };
 
 class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, StreamdeckServiceClient> {
-    presets = Object.fromEntries(this.buildPresets());
+    constructor(nodecg: NodeCG.ServerAPI, serviceType: string, serviceConfigName: string, schemaPath: string) {
+        super(nodecg, serviceType, serviceConfigName, schemaPath);
+        this.buildPresets()
+            .then((presets) => (this.presets = Object.fromEntries(presets)))
+            .catch((err) => nodecg.log.error("Failed to build presets for the streamdeck service:", err));
+    }
 
-    private buildPresets(): Array<[string, StreamdeckServiceConfig]> {
-        const decks = streamdeck.listStreamDecks();
+    private async buildPresets() {
+        const decks = await streamdeck.listStreamDecks();
         return decks.map((deck) => {
             const presetName = `${deck.model}@${deck.path}`;
             const presetConfig = { device: deck.path };
@@ -25,13 +30,29 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
         });
     }
 
+    private async getDeviceOrDefault(config: StreamdeckServiceConfig): Promise<Result<string>> {
+        let device: string | undefined = config.device;
+        if (device === "default") {
+            const decks = await streamdeck.listStreamDecks();
+            if (!decks[0]) {
+                return error("No connected streamdeck found");
+            }
+
+            device = decks[0]?.path;
+        }
+
+        return success(device);
+    }
+
     async validateConfig(config: StreamdeckServiceConfig): Promise<Result<void>> {
         try {
-            let device: string | undefined = config.device;
-            if (device === "default") {
-                device = undefined;
+            const device = await this.getDeviceOrDefault(config);
+            if (device.failed) {
+                return device;
             }
-            streamdeck.openStreamDeck(device).close(); // Throws an error if the streamdeck is not found
+
+            const deck = await streamdeck.openStreamDeck(device.result); // Throws an error if the streamdeck is not found
+            deck.close();
             return emptySuccess();
         } catch (err) {
             return error(String(err));
@@ -40,13 +61,13 @@ class StreamdeckServiceBundle extends ServiceBundle<StreamdeckServiceConfig, Str
 
     async createClient(config: StreamdeckServiceConfig, logger: Logger): Promise<Result<StreamdeckServiceClient>> {
         try {
-            let device: string | undefined = config.device;
-            if (device === "default") {
-                device = undefined;
+            const device = await this.getDeviceOrDefault(config);
+            if (device.failed) {
+                return device;
             }
 
             logger.info(`Connecting to the streamdeck ${config.device}.`);
-            const deck = streamdeck.openStreamDeck(device);
+            const deck = await streamdeck.openStreamDeck(device.result);
             logger.info(`Successfully connected to the streamdeck ${config.device}.`);
 
             return success(deck);
