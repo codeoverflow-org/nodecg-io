@@ -48,7 +48,7 @@
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^20.11.24",
-        "monaco-editor": "^0.45.0",
+        "monaco-editor": "^0.47.0",
         "nodecg-io-esbuild": "^1.0.0",
         "nodecg-io-tsconfig": "^1.0.0",
         "@nodecg/types": "^2.1.12",
