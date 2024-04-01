@@ -19,7 +19,7 @@
         "prepare": "husky install"
     },
     "devDependencies": {
-        "@manypkg/get-packages": "^2.2.0",
+        "@manypkg/get-packages": "^2.2.1",
         "@typescript-eslint/eslint-plugin": "^7.4.0",
         "@typescript-eslint/parser": "^7.1.0",
         "concurrently": "^8.2.2",
