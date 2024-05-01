@@ -21,6 +21,6 @@
         "typescript": "^5.4.3"
     },
     "dependencies": {
-        "@twurple/auth": "^5.3.4"
+        "@twurple/auth": "^7.1.0"
     }
 }
