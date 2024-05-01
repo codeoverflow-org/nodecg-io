@@ -38,6 +38,6 @@
     },
     "dependencies": {
         "nodecg-io-core": "^0.3.0",
-        "@octokit/rest": "^20.0.2"
+        "@octokit/rest": "^20.1.0"
     }
 }
