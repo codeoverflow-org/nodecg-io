@@ -19,7 +19,7 @@
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-midi-input": "^0.3.0",
         "nodecg-io-midi-output": "^0.3.0",
-        "typescript": "^5.4.3",
+        "typescript": "^5.4.5",
         "nodecg-io-tsconfig": "^1.0.0"
     }
 }
