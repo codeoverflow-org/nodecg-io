@@ -23,7 +23,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^20.12.2",
+        "@types/node": "^20.13.0",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-esbuild": "^1.0.0",
         "nodecg-io-streamelements": "^0.3.0",

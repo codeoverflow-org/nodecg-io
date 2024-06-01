@@ -17,7 +17,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@types/node": "^20.12.2",
+        "@types/node": "^20.13.0",
         "@nodecg/types": "^2.1.12",
         "nodecg-io-core": "^0.3.0",
         "nodecg-io-opentts": "^0.3.0",
