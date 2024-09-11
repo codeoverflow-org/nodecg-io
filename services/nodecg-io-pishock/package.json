@@ -1,0 +1,50 @@
+{
+    "name": "nodecg-io-pishock",
+    "version": "0.3.0",
+    "description": "Allows using the PiShock api.",
+    "homepage": "https://nodecg.io/RELEASE/samples/pishock",
+    "author": {
+        "name": "CodeOverflow team",
+        "url": "https://github.com/codeoverflow-org"
+    },
+    "contributors": [
+        {
+            "name": "SteffoSpieler",
+            "url": "https://steffo.dev"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codeoverflow-org/nodecg-io.git",
+        "directory": "services/nodecg-io-pishock"
+    },
+    "files": [
+        "**/*.js",
+        "**/*.js.map",
+        "**/*.d.ts",
+        "*.json"
+    ],
+    "main": "extension/index",
+    "keywords": [
+        "nodecg-io",
+        "nodecg-bundle",
+        "pishock"
+    ],
+    "nodecg": {
+        "compatibleRange": ">=1.1.1 <3.0.0",
+        "bundleDependencies": {
+            "nodecg-io-core": "^0.3.0"
+        }
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^20.12.2",
+        "@nodecg/types": "^2.1.12",
+        "typescript": "^5.4.3",
+        "nodecg-io-tsconfig": "^1.0.0"
+    },
+    "dependencies": {
+        "nodecg-io-core": "^0.3.0",
+        "pishock-ts": "^1.0.1"
+    }
+}

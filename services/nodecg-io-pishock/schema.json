@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "authentications": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["username", "apiKey", "code"],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "description": "Username you use to log into PiShock.com. Can be found in the Account section of the website."
+                    },
+                    "apiKey": {
+                        "type": "string",
+                        "description": "API Key generated on PiShock.com. Can be found in the Account section of the website."
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "Sharecode generated on PiShock.com. Limitations can be set when generating the code."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of what sent the commands. This will show up in the PiShock logs on the website."
+                    }
+                }
+            }
+        }
+    },
+    "required": ["authentications"]
+}
