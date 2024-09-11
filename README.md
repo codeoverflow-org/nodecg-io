@@ -39,6 +39,7 @@ nodecg-io is the successor of [ChatOverflow](https://github.com/codeoverflow-org
 - OBS
 - [OpenTTS](https://github.com/synesthesiam/opentts)
 - Philips Hue
+- [PiShock](https://pishock.com)
 - RCON
 - Reddit
 - sACN Receiver
