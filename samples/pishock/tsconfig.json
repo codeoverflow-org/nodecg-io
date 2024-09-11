@@ -1,0 +1,11 @@
+{
+    "extends": "nodecg-io-tsconfig",
+    "references": [
+        {
+            "path": "../../nodecg-io-core"
+        },
+        {
+            "path": "../../services/nodecg-io-template"
+        }
+    ]
+}
