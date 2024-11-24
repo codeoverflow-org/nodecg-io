@@ -8,17 +8,19 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     const pubsub = requireService<TwitchPubSubServiceClient>(nodecg, "twitch-pubsub");
 
     pubsub?.onAvailable((client) => {
+        const channelName = "skate702";
+
         nodecg.log.info("PubSub client has been updated, adding handlers for messages.");
-        client.onSubscription((message) => {
+        client.onSubscription(channelName, (message) => {
             nodecg.log.info(`${message.userDisplayName} just subscribed (${message.cumulativeMonths} months)`);
         });
-        client.onBits((message) => {
+        client.onBits(channelName, (message) => {
             nodecg.log.info(`${message.userName} cheered ${message.bits} Bits`);
         });
-        client.onBitsBadgeUnlock((message) => {
+        client.onBitsBadgeUnlock(channelName, (message) => {
             nodecg.log.info(`${message.userName} just unlocked the ${message.badgeTier} Badge`);
         });
-        client.onRedemption((message) => {
+        client.onRedemption(channelName, (message) => {
             nodecg.log.info(`${message.userDisplayName} redeemed ${message.rewardTitle} (${message.message})`);
         });
     });

@@ -9,13 +9,24 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 
     twitchApi?.onAvailable(async (client) => {
         nodecg.log.info("Twitch api client has been updated, getting user info.");
-        const user = await client.helix.users.getMe();
-        const follows = await user.getFollows();
-        const stream = await user.getStream();
+        const tokenInfo = await client.getTokenInfo();
+        const userId = tokenInfo.userId;
+
+        if (!userId) {
+            nodecg.log.info("Unable to determine authenticated user");
+            return;
+        }
+
+        const user = await client.users.getUserById(userId);
+        if (!user) {
+            nodecg.log.info("Unable to get user info");
+            return;
+        }
+
+        const follows = await user?.getFollowedChannels();
+        const stream = await user?.getStream();
         nodecg.log.info(
-            `You are user "${user.name}", follow ${follows.total} people and are${
-                stream === null ? " not" : ""
-            } streaming.`,
+            `You are user "${user.name}", follow ${follows.total} people and are${stream === null ? " not" : ""} streaming.`,
         );
     });
 
