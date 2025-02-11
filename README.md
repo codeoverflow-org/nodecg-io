@@ -1,3 +1,10 @@
+# :warning: this project is currently unmaintained
+
+This project is no longer actively maintained.
+However, contributions and improvements are welcome.
+Pull requests will be reviewed and considered for merging.
+Feel free to submit any changes.
+
 # nodecg-io
 
 [![Feature Requests](https://img.shields.io/github/issues/codeoverflow-org/nodecg-io/enhancement?label=Feature%20Requests&style=flat-square)](https://github.com/codeoverflow-org/nodecg-io/labels/enhancement)
@@ -72,18 +79,6 @@ If that's no problem you can head over to the [installation guide](https://nodec
 ## How to contribute
 
 If you want to contribute to this bundle you can implement one of those services or fix an [issue](https://github.com/codeoverflow-org/nodecg-io/issues). Before contributing head over to the [How to contribute](https://nodecg.io/RELEASE/contribute/contribute/) guide.
-
-## Code Overflow Team
-
-> <img src="https://avatars.githubusercontent.com/daniel0611"   height="50px" title="Daniel Huber"/> | [`@daniel0611`](https://github.com/daniel0611)
-
-> <img src="https://avatars.githubusercontent.com/J0B10"    height="50px" title="Jonas"/> | [`@J0B10`](https://github.com/J0B10)
-
-> <img src="https://avatars.githubusercontent.com/sebinside"    height="50px" title="Sebastian"/> | [`@sebinside`](https://github.com/sebinside)
-
-> <img src="https://avatars.githubusercontent.com/Promasu"    height="50px" title="Adrian"/> | [`@Promasu`](https://github.com/Promasu)
-
-P.S.: If you have some spare time to help out around here, we would be delighted to add your name to this list!
 
 # Repository structure
 
