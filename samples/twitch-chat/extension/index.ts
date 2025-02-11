@@ -9,8 +9,8 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     const twitch = requireService<TwitchChatServiceClient>(nodecg, "twitch-chat");
 
     // Hardcoded channels for testing purposes.
-    // Note that this does need a # before the channel name and is case-insensitive.
-    const twitchChannels = ["#skate702", "#daniel0611"];
+    // Note that this is case-insensitive.
+    const twitchChannels = ["skate702", "hlxid"];
 
     // Once the service instance has been set we add listeners for messages in the corresponding channels.
     twitch?.onAvailable((client) => {

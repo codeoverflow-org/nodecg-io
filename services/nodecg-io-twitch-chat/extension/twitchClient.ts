@@ -11,11 +11,14 @@ export class TwitchChatServiceClient extends ChatClient {
 
         // Create the actual chat client and connect
         const chatClient = new TwitchChatServiceClient({ authProvider });
-        await chatClient.connect();
+        chatClient.connect();
 
-        // This also waits till it has registered itself at the IRC server, which is needed to do anything.
-        await new Promise((resolve, _reject) => {
-            chatClient.onRegister(() => resolve(undefined));
+        // This also waits till it has connected and registered itself at the IRC server, which is needed to do anything.
+        await new Promise((resolve, reject) => {
+            chatClient.onConnect(() => resolve(undefined));
+            chatClient.onAuthenticationFailure(() => {
+                reject("Authentication failed");
+            });
         });
 
         return chatClient;
@@ -31,7 +34,7 @@ export class TwitchChatServiceClient extends ChatClient {
      * @param channel the channel to join
      */
     join(channel: string): Promise<void> {
-        this.onRegister(() => {
+        this.onConnect(() => {
             this.join(channel);
         });
 

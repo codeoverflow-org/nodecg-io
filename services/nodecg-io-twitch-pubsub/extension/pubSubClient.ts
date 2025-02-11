@@ -1,12 +1,21 @@
-import { BasicPubSubClient, SingleUserPubSubClient } from "@twurple/pubsub";
+import { BasicPubSubClient, PubSubClient } from "@twurple/pubsub";
 import { createAuthProvider, TwitchServiceConfig } from "nodecg-io-twitch-auth";
-import { AuthProvider } from "@twurple/auth";
+import { PubSubClientConfig } from "@twurple/pubsub/lib/PubSubClient";
 
-export class TwitchPubSubServiceClient extends SingleUserPubSubClient {
+export class TwitchPubSubServiceClient extends PubSubClient {
     private basicClient: BasicPubSubClient;
-    constructor(auth: AuthProvider, basicClient: BasicPubSubClient) {
-        super({ authProvider: auth, pubSubClient: basicClient });
-        this.basicClient = basicClient;
+
+    constructor(config: PubSubClientConfig) {
+        super(config);
+
+        // Get reference to underlying client.
+        // Very ugly but not possible differently.
+        // This is a private field and may change but we need it
+        // to add listeners for disconnect/connection failures
+        // to the underlying basic client and force connection to
+        // ensure valid credentials.
+        //@ts-expect-error private field
+        this.basicClient = this._basicClient;
     }
 
     /**
@@ -17,14 +26,23 @@ export class TwitchPubSubServiceClient extends SingleUserPubSubClient {
         const authProvider = await createAuthProvider(cfg);
 
         // Create the actual pubsub client and connect
-        const basicClient = new BasicPubSubClient();
-        const pubSubClient = new TwitchPubSubServiceClient(authProvider, basicClient);
+        const pubSubClient = new TwitchPubSubServiceClient({ authProvider });
 
-        await basicClient.connect();
+        pubSubClient.basicClient.connect();
+        await new Promise((resolve, reject) => {
+            pubSubClient.basicClient.onConnect(() => resolve(null));
+            // 15 second timeout
+            setTimeout(() => reject("Timeout for PubSub connection was exceeded"), 15000);
+        });
         return pubSubClient;
     }
 
-    disconnect(): Promise<void> {
-        return this.basicClient.disconnect();
+    async disconnect(): Promise<void> {
+        this.basicClient.disconnect();
+        await new Promise((resolve, reject) => {
+            this.basicClient.onDisconnect(() => resolve(null));
+            // 15 second timeout
+            setTimeout(() => reject("Timeout for PubSub disconnection was exceeded"), 15000);
+        });
     }
 }
