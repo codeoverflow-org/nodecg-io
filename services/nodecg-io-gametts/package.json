@@ -2,7 +2,7 @@
     "name": "nodecg-io-gametts",
     "version": "0.3.0",
     "description": "Allows generating audio for text using an GameTTS instance.",
-    "homepage": "https://nodecg.io/RELEASE/samples/gametts",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/gametts",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

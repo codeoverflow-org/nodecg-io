@@ -2,7 +2,7 @@
     "name": "nodecg-io-telegram",
     "version": "0.3.0",
     "description": "Allows you to control a telegram bot.",
-    "homepage": "https://nodecg.io/RELEASE/samples/telegram",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/telegram",
     "author": {
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"

@@ -2,7 +2,7 @@
     "name": "nodecg-io-twitch-pubsub",
     "version": "0.3.0",
     "description": "Allows access to the Twitch PubSub API.",
-    "homepage": "https://nodecg.io/RELEASE/samples/twitch-pubsub",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/twitch-pubsub",
     "author": {
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"

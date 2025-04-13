@@ -2,7 +2,7 @@
     "name": "nodecg-io-xdotool",
     "version": "0.3.0",
     "description": "Allows you to send commands to xdotool.",
-    "homepage": "https://nodecg.io/RELEASE/samples/xdotool",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/xdotool",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

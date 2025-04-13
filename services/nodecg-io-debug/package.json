@@ -2,7 +2,7 @@
     "name": "nodecg-io-debug",
     "version": "0.3.0",
     "description": "Debug helper service that helps to easily trigger your code for debugging purposes.",
-    "homepage": "https://nodecg.io/RELEASE/samples/debug",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/debug",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

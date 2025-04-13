@@ -2,7 +2,7 @@
     "name": "nodecg-io-android",
     "version": "0.3.0",
     "description": "Allows to connect to an android device via adb.",
-    "homepage": "https://nodecg.io/RELEASE/samples/android",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/android",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

@@ -2,7 +2,7 @@
     "name": "nodecg-io-ahk",
     "version": "0.3.0",
     "description": "Allows you to send commands to AutoHotkey.",
-    "homepage": "https://nodecg.io/RELEASE/samples/ahk",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/ahk",
     "author": {
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"

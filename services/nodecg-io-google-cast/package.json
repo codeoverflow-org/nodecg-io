@@ -2,7 +2,7 @@
     "name": "nodecg-io-google-cast",
     "version": "0.3.0",
     "description": "Allows playing media on Google Cast devices.",
-    "homepage": "https://nodecg.io/RELEASE/samples/google-cast",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/google-cast",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

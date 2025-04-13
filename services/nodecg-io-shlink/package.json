@@ -2,7 +2,7 @@
     "name": "nodecg-io-shlink",
     "version": "0.3.0",
     "description": "Allows you to create Shlink short links",
-    "homepage": "https://nodecg.io/RELEASE/samples/shlink",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/shlink",
     "author": {
         "name": "voruti",
         "url": "https://github.com/voruti"

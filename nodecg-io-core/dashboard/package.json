@@ -2,7 +2,7 @@
     "name": "nodecg-io-dashboard",
     "version": "0.3.0",
     "description": "Dashboard that is used to manage your nodecg-io configuration.",
-    "homepage": "https://nodecg.io/RELEASE",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE",
     "files": [
         "dist",
         "*.css",

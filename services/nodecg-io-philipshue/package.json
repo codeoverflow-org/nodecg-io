@@ -2,7 +2,7 @@
     "name": "nodecg-io-philipshue",
     "version": "0.3.0",
     "description": "Allows you to connect with your Philips Hue bridge. This allows you to control your lights etc.",
-    "homepage": "https://nodecg.io/RELEASE",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE",
     "author": {
         "name": "TheCrether",
         "url": "https://thecrether.at"

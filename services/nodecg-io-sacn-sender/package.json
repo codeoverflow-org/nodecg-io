@@ -2,7 +2,7 @@
     "name": "nodecg-io-sacn-sender",
     "version": "0.3.0",
     "description": "Allows you to send data via sACN to e.g professional lights.",
-    "homepage": "https://nodecg.io/RELEASE/samples/sacn-sender",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/sacn-sender",
     "author": {
         "name": "Tim-Tech-Dev",
         "url": "https://github.com/Tim-Tech-Dev"

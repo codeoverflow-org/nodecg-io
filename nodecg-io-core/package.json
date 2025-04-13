@@ -2,7 +2,7 @@
     "name": "nodecg-io-core",
     "version": "0.3.0",
     "description": "The core of nodecg-io. Connects everything up.",
-    "homepage": "https://nodecg.io/RELEASE",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"

@@ -2,7 +2,7 @@
     "name": "nodecg-io-dbus",
     "version": "0.3.0",
     "description": "Allows to interface with DBus",
-    "homepage": "https://nodecg.io/RELEASE/samples/dbus",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/dbus",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

@@ -18,7 +18,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         const channel = "CHANNEL_ID";
 
         client.chat
-            .postMessage({ channel, text: "Hello world from nodecg.io" })
+            .postMessage({ channel, text: "Hello world from codeoverflow-org.github.io/nodecg-io-docs" })
             .then((messageResponse) => {
                 nodecg.log.info(messageResponse);
             })

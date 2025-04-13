@@ -2,7 +2,7 @@
     "name": "nodecg-io-serial",
     "version": "0.3.0",
     "description": "Exposes serial deivces to nodecg-io",
-    "homepage": "https://nodecg.io/RELEASE/samples/serial",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/serial",
     "author": {
         "name": "Stefan Schmelz",
         "url": "https://github.com/StefanSchmelz"

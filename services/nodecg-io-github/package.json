@@ -2,7 +2,7 @@
     "name": "nodecg-io-github",
     "version": "0.3.0",
     "description": "Allows to connect to the GitHub REST API",
-    "homepage": "https://nodecg.io/RELEASE/samples/github",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/github",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

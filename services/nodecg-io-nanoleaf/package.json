@@ -2,7 +2,7 @@
     "name": "nodecg-io-nanoleaf",
     "version": "0.3.0",
     "description": "Allows to connect to a nanoleaf controller and trigger custom lighting effects.",
-    "homepage": "https://nodecg.io/RELEASE/samples/nanoleaf",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/nanoleaf",
     "author": {
         "name": "sebinside",
         "url": "https://github.com/sebinside"

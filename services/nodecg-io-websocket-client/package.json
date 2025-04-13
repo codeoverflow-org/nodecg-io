@@ -2,7 +2,7 @@
     "name": "nodecg-io-websocket-client",
     "version": "0.3.0",
     "description": "Allows to connect to a external WebSocket server.",
-    "homepage": "https://nodecg.io/RELEASE/samples/websocket-client/",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/websocket-client/",
     "author": {
         "name": "derNiklaas",
         "url": "https://github.com/derNiklaas"

@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # Replace some entries from the template package.json
     package['name'] = f'nodecg-io-{service_name}'
     package['description'] = description
-    package['homepage'] = f'https://nodecg.io/RELEASE/samples/{sample_name}'
+    package['homepage'] = f'https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/{sample_name}'
     package['author'] = {
         'name': author_name,
         'url': author_url

@@ -2,7 +2,7 @@
     "name": "nodecg-io-twitch-addons",
     "version": "0.3.0",
     "description": "Support for the API's of BetterTTV and FrankerFaceZ",
-    "homepage": "https://nodecg.io/RELEASE/samples/twitch-addons",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/twitch-addons",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

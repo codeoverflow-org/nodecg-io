@@ -2,7 +2,7 @@
     "name": "nodecg-io-mqtt-client",
     "version": "0.3.0",
     "description": "Allows you to connect with an MQTT server.",
-    "homepage": "https://nodecg.io/RELEASE/samples/mqtt-client",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/mqtt-client",
     "author": {
         "name": "Nils Witt",
         "url": "https://github.com/Nils-witt"

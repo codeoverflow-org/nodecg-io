@@ -2,7 +2,7 @@
     "name": "nodecg-io-discord-rpc",
     "version": "0.3.0",
     "description": "Allows to interface with a locally running discord client via RPC",
-    "homepage": "https://nodecg.io/RELEASE/samples/discord-rpc",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/discord-rpc",
     "author": {
         "name": "noeppi_noeppi",
         "url": "https://github.com/noeppi-noeppi"

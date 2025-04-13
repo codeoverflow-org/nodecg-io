@@ -2,7 +2,7 @@
     "name": "nodecg-io-pishock",
     "version": "0.3.0",
     "description": "Allows using the PiShock api.",
-    "homepage": "https://nodecg.io/RELEASE/samples/pishock",
+    "homepage": "https://codeoverflow-org.github.io/nodecg-io-docs/RELEASE/samples/pishock",
     "author": {
         "name": "CodeOverflow team",
         "url": "https://github.com/codeoverflow-org"
