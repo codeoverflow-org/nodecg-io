@@ -24,7 +24,8 @@ class TwitchService extends ServiceBundle<TwitchServiceConfig, TwitchChatService
     }
 
     stopClient(client: TwitchChatServiceClient, logger: Logger): void {
-        client.quit().then(() => logger.info("Successfully stopped twitch client."));
+        client.quit();
+        logger.info("Successfully stopped twitch client.");
     }
 
     removeHandlers(client: TwitchChatServiceClient): void {
